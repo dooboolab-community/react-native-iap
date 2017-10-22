@@ -1,20 +1,18 @@
 
 {
-  "name": "react-native-react-native-iap",
-  "version": "1.0.0",
-  "description": "",
+  "name": "react-native-iap",
+  "version": "0.0.2",
+  "description": "Purchase",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "react-native"
+    "react-native", "purchase", "IAP"
   ],
-  "author": "",
-  "license": "",
+  "author": "Hyochan Jang, Jongwoo Moon",
+  "license": "MIT",
   "peerDependencies": {
-    "react-native": "^0.41.2",
-    "react-native-windows": "0.41.0-rc.1"
-
+    "react-native": "^0.49.3"
   }
 }
