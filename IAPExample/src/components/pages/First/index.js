@@ -4,8 +4,8 @@ import {
   Text,
   Alert,
 } from 'react-native';
-
 import NativeButton from 'apsl-react-native-button';
+import RNReactNativeIap from 'react-native-iap';
 
 import Navbar from '../../shared/Navbar';
 import styles from './styles';
@@ -39,6 +39,14 @@ class Page extends Component {
   onIAPTest = (item) => {
     console.log('onIAPTest');
     console.log(item);
+    RNReactNativeIap.purchaseItem(item, (err, data) => {
+      console.log(`\n\n  purchaseItem :: callback  error : ${err} \n\n`);
+      // this.setState({ theToken: token });
+      if (err) {
+        console.log(err);
+        return;
+      }
+    });
   }
 
   render() {
