@@ -15,12 +15,30 @@ class Page extends Component {
     super(props);
 
     this.state = {
-      isNaverLoggingin: false,
+      items: [
+        {
+          name: 'BUY 1,000P',
+          price: 1000,
+        },
+        {
+          name: 'BUY 5,000P',
+          price: 5000,
+        },
+        {
+          name: 'BUY 10,000P',
+          price: 10000,
+        },
+        {
+          name: 'BUY 20,000P',
+          price: 20000,
+        },
+      ],
     };
   }
 
-  onIAPTest = () => {
+  onIAPTest = (item) => {
     console.log('onIAPTest');
+    console.log(item);
   }
 
   render() {
@@ -30,34 +48,19 @@ class Page extends Component {
           <Navbar>IAP Example</Navbar>
         </View>
         <View style={ styles.content }>
-          <NativeButton
-            isLoading={this.state.isNaverLoggingin}
-            onPress={this.onIAPTest}
-            activeOpacity={0.5}
-            style={styles.btnIAP}
-            textStyle={styles.txtIAP}
-          >BUY 1,000P</NativeButton>
-          <NativeButton
-            isLoading={this.state.isNaverLoggingin}
-            onPress={this.onIAPTest}
-            activeOpacity={0.5}
-            style={styles.btnIAP}
-            textStyle={styles.txtIAP}
-          >BUY 5,000P</NativeButton>
-          <NativeButton
-            isLoading={this.state.isNaverLoggingin}
-            onPress={this.onIAPTest}
-            activeOpacity={0.5}
-            style={styles.btnIAP}
-            textStyle={styles.txtIAP}
-          >BUY 10,000P</NativeButton>
-          <NativeButton
-            isLoading={this.state.isNaverLoggingin}
-            onPress={this.onIAPTest}
-            activeOpacity={0.5}
-            style={styles.btnIAP}
-            textStyle={styles.txtIAP}
-          >BUY 20,000P</NativeButton>
+        {
+          this.state.items.map((item) => {
+            return (
+              <NativeButton
+                key={item.name}
+                onPress={() => this.onIAPTest(item)}
+                activeOpacity={0.5}
+                style={styles.btnIAP}
+                textStyle={styles.txtIAP}
+              >{item.name}</NativeButton>
+            );
+          })
+        }
         </View>
       </View>
     );
