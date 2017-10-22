@@ -1,5 +1,6 @@
 
 # react-native-react-native-iap
+Still under construction. Please wait little bit more...
 
 ## Getting started
 
