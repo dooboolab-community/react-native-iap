@@ -36,7 +36,28 @@ class Page extends Component {
             activeOpacity={0.5}
             style={styles.btnIAP}
             textStyle={styles.txtIAP}
-          >Test IAP</NativeButton>
+          >BUY 1,000P</NativeButton>
+          <NativeButton
+            isLoading={this.state.isNaverLoggingin}
+            onPress={this.onIAPTest}
+            activeOpacity={0.5}
+            style={styles.btnIAP}
+            textStyle={styles.txtIAP}
+          >BUY 5,000P</NativeButton>
+          <NativeButton
+            isLoading={this.state.isNaverLoggingin}
+            onPress={this.onIAPTest}
+            activeOpacity={0.5}
+            style={styles.btnIAP}
+            textStyle={styles.txtIAP}
+          >BUY 10,000P</NativeButton>
+          <NativeButton
+            isLoading={this.state.isNaverLoggingin}
+            onPress={this.onIAPTest}
+            activeOpacity={0.5}
+            style={styles.btnIAP}
+            textStyle={styles.txtIAP}
+          >BUY 20,000P</NativeButton>
         </View>
       </View>
     );
