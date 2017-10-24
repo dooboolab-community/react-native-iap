@@ -39,15 +39,6 @@ Still under construction. Please wait little bit more...
       compile project(':react-native-react-native-iap')
   	```
 
-#### Windows
-[Read it! :D](https://github.com/ReactWindows/react-native)
-
-1. In Visual Studio add the `RNReactNativeIap.sln` in `node_modules/react-native-react-native-iap/windows/RNReactNativeIap.sln` folder to their solution, reference from their app.
-2. Open up your `MainPage.cs` app
-  - Add `using React.Native.Iap.RNReactNativeIap;` to the usings at the top of the file
-  - Add `new RNReactNativeIapPackage()` to the `List<IReactPackage>` returned by the `Packages` method
-
-
 ## Usage
 ```javascript
 import RNReactNativeIap from 'react-native-react-native-iap';
