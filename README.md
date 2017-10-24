@@ -2,6 +2,10 @@
 # react-native-react-native-iap
 Still under construction. Please wait little bit more...
 
+## Currently this module is under implementation. We will announce when it's ready.
+## Basic functionality will be available in November 2017.
+
+
 ## Getting started
 
 `$ npm install react-native-react-native-iap --save`
@@ -51,4 +55,3 @@ import RNReactNativeIap from 'react-native-react-native-iap';
 // TODO: What to do with the module?
 RNReactNativeIap;
 ```
-  
