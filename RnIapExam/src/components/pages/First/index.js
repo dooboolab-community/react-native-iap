@@ -4,11 +4,13 @@ import {
   Text,
   Alert,
 } from 'react-native';
-
 import NativeButton from 'apsl-react-native-button';
+import { RNReactNativeIap } from 'react-native-iap';
 
 import Navbar from '../../shared/Navbar';
 import styles from './styles';
+
+const iosProductID = 'some.product.id.com';
 
 class Page extends Component {
   constructor(props) {
@@ -39,6 +41,30 @@ class Page extends Component {
   onIAPTest = (item) => {
     console.log('onIAPTest');
     console.log(item);
+    RNReactNativeIap.purchaseItem(item, (err, data) => {
+      console.log(`\n\n  purchaseItem :: callback  error : ${err} \n\n`);
+      // this.setState({ theToken: token });
+      if (err) {
+        console.log(err);
+        return;
+      }
+    });
+  }
+
+
+  fetchProdList() {
+    console.log('fetchProdList');
+
+    RNReactNativeIap.fetchProductList('react.iap.consum.500', (err, data) => {
+      console.log(`\n\n  product list :: callback  error : ${err} \n\n`);
+      // this.setState({ theToken: token });
+      if (err) {
+        console.log(err);
+        return;
+      }
+
+      console.log(data);
+    });
   }
 
   render() {
@@ -48,6 +74,14 @@ class Page extends Component {
           <Navbar>IAP Example</Navbar>
         </View>
         <View style={ styles.content }>
+
+          <NativeButton
+            onPress={() => this.fetchProdList()}
+            activeOpacity={0.5}
+            style={styles.btnIAP}
+            textStyle={styles.txtIAP}
+          >Fetch Product List</NativeButton>
+
         {
           this.state.items.map((item) => {
             return (

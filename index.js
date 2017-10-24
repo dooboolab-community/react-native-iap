@@ -8,6 +8,10 @@ const InAppPurchaseIOS = {
   purchaseItem(item, callback) {
     InAppPurchase.purchaseItem(JSON.stringify(item), callback);
   },
+
+  fetchProductList(prodID, callback) {
+    InAppPurchase.fetchProducts(prodID, callback);
+  },
 }
 
 // TODO IAB : android in app billing.

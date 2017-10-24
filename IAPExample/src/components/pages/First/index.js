@@ -10,6 +10,8 @@ import RNReactNativeIap from 'react-native-iap';
 import Navbar from '../../shared/Navbar';
 import styles from './styles';
 
+const iosProductID = 'some.product.id.com';
+
 class Page extends Component {
   constructor(props) {
     super(props);
@@ -49,6 +51,21 @@ class Page extends Component {
     });
   }
 
+  fetchProdList() {
+    console.log('fetchProdList');
+
+    RNReactNativeIap.fetchProductList(prodID, (err, data) => {
+      console.log(`\n\n  product list :: callback  error : ${err} \n\n`);
+      // this.setState({ theToken: token });
+      if (err) {
+        console.log(err);
+        return;
+      }
+
+      console.log(data);
+    });
+  }
+
   render() {
     return (
       <View style={ styles.container }>
@@ -56,6 +73,13 @@ class Page extends Component {
           <Navbar>IAP Example</Navbar>
         </View>
         <View style={ styles.content }>
+
+          <NativeButton
+            onPress={() => this.fetchProdList(item)}
+            activeOpacity={0.5}
+            style={styles.btnIAP}
+            textStyle={styles.txtIAP}
+          >Fetch Product List</NativeButton>
         {
           this.state.items.map((item) => {
             return (
