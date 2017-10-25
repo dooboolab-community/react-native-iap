@@ -98,7 +98,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.rniapexample"
+        applicationId "com.dooboolab.iapexample"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
