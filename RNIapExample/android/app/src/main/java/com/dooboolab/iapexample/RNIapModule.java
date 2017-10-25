@@ -47,10 +47,9 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   private Boolean prepared = false;
   private ReactContext reactContext;
+  private Callback buyItemCB = null;
   private IInAppBillingService mService;
   private BillingClient mBillingClient;
-  private String consumableMode = "NOT_CONSUMABLE";
-  private final String BASE64_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiNdnKt3hfOkWkzgo4LllkzmvvdjZtxZbeHgkj7ccxIe3Jdd0x2IqIM1ZwzvNgmDSaBkUXJMOZV9nWuS6Dalq3lPViJwNPgf2gaWJ6j9RXVSZNfugbp8svFDmbZCDy5phCmFxwLRsllCkq9yCnDlE2SS0ZjnsD+scll4aIZsyEdotXt4xKdyl+xDbUPOCVfU9rLzTfrSnUig8Ed92aesMYWWQPoCI9Yhl/BAl0tJRf2BVIXtB1W95sns0wcABSt6rz3+B97XhgnmnA/A/kvKdytt4kNxdVQroF9bbZpITCd4KvavKccom4MEV0XtrUPRyholvBtDcXO+xt8S7ldu7RQIDAQAB";
 
   ServiceConnection mServiceConn = new ServiceConnection() {
     @Override public void onServiceDisconnected(ComponentName name) {
@@ -110,20 +109,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void setConsumableMode(String mode) {
-    /*
-      mode
-      'CONSUMABLE'
-      'NOT_CONSUMABLE' // CONSUME RIGHT AWAY
-   */
-    if (mode.equals("CONSUMABLE")) {
-      consumableMode = "CONSUMABLE";
-    } else {
-      consumableMode = "NOT_CONSUMABLE";
-    }
-  }
-
-  @ReactMethod
   public void getItems(String items, final Callback cb) {
     if (!prepared || mService == null) {
       cb.invoke("IAP not prepared. Please restart your app again.", null);
@@ -173,6 +158,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     }
   }
 
+
   @ReactMethod
   public void buyItem(String id_item, Callback cb) {
     BillingFlowParams flowParams = BillingFlowParams.newBuilder()
@@ -183,11 +169,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     int responseCode = mBillingClient.launchBillingFlow(reactContext.getCurrentActivity(), flowParams);
     Log.d(TAG, "buyItem responseCode: " + responseCode);
 
-    if (responseCode == 0) {
-      cb.invoke(true);
-    } else {
-      cb.invoke(false);
-    }
+    buyItemCB = cb;
   }
 
   @ReactMethod
@@ -233,17 +215,47 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void refreshPurchaseItems() {
+    try {
+      Bundle ownedItems = mService.getPurchases(3, reactContext.getPackageName(), "inapp", null);
+      int response = ownedItems.getInt("RESPONSE_CODE");
+      if (response == 0) {
+        ArrayList
+            purchaseDataList = ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+        String[] tokens = new String[purchaseDataList.size()];
+        for (int i = 0; i < purchaseDataList.size(); ++i) {
+          String purchaseData = (String) purchaseDataList.get(i);
+          JSONObject jo = new JSONObject(purchaseData);
+          tokens[i] = jo.getString("purchaseToken");
+          mService.consumePurchase(3, reactContext.getPackageName(), tokens[i]);
+        }
+      }
+
+      // 토큰을 모두 컨슘했으니 구매 메서드 처리
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @ReactMethod
   public void consumeItem(String token, final Callback cb) {
+    if (!prepared || mService == null) {
+      cb.invoke("IAP not prepared. Please restart your app again.", null);
+      return;
+    }
+
     mBillingClient.consumeAsync(token, new ConsumeResponseListener() {
       @Override
       public void onConsumeResponse(@BillingClient.BillingResponse int responseCode, String outToken) {
-        if (responseCode == BillingClient.BillingResponse.OK) {
-          // Handle the success of the consume operation.
-          // For example, increase the number of coins inside the user's basket.
-          Log.d(TAG, "consume responseCode: " + responseCode);
+      if (responseCode == BillingClient.BillingResponse.OK) {
+        // Handle the success of the consume operation.
+        // For example, increase the number of coins inside the user's basket.
+        Log.d(TAG, "consume responseCode: " + responseCode);
 
-          cb.invoke(null, true);
-        }
+        cb.invoke(null, true);
+        return;
+      }
+      cb.invoke(null, false);
       }
     });
   }
@@ -267,20 +279,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     }
   };
 
-  // only used locally
-  private void consumeItem(String token) {
-    mBillingClient.consumeAsync(token, new ConsumeResponseListener() {
-      @Override
-      public void onConsumeResponse(@BillingClient.BillingResponse int responseCode, String outToken) {
-        if (responseCode == BillingClient.BillingResponse.OK) {
-          // Handle the success of the consume operation.
-          // For example, increase the number of coins inside the user's basket.
-          Log.d(TAG, "consume responseCode: " + responseCode);
-        }
-      }
-    });
-  }
-
   PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
     @Override
     public void onPurchasesUpdated(int responseCode, @Nullable List<Purchase> purchases) {
@@ -288,8 +286,20 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       Log.d(TAG, "responseCode: " + responseCode);
       if (responseCode == 0) {
         Log.d(TAG, purchases.toString());
-        if (consumableMode.equals("NOT_CONSUMABLE"))
-          consumeItem(purchases.get(0).getPurchaseToken());
+
+        if (buyItemCB != null) {
+          try {
+            JSONObject json = new JSONObject();
+            json.put("orderId", purchases.get(0).getOrderId());
+            json.put("purchaseTime", purchases.get(0).getPurchaseTime());
+            json.put("purchaseToken", purchases.get(0).getPurchaseToken());
+            json.put("signature", purchases.get(0).getSignature());
+            buyItemCB.invoke(null, json.toString());
+          } catch (JSONException je) {
+            buyItemCB.invoke(je.getMessage(), null);
+          }
+          buyItemCB = null;
+        }
       }
     }
   };

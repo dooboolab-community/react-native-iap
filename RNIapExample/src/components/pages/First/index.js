@@ -29,7 +29,8 @@ class Page extends Component {
 
   componentDidMount = () => {
     RNIapModule.prepare();
-    RNIapModule.setConsumableMode('NOT_CONSUMABLE'); // CONSUMABLE & NOT_CONSUMABLE
+    // this usally needed for debug
+    RNIapModule.refreshPurchaseItems();
   }
 
   getItems = () => {
@@ -62,17 +63,31 @@ class Page extends Component {
   }
 
   buyItem = (sku) => {
+    let parsedItem = {};
     switch (sku) {
       case '1000':
-        RNIapModule.buyItem('point_' + sku, (success) => {
-          console.log('success');
-          console.log(success);
+        RNIapModule.buyItem('point_' + sku, (err, item) => {
+          parsedItem = JSON.parse(item);
+          console.log('parsedItem');
+          console.log(parsedItem);
         });
         break;
       case '5000':
-        RNIapModule.buyItem(sku + '_point', (success) => {
-          console.log('success');
-          console.log(success);
+        RNIapModule.buyItem(sku + '_point', (err, item) => {
+          parsedItem = JSON.parse(item);
+          console.log('parsedItem');
+          console.log(parsedItem);
+        });
+        break;
+      case 'TEST':
+        RNIapModule.buyItem('android.test.purchased', (err, item) => {
+          parsedItem = JSON.parse(item);
+          console.log('parsedItem');
+          console.log(parsedItem);
+          RNIapModule.consumeItem(parsedItem.purchaseToken, (err, success) => {
+            console.log('consume');
+            console.log(success);
+          });
         });
         break;
     }
@@ -117,7 +132,13 @@ class Page extends Component {
             activeOpacity={0.5}
             style={styles.btn}
             textStyle={styles.txt}
-          >Buy P2000</NativeButton>
+          >Buy P5000</NativeButton>
+          <NativeButton
+            onPress={() => this.buyItem('TEST')}
+            activeOpacity={0.5}
+            style={styles.btn}
+            textStyle={styles.txt}
+          >Buy TEST</NativeButton>
           <NativeButton
             onPress={() => this.consumeItem('1000')}
             activeOpacity={0.5}
