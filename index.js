@@ -1,26 +1,6 @@
 
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules } from 'react-native';
 
-// IAP : ios in app purchase.
-const { InAppPurchase } = NativeModules; // 여기 이름은 달라야 함.
+const { RNIap } = NativeModules;
 
-const InAppPurchaseIOS = {
-  purchaseItem(item, callback) {
-    InAppPurchase.purchaseItem(JSON.stringify(item), callback);
-  },
-
-  fetchProductList(prodID, callback) {
-    InAppPurchase.fetchProducts(prodID, callback);
-  },
-}
-
-// TODO IAB : android in app billing.
-
-
-
-
-const RNReactNativeIap = Platform.OS === 'ios'
-  ? InAppPurchaseIOS
-  : InAppPurchaseIOS; // FIXME  안드로이드 모듈.
-
-module.exports = { RNReactNativeIap }
+export default RNIap;

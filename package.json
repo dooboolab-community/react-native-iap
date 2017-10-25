@@ -1,18 +1,20 @@
 
 {
   "name": "react-native-iap",
-  "version": "0.0.8",
-  "description": "React Native In App Purchase Module.",
+  "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "react-native", "purchase", "IAP"
+    "react-native"
   ],
-  "author": "Hyo Chang Jang, Jongwoo Moon",
-  "license": "MIT",
+  "author": "",
+  "license": "",
   "peerDependencies": {
-    "react-native": "^0.49.3"
+    "react-native": "^0.41.2",
+    "react-native-windows": "0.41.0-rc.1"
+
   }
 }
