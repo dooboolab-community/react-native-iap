@@ -31,6 +31,8 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -122,29 +124,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void refreshPurchaseItems() {
-    try {
-      Bundle ownedItems = mService.getPurchases(3, reactContext.getPackageName(), "inapp", null);
-      int response = ownedItems.getInt("RESPONSE_CODE");
-      if (response == 0) {
-        ArrayList
-            purchaseDataList = ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-        String[] tokens = new String[purchaseDataList.size()];
-        for (int i = 0; i < purchaseDataList.size(); ++i) {
-          String purchaseData = (String) purchaseDataList.get(i);
-          JSONObject jo = new JSONObject(purchaseData);
-          tokens[i] = jo.getString("purchaseToken");
-          mService.consumePurchase(3, reactContext.getPackageName(), tokens[i]);
-        }
-      }
-
-      // 토큰을 모두 컨슘했으니 구매 메서드 처리
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  @ReactMethod
   public void getItems(final Callback cb) {
     if (!prepared || mService == null) {
       Log.d(TAG, "IAP not prepared. Please restart your app again.");
@@ -179,35 +158,42 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
     int responseCode = mBillingClient.launchBillingFlow(reactContext.getCurrentActivity(), flowParams);
     Log.d(TAG, "buyItem responseCode: " + responseCode);
-    cb.invoke(responseCode);
+
+    if (responseCode == 0) {
+      cb.invoke(true);
+    } else {
+      cb.invoke(false);
+    }
   }
 
   @ReactMethod
-  public void getOwnedItems() {
+  public void getOwnedItems(final Callback cb) {
     if (!prepared || mService == null) {
-      Log.d(TAG, "IAP not prepared. Please restart your app again.");
+      cb.invoke("IAP not prepared. Please restart your app again.", null);
       return;
     }
 
-    Purchase.PurchasesResult purchasesResult = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
+    // Purchase.PurchasesResult purchasesResult = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
     mBillingClient.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP, new PurchaseHistoryResponseListener() {
       @Override
       public void onPurchaseHistoryResponse(@BillingClient.BillingResponse int responseCode,
                                             List<Purchase> purchasesList) {
+        JSONArray jsonArray = new JSONArray();
         if (responseCode == BillingClient.BillingResponse.OK
             && purchasesList != null) {
           for (Purchase purchase : purchasesList) {
             // Process the result.
-            Log.d(TAG, "purchase");
-            Log.d(TAG, purchase.toString());
+            jsonArray.put(purchase);
           }
         }
+
+        cb.invoke(null, jsonArray);
       }
     });
   }
 
   @ReactMethod
-  public void consumeItem(String token) {
+  public void consumeItem(String token, final Callback cb) {
     mBillingClient.consumeAsync(token, new ConsumeResponseListener() {
       @Override
       public void onConsumeResponse(@BillingClient.BillingResponse int responseCode, String outToken) {
@@ -215,6 +201,8 @@ public class RNIapModule extends ReactContextBaseJavaModule {
           // Handle the success of the consume operation.
           // For example, increase the number of coins inside the user's basket.
           Log.d(TAG, "consume responseCode: " + responseCode);
+
+          cb.invoke(null, true);
         }
       }
     });
@@ -227,7 +215,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         // The billing client is ready.
         Log.d(TAG, "billing client ready");
         prepared = true;
-        refreshPurchaseItems();
       }
     }
     @Override
@@ -239,6 +226,20 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       mBillingClient.startConnection(this);
     }
   };
+
+  // only used locally
+  private void consumeItem(String token) {
+    mBillingClient.consumeAsync(token, new ConsumeResponseListener() {
+      @Override
+      public void onConsumeResponse(@BillingClient.BillingResponse int responseCode, String outToken) {
+        if (responseCode == BillingClient.BillingResponse.OK) {
+          // Handle the success of the consume operation.
+          // For example, increase the number of coins inside the user's basket.
+          Log.d(TAG, "consume responseCode: " + responseCode);
+        }
+      }
+    });
+  }
 
   PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
     @Override
