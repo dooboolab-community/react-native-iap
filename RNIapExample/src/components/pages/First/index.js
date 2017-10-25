@@ -29,7 +29,7 @@ class Page extends Component {
 
   componentDidMount = () => {
     RNIapModule.prepare();
-    // this usally needed for debug
+    // this usually needed for debug
     RNIapModule.refreshPurchaseItems();
   }
 
