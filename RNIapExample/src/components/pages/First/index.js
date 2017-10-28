@@ -25,7 +25,7 @@ class Page extends Component {
     super(props);
 
     this.state = {
-
+      productList: [],
     };
   }
 
@@ -59,6 +59,7 @@ class Page extends Component {
       }
       // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
       console.log(typeof items, items, Object.keys(items), '  in Array :: ', Object.values(items));
+      this.setState({ productList: Object.values(items)});
     });
   }
 
