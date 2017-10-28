@@ -37,6 +37,7 @@
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		BD3779A41FA41DEF002AA7D7 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD3779A31FA41DEF002AA7D7 /* StoreKit.framework */; };
 		D217F342A3544D50A3AD0A85 /* libRNReactNativeIap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 058D54EAE6B84FCFB7FED9B7 /* libRNReactNativeIap.a */; };
 /* End PBXBuildFile section */
 
@@ -294,6 +295,7 @@
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
+		BD3779A31FA41DEF002AA7D7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		CE6651D541AD45968065A74F /* RNReactNativeIap.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNReactNativeIap.xcodeproj; path = "../node_modules/react-native-iap/ios/RNReactNativeIap.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -322,6 +324,7 @@
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
+				BD3779A41FA41DEF002AA7D7 /* StoreKit.framework in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				D217F342A3544D50A3AD0A85 /* libRNReactNativeIap.a in Frameworks */,
 			);
@@ -515,6 +518,7 @@
 				00E356EF1AD99517003FC87E /* RNIapExampleTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				BD3779811FA41859002AA7D7 /* Recovered References */,
+				BD3779A21FA41DEF002AA7D7 /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -555,6 +559,14 @@
 				BD3779A11FA4185A002AA7D7 /* libRNReactNativeIap.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BD3779A21FA41DEF002AA7D7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BD3779A31FA41DEF002AA7D7 /* StoreKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -644,6 +656,14 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = CSH6CRWSVG;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+						};
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1131,6 +1151,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = CSH6CRWSVG;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-iap/ios/**",
@@ -1142,6 +1163,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = in.app.purchase.rct;
 				PRODUCT_NAME = RNIapExample;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1152,6 +1174,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CSH6CRWSVG;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-iap/ios/**",
@@ -1163,6 +1186,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = in.app.purchase.rct;
 				PRODUCT_NAME = RNIapExample;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

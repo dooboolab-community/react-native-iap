@@ -1,5 +1,5 @@
 
-import { NativeModules } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 
 const { RNIapIos, RNIapAndroid } = NativeModules;
 
@@ -10,7 +10,8 @@ const ModuleIOS = {
   getItems(skus, cb) {
     console.log('RN IAP Ios Module : getItems ::  skus >> ', skus);
     // RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodID callback:(RCTResponseSenderBlock)callback) {
-    RNIapIos.fetchProducts(JSON.stringify(skus), cb);
+    const thestr = JSON.stringify(skus);
+    RNIapIos.fetchProducts(thestr, cb);
   },
   buyItem(id_item, cb) {
     console.log('RN IAP Ios Module : buyItem ::  id_item >> ', id_item);
@@ -24,6 +25,6 @@ const ModuleAndroid = {
 }
 
 const RNIap = Platform.OS === 'ios' ?
-  ModuleIOSz : ModuleAndroid;
+  ModuleIOS : ModuleAndroid;
 
 module.exports = RNIap

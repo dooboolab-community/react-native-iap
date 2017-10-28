@@ -36,42 +36,42 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)keyJson callback:(RCTResponseSenderBl
   NSLog(@"\n InAppPurchase name ::  %@", name);
 }
 
-RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodID callback:(RCTResponseSenderBlock)callback) {
-  productID = prodID;
+RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodJsonArray callback:(RCTResponseSenderBlock)callback) {
+  RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: fetchProducts \n\n\n\n .");
   productListCB = callback;
-  [self fetchAvailableProducts];
-}
-
--(void)fetchAvailableProducts {
-  NSLog(@"\n\n\n\n Obj c >> InAppPurchase  :: fetchAvailableProducts \n\n\n\n .");
-  
-  NSSet *productIdentifiers = [NSSet setWithObjects:productID,nil];
-  productsRequest = [[SKProductsRequest alloc]
-                     initWithProductIdentifiers:productIdentifiers];
+  // Parsing...
+  NSData* data = [prodJsonArray dataUsingEncoding:NSUTF8StringEncoding];
+  NSArray *arrProd = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+  NSLog(@"   Obj c >> InAppPurchase  :: fetchProducts  >>  arrProd parsed as follows  ... %@", arrProd);
+  NSSet * productIdentifiers = [NSSet setWithObject:arrProd[0]];
+  for (int k = 0; k < arrProd.count; k++) {
+    productIdentifiers = [productIdentifiers setByAddingObject:arrProd[k]];
+  }
+  productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
   productsRequest.delegate = self;
   [productsRequest start];
 }
 
 
-
 #pragma mark ===== StoreKit Delegate
 
--(void)paymentQueue:(SKPaymentQueue *)queue
-updatedTransactions:(NSArray *)transactions {
+-(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
   for (SKPaymentTransaction *transaction in transactions) {
+    NSData *newReceipt = transaction.transactionReceipt;
+    
     switch (transaction.transactionState) {
       case SKPaymentTransactionStatePurchasing:
-        NSLog(@"Purchasing");
         break;
       case SKPaymentTransactionStatePurchased:
-        if ([transaction.payment.productIdentifier
-             isEqualToString:productID]) {
-          NSLog(@"Purchased ");
-          UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:
-                                    @"Purchase is completed succesfully" message:nil delegate:
-                                    self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
-          [alertView show];
-        }
+        NSLog(@"Purchasing : receipt : %@", transaction.transactionReceipt);
+        //        if ([transaction.payment.productIdentifier
+        //             isEqualToString:productID]) {
+        //          NSLog(@"Purchased ");
+        //          UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:
+        //                                    @"Purchase is completed succesfully" message:nil delegate:
+        //                                    self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+        //          [alertView show];
+        //        }
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
         break;
       case SKPaymentTransactionStateRestored:
@@ -88,36 +88,27 @@ updatedTransactions:(NSArray *)transactions {
 }
 
 
--(void)productsRequest:(SKProductsRequest *)request
-    didReceiveResponse:(SKProductsResponse *)response
+-(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
 {
-  SKProduct *validProduct = nil;
-  int count = [response.products count];
-  if (count>0) {
-    validProducts = response.products;
-    validProduct = [response.products objectAtIndex:0];
-    if ([validProduct.productIdentifier
-         isEqualToString:productID]) {
-      [productTitleLabel setText:[NSString stringWithFormat:
-                                  @"Product Title: %@",validProduct.localizedTitle]];
-      [productDescriptionLabel setText:[NSString stringWithFormat:
-                                        @"Product Desc: %@",validProduct.localizedDescription]];
-      [productPriceLabel setText:[NSString stringWithFormat:
-                                  @"Product Price: %@",validProduct.price]];
-    }
-  } else {
-    UIAlertView *tmp = [[UIAlertView alloc]
-                        initWithTitle:@"Not Available"
-                        message:@"No products to purchase"
-                        delegate:self
-                        cancelButtonTitle:nil
-                        otherButtonTitles:@"Ok", nil];
-    [tmp show];
+  validProducts = response.products;
+  long count = [validProducts count];
+  NSLog(@"\n\n\n Obj c >> InAppPurchase   ###  didReceiveResponse :: Valid Product Count ::  %ld", count);
+  
+  if (count == 0) {
+    productListCB(@[@"No Valid Product returned !!", [NSNull null]]);
+    return;
   }
-  [activityIndicatorView stopAnimating];
-  purchaseButton.hidden = NO;
+  
+  NSMutableArray *ids = [NSMutableArray arrayWithCapacity: count];
+  // Valid Product .. send callback.
+  for (int k = 0; k < count; k++) {
+    SKProduct *theProd = [validProducts objectAtIndex:k];
+    [ids addObject:theProd.productIdentifier];
+    NSLog(@"\n\n\n Obj c >> InAppPurchase   ###  didReceiveResponse  유효 상품 Id : %@", theProd.productIdentifier);
+  }
+  NSLog(@"  xxx  %@", ids);
+  if(productListCB) productListCB(@[[NSNull null], ids]);
+  productListCB = nil;
 }
 
-
 @end
-

@@ -5,12 +5,12 @@ import {
   Alert,
   NativeModules,
 } from 'react-native';
-
 import NativeButton from 'apsl-react-native-button';
+import RNIap from 'react-native-iap';
 
 import Navbar from '../../shared/Navbar';
 import styles from './styles';
-const { RNIapModule } = NativeModules;
+// const { RNIapModule } = NativeModules;
 
 const itemSkus = [
   'point_1000',
@@ -18,80 +18,95 @@ const itemSkus = [
   '10000_point',
 ];
 
+const someSkus = ['react.iap.consum.500', 'react.iap.consum.1000'];
+
 class Page extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      
+
     };
   }
 
-  componentDidMount = () => {
-    RNIapModule.prepare();
-    // this usually needed for debug
-    RNIapModule.refreshPurchaseItems();
-  }
+  // componentDidMount = () => {
+  //   RNIapModule.prepare();
+  //   // this usually needed for debug
+  //   RNIapModule.refreshPurchaseItems();
+  // }
 
-  getItems = () => {
-    RNIapModule.getItems(
-      JSON.stringify(itemSkus),
-      (err, items) => {
-        if (err) {
-          console.log('err');
-          console.log(err);
-          return;
-        }
-        const parsedItems = JSON.parse(items);
-        console.log(parsedItems);
+  // getItems = () => {
+  //   RNIapModule.getItems(
+  //     JSON.stringify(itemSkus),
+  //     (err, items) => {
+  //       if (err) {
+  //         console.log('err');
+  //         console.log(err);
+  //         return;
+  //       }
+  //       const parsedItems = JSON.parse(items);
+  //       console.log(parsedItems);
+  //     }
+  //   );
+  // }
+
+  getItems() {
+    RNIap.getItems(someSkus, (err, items) => {
+      if (err) {
+        console.log(`${err}`);
+        Alert.alert(`${err}`);
+        return;
       }
-    );
+      // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
+      console.log(typeof items, items, Object.keys(items), '  in Array :: ', Object.values(items));
+    });
   }
 
-  getOwnedItems = () => {
-    RNIapModule.getOwnedItems(
-      (err, items) => {
-        if (err) {
-          console.log('err');
-          console.log(err);
-          return;
-        }
-        const parsedItems = JSON.parse(items);
-        console.log(parsedItems);
-      }
-    );
-  }
-
-  buyItem = (sku) => {
-    let parsedItem = {};
-    switch (sku) {
-      case '1000':
-        RNIapModule.buyItem('point_' + sku, (err, item) => {
-          parsedItem = JSON.parse(item);
-          console.log('parsedItem');
-          console.log(parsedItem);
-        });
-        break;
-      case '5000':
-        RNIapModule.buyItem(sku + '_point', (err, item) => {
-          parsedItem = JSON.parse(item);
-          console.log('parsedItem');
-          console.log(parsedItem);
-        });
-        break;
-      case 'TEST':
-        RNIapModule.buyItem('android.test.purchased', (err, item) => {
-          parsedItem = JSON.parse(item);
-          console.log('parsedItem');
-          console.log(parsedItem);
-          RNIapModule.consumeItem(parsedItem.purchaseToken, (err, success) => {
-            console.log('consume');
-            console.log(success);
-          });
-        });
-        break;
-    }
-  }
+  //
+  // getOwnedItems = () => {
+  //   RNIapModule.getOwnedItems(
+  //     (err, items) => {
+  //       if (err) {
+  //         console.log('err');
+  //         console.log(err);
+  //         return;
+  //       }
+  //       const parsedItems = JSON.parse(items);
+  //       console.log(parsedItems);
+  //     }
+  //   );
+  // }
+  //
+  // buyItem = (sku) => {
+  //   let parsedItem = {};
+  //   switch (sku) {
+  //     case '1000':
+  //       RNIapModule.buyItem('point_' + sku, (err, item) => {
+  //         parsedItem = JSON.parse(item);
+  //         console.log('parsedItem');
+  //         console.log(parsedItem);
+  //       });
+  //       break;
+  //     case '5000':
+  //       RNIapModule.buyItem(sku + '_point', (err, item) => {
+  //         parsedItem = JSON.parse(item);
+  //         console.log('parsedItem');
+  //         console.log(parsedItem);
+  //       });
+  //       break;
+  //     case 'TEST':
+  //       RNIapModule.buyItem('android.test.purchased', (err, item) => {
+  //         parsedItem = JSON.parse(item);
+  //         console.log('parsedItem');
+  //         console.log(parsedItem);
+  //         RNIapModule.consumeItem(parsedItem.purchaseToken, (err, success) => {
+  //           console.log('consume');
+  //           console.log(success);
+  //         });
+  //       });
+  //       break;
+  //   }
+  // }
 
   consumeItem = (token) => {
     switch (token) {
