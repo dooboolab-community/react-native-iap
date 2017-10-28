@@ -17,6 +17,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   @Override
   public String getName() {
-    return "RNIap";
+    return "RNIapAndroid";
   }
 }
