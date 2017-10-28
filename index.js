@@ -3,10 +3,11 @@ import { NativeModules, Platform } from 'react-native';
 
 const { RNIapIos, RNIapAndroid } = NativeModules;
 
-// export default RNIap;
-
-
 const ModuleIOS = {
+  prepare() {
+    console.log('RN IAP Ios Module : prepare ::  void function ');
+  },
+
   getItems(skus, cb) {
     console.log('RN IAP Ios Module : getItems ::  skus >> ', skus);
     // RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodID callback:(RCTResponseSenderBlock)callback) {
@@ -22,9 +23,11 @@ const ModuleIOS = {
 
 const ModuleAndroid = {
   // 안드로이드 관련 기능들..
+  
 }
 
 const RNIap = Platform.OS === 'ios' ?
   ModuleIOS : ModuleAndroid;
 
 module.exports = RNIap
+// export default RNIap;
