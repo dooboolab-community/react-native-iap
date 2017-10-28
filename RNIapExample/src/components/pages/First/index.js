@@ -25,7 +25,7 @@ class Page extends Component {
     super(props);
 
     this.state = {
-      productList: [],
+      productList: [], receipt: 'receipt',
     };
   }
 
@@ -77,7 +77,19 @@ class Page extends Component {
   //     }
   //   );
   // }
-  //
+  buyItem(sku) {
+    RNIap.buyItem(sku, (err, receipt) => {
+      if (err) {
+        console.log(`${err}`);
+        Alert.alert(`${err}`);
+        return;
+      }
+      // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
+      console.log(receipt);
+      this.setState({ receipt });
+    });
+  }
+
   // buyItem = (sku) => {
   //   let parsedItem = {};
   //   switch (sku) {
@@ -119,6 +131,9 @@ class Page extends Component {
   }
 
   render() {
+    const { productList, receipt } = this.state;
+    const receipt100 = receipt.substring(0, 100);
+
     return (
       <View style={ styles.container }>
         <View style={ styles.header }>
@@ -130,15 +145,16 @@ class Page extends Component {
             activeOpacity={0.5}
             style={styles.btn}
             textStyle={styles.txt}
-          >Get Items</NativeButton>
+          >Get Items {productList.length}</NativeButton>
           <NativeButton
             onPress={() => this.getOwnedItems()}
             activeOpacity={0.5}
             style={styles.btn}
             textStyle={styles.txt}
           >Get Purchased Items</NativeButton>
+          <Text style={{ fontSize: 4 }} >{receipt100}</Text>
           <NativeButton
-            onPress={() => this.buyItem('1000')}
+            onPress={() => this.buyItem('react.iap.consum.500')}
             activeOpacity={0.5}
             style={styles.btn}
             textStyle={styles.txt}

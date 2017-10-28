@@ -11,6 +11,8 @@
   RCTResponseSenderBlock purchaseCallback;
   RCTResponseSenderBlock productListCB;
   
+  int cnt;
+  
   NSString * productID;
 }
 @end
@@ -18,23 +20,15 @@
 ////////////////////////////////////////////////////     _//////////_  // Implementation
 @implementation RNIapIos
 
+-(instancetype)init {
+  self = [super init];
+  [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+  return self;
+}
+
 
 ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
 RCT_EXPORT_MODULE();
-
-////////////////////////////////////////////////////_  상품 구매
-// RCT_EXPORT_METHOD(login:(NSString *)keyJson callback:(RCTResponseSenderBlock)callback) {
-RCT_EXPORT_METHOD(purchaseItem:(NSString *)keyJson callback:(RCTResponseSenderBlock)callback) {
-  RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: purchaseItem \n\n\n\n .");
-  purchaseCallback = callback;
-  
-  NSData *jsonData = [keyJson dataUsingEncoding:NSUTF8StringEncoding];
-  NSError *e;
-  NSDictionary *keyObj = [NSJSONSerialization JSONObjectWithData:jsonData options:nil error:&e];
-  
-  NSString* name = [keyObj objectForKey:@"name"];
-  NSLog(@"\n InAppPurchase name ::  %@", name);
-}
 
 RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodJsonArray callback:(RCTResponseSenderBlock)callback) {
   RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: fetchProducts \n\n\n\n .");
@@ -52,44 +46,26 @@ RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodJsonArray callback:(RCTResponseS
   [productsRequest start];
 }
 
-
-#pragma mark ===== StoreKit Delegate
-
--(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
-  for (SKPaymentTransaction *transaction in transactions) {
-    NSData *newReceipt = transaction.transactionReceipt;
-    
-    switch (transaction.transactionState) {
-      case SKPaymentTransactionStatePurchasing:
-        break;
-      case SKPaymentTransactionStatePurchased:
-        NSLog(@"Purchasing : receipt : %@", transaction.transactionReceipt);
-        //        if ([transaction.payment.productIdentifier
-        //             isEqualToString:productID]) {
-        //          NSLog(@"Purchased ");
-        //          UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:
-        //                                    @"Purchase is completed succesfully" message:nil delegate:
-        //                                    self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
-        //          [alertView show];
-        //        }
-        [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-        break;
-      case SKPaymentTransactionStateRestored:
-        NSLog(@"Restored ");
-        [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-        break;
-      case SKPaymentTransactionStateFailed:
-        NSLog(@"Purchase failed ");
-        break;
-      default:
-        break;
+// RCT_EXPORT_METHOD(login:(NSString *)keyJson callback:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSenderBlock)callback) {
+  RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: purchaseItem :: %@    Valid Product : %ld  \n\n\n\n .", productID, (unsigned long)validProducts.count);
+  purchaseCallback = callback;
+  
+  for (int k = 0; k < validProducts.count; k++) {
+    SKProduct *theProd = [validProducts objectAtIndex:k];
+    if ([productID isEqualToString:theProd.productIdentifier]) {
+      NSLog(@"\n\n\n Obj c >> InAppPurchase  :: purchaseItem :: Product Found  \n\n\n.");
+      SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:theProd];
+      payment.quantity = 1;
+      [[SKPaymentQueue defaultQueue] addPayment:payment];
+      return;
     }
   }
 }
 
+#pragma mark ===== StoreKit Delegate
 
--(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
-{
+-(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
   validProducts = response.products;
   long count = [validProducts count];
   NSLog(@"\n\n\n Obj c >> InAppPurchase   ###  didReceiveResponse :: Valid Product Count ::  %ld", count);
@@ -110,5 +86,54 @@ RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodJsonArray callback:(RCTResponseS
   if(productListCB) productListCB(@[[NSNull null], ids]);
   productListCB = nil;
 }
+
+
+-(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
+  for (SKPaymentTransaction *transaction in transactions) {
+    switch (transaction.transactionState) {
+      case SKPaymentTransactionStatePurchasing:
+        NSLog(@"\n\n Purchase Started !! \n\n");
+        break;
+      case SKPaymentTransactionStatePurchased:
+        NSLog(@"\n\n\n\n\n Purchase  OK !! \n\n\n\n\n.");
+        [self purchaseProcess:transaction];
+        break;
+      case SKPaymentTransactionStateRestored:
+        NSLog(@"Restored ");
+        [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+        break;
+      case SKPaymentTransactionStateFailed:
+        NSLog(@"\n\n\n\n\n\n Purchase Failed  !! \n\n\n\n\n");
+        [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+        // if (purchaseCallback) purchaseCallback(@[@"Purchase Failed !!"]);
+        break;
+      default:
+        NSLog(@" default case ...   error  ... ");
+        break;
+    }
+  }
+}
+
+-(void)purchaseProcess:(SKPaymentTransaction *)trans {
+  NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
+  
+  if ([[NSFileManager defaultManager] fileExistsAtPath:[receiptUrl path]]) {
+    NSData *rcptData = [NSData dataWithContentsOfURL:receiptUrl];
+    NSString *rcptStr = [rcptData base64EncodedStringWithOptions:0];
+    if(purchaseCallback && rcptStr != NULL) {
+      purchaseCallback(@[[NSNull null], rcptStr]);
+      purchaseCallback = nil;
+    }
+    [[SKPaymentQueue defaultQueue] finishTransaction:trans];
+    NSLog(@"\n\n Purchasing : receipt : %@  \n\n", rcptStr);
+  } else {
+    NSLog(@"iOS 7 AppReceipt not found, refreshing...");
+    //          SKReceiptRefreshRequest *refreshReceiptRequest = [[SKReceiptRefreshRequest alloc] initWithReceiptProperties:@{}];
+    //          refreshReceiptRequest.delegate = self;
+    //          [refreshReceiptRequest start];
+  }
+  
+}
+
 
 @end
