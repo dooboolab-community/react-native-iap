@@ -13,9 +13,8 @@ import styles from './styles';
 // const { RNIapModule } = NativeModules;
 
 const itemSkus = [
-  'point_1000',
-  '5000_point',
-  '10000_point',
+  'com.cooni.point1000',
+  'com.cooni.point5000',
 ];
 
 const someSkus = ['react.iap.consum.500', 'react.iap.consum.1000'];
@@ -50,9 +49,10 @@ class Page extends Component {
   //   );
   // }
 
-  getItems() {
+  async getItems() {
     try {
-      const items = await RNIap.getItems(someSkus);
+      // const items = await RNIap.getItems(someSkus); itemSkus
+      const items = await RNIap.getItems(itemSkus);
       console.log(typeof items, items, Object.keys(items), '  in Array :: ', Object.values(items));
       this.setState({ productList: Object.values(items)});
     } catch (err) {
@@ -75,7 +75,7 @@ class Page extends Component {
   //     }
   //   );
   // }
-  buyItem(sku) {
+  async buyItem(sku) {
     try {
       const items = await RNIap.buyItem(sku);
       // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
@@ -138,7 +138,7 @@ class Page extends Component {
         </View>
         <View style={ styles.content }>
           <NativeButton
-            onPress={() => this.getItems()}
+            onPress={async () => this.getItems()}
             activeOpacity={0.5}
             style={styles.btn}
             textStyle={styles.txt}
@@ -151,13 +151,13 @@ class Page extends Component {
           >Get Purchased Items</NativeButton>
           <Text style={{ fontSize: 4 }} >{receipt100}</Text>
           <NativeButton
-            onPress={() => this.buyItem('react.iap.consum.500')}
+            onPress={async () => this.buyItem('com.cooni.point1000')}
             activeOpacity={0.5}
             style={styles.btn}
             textStyle={styles.txt}
           >Buy P1000</NativeButton>
           <NativeButton
-            onPress={() => this.buyItem('5000')}
+            onPress={() => this.buyItem('com.cooni.point5000')}
             activeOpacity={0.5}
             style={styles.btn}
             textStyle={styles.txt}
