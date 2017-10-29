@@ -16,10 +16,12 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 const itemSkus = {
   ios: [
-    'com.cooni.point1000', 'com.cooni.point5000',
+    'com.cooni.point1000',
+    'com.cooni.point5000',
   ],
   android: [
-    'point1000', 'point5000',
+    'point_1000',
+    '5000_point',
   ],
 };
 
@@ -87,7 +89,7 @@ class Page extends Component {
             onPress={
               () => this.buyItem({
                 ios: 'com.cooni.point1000',
-                android: 'android.test.purchased',
+                android: 'point_1000',
               })
             }
             activeOpacity={0.5}
