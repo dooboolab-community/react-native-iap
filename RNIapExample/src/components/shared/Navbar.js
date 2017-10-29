@@ -6,8 +6,7 @@ import {
   TouchableHighlight,
   Image,
 } from 'react-native';
-
-import styles from './styles';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 const NavBar = ({ showBack, showOption, handleBack, handleOption, children, }) => {
   return (
@@ -21,7 +20,7 @@ const NavBar = ({ showBack, showOption, handleBack, handleOption, children, }) =
           >
             <Image
               style={styles.center}
-              source={ require('../../../../assets/icons/icBack.png') }
+              source={ require('../../../assets/icons/icBack.png') }
             />
           </TouchableHighlight>
           : <View style={styles.leftMenu}/>
@@ -39,7 +38,7 @@ const NavBar = ({ showBack, showOption, handleBack, handleOption, children, }) =
           >
             <Image
               style={styles.center}
-              source={ require('../../../../assets/icons/icSetting.png') }
+              source={ require('../../../assets/icons/icSetting.png') }
             />
           </TouchableHighlight>
           : <View style={styles.rightMenu}/>
@@ -47,5 +46,41 @@ const NavBar = ({ showBack, showOption, handleBack, handleOption, children, }) =
     </View>
   );
 };
+
+const styles = EStyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    alignSelf: 'stretch',
+    borderColor: '#eee',
+  },
+  title: {
+    fontSize: '$20',
+    fontWeight: 'bold',
+  },
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  leftMenu: {
+    width: '$48',
+    height: '$48',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  rightMenu: {
+    width: '$48',
+    height: '$48',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+});
 
 export default NavBar;
