@@ -11,12 +11,13 @@ import RNIap from 'react-native-iap';
 
 import Navbar from '../shared/Navbar';
 import EStyleSheet from 'react-native-extended-stylesheet';
-// const { RNIapModule } = NativeModules;
+
+// App Bundle > com.dooboolab.test
 
 const itemSkus = {
   ios: [
-    'com.cooni.point1000',
-    'com.cooni.point5000',
+    // 'com.cooni.point1000', 'com.cooni.point5000',
+    'react.iap.consum.1000', 'react.iap.consum.500'
   ],
   android: [
 
@@ -44,9 +45,10 @@ class Page extends Component {
       // const items = await RNIap.getItems(someSkus); itemSkus
       const items = await RNIap.getItems(itemSkus);
       // console.log('items: ' + typeof (items));
-      console.log(JSON.stringify(items));
-      // console.log(typeof items, items, Object.keys(items), '  in Array :: ', Object.values(items));
-      // this.setState({ productList: Object.values(items)});
+      console.log(items); // , JSON.stringify(items));
+      // [ {price: 2.19, productId: "react.iap.consum.1000"},   //   iOS result...
+      //   {price: 1.09, productId: "react.iap.consum.500"}  ]
+      this.setState({ productList: items });
     } catch (err) {
       console.log('err');
       console.log(err);

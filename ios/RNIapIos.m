@@ -75,11 +75,17 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
     return;
   }
   
+  NSError * err;
   NSMutableArray *ids = [NSMutableArray arrayWithCapacity: count];
   // Valid Product .. send callback.
   for (int k = 0; k < count; k++) {
     SKProduct *theProd = [validProducts objectAtIndex:k];
-    [ids addObject:theProd.productIdentifier];
+    NSDictionary *dic = @{ @"productId" : theProd.productIdentifier, @"price" : theProd.price };
+    NSData * jsonData = [NSJSONSerialization dataWithJSONObject:dic options:0 error:&err];
+    NSString * myString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    [ids addObject:myString];
+    
     NSLog(@"\n\n\n Obj c >> InAppPurchase   ###  didReceiveResponse  유효 상품 Id : %@", theProd.productIdentifier);
   }
   NSLog(@"  xxx  %@", ids);
@@ -137,3 +143,4 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
 
 
 @end
+

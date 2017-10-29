@@ -6,17 +6,18 @@ const { RNIapIos, RNIapModule } = NativeModules;
 const ModuleIOS = {
   getItems(skus) {
     if (!skus.ios) {
+      console.lod('  Error skus.ios ');
       return reject(new Error('ios items are not defined. It should be defined inside param like items.ios.'));
     }
     return new Promise(function (resolve, reject) {
-      // RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodID callback:(RCTResponseSenderBlock)callback) {
       const thestr = JSON.stringify(skus.ios);
+      console.log(thestr);
       RNIapIos.fetchProducts(thestr, (err, items) => {
         if (err) {
           return reject(err);
         }
-        // return json array
-        resolve(items);
+        const objs = items.map(o => JSON.parse(o));
+        resolve(objs);
       });
     });
   },
