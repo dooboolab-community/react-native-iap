@@ -16,11 +16,10 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 const itemSkus = {
   ios: [
-    // 'com.cooni.point1000', 'com.cooni.point5000',
-    'react.iap.consum.1000', 'react.iap.consum.500'
+    'com.cooni.point1000', 'com.cooni.point5000',
   ],
   android: [
-
+    'point1000', 'point5000',
   ],
 };
 
