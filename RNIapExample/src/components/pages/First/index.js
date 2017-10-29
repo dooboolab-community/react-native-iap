@@ -51,19 +51,17 @@ class Page extends Component {
   // }
 
   getItems() {
-    RNIap.getItems(someSkus, (err, items) => {
-      if (err) {
-        console.log(`${err}`);
-        Alert.alert(`${err}`);
-        return;
-      }
-      // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
+    try {
+      const items = await RNIap.getItems(someSkus);
       console.log(typeof items, items, Object.keys(items), '  in Array :: ', Object.values(items));
       this.setState({ productList: Object.values(items)});
-    });
+    } catch (err) {
+      console.log(`${err}`);
+      Alert.alert(`${err}`);
+    }
   }
 
-  //
+
   // getOwnedItems = () => {
   //   RNIapModule.getOwnedItems(
   //     (err, items) => {
@@ -78,16 +76,15 @@ class Page extends Component {
   //   );
   // }
   buyItem(sku) {
-    RNIap.buyItem(sku, (err, receipt) => {
-      if (err) {
-        console.log(`${err}`);
-        Alert.alert(`${err}`);
-        return;
-      }
+    try {
+      const items = await RNIap.buyItem(sku);
       // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
       console.log(receipt);
       this.setState({ receipt });
-    });
+    } catch (err) {
+      console.log(`${err}`);
+      Alert.alert(`${err}`);
+    }
   }
 
   // buyItem = (sku) => {
