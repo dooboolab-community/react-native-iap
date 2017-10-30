@@ -17,7 +17,8 @@ const ModuleIOS = {
           reject(err);
           return;
         }
-        resolve(JSON.parse(items));
+        const objs = items.map(o => JSON.parse(o));
+        resolve(objs);
       });
     });
   },
