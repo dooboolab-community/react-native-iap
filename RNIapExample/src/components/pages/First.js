@@ -87,10 +87,7 @@ class Page extends Component {
           <Text style={{ fontSize: 4 }} >{receipt100}</Text>
           <NativeButton
             onPress={
-              () => this.buyItem({
-                ios: 'com.cooni.point1000',
-                android: 'point_1000',
-              })
+              () => this.buyItem(this.state.productList[0])
             }
             activeOpacity={0.5}
             style={styles.btn}
@@ -98,10 +95,7 @@ class Page extends Component {
           >Buy P1000</NativeButton>
           <NativeButton
             onPress={
-              () => this.buyItem({
-                ios: 'com.cooni.point5000',
-                android: 'android.test.purchased',
-              })
+              () => this.buyItem(this.state.productList[1])
             }
             activeOpacity={0.5}
             style={styles.btn}

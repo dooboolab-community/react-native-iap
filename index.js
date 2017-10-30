@@ -11,7 +11,6 @@ const ModuleIOS = {
     }
     return new Promise(function (resolve, reject) {
       const thestr = JSON.stringify(skus.ios);
-      console.log(thestr);
       RNIapIos.fetchProducts(thestr, (err, items) => {
         if (err) {
           return reject(err);
@@ -23,11 +22,8 @@ const ModuleIOS = {
   },
   buyItem(item) {
     return new Promise(function (resolve, reject) {
-      if (!item.ios) {
-        return reject(new Error('ios item is not defined. It should be defined inside param like item.ios.'));
-      }
       // RCT_EXPORT_METHOD(purchaseItem:(NSString *)keyJson callback:(RCTResponseSenderBlock)callback) {
-      RNIapIos.purchaseItem(item.ios, (err, purchase) => {
+      RNIapIos.purchaseItem(item, (err, purchase) => {
         if (err) {
           return reject(err);
         }
@@ -57,13 +53,8 @@ const ModuleAndroid = {
     });
   },
   buyItem(item) {
-    if (!item.android) {
-      return reject(
-        new Error('ios item is not defined. It should be defined inside param like item.ios.')
-      );
-    }
     return new Promise(function (resolve, reject) {
-      RNIapModule.buyItem(item.android, (err, purchase) => {
+      RNIapModule.buyItem(item, (err, purchase) => {
         if (err) {
           return reject(err);
         }
