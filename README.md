@@ -55,9 +55,11 @@ const itemSkus = {
 
 If you are also developing android, you should do prepareAndroid() in componentDidMount in necessary component. Then call getItems() usually.
 ```javascript
-componentDidMount = () => {
+componentDidMount = async() => {
   if (Platform.OS === 'android') {
     RNIap.prepareAndroid();
+    // if you suffer error calling getItems, you need to take more time giving setTimeout function.
+    // We will update this in furture release.
     const items = await RNIap.getItems(itemSkus);
     this.setState({ items, });
 
