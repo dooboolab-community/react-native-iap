@@ -5,18 +5,19 @@ const { RNIapIos, RNIapModule } = NativeModules;
 
 const ModuleIOS = {
   getItems(skus) {
-    if (!skus.ios) {
-      console.lod('  Error skus.ios ');
-      return reject(new Error('ios items are not defined. It should be defined inside param like items.ios.'));
-    }
     return new Promise(function (resolve, reject) {
+      if (!skus.ios) {
+        console.lod('  Error skus.ios ');
+        reject(new Error('ios items are not defined. It should be defined inside param like items.ios.'));
+        return;
+      }
       const thestr = JSON.stringify(skus.ios);
       RNIapIos.fetchProducts(thestr, (err, items) => {
         if (err) {
-          return reject(err);
+          reject(err);
+          return;
         }
-        const objs = items.map(o => JSON.parse(o));
-        resolve(objs);
+        resolve(JSON.parse(items));
       });
     });
   },
@@ -25,7 +26,8 @@ const ModuleIOS = {
       // RCT_EXPORT_METHOD(purchaseItem:(NSString *)keyJson callback:(RCTResponseSenderBlock)callback) {
       RNIapIos.purchaseItem(item, (err, purchase) => {
         if (err) {
-          return reject(err);
+          reject(err);
+          return;
         }
         // return string
         resolve(purchase);
@@ -36,15 +38,17 @@ const ModuleIOS = {
 
 const ModuleAndroid = {
   getItems(skus) {
-    if (!skus.android) {
-      return reject(new Error('android items are not defined. It should be defined inside param like items.android.'));
-    }
     return new Promise(function (resolve, reject) {
+      if (!skus.android) {
+        reject(new Error('android items are not defined. It should be defined inside param like items.android.'));
+        return;
+      }
       RNIapModule.getItems(
         JSON.stringify(skus.android),
         (err, items) => {
           if (err){
-            return reject(err);
+            reject(err);
+            return;
           }
           const parsedItems = JSON.parse(items);
           resolve(parsedItems);
@@ -56,11 +60,13 @@ const ModuleAndroid = {
     return new Promise(function (resolve, reject) {
       RNIapModule.buyItem(item, (err, purchase) => {
         if (err) {
-          return reject(err);
+          reject(err);
+          return;
         }
         RNIapModule.consumeItem(parsedItem.purchaseToken, (err, success) => {
           if (err) {
-            return reject(err);
+            reject(err);
+            return;
           }
           resolve(purchase);
         });
@@ -79,7 +85,8 @@ const ModuleAndroid = {
       RNIapModule.getOwnedItems(
         (err, items) => {
           if (err) {
-            return reject(err);
+            reject(err);
+            return;
           }
           const parsedItems = JSON.parse(items);
           resolve(parsedItems);
@@ -91,7 +98,8 @@ const ModuleAndroid = {
     return new Promise(function (resolve, reject) {
       RNIapModule.consumeItem(token, (err, success) => {
         if (err) {
-          return reject(err);
+          reject(err);
+          return;
         }
         resolve(success);
       });
