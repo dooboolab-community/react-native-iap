@@ -77,7 +77,7 @@ componentDidMount = async() => {
 Finally when you getItems with RNIap module, you can buyItem using it's api.
 ```javascript
   const receipt = await RNIap.buyItem(sku);
-  // avoid will return receipt string which can be used to validate on your server.
+  // above will return receipt string which can be used to validate on your server.
 ```
 
 In future release, we will provide the subscribe apis also.
