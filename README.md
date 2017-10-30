@@ -1,7 +1,6 @@
 
-# UNDER CONSTRUCTION!!!!!!!!
-
 # react-native-iap
+This a react-native link library project for in-app-purchase for both android and ios project. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project. However if you look inside the index.js file, you will have some more hidden android functions which won't be supported in the readme. You can look inside if you want something more in android though. Android iap is implemented with iap version 3 which is currently recent.
 
 ## Getting started
 
@@ -35,12 +34,50 @@
   	```
       compile project(':react-native-iap')
   	```
-
 ## Usage
+You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
+
+First thing you should do is to define your items for ios and android seperately like defeined below.
 ```javascript
 import RNIap from 'react-native-iap';
 
-// TODO: What to do with the module?
-RNIap;
+const itemSkus = {
+  ios: [
+    'com.cooni.point1000',
+    'com.cooni.point5000',
+  ],
+  android: [
+    'point_1000',
+    '5000_point',
+  ],
+};
 ```
-  
+
+If you are also developing android, you should do prepareAndroid() in componentDidMount in necessary component. Then call getItems() usually.
+```javascript
+componentDidMount = () => {
+  if (Platform.OS === 'android') {
+    RNIap.prepareAndroid();
+    const items = await RNIap.getItems(itemSkus);
+    this.setState({ items, });
+
+    /* 
+      Each item will have json object.
+      currently both platform have price, productId attributes.
+      ios will support currency_type attribute in near future.
+      you need productId attribute on both android and ios to buy item.
+    */
+  }
+}
+```
+
+Finally when you getItems with RNIap module, you can buyItem using it's api.
+```javascript
+  const receipt = await RNIap.buyItem(sku);
+  // avoid will return receipt string which can be used to validate on your server.
+```
+
+In future release, we will provide the subscribe apis also.
+Thanks.
+
+by JJMoon and dooboolab.
