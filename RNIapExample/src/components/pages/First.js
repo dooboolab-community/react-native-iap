@@ -5,6 +5,7 @@ import {
   Alert,
   NativeModules,
   Platform,
+  ScrollView,
 } from 'react-native';
 import NativeButton from 'apsl-react-native-button';
 import RNIap from 'react-native-iap';
@@ -30,7 +31,8 @@ class Page extends Component {
     super(props);
 
     this.state = {
-      productList: [], receipt: 'receipt',
+      productList: [],
+      receipt: '',
     };
   }
 
@@ -38,6 +40,12 @@ class Page extends Component {
     if (Platform.OS === 'android') {
       RNIap.prepareAndroid();
     }
+  }
+
+  goToNext = () => {
+    this.props.navigation.navigate('Second', {
+      receipt: this.state.receipt,
+    });
   }
 
   getItems = async() =>{
@@ -56,12 +64,13 @@ class Page extends Component {
     }
   }
 
-  async buyItem(sku) {
+  buyItem = async(sku) => {
     try {
+      console.log('buyItem: ' + sku);
       const receipt = await RNIap.buyItem(sku);
       // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
       console.log(receipt);
-      this.setState({ receipt });
+      this.setState({ receipt }, () => this.goToNext());
     } catch (err) {
       console.log(`${err}`);
       Alert.alert(`${err}`);
@@ -78,33 +87,38 @@ class Page extends Component {
           <Navbar>react-native-iap</Navbar>
         </View>
         <View style={ styles.content }>
-          <NativeButton
-            onPress={() => this.getItems()}
-            activeOpacity={0.5}
-            style={styles.btn}
-            textStyle={styles.txt}
-          >Get Items {productList.length}</NativeButton>
-          <Text style={{ fontSize: 4 }} >{receipt100}</Text>
-          <NativeButton
-            onPress={
-              this.state.productList[0]
-                ? () => this.buyItem(this.state.productList[0].productId)
-                : null
+          <ScrollView
+            style={{ alignSelf: 'stretch', }}
+          >
+            <NativeButton
+              onPress={() => this.getItems()}
+              activeOpacity={0.5}
+              style={styles.btn}
+              textStyle={styles.txt}
+            >Get Items {productList.length}</NativeButton>
+            {
+              productList.map((product, i) => {
+                return(
+                  <View key={i} style={{
+                    flexDirection: 'column',
+                  }}>
+                    <Text style={{
+                      marginTop: 20,
+                      fontSize: 12,
+                      color: 'black',
+                      alignSelf: 'center',
+                    }} >{JSON.stringify(product)}</Text>
+                    <NativeButton
+                      onPress={() => this.buyItem(product.productId)}
+                      activeOpacity={0.5}
+                      style={styles.btn}
+                      textStyle={styles.txt}
+                    >Buy Above Item</NativeButton>
+                  </View>
+                )
+              })
             }
-            activeOpacity={0.5}
-            style={styles.btn}
-            textStyle={styles.txt}
-          >Buy P1000</NativeButton>
-          <NativeButton
-            onPress={
-              this.state.productList[0]
-                ? () => this.buyItem(this.state.productList[1])
-                : null
-            }
-            activeOpacity={0.5}
-            style={styles.btn}
-            textStyle={styles.txt}
-          >Buy P5000</NativeButton>
+          </ScrollView>
         </View>
       </View>
     );

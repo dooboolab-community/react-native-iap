@@ -41,13 +41,12 @@ class Page extends Component {
           <Navbar
             showBack={true}
             handleBack={this.handleBack}
-          >SOCIAL LOGIN RESULT</Navbar>
+          >Receipt</Navbar>
         </View>
         <View style={ styles.content }>
           <ScrollView style={{ alignSelf: 'stretch', }}>
             <Text style={ styles.txtResult }>
-              AccessToken: {JSON.stringify(this.props.navigation.state.params.result, null, '\t') + '\n\n'}
-              Profile: {JSON.stringify(this.props.navigation.state.params.profileResult, null, '\t')}
+              {this.props.navigation.state.params.receipt}
             </Text>
             <NativeButton
               onPress={this.onNaverLogout}
