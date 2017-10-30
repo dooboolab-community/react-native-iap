@@ -41,11 +41,11 @@ class Page extends Component {
   }
 
   getItems = async() =>{
-    console.log('getItems');
     try {
       // const items = await RNIap.getItems(someSkus); itemSkus
       const items = await RNIap.getItems(itemSkus);
       // console.log('items: ' + typeof (items));
+      console.log('getItems');
       console.log(items); // , JSON.stringify(items));
       // [ {price: 2.19, productId: "react.iap.consum.1000"},   //   iOS result...
       //   {price: 1.09, productId: "react.iap.consum.500"}  ]
@@ -87,7 +87,9 @@ class Page extends Component {
           <Text style={{ fontSize: 4 }} >{receipt100}</Text>
           <NativeButton
             onPress={
-              () => this.buyItem(this.state.productList[0])
+              this.state.productList[0]
+                ? () => this.buyItem(this.state.productList[0].productId)
+                : null
             }
             activeOpacity={0.5}
             style={styles.btn}
@@ -95,7 +97,9 @@ class Page extends Component {
           >Buy P1000</NativeButton>
           <NativeButton
             onPress={
-              () => this.buyItem(this.state.productList[1])
+              this.state.productList[0]
+                ? () => this.buyItem(this.state.productList[1])
+                : null
             }
             activeOpacity={0.5}
             style={styles.btn}
