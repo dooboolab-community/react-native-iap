@@ -10,9 +10,9 @@
 @interface RNIapIos() {
   RCTResponseSenderBlock purchaseCallback;
   RCTResponseSenderBlock productListCB;
-  
+
   int cnt;
-  
+
   NSString * productID;
 }
 @end
@@ -50,13 +50,12 @@ RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodJsonArray callback:(RCTResponseS
 RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSenderBlock)callback) {
   RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: purchaseItem :: %@    Valid Product : %ld  \n\n\n\n .", productID, (unsigned long)validProducts.count);
   purchaseCallback = callback;
-  
+
   for (int k = 0; k < validProducts.count; k++) {
     SKProduct *theProd = [validProducts objectAtIndex:k];
     if ([productID isEqualToString:theProd.productIdentifier]) {
       NSLog(@"\n\n\n Obj c >> InAppPurchase  :: purchaseItem :: Product Found  \n\n\n.");
-      SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:theProd];
-      payment.quantity = 1;
+      SKPayment *payment = [SKPayment paymentWithProduct:theProd];
       [[SKPaymentQueue defaultQueue] addPayment:payment];
       return;
     }
@@ -69,12 +68,12 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
   validProducts = response.products;
   long count = [validProducts count];
   NSLog(@"\n\n\n Obj c >> InAppPurchase   ###  didReceiveResponse :: Valid Product Count ::  %ld", count);
-  
+
   if (count == 0) {
     productListCB(@[@"No Valid Product returned !!", [NSNull null]]);
     return;
   }
-  
+
   NSError * err;
   NSMutableArray *ids = [NSMutableArray arrayWithCapacity: count];
   // Valid Product .. send callback.
@@ -83,9 +82,9 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
     NSDictionary *dic = @{ @"productId" : theProd.productIdentifier, @"price" : theProd.price };
     NSData * jsonData = [NSJSONSerialization dataWithJSONObject:dic options:0 error:&err];
     NSString * myString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    
+
     [ids addObject:myString];
-    
+
     NSLog(@"\n\n\n Obj c >> InAppPurchase   ###  didReceiveResponse  유효 상품 Id : %@", theProd.productIdentifier);
   }
   NSLog(@"  xxx  %@", ids);
@@ -122,7 +121,7 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
 
 -(void)purchaseProcess:(SKPaymentTransaction *)trans {
   NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
-  
+
   if ([[NSFileManager defaultManager] fileExistsAtPath:[receiptUrl path]]) {
     NSData *rcptData = [NSData dataWithContentsOfURL:receiptUrl];
     NSString *rcptStr = [rcptData base64EncodedStringWithOptions:0];
@@ -138,9 +137,8 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
     //          refreshReceiptRequest.delegate = self;
     //          [refreshReceiptRequest start];
   }
-  
+
 }
 
 
 @end
-
