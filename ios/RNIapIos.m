@@ -79,7 +79,8 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
   // Valid Product .. send callback.
   for (int k = 0; k < count; k++) {
     SKProduct *theProd = [validProducts objectAtIndex:k];
-    NSDictionary *dic = @{ @"productId" : theProd.productIdentifier, @"price" : theProd.price };
+    NSDictionary *dic = @{ @"productId" : theProd.productIdentifier, @"price" : theProd.price,
+                           @"currency" : theProd.priceLocale.currencyCode };
     NSData * jsonData = [NSJSONSerialization dataWithJSONObject:dic options:0 error:&err];
     NSString * myString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 
