@@ -26,6 +26,10 @@
   return self;
 }
 
+-(void) dealloc {
+    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+}
+
 
 ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
 RCT_EXPORT_MODULE();
