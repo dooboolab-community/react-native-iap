@@ -17,8 +17,8 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 const itemSkus = {
   ios: [
-    'com.cooni.point1000',
-    'com.cooni.point5000',
+    'auto.subscript.mtt.iap', 'react.iap.consum.1000', 'react.iap.consum.500', // JWMoon
+    // 'com.cooni.point1000', 'com.cooni.point5000', // dooboolab
   ],
   android: [
     'point_1000',
