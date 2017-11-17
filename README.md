@@ -39,7 +39,9 @@ https://github.com/dooboolab/react-native-iap
 ## Usage
 You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
 
-First thing you should do is to define your items for ios and android seperately like defeined below.
+# Prepare IAP, In App Billing.
+
+First thing you should do is to define your items for iOS and android separately like defined below.
 ```javascript
 import RNIap from 'react-native-iap';
 
@@ -55,33 +57,47 @@ const itemSkus = {
 };
 ```
 
+# Get Valid Items
+
 If you are also developing android, you should do prepareAndroid() in componentDidMount in necessary component. Then call getItems() usually.
 ```javascript
-componentDidMount = async() => {
+
+componentDidMount = () => {
   if (Platform.OS === 'android') {
     RNIap.prepareAndroid();
-    // if you suffer error calling getItems, you need to take more time giving setTimeout function.
-    // We will update this in furture release.
-    const items = await RNIap.getItems(itemSkus);
-    this.setState({ items, });
-
-    /* 
-      Each item will have json object.
-      currently both platform have price, productId attributes.
-      ios will support currency_type attribute in near future.
-      you need productId attribute on both android and ios to buy item.
-    */
   }
+  // if you suffer error calling getItems, you need to take more time giving setTimeout function.
+  // We will update this in future release.
+  // Or put prepareAndroid() in componentWillMount
+  const items = await RNIap.getItems(itemSkus);
+  this.setState({ items, });
+
+  /*
+    Each item will have JSON object.
+    currently both platform have price, productId attributes.
+    iOS will support currency_type after v0.1.4
+    you need productId attribute on both android and iOS to buy item.
+  */
 }
+
 ```
+
+# Purchase
 
 Finally when you getItems with RNIap module, you can buyItem using it's api.
 ```javascript
-  const receipt = await RNIap.buyItem(sku);
+  const receipt = await RNIap.buyItem('com.cooni.point1000');
   // above will return receipt string which can be used to validate on your server.
 ```
+In RNIapExample, at receiving receipt string, main page will navigate to Second.js.
 
-In future release, we will provide the subscribe apis also.
+# Subscription
+In iOS subscripting product can be included in item object and purchased just like consumable product.
+You can cancel subscription on iOS system setting.
+
+# Todo
+iOS : restore non-consumable products via restoreCompletedTransactions()
+
 Thanks.
 
 by JJMoon and dooboolab.
