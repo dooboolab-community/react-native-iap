@@ -66,6 +66,22 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
   }
 }
 
+// hyochan add
+RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTResponseSenderBlock)callback) {
+    RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: purchaseItem :: %@    Valid Product : %ld  \n\n\n\n .", productID, (unsigned long)validProducts.count);
+    purchaseCallback = callback;
+    
+    for (int k = 0; k < validProducts.count; k++) {
+        SKProduct *theProd = [validProducts objectAtIndex:k];
+        if ([productID isEqualToString:theProd.productIdentifier]) {
+            NSLog(@"\n\n\n Obj c >> InAppPurchase  :: purchaseItem :: Product Found  \n\n\n.");
+            SKPayment *payment = [SKPayment paymentWithProduct:theProd];
+            [[SKPaymentQueue defaultQueue] addPayment:payment];
+            return;
+        }
+    }
+}
+
 #pragma mark ===== StoreKit Delegate
 
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {

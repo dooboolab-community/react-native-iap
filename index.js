@@ -34,6 +34,19 @@ const ModuleIOS = {
         resolve(purchase);
       });
     });
+  },
+  buySubscribeItem(item) {
+    return new Promise(function (resolve, reject) {
+      // RCT_EXPORT_METHOD(purchaseItem:(NSString *)keyJson callback:(RCTResponseSenderBlock)callback) {
+      RNIapIos.purchaseSubscribeItem(item, (err, purchase) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        // return string
+        resolve(purchase);
+      });
+    });
   }
 };
 
@@ -74,9 +87,28 @@ const ModuleAndroid = {
       });
     });
   },
+  buySubscribeItem(item) {
+    return new Promise(function (resolve, reject) {
+      RNIapModule.buySubscribeItem(item, (err, purchase) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(purchase);
+      });
+    });
+  },
   prepareAndroid() {
-    RNIapModule.prepare();
-    RNIapModule.refreshPurchaseItems();
+    return new Promise(function (resolve, reject) {
+      RNIapModule.prepare((err, msg) => {
+        if (err) {
+          reject (err);
+          return;
+        }
+        RNIapModule.refreshPurchaseItems();
+        resolve(msg);
+      });
+    });
   },
   refreshPurchaseItemsAndroid() {
     RNIapModule.refreshPurchaseItems();

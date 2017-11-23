@@ -5,25 +5,21 @@ This a react-native link library project for in-app-purchase for both android an
 https://github.com/dooboolab/react-native-iap
 
 ## Getting started
-
 `$ npm install react-native-iap --save`
 
 ### Mostly automatic installation
-
 `$ react-native link react-native-iap`
+
 
 ### Manual installation
 
-
 #### iOS
-
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
 2. Go to `node_modules` ➜ `react-native-iap` and add `RNIap.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libRNIap.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
 
 #### Android
-
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
   - Add `import com.reactlibrary.RNIapPackage;` to the imports at the top of the file
   - Add `new RNIapPackage()` to the list returned by the `getPackages()` method
@@ -40,7 +36,6 @@ https://github.com/dooboolab/react-native-iap
 You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
 
 # Prepare IAP, In App Billing.
-
 First thing you should do is to define your items for iOS and android separately like defined below.
 ```javascript
 import RNIap from 'react-native-iap';
@@ -58,17 +53,18 @@ const itemSkus = {
 ```
 
 # Get Valid Items
-
 If you are also developing android, you should do prepareAndroid() in componentDidMount in necessary component. Then call getItems() usually.
 ```javascript
 
-componentDidMount = () => {
+async componentDidMount() {
   if (Platform.OS === 'android') {
-    RNIap.prepareAndroid();
+    try {
+      const msg = await RNIap.prepareAndroid();
+      console.log('msg: ' + msg);
+    } catch (err) {
+      console.log('err: ' + err);
+    }
   }
-  // if you suffer error calling getItems, you need to take more time giving setTimeout function.
-  // We will update this in future release.
-  // Or put prepareAndroid() in componentWillMount
   const items = await RNIap.getItems(itemSkus);
   this.setState({ items, });
 
@@ -83,7 +79,6 @@ componentDidMount = () => {
 ```
 
 # Purchase
-
 Finally when you getItems with RNIap module, you can buyItem using it's api.
 ```javascript
   const receipt = await RNIap.buyItem('com.cooni.point1000');
@@ -92,7 +87,21 @@ Finally when you getItems with RNIap module, you can buyItem using it's api.
 In RNIapExample, at receiving receipt string, main page will navigate to Second.js.
 
 # Subscription
-In iOS subscripting product can be included in item object and purchased just like consumable product.
+```javascript
+buySubscribeItem = async(sku) => {
+  try {
+    console.log('buyItem: ' + sku);
+    const receipt = await RNIap.buyItem(sku);
+    // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
+    console.log(receipt);
+    this.setState({ receipt }, () => this.goToNext());
+  } catch (err) {
+    console.log(`${err}`);
+    Alert.alert(`${err}`);
+  }
+}
+```
+Subscribable products can be included in item object and purchased just like consumable product.
 You can cancel subscription on iOS system setting.
 
 # Todo

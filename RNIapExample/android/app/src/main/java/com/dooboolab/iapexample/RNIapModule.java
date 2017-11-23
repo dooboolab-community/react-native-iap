@@ -1,4 +1,5 @@
-package com.dooboolab.iapexample;
+
+package com.reactlibrary;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -9,6 +10,20 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.facebook.react.bridge.LifecycleEventListener;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.Callback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
@@ -21,30 +36,11 @@ import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.android.vending.billing.IInAppBillingService;
-import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Callback;
-import com.facebook.react.bridge.LifecycleEventListener;
-import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by hyochan on 2017. 10. 25..
- */
 
 public class RNIapModule extends ReactContextBaseJavaModule {
   final String TAG = "RNIapModule";
 
+  final Activity activity = getCurrentActivity();
   private Boolean prepared = false;
   private ReactContext reactContext;
   private Callback buyItemCB = null;
@@ -97,15 +93,19 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void prepare() {
+  public void prepare(final Callback cb) {
     Intent intent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
     // This is the key line that fixed everything for me
     intent.setPackage("com.android.vending");
 
-    reactContext.bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
-
-    mBillingClient = BillingClient.newBuilder(reactContext).setListener(purchasesUpdatedListener).build();
-    mBillingClient.startConnection(billingClientStateListener);
+    try {
+      reactContext.bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
+      mBillingClient = BillingClient.newBuilder(reactContext).setListener(purchasesUpdatedListener).build();
+      mBillingClient.startConnection(billingClientStateListener);
+      cb.invoke(null, "IAP prepared");
+    } catch (Exception e) {
+      cb.invoke(e.getMessage(), null);
+    }
   }
 
   @ReactMethod
@@ -127,37 +127,36 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
       params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
       mBillingClient.querySkuDetailsAsync(params.build(),
-        new SkuDetailsResponseListener() {
-          @Override
-          public void onSkuDetailsResponse(int responseCode, List<SkuDetails> skuDetailsList) {
-            Log.d(TAG, "responseCode: " + responseCode);
-            Log.d(TAG, skuDetailsList.toString());
+          new SkuDetailsResponseListener() {
+            @Override
+            public void onSkuDetailsResponse(int responseCode, List<SkuDetails> skuDetailsList) {
+              Log.d(TAG, "responseCode: " + responseCode);
+              Log.d(TAG, skuDetailsList.toString());
 
-            JSONArray jsonResponse = new JSONArray();
-            try {
-              for (SkuDetails skuDetails : skuDetailsList) {
-                JSONObject json = new JSONObject();
-                json.put("productId", skuDetails.getSku());
-                json.put("type", skuDetails.getType());
-                json.put("price", skuDetails.getPrice());
-                json.put("price_currency", skuDetails.getPriceCurrencyCode());
-                json.put("title", skuDetails.getTitle());
-                json.put("description", skuDetails.getDescription());
-                jsonResponse.put(json);
+              JSONArray jsonResponse = new JSONArray();
+              try {
+                for (SkuDetails skuDetails : skuDetailsList) {
+                  JSONObject json = new JSONObject();
+                  json.put("productId", skuDetails.getSku());
+                  json.put("type", skuDetails.getType());
+                  json.put("price", skuDetails.getPrice());
+                  json.put("price_currency", skuDetails.getPriceCurrencyCode());
+                  json.put("title", skuDetails.getTitle());
+                  json.put("description", skuDetails.getDescription());
+                  jsonResponse.put(json);
+                }
+              } catch (JSONException je) {
+                cb.invoke(je.getMessage(), null);
+                return;
               }
-            } catch (JSONException je) {
-              cb.invoke(je.getMessage(), null);
-              return;
+              cb.invoke(null, jsonResponse.toString());
             }
-            cb.invoke(null, jsonResponse.toString());
           }
-        }
       );
     } catch (JSONException je) {
       cb.invoke(je.getMessage(), null);
     }
   }
-
 
   @ReactMethod
   public void buyItem(String id_item, Callback cb) {
@@ -166,7 +165,20 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         .setType(BillingClient.SkuType.INAPP)
         .build();
 
-    int responseCode = mBillingClient.launchBillingFlow(reactContext.getCurrentActivity(), flowParams);
+    int responseCode = mBillingClient.launchBillingFlow(getCurrentActivity(), flowParams);
+    Log.d(TAG, "buyItem responseCode: " + responseCode);
+
+    buyItemCB = cb;
+  }
+
+  @ReactMethod
+  public void buySubscribeItem(String id_item, Callback cb) {
+    BillingFlowParams flowParams = BillingFlowParams.newBuilder()
+        .setSku(id_item)
+        .setType(BillingClient.SkuType.SUBS)
+        .build();
+
+    int responseCode = mBillingClient.launchBillingFlow(getCurrentActivity(), flowParams);
     Log.d(TAG, "buyItem responseCode: " + responseCode);
 
     buyItemCB = cb;
@@ -247,15 +259,15 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     mBillingClient.consumeAsync(token, new ConsumeResponseListener() {
       @Override
       public void onConsumeResponse(@BillingClient.BillingResponse int responseCode, String outToken) {
-      if (responseCode == BillingClient.BillingResponse.OK) {
-        // Handle the success of the consume operation.
-        // For example, increase the number of coins inside the user's basket.
-        Log.d(TAG, "consume responseCode: " + responseCode);
+        if (responseCode == BillingClient.BillingResponse.OK) {
+          // Handle the success of the consume operation.
+          // For example, increase the number of coins inside the user's basket.
+          Log.d(TAG, "consume responseCode: " + responseCode);
 
-        cb.invoke(null, true);
-        return;
-      }
-      cb.invoke(null, false);
+          cb.invoke(null, true);
+          return;
+        }
+        cb.invoke(null, false);
       }
     });
   }

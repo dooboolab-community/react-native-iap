@@ -36,9 +36,10 @@ class Page extends Component {
     };
   }
 
-  componentDidMount = () => {
+  async componentDidMount(){
     if (Platform.OS === 'android') {
-      RNIap.prepareAndroid();
+      const msg = await RNIap.prepareAndroid();
+      console.log('msg: ' + msg);
     }
   }
 
@@ -65,6 +66,19 @@ class Page extends Component {
   }
 
   buyItem = async(sku) => {
+    try {
+      console.log('buyItem: ' + sku);
+      const receipt = await RNIap.buyItem(sku);
+      // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
+      console.log(receipt);
+      this.setState({ receipt }, () => this.goToNext());
+    } catch (err) {
+      console.log(`${err}`);
+      Alert.alert(`${err}`);
+    }
+  }
+
+  buySubscribeItem = async(sku) => {
     try {
       console.log('buyItem: ' + sku);
       const receipt = await RNIap.buyItem(sku);

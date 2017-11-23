@@ -1,6 +1,7 @@
 
 package com.reactlibrary;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,7 @@ import com.android.vending.billing.IInAppBillingService;
 public class RNIapModule extends ReactContextBaseJavaModule {
   final String TAG = "RNIapModule";
 
+  final Activity activity = getCurrentActivity();
   private Boolean prepared = false;
   private ReactContext reactContext;
   private Callback buyItemCB = null;
@@ -91,15 +93,19 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void prepare() {
+  public void prepare(final Callback cb) {
     Intent intent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
     // This is the key line that fixed everything for me
     intent.setPackage("com.android.vending");
 
-    reactContext.bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
-
-    mBillingClient = BillingClient.newBuilder(reactContext).setListener(purchasesUpdatedListener).build();
-    mBillingClient.startConnection(billingClientStateListener);
+    try {
+      reactContext.bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
+      mBillingClient = BillingClient.newBuilder(reactContext).setListener(purchasesUpdatedListener).build();
+      mBillingClient.startConnection(billingClientStateListener);
+      cb.invoke(null, "IAP prepared");
+    } catch (Exception e) {
+      cb.invoke(e.getMessage(), null);
+    }
   }
 
   @ReactMethod
@@ -152,7 +158,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     }
   }
 
-
   @ReactMethod
   public void buyItem(String id_item, Callback cb) {
     BillingFlowParams flowParams = BillingFlowParams.newBuilder()
@@ -160,7 +165,20 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         .setType(BillingClient.SkuType.INAPP)
         .build();
 
-    int responseCode = mBillingClient.launchBillingFlow(reactContext.getCurrentActivity(), flowParams);
+    int responseCode = mBillingClient.launchBillingFlow(getCurrentActivity(), flowParams);
+    Log.d(TAG, "buyItem responseCode: " + responseCode);
+
+    buyItemCB = cb;
+  }
+
+  @ReactMethod
+  public void buySubscribeItem(String id_item, Callback cb) {
+    BillingFlowParams flowParams = BillingFlowParams.newBuilder()
+        .setSku(id_item)
+        .setType(BillingClient.SkuType.SUBS)
+        .build();
+
+    int responseCode = mBillingClient.launchBillingFlow(getCurrentActivity(), flowParams);
     Log.d(TAG, "buyItem responseCode: " + responseCode);
 
     buyItemCB = cb;
