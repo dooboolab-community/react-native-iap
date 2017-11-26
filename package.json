@@ -1,9 +1,9 @@
-
 {
   "name": "react-native-iap",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "",
   "main": "index.js",
+  "postinstall": "node node_modules/dooboolab-welcome/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +15,12 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
+  },
+  "dependencies": {
+    "chalk": "^2.3.0",
+    "shelljs": "^0.7.8"
+  },
+  "devDependencies": {
+    "dooboolab-welcome": "^1.0.0"
   }
 }
