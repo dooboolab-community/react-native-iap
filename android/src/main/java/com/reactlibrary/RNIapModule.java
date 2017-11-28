@@ -41,7 +41,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   final String TAG = "RNIapModule";
 
   final Activity activity = getCurrentActivity();
-  private Boolean prepared = false;
   private ReactContext reactContext;
   private Callback buyItemCB = null;
   private IInAppBillingService mService;
@@ -110,7 +109,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void getItems(String items, final Callback cb) {
-    if (!prepared || mService == null) {
+    if (mService == null) {
       cb.invoke("IAP not prepared. Please restart your app again.", null);
       return;
     }
@@ -186,7 +185,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void getOwnedItems(final Callback cb) {
-    if (!prepared || mService == null) {
+    if (mService == null) {
       cb.invoke("IAP not prepared. Please restart your app again.", null);
       return;
     }
@@ -251,7 +250,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void consumeItem(String token, final Callback cb) {
-    if (!prepared || mService == null) {
+    if (mService == null) {
       cb.invoke("IAP not prepared. Please restart your app again.", null);
       return;
     }
@@ -278,7 +277,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       if (billingResponseCode == BillingClient.BillingResponse.OK) {
         // The billing client is ready.
         Log.d(TAG, "billing client ready");
-        prepared = true;
       }
     }
     @Override
@@ -286,7 +284,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       // Try to restart the connection on the next request to
       // Google Play by calling the startConnection() method.
       Log.d(TAG, "billing client disconnected");
-      prepared = false;
       mBillingClient.startConnection(this);
     }
   };
