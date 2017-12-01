@@ -35,6 +35,9 @@ https://github.com/dooboolab/react-native-iap
 ## Usage
 You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
 
+# Updates
+* prepareAndroid() function is deprecated! You should use prepare() instead. See the updated exple below.
+
 # Prepare IAP, In App Billing.
 First thing you should do is to define your items for iOS and android separately like defined below.
 ```javascript
@@ -53,18 +56,12 @@ const itemSkus = {
 ```
 
 # Get Valid Items
-If you are also developing android, you should do prepareAndroid() in componentDidMount in necessary component. Then call getItems() usually.
+You should do prepare() in componentDidMount in necessary component.
+Then call getItems().
 ```javascript
-
 async componentDidMount() {
-  if (Platform.OS === 'android') {
-    try {
-      const msg = await RNIap.prepareAndroid();
-      console.log('msg: ' + msg);
-    } catch (err) {
-      console.log('err: ' + err);
-    }
-  }
+  const msg = await RNIap.prepare();
+  console.log('msg: ' + msg);
   const items = await RNIap.getItems(itemSkus);
   this.setState({ items, });
 
@@ -75,7 +72,6 @@ async componentDidMount() {
     you need productId attribute on both android and iOS to buy item.
   */
 }
-
 ```
 
 # Purchase

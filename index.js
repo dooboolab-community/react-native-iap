@@ -4,6 +4,12 @@ import { NativeModules, Platform } from 'react-native';
 const { RNIapIos, RNIapModule } = NativeModules;
 
 const ModuleIOS = {
+  prepare() {
+    return new Promise(function (resolve, reject) {
+      const msg = 'ios do not need to prepare. Skip.';
+      resolve(msg);
+    });
+  },
   getItems(skus) {
     return new Promise(function (resolve, reject) {
       if (!skus.ios) {
@@ -77,7 +83,7 @@ const ModuleAndroid = {
           reject(err);
           return;
         }
-        RNIapModule.consumeItem(parsedItem.purchaseToken, (err, success) => {
+        RNIapModule.consumeItem(purchase.purchaseToken, (err, success) => {
           if (err) {
             reject(err);
             return;
@@ -98,7 +104,7 @@ const ModuleAndroid = {
       });
     });
   },
-  prepareAndroid() {
+  prepare() {
     return new Promise(function (resolve, reject) {
       RNIapModule.prepare((err, msg) => {
         if (err) {

@@ -42,6 +42,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   final Activity activity = getCurrentActivity();
   private ReactContext reactContext;
+  private Callback prepareCB = null;
   private Callback buyItemCB = null;
   private IInAppBillingService mService;
   private BillingClient mBillingClient;
@@ -96,14 +97,14 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     Intent intent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
     // This is the key line that fixed everything for me
     intent.setPackage("com.android.vending");
+    prepareCB = cb;
 
     try {
       reactContext.bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
       mBillingClient = BillingClient.newBuilder(reactContext).setListener(purchasesUpdatedListener).build();
       mBillingClient.startConnection(billingClientStateListener);
-      cb.invoke(null, "IAP prepared");
     } catch (Exception e) {
-      cb.invoke(e.getMessage(), null);
+      prepareCB.invoke(e.getMessage(), null);
     }
   }
 
@@ -228,20 +229,21 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void refreshPurchaseItems() {
     try {
-      Bundle ownedItems = mService.getPurchases(3, reactContext.getPackageName(), "inapp", null);
-      int response = ownedItems.getInt("RESPONSE_CODE");
-      if (response == 0) {
-        ArrayList
-            purchaseDataList = ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-        String[] tokens = new String[purchaseDataList.size()];
-        for (int i = 0; i < purchaseDataList.size(); ++i) {
-          String purchaseData = (String) purchaseDataList.get(i);
-          JSONObject jo = new JSONObject(purchaseData);
-          tokens[i] = jo.getString("purchaseToken");
-          mService.consumePurchase(3, reactContext.getPackageName(), tokens[i]);
+      if (mService != null) {
+        Bundle ownedItems = mService.getPurchases(3, reactContext.getPackageName(), "inapp", null);
+        int response = ownedItems.getInt("RESPONSE_CODE");
+        if (response == 0) {
+          ArrayList
+              purchaseDataList = ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+          String[] tokens = new String[purchaseDataList.size()];
+          for (int i = 0; i < purchaseDataList.size(); ++i) {
+            String purchaseData = (String) purchaseDataList.get(i);
+            JSONObject jo = new JSONObject(purchaseData);
+            tokens[i] = jo.getString("purchaseToken");
+            mService.consumePurchase(3, reactContext.getPackageName(), tokens[i]);
+          }
         }
       }
-
       // 토큰을 모두 컨슘했으니 구매 메서드 처리
     } catch (Exception e) {
       e.printStackTrace();
@@ -277,6 +279,13 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       if (billingResponseCode == BillingClient.BillingResponse.OK) {
         // The billing client is ready.
         Log.d(TAG, "billing client ready");
+        if (prepareCB != null) {
+          prepareCB.invoke(null, "IAP prepared");
+          return;
+        }
+      }
+      if (prepareCB != null) {
+        prepareCB.invoke("IAP not prepared. Please try again.", null);
       }
     }
     @Override
@@ -297,7 +306,8 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         Log.d(TAG, purchases.toString());
 
         if (buyItemCB != null) {
-          buyItemCB.invoke(null, purchases.get(0).toString());
+          Log.d(TAG, "return : " + purchases.get(0).getOriginalJson());
+          buyItemCB.invoke(null, purchases.get(0).getOriginalJson());
           buyItemCB = null;
         }
       }
