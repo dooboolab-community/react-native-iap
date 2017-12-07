@@ -1,5 +1,30 @@
+<p align="center">
+  React Native In App Purchase
+</p>
+
+<p align="center">
+  <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square"></a>
+  <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square"></a>
+  <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square"></a>
+</p>
+
 # react-native-iap
 This a react-native link library project for in-app-purchase for both android and ios project. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project. However if you look inside the index.js file, you will have some more hidden android functions which won't be supported in the readme. You can look inside if you want something more in android though. Android iap is implemented with iap version 3 which is currently recent.
+
+## Changelogs
+- **[0.1.10]**
+  + Updated Readme.
+- **[0.1.9]**
+  + Fixed potential bug relied on preparing IAP module in Android. Updated readme to see how to use it.
+  + prepareAndroid() function is deprecated. Use prepare() instead.
+
+#### Methods
+| Func  | Param  | Return | Description |
+| :------------ |:---------------:| :---------------:| :-----|
+| prepare |  | `Promise` | Prepare IAP module. |
+| getItems | { android: [], ios: [] } | `Promise` | get purchasable items in array. |
+| buyItem | `string` | `Promise` | Purchase item. |
+| buySubscribeItem | `string` | `Promise` | Subscribe item. |
 
 # Git repo
 https://github.com/dooboolab/react-native-iap
