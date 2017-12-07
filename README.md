@@ -1,14 +1,9 @@
-<p align="center">
-  React Native In App Purchase
-</p>
-
-<p align="center">
+# react-native-iap
+<p align="left">
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square"></a>
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square"></a>
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square"></a>
 </p>
-
-# react-native-iap
 This a react-native link library project for in-app-purchase for both android and ios project. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project. However if you look inside the index.js file, you will have some more hidden android functions which won't be supported in the readme. You can look inside if you want something more in android though. Android iap is implemented with iap version 3 which is currently recent.
 
 ## Changelogs
@@ -26,15 +21,16 @@ This a react-native link library project for in-app-purchase for both android an
 | buyItem | `string` | `Promise` | Purchase item. |
 | buySubscribeItem | `string` | `Promise` | Subscribe item. |
 
-# Git repo
+
+## Git repo
 https://github.com/dooboolab/react-native-iap
+
 
 ## Getting started
 `$ npm install react-native-iap --save`
 
 ### Mostly automatic installation
 `$ react-native link react-native-iap`
-
 
 ### Manual installation
 
