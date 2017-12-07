@@ -56,10 +56,7 @@ https://github.com/dooboolab/react-native-iap
 ## Usage
 You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
 
-# Updates
-* prepareAndroid() function is deprecated! You should use prepare() instead. See the updated exple below.
-
-# Prepare IAP, In App Billing.
+## Prepare IAP, In App Billing.
 First thing you should do is to define your items for iOS and android separately like defined below.
 ```javascript
 import RNIap from 'react-native-iap';
@@ -76,7 +73,7 @@ const itemSkus = {
 };
 ```
 
-# Get Valid Items
+## Get Valid Items
 You should do prepare() in componentDidMount in necessary component.
 Then call getItems().
 ```javascript
@@ -95,7 +92,7 @@ async componentDidMount() {
 }
 ```
 
-# Purchase
+## Purchase
 Finally when you getItems with RNIap module, you can buyItem using it's api.
 ```javascript
   const receipt = await RNIap.buyItem('com.cooni.point1000');
@@ -103,7 +100,7 @@ Finally when you getItems with RNIap module, you can buyItem using it's api.
 ```
 In RNIapExample, at receiving receipt string, main page will navigate to Second.js.
 
-# Subscription
+## Subscription
 ```javascript
 buySubscribeItem = async(sku) => {
   try {
@@ -121,7 +118,7 @@ buySubscribeItem = async(sku) => {
 Subscribable products can be included in item object and purchased just like consumable product.
 You can cancel subscription on iOS system setting.
 
-# Todo
+## Todo
 iOS : restore non-consumable products via restoreCompletedTransactions()
 
 Thanks.
