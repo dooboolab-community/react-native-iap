@@ -82,16 +82,21 @@ async componentDidMount() {
   const items = await RNIap.getItems(itemSkus);
   this.setState({ items, });
 
-  /*
-    Each item will have JSON object.
-    currently both platform have price, localizedPrice, productId attributes.
-    iOS will support currency_type after v0.1.4
-    you need productId attribute on both android and iOS to buy item.
-    - Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols.
-    - price will return localizedPrice on Android (default), or a decimal point number on iOS (default)
-  */
+  // iOS will support currency_type after v0.1.4
 }
 ```
+#### Each item is a JavaScript object containing these keys:
+|    | ios | android | info |
+|----|-----|---------|------|
+|price| ✓ | ✓ | will return localizedPrice on Android (default), or a decimal point number on iOS (default) |
+|productId| ✓ | ✓ | returns a string needed to purchase the item later |
+|currency| ✓ | ✓ | returns the currency code |
+|localizedPrice| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
+|title| ✓ | ✓ | returns the title Android and localizedTitle on iOS |
+|description| ✓ | ✓ | returns the description on Android and localizedDescription on iOS |
+|type|  | ✓ | returns SKU type |
+|price_currency|  | ✓ | same as currency, but left in here to not break any code users may have written before |
+
 
 ## Purchase
 Finally when you getItems with RNIap module, you can buyItem using it's api.
