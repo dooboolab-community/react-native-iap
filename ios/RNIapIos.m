@@ -106,8 +106,8 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
     NSDictionary *dic = @{ @"productId" : theProd.productIdentifier,
                            @"price" : theProd.price,
                            @"currency" : theProd.priceLocale.currencyCode,
-                           @"localizedTitle" : theProd.localizedTitle,
-                           @"localizedDescription" : theProd.localizedDescription,
+                           @"title" : theProd.localizedTitle,
+                           @"description" : theProd.localizedDescription,
                            @"localizedPrice" : localizedPrice
                            };
     
