@@ -140,6 +140,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
                   json.put("productId", skuDetails.getSku());
                   json.put("type", skuDetails.getType());
                   json.put("price", skuDetails.getPrice());
+                  json.put("localizedPrice", skuDetails.getPrice());
                   json.put("price_currency", skuDetails.getPriceCurrencyCode());
                   json.put("title", skuDetails.getTitle());
                   json.put("description", skuDetails.getDescription());
