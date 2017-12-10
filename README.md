@@ -84,9 +84,11 @@ async componentDidMount() {
 
   /*
     Each item will have JSON object.
-    currently both platform have price, productId attributes.
+    currently both platform have price, localizedPrice, productId attributes.
     iOS will support currency_type after v0.1.4
     you need productId attribute on both android and iOS to buy item.
+    - Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols.
+    - price will return localizedPrice on Android (default), or a decimal point number on iOS (default)
   */
 }
 ```
