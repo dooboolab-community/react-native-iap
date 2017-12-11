@@ -34,6 +34,14 @@
 ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
 RCT_EXPORT_MODULE();
 
+RCT_EXPORT_METHOD(fetchHistory:(RCTResponseSenderBlock)callback) {
+  RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: fetchHistory \n\n\n\n .");
+  
+  SKReceiptRefreshRequest *request = [[SKReceiptRefreshRequest alloc] init];
+  request.delegate = self;
+  [request start];
+}
+
 RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodJsonArray callback:(RCTResponseSenderBlock)callback) {
   RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: fetchProducts \n\n\n\n .");
   productListCB = callback;
@@ -138,6 +146,10 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
         break;
     }
   }
+}
+
+-(void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
+  NSLog(@"  paymentQueueRestoreCompletedTransactionsFinished  ");
 }
 
 -(void)purchaseProcess:(SKPaymentTransaction *)trans {
