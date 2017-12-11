@@ -10,6 +10,10 @@ const ModuleIOS = {
       resolve(msg);
     });
   },
+  fetchHistory() {
+    console.log(' module : fetch history ');
+
+  },
   getItems(skus) {
     return new Promise(function (resolve, reject) {
       if (!skus.ios) {

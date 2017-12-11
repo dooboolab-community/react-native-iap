@@ -91,6 +91,16 @@ class Page extends Component {
     }
   }
 
+  fetchHistory = async() => {
+    try {
+      console.log('  fetch history ', RNIap);
+      RNIap.fetchHistory();
+    } catch(err) {
+      console.log(`${err}`);
+      Alert.alert(`${err}`);
+    }
+  }
+
   render() {
     const { productList, receipt } = this.state;
     const receipt100 = receipt.substring(0, 100);
@@ -104,6 +114,12 @@ class Page extends Component {
           <ScrollView
             style={{ alignSelf: 'stretch', }}
           >
+            <NativeButton
+              onPress={() => this.fetchHistory()}
+              activeOpacity={0.5}
+              style={styles.btn}
+              textStyle={styles.txt}
+            >Fetch Transactions</NativeButton>
             <NativeButton
               onPress={() => this.getItems()}
               activeOpacity={0.5}
