@@ -138,8 +138,10 @@ public class RNIapModule extends ReactContextBaseJavaModule {
                 for (SkuDetails skuDetails : skuDetailsList) {
                   JSONObject json = new JSONObject();
                   json.put("productId", skuDetails.getSku());
-                  json.put("type", skuDetails.getType());
                   json.put("price", skuDetails.getPrice());
+                  json.put("currency", skuDetails.getPriceCurrencyCode());
+                  json.put("type", skuDetails.getType());
+                  json.put("localizedPrice", skuDetails.getPrice());
                   json.put("price_currency", skuDetails.getPriceCurrencyCode());
                   json.put("title", skuDetails.getTitle());
                   json.put("description", skuDetails.getDescription());

@@ -82,14 +82,21 @@ async componentDidMount() {
   const items = await RNIap.getItems(itemSkus);
   this.setState({ items, });
 
-  /*
-    Each item will have JSON object.
-    currently both platform have price, productId attributes.
-    iOS will support currency_type after v0.1.4
-    you need productId attribute on both android and iOS to buy item.
-  */
+  // iOS will support currency_type after v0.1.4
 }
 ```
+#### Each item is a JavaScript object containing these keys:
+|    | ios | android | info |
+|----|-----|---------|------|
+|price| ✓ | ✓ | will return localizedPrice on Android (default), or a decimal point number on iOS (default) |
+|productId| ✓ | ✓ | returns a string needed to purchase the item later |
+|currency| ✓ | ✓ | returns the currency code |
+|localizedPrice| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
+|title| ✓ | ✓ | returns the title Android and localizedTitle on iOS |
+|description| ✓ | ✓ | returns the description on Android and localizedDescription on iOS |
+|type|  | ✓ | returns SKU type |
+|price_currency|  | ✓ | same as currency, but left in here to not break any code users may have written before |
+
 
 ## Purchase
 Finally when you getItems with RNIap module, you can buyItem using it's api.
@@ -98,6 +105,34 @@ Finally when you getItems with RNIap module, you can buyItem using it's api.
   // above will return receipt string which can be used to validate on your server.
 ```
 In RNIapExample, at receiving receipt string, main page will navigate to Second.js.
+
+## Purchase Example 2 (Advanced)
+```javascript
+this.setState({progressTitle:"Please wait..."});
+RNIap.buyItem('com.cooni.point1000').then(receipt=>{
+    this.setState({
+      receipt:receipt, // save the receipt if you need it, whether locally, or to your server.
+      progressTitle:"Purchase Successful!",
+      points:this.state.points + 1000
+    });
+  }).catch(error=>{
+    // resetting UI
+    this.setState({progressTitle:"Buy 1000 Points for only $0.99"})
+    if (Platform.OS == 'ios') {
+      if (error.code == 2) {
+        // ios error.code 2 means that the user cancelled. No need to alert them. Just reset the UI.
+      } else {
+        // ios error.description gives a so-so English description of the error that the user should be able to understand.
+        // You could also give your own descriptions based on error.code instead:  
+        // https://developer.apple.com/documentation/storekit/skerror.code
+        alert(error.description)
+      }
+    } else {
+      // haven't added specific error handling yet for android. todo.
+      alert("Purchase Unsuccessful");
+    }
+  })
+```
 
 ## Subscription
 ```javascript
