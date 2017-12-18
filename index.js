@@ -135,12 +135,14 @@ const ModuleAndroid = {
       });
     });
   },
-  refreshPurchaseItemsAndroid() {
-    RNIapModule.refreshPurchaseItems();
+  refreshPurchaseItemsAndroid(type) {
+    // Noramlly put null on type. If you want to fetch subscriptions item put 'SUBS' in type param
+    RNIapModule.refreshPurchaseItems(type);
   },
-  getPurchasedItemsAndroid() {
+  getPurchasedItemsAndroid(type) {
+    // Noramlly put null on type. If you want to fetch subscriptions item put 'SUBS' in type param
     return new Promise(function (resolve, reject) {
-      RNIapModule.getOwnedItems(
+      RNIapModule.getOwnedItems(type,
         (err, items) => {
           if (err) {
             reject(err);
