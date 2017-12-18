@@ -94,7 +94,7 @@ class Page extends Component {
   fetchHistory = async() => {
     try {
       console.log('  fetch history ', RNIap);
-      RNIap.fetchHistory();
+      const rslts = await RNIap.fetchHistory();
     } catch(err) {
       console.log(`${err}`);
       Alert.alert(`${err}`);
