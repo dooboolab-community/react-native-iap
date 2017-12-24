@@ -72,6 +72,30 @@ const itemSkus = {
 };
 ```
 
+Next, call the prepare function (ios it's not needed, but android it is. No need to check platform though since nothing will happen in ios:
+
+```javascript
+RNIap.prepare().then(message=>{
+  // Ready to call RNIap.getItems()
+}).catch(errorCode=>{
+  // Depending on the situation, Android will have a different error code. Handle accordingly. Visit the link below for current info
+  // https://developer.android.com/reference/com/android/billingclient/api/BillingClient.BillingResponse.html
+  /*
+    -2: FEATURE_NOT_SUPPORTED
+    -1: SERVICE_DISCONNECTED
+    0: SUCCESS (should never be successful since only errors are caught)
+    1: USER_CANCELED
+    2: SERVICE_UNAVAILABLE
+    3: BILLING_UNAVAILABLE
+    4: ITEM_UNAVAILABLE
+    5: DEVELOPER_ERROR
+    6: ERROR
+    7: ITEM_ALREADY_OWNED
+    8: ITEM_NOT_OWNED
+  */
+})
+```
+
 ## Get Valid Items
 You should do prepare() in componentDidMount in necessary component.
 Then call getItems().
