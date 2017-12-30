@@ -17,8 +17,8 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 const itemSkus = {
   ios: [
-    'auto.subscript.mtt.iap', 'react.iap.consum.1000', 'react.iap.consum.500', // JWMoon
-    // 'com.cooni.point1000', 'com.cooni.point5000', // dooboolab
+    // 'auto.subscript.mtt.iap', 'react.iap.consum.1000', 'react.iap.consum.500', // JWMoon
+    'com.cooni.point1000', 'com.cooni.point5000', // dooboolab
   ],
   android: [
     'point_1000',
@@ -95,6 +95,7 @@ class Page extends Component {
     try {
       console.log('  fetch history ', RNIap);
       const rslts = await RNIap.fetchHistory();
+      console.log(rslts);
     } catch(err) {
       console.log(`${err}`);
       Alert.alert(`${err}`);
@@ -112,10 +113,11 @@ class Page extends Component {
         </View>
         <View style={ styles.content }>
           <ScrollView
-            style={{ alignSelf: 'stretch', }}
+            style={{ alignSelf: 'stretch' }}
           >
+            <View style={{ height: 50 }} />
             <NativeButton
-              onPress={() => this.fetchHistory()}
+              onPress={this.fetchHistory}
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
