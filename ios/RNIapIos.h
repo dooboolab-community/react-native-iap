@@ -14,3 +14,5 @@
 }
 @end
   
+// Restoring Purchased Products : https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StoreKitGuide/Chapters/Restoring.html#//apple_ref/doc/uid/TP40008267-CH8-SW9
+

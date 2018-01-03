@@ -163,9 +163,17 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
         NSLog(@"\n\n\n\n\n Purchase Successful !! \n\n\n\n\n.");
         [self purchaseProcess:transaction];
         break;
-      case SKPaymentTransactionStateRestored:
+      case SKPaymentTransactionStateRestored: // 기존 구매한 아이템 복구..
         NSLog(@"Restored ");
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+        if (historyCB) {
+          historyCB(@[
+                        @{@"code":[NSString stringWithFormat:@"%i", (int)transaction.error.code],
+                          @"description":[self englishErrorCodeDescription:(int)transaction.error.code]}
+                        ]);
+          historyCB = nil;
+        }
+            
         break;
       case SKPaymentTransactionStateFailed:
         NSLog(@"\n\n\n\n\n\n Purchase Failed  !! \n\n\n\n\n");
