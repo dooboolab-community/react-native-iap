@@ -5,6 +5,11 @@
 </p>
 This a react-native link library project for in-app-purchase for both android and ios project. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project. However if you look inside the index.js file, you will have some more hidden android functions which won't be supported in the readme. You can look inside if you want something more in android though. Android iap is implemented with iap version 3 which is currently recent.
 
+## Important
+Please try react-native-iap@0.1.8 when ios is not working properly. Sorry that this module is still under development.
+It mostly works fine in version 0.1.8 except distinguishing Non-consumable & consumable products.
+We are working on it right now.
+
 ## Changelogs
 - **[0.1.10]**
   + Updated Readme.
