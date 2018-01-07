@@ -109,7 +109,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void getItems(String items, final Callback cb) {
+  public void getItems(String items, String type, final Callback cb) {
     if (mService == null) {
       cb.invoke("IAP not prepared. Please restart your app again.", null);
       return;
@@ -124,8 +124,13 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         skuList.add(str);
       }
 
+      String skuType = BillingClient.SkuType.INAPP;
+      if (type != null && type.equals("SUBS")) {
+        skuType = BillingClient.SkuType.SUBS;
+      }
       SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
-      params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
+      params.setSkusList(skuList).setType(skuType);
+      
       mBillingClient.querySkuDetailsAsync(params.build(),
           new SkuDetailsResponseListener() {
             @Override
