@@ -151,8 +151,7 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
 }
 
 -(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
-
-  historyCB(@[[NSNull null], transactions]);
+  if (historyCB) historyCB(@[[NSNull null], transactions]);
 
   for (SKPaymentTransaction *transaction in transactions) {
     switch (transaction.transactionState) {
