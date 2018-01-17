@@ -130,7 +130,7 @@ const ModuleAndroid = {
           reject (err);
           return;
         }
-        RNIapModule.refreshPurchaseItems();
+        RNIapModule.refreshPurchaseItems(null);
         resolve(msg);
       });
     });
