@@ -76,7 +76,7 @@ const ModuleIOS = {
 };
 
 const ModuleAndroid = {
-  getItems(skus) {
+  getItems(skus, type) {
     return new Promise(function (resolve, reject) {
       if (!skus.android) {
         reject(new Error('android items are not defined. It should be defined inside param like items.android.'));
@@ -84,6 +84,7 @@ const ModuleAndroid = {
       }
       RNIapModule.getItems(
         JSON.stringify(skus.android),
+        type,
         (err, items) => {
           if (err){
             reject(err);

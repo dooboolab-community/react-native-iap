@@ -21,10 +21,11 @@ We are working on it right now.
 | Func  | Param  | Return | Description |
 | :------------ |:---------------:| :---------------:| :-----|
 | prepare |  | `Promise` | Prepare IAP module. |
-| getItems | { android: [], ios: [] } | `Promise` | get purchasable items in array. |
+| getItems | { android: [], ios: [], type } | `Promise` | get purchasable items in array. |
 | buyItem | `string` | `Promise` | Purchase item. |
 | buySubscribeItem | `string` | `Promise` | Subscribe item. |
 
+Android: In getItems([], type), type should be null for purchase items and 'SUBS' for subscription items.
 
 ## Git repo
 https://github.com/dooboolab/react-native-iap
