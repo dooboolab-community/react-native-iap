@@ -161,6 +161,58 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getSubItems(String items, final Callback cb) {
+    if (mService == null) {
+      cb.invoke("IAP not prepared. Please restart your app again.", null);
+      return;
+    }
+
+    try {
+      JSONArray jsonArray = new JSONArray(items);
+      ArrayList<String> skuList = new ArrayList<> ();
+
+      for (int i = 0; i < jsonArray.length(); i++) {
+        String str = jsonArray.get(i).toString();
+        skuList.add(str);
+      }
+
+      SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+      params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS);
+      mBillingClient.querySkuDetailsAsync(params.build(),
+          new SkuDetailsResponseListener() {
+            @Override
+            public void onSkuDetailsResponse(int responseCode, List<SkuDetails> skuDetailsList) {
+              Log.d(TAG, "responseCode: " + responseCode);
+              Log.d(TAG, skuDetailsList.toString());
+
+              JSONArray jsonResponse = new JSONArray();
+              try {
+                for (SkuDetails skuDetails : skuDetailsList) {
+                  JSONObject json = new JSONObject();
+                  json.put("productId", skuDetails.getSku());
+                  json.put("price", skuDetails.getPrice());
+                  json.put("currency", skuDetails.getPriceCurrencyCode());
+                  json.put("type", skuDetails.getType());
+                  json.put("localizedPrice", skuDetails.getPrice());
+                  json.put("price_currency", skuDetails.getPriceCurrencyCode());
+                  json.put("title", skuDetails.getTitle());
+                  json.put("description", skuDetails.getDescription());
+                  jsonResponse.put(json);
+                }
+              } catch (JSONException je) {
+                cb.invoke(je.getMessage(), null);
+                return;
+              }
+              cb.invoke(null, jsonResponse.toString());
+            }
+          }
+      );
+    } catch (JSONException je) {
+      cb.invoke(je.getMessage(), null);
+    }
+  }
+
+  @ReactMethod
   public void buyItem(String id_item, Callback cb) {
     BillingFlowParams flowParams = BillingFlowParams.newBuilder()
         .setSku(id_item)

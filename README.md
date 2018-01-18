@@ -22,6 +22,7 @@ We are working on it right now.
 | :------------ |:---------------:| :---------------:| :-----|
 | prepare |  | `Promise` | Prepare IAP module. |
 | getItems | { android: [], ios: [] } | `Promise` | get purchasable items in array. |
+| getSubscribeItems | `string` | `Promise` | [Only Android] get subs items. |
 | buyItem | `string` | `Promise` | Purchase item. |
 | buySubscribeItem | `string` | `Promise` | Subscribe item. |
 
