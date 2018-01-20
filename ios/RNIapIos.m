@@ -39,10 +39,12 @@ RCT_EXPORT_METHOD(fetchHistory:(RCTResponseSenderBlock)callback) {
   RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: fetchHistory \n\n\n\n .");
 
   historyCB = callback;
+  
+  [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 
-  SKReceiptRefreshRequest *request = [[SKReceiptRefreshRequest alloc] init];
-  request.delegate = self;
-  [request start];
+//  SKReceiptRefreshRequest *request = [[SKReceiptRefreshRequest alloc] init];
+//  request.delegate = self;
+//  [request start];
 }
 
 RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodJsonArray callback:(RCTResponseSenderBlock)callback) {
@@ -151,7 +153,7 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
 }
 
 -(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
-  if (historyCB) historyCB(@[[NSNull null], transactions]);
+  // if (historyCB) historyCB(@[[NSNull null], transactions]);
 
   for (SKPaymentTransaction *transaction in transactions) {
     switch (transaction.transactionState) {
