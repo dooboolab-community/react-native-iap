@@ -17,7 +17,8 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 const itemSkus = {
   ios: [
-    // 'auto.subscript.mtt.iap', 'react.iap.consum.1000', 'react.iap.consum.500', // JWMoon
+    // 'prod.consume.santi.099', 'prod.consume.santi.199', 'prod.nonconsume.santi.only',
+    // 'scrip.auto.santi', 'scrip.non.auto.santi', // com.kretone.santiago
     'com.cooni.point1000', 'com.cooni.point5000', 'non.consumable.product', // dooboolab
   ],
   android: [
