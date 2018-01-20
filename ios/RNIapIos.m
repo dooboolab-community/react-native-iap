@@ -107,31 +107,13 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
     return;
   }
 
-  NSError * err;
   NSMutableArray *ids = [NSMutableArray arrayWithCapacity: count];
   // Valid Product .. send callback.
   for (int k = 0; k < count; k++) {
     SKProduct *theProd = [validProducts objectAtIndex:k];
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    formatter.numberStyle = NSNumberFormatterCurrencyStyle;
-    formatter.locale = theProd.priceLocale;
-    NSString *localizedPrice = [formatter stringFromNumber:theProd.price];
-      
-    NSDictionary *dic = @{ @"productId" : theProd.productIdentifier,
-                           @"price" : theProd.price,
-                           @"currency" : theProd.priceLocale.currencyCode,
-                           @"title" : theProd.localizedTitle,
-                           @"description" : theProd.localizedDescription,
-                           @"localizedPrice" : localizedPrice
-                           };
-    NSData * jsonData = [NSJSONSerialization dataWithJSONObject:dic options:0 error:&err];
-    NSString * myString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-
-    [ids addObject:myString];
-
+    [ids addObject:[self getProductString:theProd]];
     NSLog(@"\n\n\n Obj c >> InAppPurchase   ###  didReceiveResponse  유효 상품 Id : %@", theProd.productIdentifier);
   }
-  NSLog(@"  xxx  %@", ids);
   if(productListCB) productListCB(@[[NSNull null], ids]);
   productListCB = nil;
 }
@@ -195,7 +177,7 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
 }
 
 -(void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
-  NSLog(@"  paymentQueueRestoreCompletedTransactionsFinished  ");
+  NSLog(@"\n\n\n  paymentQueueRestoreCompletedTransactionsFinished  \n\n");
 }
 
 -(void)purchaseProcess:(SKPaymentTransaction *)trans {
@@ -219,5 +201,23 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
 
 }
 
+-(NSString*)getProductString:(SKProduct *)theProd {
+  NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+  formatter.numberStyle = NSNumberFormatterCurrencyStyle;
+  formatter.locale = theProd.priceLocale;
+  NSString *localizedPrice = [formatter stringFromNumber:theProd.price];
+  
+  NSDictionary *dic = @{ @"productId" : theProd.productIdentifier,
+                         @"price" : theProd.price,
+                         @"currency" : theProd.priceLocale.currencyCode,
+                         @"title" : theProd.localizedTitle,
+                         @"description" : theProd.localizedDescription,
+                         @"localizedPrice" : localizedPrice
+                         };
+  NSError * err;
+  NSData * jsonData = [NSJSONSerialization dataWithJSONObject:dic options:0 error:&err];
+  NSString * myString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+  return myString;
+}
 
 @end
