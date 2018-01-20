@@ -30,17 +30,13 @@
     [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
-
 ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(fetchHistory:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(fetchHistory:(RCTResponseSenderBlock)callback) {  //  Restore non consumable items.
   RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: fetchHistory \n\n\n\n .");
-
   historyCB = callback;
-  
   [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
-
 //  SKReceiptRefreshRequest *request = [[SKReceiptRefreshRequest alloc] init];
 //  request.delegate = self;
 //  [request start];
@@ -134,8 +130,6 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
 }
 
 -(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
-  // if (historyCB) historyCB(@[[NSNull null], transactions]);
-
   for (SKPaymentTransaction *transaction in transactions) {
     switch (transaction.transactionState) {
       case SKPaymentTransactionStatePurchasing:
@@ -148,13 +142,6 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
       case SKPaymentTransactionStateRestored: // 기존 구매한 아이템 복구..
         NSLog(@"Restored ");
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-//        if (historyCB) {
-//          historyCB(@[
-//                        @{@"code":[NSString stringWithFormat:@"%i", (int)transaction.error.code],
-//                          @"description":[self englishErrorCodeDescription:(int)transaction.error.code]}
-//                        ]);
-//          historyCB = nil;
-//        }
         break;
       case SKPaymentTransactionStateFailed:
         NSLog(@"\n\n\n\n\n\n Purchase Failed  !! \n\n\n\n\n");
@@ -182,18 +169,10 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
     NSLog(@"  Count : %lu", (unsigned long)queue.transactions.count);
     for(SKPaymentTransaction *transaction in queue.transactions){
       if(transaction.transactionState == SKPaymentTransactionStateRestored) {
-        
         NSDictionary *restored = [self getPurchaseData:transaction];
-        
-        NSLog(@"  the dic ::  %@", restored);
-        
         NSData * jsonData = [NSJSONSerialization dataWithJSONObject:restored options:NSJSONWritingPrettyPrinted error:&err];
         NSString * myString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        
-        NSLog(@"  the String : %@", myString);
-        
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-        
         [ids addObject:myString];
       }
     }
@@ -257,7 +236,7 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
                                                                                    @"transactionDate": @(transaction.transactionDate.timeIntervalSince1970 * 1000),
                                                                                    @"transactionIdentifier": transaction.transactionIdentifier,
                                                                                    @"productIdentifier": transaction.payment.productIdentifier,
-                                                                                    @"transactionReceipt":[receiptData base64EncodedStringWithOptions:0]
+                                                                                   @"transactionReceipt":[receiptData base64EncodedStringWithOptions:0]
                                                                                    }];
   // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
   SKPaymentTransaction *originalTransaction = transaction.originalTransaction;
