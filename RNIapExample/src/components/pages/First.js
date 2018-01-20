@@ -17,7 +17,8 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 const itemSkus = {
   ios: [
-    // 'auto.subscript.mtt.iap', 'react.iap.consum.1000', 'react.iap.consum.500', // JWMoon
+    // 'prod.consume.santi.099', 'prod.consume.santi.199', 'prod.nonconsume.santi.only',
+    // 'scrip.auto.santi', 'scrip.non.auto.santi', // com.kretone.santiago
     'com.cooni.point1000', 'com.cooni.point5000', 'non.consumable.product', // dooboolab
   ],
   android: [
@@ -33,6 +34,7 @@ class Page extends Component {
     this.state = {
       productList: [],
       receipt: '',
+      restoredItems: '',
     };
   }
 
@@ -95,15 +97,19 @@ class Page extends Component {
     try {
       console.log('  fetch history ', RNIap);
       const rslts = await RNIap.fetchHistory();
-      console.log(rslts);
+      console.log(' Restored Item :: ', rslts);
+      this.setState({
+        restoredItems: ` Restored ${rslts.length} items.  ${rslts[0].productIdentifier} `,
+        receipt: rslts[0].transactionReceipt,
+      });
     } catch(err) {
-      console.log(`${err}`);
+      console.log(err);
       Alert.alert(`${err}`);
     }
   }
 
   render() {
-    const { productList, receipt } = this.state;
+    const { productList, receipt, restoredItems } = this.state;
     const receipt100 = receipt.substring(0, 100);
 
     return (
@@ -121,7 +127,12 @@ class Page extends Component {
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
-            >Fetch Transactions</NativeButton>
+            >Restore Items</NativeButton>
+
+            <Text style={{ margin: 5, fontSize: 15, alignSelf: 'center' }} >{restoredItems}</Text>
+
+            <Text style={{ margin: 5, fontSize: 9, alignSelf: 'center' }} >{receipt100}</Text>
+
             <NativeButton
               onPress={() => this.getItems()}
               activeOpacity={0.5}
