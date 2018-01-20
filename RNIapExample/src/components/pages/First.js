@@ -34,6 +34,7 @@ class Page extends Component {
     this.state = {
       productList: [],
       receipt: '',
+      restoredItems: '',
     };
   }
 
@@ -96,15 +97,16 @@ class Page extends Component {
     try {
       console.log('  fetch history ', RNIap);
       const rslts = await RNIap.fetchHistory();
-      console.log(rslts);
+      console.log(' Restored Item :: ', rslts);
+      this.setState({ restoredItems: ` Restored ${rslts.length} items.  ${rslts[0].productIdentifier} ` });
     } catch(err) {
-      console.log(`${err}`);
+      console.log(err);
       Alert.alert(`${err}`);
     }
   }
 
   render() {
-    const { productList, receipt } = this.state;
+    const { productList, receipt, restoredItems } = this.state;
     const receipt100 = receipt.substring(0, 100);
 
     return (
@@ -122,7 +124,10 @@ class Page extends Component {
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
-            >Fetch Transactions</NativeButton>
+            >Restore Items</NativeButton>
+
+            <Text style={{ margin: 5, fontSize: 15, alignSelf: 'center' }} >{restoredItems}</Text>
+
             <NativeButton
               onPress={() => this.getItems()}
               activeOpacity={0.5}
