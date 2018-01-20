@@ -1,4 +1,3 @@
-
 #import "RNIapIos.h"
 
 #import <React/RCTLog.h>
@@ -31,18 +30,16 @@
     [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
-
 ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(fetchHistory:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(fetchHistory:(RCTResponseSenderBlock)callback) {  //  Restore non consumable items.
   RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: fetchHistory \n\n\n\n .");
-
   historyCB = callback;
-
-  SKReceiptRefreshRequest *request = [[SKReceiptRefreshRequest alloc] init];
-  request.delegate = self;
-  [request start];
+  [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+//  SKReceiptRefreshRequest *request = [[SKReceiptRefreshRequest alloc] init];
+//  request.delegate = self;
+//  [request start];
 }
 
 RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodJsonArray callback:(RCTResponseSenderBlock)callback) {
@@ -105,32 +102,13 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
     return;
   }
 
-  NSError * err;
   NSMutableArray *ids = [NSMutableArray arrayWithCapacity: count];
   // Valid Product .. send callback.
   for (int k = 0; k < count; k++) {
     SKProduct *theProd = [validProducts objectAtIndex:k];
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    formatter.numberStyle = NSNumberFormatterCurrencyStyle;
-    formatter.locale = theProd.priceLocale;
-    NSString *localizedPrice = [formatter stringFromNumber:theProd.price];
-    
-    NSLog(@"\n\n\n    productIdentifier ::  %@", theProd.productIdentifier);
-    NSDictionary *dic = @{ @"productId" : theProd.productIdentifier,
-                           @"price" : theProd.price,
-                           @"currency" : theProd.priceLocale.currencyCode,
-                           @"title" : theProd.localizedTitle,
-                           @"description" : theProd.localizedDescription,
-                           @"localizedPrice" : localizedPrice
-                           };
-    NSData * jsonData = [NSJSONSerialization dataWithJSONObject:dic options:0 error:&err];
-    NSString * myString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-
-    [ids addObject:myString];
-
+    [ids addObject:[self getProductString:theProd]];
     NSLog(@"\n\n\n Obj c >> InAppPurchase   ###  didReceiveResponse  유효 상품 Id : %@", theProd.productIdentifier);
   }
-  NSLog(@"  xxx  %@", ids);
   if(productListCB) productListCB(@[[NSNull null], ids]);
   productListCB = nil;
 }
@@ -152,8 +130,6 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
 }
 
 -(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
-  if (historyCB) historyCB(@[[NSNull null], transactions]);
-
   for (SKPaymentTransaction *transaction in transactions) {
     switch (transaction.transactionState) {
       case SKPaymentTransactionStatePurchasing:
@@ -166,14 +142,6 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
       case SKPaymentTransactionStateRestored: // 기존 구매한 아이템 복구..
         NSLog(@"Restored ");
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-        if (historyCB) {
-          historyCB(@[
-                        @{@"code":[NSString stringWithFormat:@"%i", (int)transaction.error.code],
-                          @"description":[self englishErrorCodeDescription:(int)transaction.error.code]}
-                        ]);
-          historyCB = nil;
-        }
-            
         break;
       case SKPaymentTransactionStateFailed:
         NSLog(@"\n\n\n\n\n\n Purchase Failed  !! \n\n\n\n\n");
@@ -193,8 +161,26 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
   }
 }
 
--(void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
-  NSLog(@"  paymentQueueRestoreCompletedTransactionsFinished  ");
+-(void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {  ////////   RESTORE
+  NSLog(@"\n\n\n  paymentQueueRestoreCompletedTransactionsFinished  \n\n.");
+  NSError * err;
+  NSMutableArray *ids = [NSMutableArray arrayWithCapacity: 0];
+  if (historyCB) {
+    NSLog(@"  Count : %lu", (unsigned long)queue.transactions.count);
+    for(SKPaymentTransaction *transaction in queue.transactions){
+      if(transaction.transactionState == SKPaymentTransactionStateRestored) {
+        NSDictionary *restored = [self getPurchaseData:transaction];
+        NSData * jsonData = [NSJSONSerialization dataWithJSONObject:restored options:NSJSONWritingPrettyPrinted error:&err];
+        NSString * myString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+        [ids addObject:myString];
+      }
+    }
+    historyCB(@[[NSNull null], ids]);
+    historyCB = nil;
+  } else {
+    RCTLogWarn(@"No callback registered for restore product request.");
+  }
 }
 
 -(void)purchaseProcess:(SKPaymentTransaction *)trans {
@@ -218,5 +204,48 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
 
 }
 
+-(NSString*)getProductString:(SKProduct *)theProd {
+  NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+  formatter.numberStyle = NSNumberFormatterCurrencyStyle;
+  formatter.locale = theProd.priceLocale;
+  NSString *localizedPrice = [formatter stringFromNumber:theProd.price];
+
+  NSDictionary *dic = @{ @"productId" : theProd.productIdentifier,
+                         @"price" : theProd.price,
+                         @"currency" : theProd.priceLocale.currencyCode,
+                         @"title" : theProd.localizedTitle,
+                         @"description" : theProd.localizedDescription,
+                         @"localizedPrice" : localizedPrice
+                         };
+  NSError * err;
+  NSData * jsonData = [NSJSONSerialization dataWithJSONObject:dic options:0 error:&err];
+  NSString * myString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+  return myString;
+}
+
+
+- (NSDictionary *)getPurchaseData:(SKPaymentTransaction *)transaction {
+  NSData *receiptData;
+  if (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0) {
+    receiptData = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] appStoreReceiptURL]];
+  } else {
+    receiptData = [transaction transactionReceipt];
+  }
+
+  NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithDictionary: @{
+                                                                                   @"transactionDate": @(transaction.transactionDate.timeIntervalSince1970 * 1000),
+                                                                                   @"transactionIdentifier": transaction.transactionIdentifier,
+                                                                                   @"productIdentifier": transaction.payment.productIdentifier,
+                                                                                   @"transactionReceipt":[receiptData base64EncodedStringWithOptions:0]
+                                                                                   }];
+  // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
+  SKPaymentTransaction *originalTransaction = transaction.originalTransaction;
+  if (originalTransaction) {
+    purchase[@"originalTransactionDate"] = @(originalTransaction.transactionDate.timeIntervalSince1970 * 1000);
+    purchase[@"originalTransactionIdentifier"] = originalTransaction.transactionIdentifier;
+  }
+
+  return purchase;
+}
 
 @end
