@@ -114,7 +114,8 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
     formatter.numberStyle = NSNumberFormatterCurrencyStyle;
     formatter.locale = theProd.priceLocale;
     NSString *localizedPrice = [formatter stringFromNumber:theProd.price];
-      
+    
+    NSLog(@"\n\n\n    productIdentifier ::  %@", theProd.productIdentifier);
     NSDictionary *dic = @{ @"productId" : theProd.productIdentifier,
                            @"price" : theProd.price,
                            @"currency" : theProd.priceLocale.currencyCode,
