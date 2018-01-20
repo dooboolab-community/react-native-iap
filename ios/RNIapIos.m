@@ -257,7 +257,7 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
                                                                                    @"transactionDate": @(transaction.transactionDate.timeIntervalSince1970 * 1000),
                                                                                    @"transactionIdentifier": transaction.transactionIdentifier,
                                                                                    @"productIdentifier": transaction.payment.productIdentifier,
-                                                                                   // @"transactionReceipt":receiptData
+                                                                                    @"transactionReceipt":[receiptData base64EncodedStringWithOptions:0]
                                                                                    }];
   // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
   SKPaymentTransaction *originalTransaction = transaction.originalTransaction;
