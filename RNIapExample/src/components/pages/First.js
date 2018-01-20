@@ -98,7 +98,10 @@ class Page extends Component {
       console.log('  fetch history ', RNIap);
       const rslts = await RNIap.fetchHistory();
       console.log(' Restored Item :: ', rslts);
-      this.setState({ restoredItems: ` Restored ${rslts.length} items.  ${rslts[0].productIdentifier} ` });
+      this.setState({
+        restoredItems: ` Restored ${rslts.length} items.  ${rslts[0].productIdentifier} `,
+        receipt: rslts[0].transactionReceipt,
+      });
     } catch(err) {
       console.log(err);
       Alert.alert(`${err}`);
@@ -127,6 +130,8 @@ class Page extends Component {
             >Restore Items</NativeButton>
 
             <Text style={{ margin: 5, fontSize: 15, alignSelf: 'center' }} >{restoredItems}</Text>
+
+            <Text style={{ margin: 5, fontSize: 9, alignSelf: 'center' }} >{receipt100}</Text>
 
             <NativeButton
               onPress={() => this.getItems()}
