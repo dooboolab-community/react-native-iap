@@ -1,6 +1,6 @@
 {
   "name": "react-native-iap",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "",
   "main": "index.js",
   "postinstall": "dooboolab-welcome postinstall",
