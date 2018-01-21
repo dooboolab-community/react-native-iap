@@ -182,8 +182,33 @@ buySubscribeItem = async(sku) => {
 Subscribable products can be included in item object and purchased just like consumable product.
 You can cancel subscription on iOS system setting.
 
+## Restore (iOS)
+Non consumable products can be restored after user delete App.  Currently for iOS only.
+Refer the RNIapExample's source code.
+
+```javascript
+restorePreProdducts = async() => {
+  try {
+    const rslts = await RNIap.restoreProducts();
+    console.log(' Restored Item :: ', rslts);
+    this.setState({
+      restoredItems: ` Restored ${rslts.length} items.  ${rslts[0].productIdentifier} `,
+      receipt: rslts[0].transactionReceipt,
+    });
+  } catch(err) {
+    console.log(err);
+    Alert.alert(`${err}`);
+  }
+}
+
+```
+Returned rslts is a List of each transactions(non-consumable) and each has items as follows.
+{ transactionDate, transactionIdentifier, productIdentifier, transactionReceipt }
+
+You need to test with one sandbox account, because the account holds previous purchase history.
+
 ## Todo
-iOS : restore non-consumable products via restoreCompletedTransactions()
+iOS :
 
 Thanks.
 
