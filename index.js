@@ -10,7 +10,7 @@ const ModuleIOS = {
       resolve(msg);
     });
   },
-  fetchHistory() {
+  restoreProducts() {
     console.log(' module : fetch history ');
     return new Promise(function (resolve, reject) {
       // if (!skus.ios) {

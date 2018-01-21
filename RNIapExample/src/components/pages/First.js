@@ -93,10 +93,10 @@ class Page extends Component {
     }
   }
 
-  fetchHistory = async() => {
+  restorePreProdducts = async() => {
     try {
-      console.log('  fetch history ', RNIap);
-      const rslts = await RNIap.fetchHistory();
+      console.log(' Restore Pre Purchased Non Consumable Products ', RNIap);
+      const rslts = await RNIap.restoreProducts();
       console.log(' Restored Item :: ', rslts);
       this.setState({
         restoredItems: ` Restored ${rslts.length} items.  ${rslts[0].productIdentifier} `,
@@ -123,7 +123,7 @@ class Page extends Component {
           >
             <View style={{ height: 50 }} />
             <NativeButton
-              onPress={this.fetchHistory}
+              onPress={this.restorePreProdducts}
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
