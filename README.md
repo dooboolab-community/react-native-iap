@@ -12,7 +12,8 @@ Android iap is implemented with iap version 3 which is currently recent.
 ## Important
 react-native-iap@0.2.0 has been published and it is recommended to use version after `0.2.0` from `2018/01/23`.
 
-The breaking changes from version `0.1.*` is that you have `prepare() method deprecated` which you should call before using `RNIap` methods. Now you have to call `prepareAndroid()` instead just to know that it is just android dependent method.
+The `[Breaking Changes]` from version `0.1.*` is that you have `prepare() method deprecated` which you should call before using `RNIap` methods. Now you have to call `prepareAndroid()` instead just to know that it is just android dependent method.
+Also to import module, previously in `0.1.*` you only had to do `import RNIap from 'react-native-iap'` but now you have to do like `import * as RNIap from 'react-native-iap'`.
 
 For new method, refreshAllItems has been implemented for both ios and android. This feature will support senario for non-consumable products.
 
@@ -86,7 +87,7 @@ You can look in the RNIapExample folder to try the example. Below is basic imple
 ## Prepare IAP, In App Billing.
 First thing you should do is to define your items for iOS and android separately like defined below.
 ```javascript
-import RNIap from 'react-native-iap';
+import * as RNIap from 'react-native-iap';
 
 const itemSkus = {
   ios: [
