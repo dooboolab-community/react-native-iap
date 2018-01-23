@@ -211,7 +211,7 @@ Refer the RNIapExample's source code.
 ```javascript
 restorePreProdducts = async() => {
   try {
-    const rslts = await RNIap.restoreProducts();
+    const rslts = await RNIap.refreshAllItems();
     console.log(' Restored Item :: ', rslts);
     this.setState({
       restoredItems: ` Restored ${rslts.length} items.  ${rslts[0].productIdentifier} `,
@@ -336,7 +336,7 @@ Thanks.
 by JJMoon and dooboolab.
 ```
   try {
-    const rslts = await RNIap.restoreProducts();
+    const rslts = await RNIap.refreshAllItems();
     console.log(' Restored Item :: ', rslts);
     this.setState({
       restoredItems: ` Restored ${rslts.length} items.  ${rslts[0].productIdentifier} `,
