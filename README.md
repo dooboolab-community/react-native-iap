@@ -30,8 +30,6 @@ Also there are some other methods that is not supported in ios and implemented i
   + Able to call prepareAndroid() function without any conditional statement like if (Platform.OS === 'android'). Just use it. 
   + Updated Readme.
 - **[0.1.10]**
-  + Updated Readme.
-- **[0.1.9]**
   + Fixed potential bug relied on preparing IAP module in Android. Updated readme to see how to use it.
 
 #### Methods
@@ -43,9 +41,9 @@ Also there are some other methods that is not supported in ios and implemented i
 | buyItem | `string` | `Promise` | Purchase item. |
 | buySubscribeItem | `string` | `Promise` | Buy subscription item. |
 | refreshAllItems | | `Promise` | Refresh all items to make them available to buy again. |
-| refreshPurchaseItemsAndroid | `string | null` | `Promise` | refresh purchased items for android. What is different from refreshAllItems is that this method can get parameter to refresh `INAPP` items or `SUBS` items.|
-| getPurchaseItemsAndroid | `string | null` | `Promise` | get purchased items for android. This method also gets parameter to refresh `INAPP` items or `SUBS` items.|
-| consumeItemAndroid | `string | null` | `Promise` | consume item for android. After buying some item from consumable item in android, you can use this method to consume it. Therefore you can purchase the item again. |
+| refreshPurchaseItemsAndroid | `string` | `Promise` | refresh purchased items for android. What is different from refreshAllItems is that this method can get parameter to refresh `INAPP` items or `SUBS` items.|
+| getPurchaseItemsAndroid | `string` | `Promise` | get purchased items for android. This method also gets parameter to refresh `INAPP` items or `SUBS` items.|
+| consumeItemAndroid | `string` | `Promise` | consume item for android. After buying some item from consumable item in android, you can use this method to consume it. Therefore you can purchase the item again. |
 
 ## Npm repo
 https://www.npmjs.com/package/react-native-iap
