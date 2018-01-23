@@ -39,10 +39,7 @@ class Page extends Component {
   }
 
   async componentDidMount(){
-    if (Platform.OS === 'android') {
-      const msg = await RNIap.prepareAndroid();
-      console.log('msg: ' + msg);
-    }
+    const msg = await RNIap.prepareAndroid();
   }
 
   goToNext = () => {

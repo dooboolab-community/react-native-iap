@@ -3,37 +3,13 @@ import { NativeModules, Platform } from 'react-native';
 
 const { RNIapIos, RNIapModule } = NativeModules;
 
-const ModuleIOS = {
-  prepare() {
-    return new Promise(function (resolve, reject) {
-      const msg = 'ios do not need to prepare. Skip.';
-      resolve(msg);
-    });
-  },
-  restoreProducts() {
-    console.log(' module : fetch history ');
-    return new Promise(function (resolve, reject) {
-      // if (!skus.ios) {
-      //   console.lod('  Error skus.ios ');
-      //   reject(new Error('ios items are not defined. It should be defined inside param like items.ios.'));
-      //   return;
-      // }
-
-      RNIapIos.fetchHistory((err, items) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        const objs = items.map(o => JSON.parse(o));
-        resolve(objs);
-      });
-    });
-  },
-  getItems(skus) {
+export const getItems = (skus) => {
+  if (Platform.OS === 'ios') {
     return new Promise(function (resolve, reject) {
       if (!skus.ios) {
-        console.log('Error skus.ios');
-        reject(new Error('ios items are not defined. It should be defined inside param like items.ios.'));
+        reject(
+          new Error('ios items are not defined. It should be defined inside param like items.ios.'),
+        );
         return;
       }
       const thestr = JSON.stringify(skus.ios);
@@ -46,37 +22,7 @@ const ModuleIOS = {
         resolve(objs);
       });
     });
-  },
-  buyItem(item) {
-    return new Promise(function (resolve, reject) {
-      // RCT_EXPORT_METHOD(purchaseItem:(NSString *)keyJson callback:(RCTResponseSenderBlock)callback) {
-      RNIapIos.purchaseItem(item, (err, purchase) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        // return string
-        resolve(purchase);
-      });
-    });
-  },
-  buySubscribeItem(item) {
-    return new Promise(function (resolve, reject) {
-      // RCT_EXPORT_METHOD(purchaseItem:(NSString *)keyJson callback:(RCTResponseSenderBlock)callback) {
-      RNIapIos.purchaseSubscribeItem(item, (err, purchase) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        // return string
-        resolve(purchase);
-      });
-    });
-  }
-};
-
-const ModuleAndroid = {
-  getItems(skus) {
+  } else if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {
       if (!skus.android) {
         reject(new Error('android items are not defined. It should be defined inside param like items.android.'));
@@ -94,8 +40,15 @@ const ModuleAndroid = {
         }
       );
     });
-  },
-  getSubscribeItems(skus) {
+  }
+};
+
+export const getSubscribeItems = (skus) => {
+  if (Platform.OS === 'ios') {
+    // ios will just use existing function
+    getItems(skus);
+  }
+  else if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {
       if (!skus.android) {
         reject(new Error('android items are not defined. It should be defined inside param like items.android.'));
@@ -113,8 +66,23 @@ const ModuleAndroid = {
         }
       );
     });
-  },
-  buyItem(item) {
+  }
+};
+
+export const buyItem = (item) => {
+  if (Platform.OS === 'ios') {
+    return new Promise(function (resolve, reject) {
+      // RCT_EXPORT_METHOD(purchaseItem:(NSString *)keyJson callback:(RCTResponseSenderBlock)callback) {
+      RNIapIos.purchaseItem(item, (err, purchase) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        // return string
+        resolve(purchase);
+      });
+    });
+  } else if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {
       RNIapModule.buyItem(item, (err, purchase) => {
         if (err) {
@@ -130,8 +98,13 @@ const ModuleAndroid = {
         });
       });
     });
-  },
-  buySubscribeItem(item) {
+  }
+};
+
+export const buySubscribeItem = (item) => {
+  if (Platform.OS === 'ios') {
+    buyItem(item);
+  } else if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {
       RNIapModule.buySubscribeItem(item, (err, purchase) => {
         if (err) {
@@ -141,8 +114,31 @@ const ModuleAndroid = {
         resolve(purchase);
       });
     });
-  },
-  prepare() {
+  }
+};
+
+export const refreshAllItems = () => {
+  if (Platform.OS === 'ios') {
+    return new Promise(function (resolve, reject) {
+      RNIapIos.fetchHistory((err, items) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        const objs = items.map(o => JSON.parse(o));
+        resolve(objs);
+      });
+    });
+  } else if (Platform.OS === 'android') {
+    RNIapModule.refreshPurchaseItems(null);
+    RNIapModule.refreshPurchaseItems('SUBS');
+  }
+}
+
+// Below functions only supported in android.
+
+export const prepareAndroid = () => {
+  if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {
       RNIapModule.prepare((err, msg) => {
         if (err) {
@@ -153,13 +149,18 @@ const ModuleAndroid = {
         resolve(msg);
       });
     });
-  },
-  refreshPurchaseItemsAndroid(type) {
+  }
+};
+
+export const refreshPurchaseItemsAndroid = (type: string | null) => {
+  if (Platform.OS === 'android') {
     // Noramlly put null on type. If you want to fetch subscriptions item put 'SUBS' in type param
     RNIapModule.refreshPurchaseItems(type);
-  },
-  getPurchasedItemsAndroid(type) {
-    // Noramlly put null on type. If you want to fetch subscriptions item put 'SUBS' in type param
+  }
+};
+
+export const getPurchasedItemsAndroid = (type: string | null) => {
+  if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {
       RNIapModule.getOwnedItems(type,
         (err, items) => {
@@ -172,8 +173,11 @@ const ModuleAndroid = {
         }
       );
     });
-  },
-  consumeItemAndroid(token) {
+  }
+};
+
+export const consumeItemAndroid = (token: string) => {
+  if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {
       RNIapModule.consumeItem(token, (err, success) => {
         if (err) {
@@ -183,11 +187,5 @@ const ModuleAndroid = {
         resolve(success);
       });
     });
-  },
+  }
 };
-
-const RNIap = Platform.OS === 'ios' ?
-  ModuleIOS : ModuleAndroid;
-
-module.exports = RNIap
-// export default RNIap;
