@@ -145,8 +145,19 @@ export const refreshAllItems = () => {
       });
     });
   } else if (Platform.OS === 'android') {
-    RNIapModule.refreshPurchaseItems(null);
-    RNIapModule.refreshPurchaseItems('SUBS');
+    return new Promise(function (resolve, reject) {
+      try {
+        RNIapModule.refreshAllPurchaseItems('INAPP', (err, items) => {
+          if ((typeof items) === 'string') {
+            resolve(JSON.parse(items));
+          } else {
+            resolve(items);
+          }
+        });
+      } catch (err) {
+        reject(err);
+      }
+    });
   }
 }
 
