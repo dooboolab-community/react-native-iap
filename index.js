@@ -3,6 +3,9 @@ import { NativeModules, Platform } from 'react-native';
 
 const { RNIapIos, RNIapModule } = NativeModules;
 
+/**
+ * Get 'INAPP' items.
+ */
 export const getItems = (skus) => {
   if (Platform.OS === 'ios') {
     return new Promise(function (resolve, reject) {
@@ -43,6 +46,9 @@ export const getItems = (skus) => {
   }
 };
 
+/**
+ * Get 'SUBS' items.
+ */
 export const getSubscribeItems = (skus) => {
   if (Platform.OS === 'ios') {
     // ios will just use existing function
@@ -69,6 +75,9 @@ export const getSubscribeItems = (skus) => {
   }
 };
 
+/**
+ * buy 'INAPP' item.
+ */
 export const buyItem = (item) => {
   if (Platform.OS === 'ios') {
     return new Promise(function (resolve, reject) {
@@ -101,6 +110,9 @@ export const buyItem = (item) => {
   }
 };
 
+/**
+ * buy 'SUBS' item. This action will be same as buying item and IOS. Only differences are made to Android.
+ */
 export const buySubscribeItem = (item) => {
   if (Platform.OS === 'ios') {
     buyItem(item);
@@ -117,6 +129,9 @@ export const buySubscribeItem = (item) => {
   }
 };
 
+/**
+ * refresh items to buy items again.
+ */
 export const refreshAllItems = () => {
   if (Platform.OS === 'ios') {
     return new Promise(function (resolve, reject) {
@@ -135,8 +150,11 @@ export const refreshAllItems = () => {
   }
 }
 
-// Below functions only supported in android.
+/**************** BELOW CODES ARE ONLY SUPPORTED IN ANDROID PLATFORM ************/
 
+/**
+ * prepare IAP module for android. For ios it will be automatically ignored
+ */
 export const prepareAndroid = () => {
   if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {
@@ -152,6 +170,10 @@ export const prepareAndroid = () => {
   }
 };
 
+/**
+ * Refresh items to buy item again for android. Able to put nothing or 'SUBS' in parameter.
+ * Putting 'SUBS' string will refresh subscription items.
+ */
 export const refreshPurchaseItemsAndroid = (type: string | null) => {
   if (Platform.OS === 'android') {
     // Noramlly put null on type. If you want to fetch subscriptions item put 'SUBS' in type param
@@ -159,6 +181,9 @@ export const refreshPurchaseItemsAndroid = (type: string | null) => {
   }
 };
 
+/**
+ * Get purchasedItems for android. Able to put nothing or 'SUBS' in parameter.
+ */
 export const getPurchasedItemsAndroid = (type: string | null) => {
   if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {
@@ -176,6 +201,9 @@ export const getPurchasedItemsAndroid = (type: string | null) => {
   }
 };
 
+/**
+ * User can consume consumable items which user purchased.
+ */
 export const consumeItemAndroid = (token: string) => {
   if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {

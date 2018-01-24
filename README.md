@@ -20,8 +20,10 @@ For new method, refreshAllItems has been implemented for both ios and android. T
 Also there are some other methods that is not supported in ios and implemented in android. You can see more in Changelogs below.
 
 ## Changelogs
+- **[0.2.3]**
+  + Support annotations to hint while using our module.
 - **[0.2.0]**
-  + Implemeted senario for consumable and non-consumable item.
+  + Implemented senario for consumable and non-consumable item.
   + Seperated methods that only exists in IOS and Android.
     - prepareAndroid()
     - refreshPurchaseItemsAndroid(type: string)
