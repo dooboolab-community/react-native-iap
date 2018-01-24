@@ -147,7 +147,7 @@ export const refreshAllItems = () => {
   } else if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {
       try {
-        RNIapModule.refreshAllPurchaseItems('INAPP', (err, items) => {
+        RNIapModule.refreshAllPurchaseItems((err, items) => {
           if ((typeof items) === 'string') {
             resolve(JSON.parse(items));
           } else {

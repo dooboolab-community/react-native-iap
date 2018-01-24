@@ -11,15 +11,21 @@ Android iap is implemented with iap version 3 which is currently recent.
 
 ## Important
 react-native-iap@0.2.0 has been published and it is recommended to use version after `0.2.0` from `2018/01/23`.
+`react-native-iap` module versions that are not described in `change logs` may not run as expected so please refer to version mentioned in `Changelogs` below.
 
-The `[Breaking Changes]` from version `0.1.*` is that you have `prepare() method deprecated` which you should call before using `RNIap` methods. Now you have to call `prepareAndroid()` instead just to know that it is just android dependent method.
-Also to import module, previously in `0.1.*` you only had to do `import RNIap from 'react-native-iap'` but now you have to do like `import * as RNIap from 'react-native-iap'`.
+## Breaking Changes
+Changes from `react-native-iap@0.1.*` to `react-native-iap@0.2.*` is that you have `prepare()` method deprecated which you should call before using `RNIap` methods. Now you have to call `prepareAndroid()` instead just to know that it is just android dependent method.
+Also to import module, previously in `react-native-iap@0.1.*` you had to `import RNIap from 'react-native-iap'` but now you have to do like `import * as RNIap from 'react-native-iap'`.
 
 For new method, refreshAllItems has been implemented for both ios and android. This feature will support senario for non-consumable products.
-
 Also there are some other methods that is not supported in ios and implemented in android. You can see more in Changelogs below.
+Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.2.5]**
+  + types support.
+    ![alt text](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/typing%20screen%20shot.png?alt=media&token=ea2ef1f3-50af-4d9c-8388-7fd22ddc8aa0)
+  + call new Method for android inside refreshItems(). This will now return object values like ios.
 - **[0.2.3]**
   + Support annotations to hint while using our module.
 - **[0.2.0]**
