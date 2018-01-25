@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import NativeButton from 'apsl-react-native-button';
-import RNIap from 'react-native-iap';
+import * as RNIap from 'react-native-iap';
 
 import Navbar from '../shared/Navbar';
 import EStyleSheet from 'react-native-extended-stylesheet';
