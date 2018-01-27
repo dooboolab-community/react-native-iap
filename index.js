@@ -98,13 +98,7 @@ export const buyItem = (item) => {
           reject(err);
           return;
         }
-        RNIapModule.consumeItem(purchase.purchaseToken, (err, success) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve(purchase);
-        });
+        resolve(purchase);
       });
     });
   }

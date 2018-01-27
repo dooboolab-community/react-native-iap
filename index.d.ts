@@ -3,6 +3,16 @@ export interface Skus {
   android: string[];
 }
 
+/*
+  currency: string,
+  description: string,
+  localizedPrice: string;
+  price: string;
+  price_currency: string;
+  productId: string;
+  title: string;
+  type: string;
+*/
 export function getItems(skus: Skus) : Promise<any>;
 export function getSubscribeItems(skus: Skus) : Promise<any>;
 export function buyItem(item: string) : Promise<any>;
