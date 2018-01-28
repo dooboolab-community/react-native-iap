@@ -22,6 +22,7 @@ const itemSkus = {
     'com.cooni.point1000', 'com.cooni.point5000', 'non.consumable.product', // dooboolab
   ],
   android: [
+    'android.test.purchased',
     'point_1000',
     '5000_point',
   ],

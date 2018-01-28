@@ -23,7 +23,7 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
 - **[0.2.6]**
-  + Android buyItem methbod do not consume item right away from 0.2.6.
+  + Android buyItem method do not consume item right away from 0.2.6.
 - **[0.2.5]**
   + types support.
     ![alt text](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/typing%20screen%20shot.png?alt=media&token=ea2ef1f3-50af-4d9c-8388-7fd22ddc8aa0)
