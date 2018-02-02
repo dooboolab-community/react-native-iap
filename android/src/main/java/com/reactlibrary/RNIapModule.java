@@ -419,6 +419,11 @@ public class RNIapModule extends ReactContextBaseJavaModule {
           buyItemCB.invoke(null, purchases.get(0).getOriginalJson());
           buyItemCB = null;
         }
+        return;
+      }
+      if (buyItemCB != null) {
+        buyItemCB.invoke(responseCode, null);
+        buyItemCB = null;
       }
     }
   };
