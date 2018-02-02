@@ -22,6 +22,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.2.7]**
+  + Get Android `buyItem` cancel callback.
 - **[0.2.6]**
   + Android buyItem method do not consume item right away from 0.2.6.
 - **[0.2.5]**
