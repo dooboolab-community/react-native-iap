@@ -222,3 +222,24 @@ export const consumeItemAndroid = (token: string) => {
     });
   }
 };
+
+/**
+ * iOS only methods
+ */
+export const restoreIosNonConsumableProducts = () => {
+  // Duplication of refreshAllItems
+  if (Platform.OS === "ios") {
+    return new Promise(function(resolve, reject) {
+      RNIapIos.fetchHistory((err, items) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        const objs = items.map(o => JSON.parse(o));
+        resolve(objs);
+      });
+    });
+  } else {
+    return null;
+  }
+};
