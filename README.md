@@ -217,15 +217,22 @@ buySubscribeItem = async(sku) => {
 Subscribable products can be included in item object and purchased just like consumable product.
 You can cancel subscription on iOS system setting.
 
-## Restore (iOS)
-Non consumable products can be restored after user delete App.  Currently for iOS only.
+
+## Restore, Refresh
+
+Non consumable products can be restored after user delete App. Currently for iOS / Android.
 Refer the RNIapExample's source code.
+
+The restoring (refreshing) processes in iOS and Android differ each other. It's similar but function names and exact processes are slightly different.
+RefreshAllItems has both platform's function, but we added 'restoreIosNonConsumableProducts' function to module for iOS use.
+It has same refesh function but only iOS. (We may remove iOS part in refreshAllItems function in the future.)
 
 ```javascript
 restorePreProdducts = async() => {
   try {
     const rslts = await RNIap.refreshAllItems();
-    console.log(' Restored Item :: ', rslts);
+    // const rslts = await RNIap.restoreIosNonConsumableProducts();  // iOS only case
+    console.log(" Restored Item :: ", rslts);
     this.setState({
       restoredItems: ` Restored ${rslts.length} items.  ${rslts[0].productIdentifier} `,
       receipt: rslts[0].transactionReceipt,
