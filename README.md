@@ -22,6 +22,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.2.9]**
+  + Android catch error message when IAP service not prepared during refreshAllItems.
 - **[0.2.8]**
   + `homepage` now is mandatory attribute in cocoapods from [pull request](https://github.com/dooboolab/react-native-iap/pull/21).
 - **[0.2.7]**

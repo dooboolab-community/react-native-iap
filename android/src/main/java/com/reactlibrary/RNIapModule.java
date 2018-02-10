@@ -111,7 +111,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void getItems(String items, final Callback cb) {
     if (mService == null) {
-      cb.invoke("IAP not prepared. Please restart your app again.", null);
+      cb.invoke("IAP not prepared. Check if google play service is available.", null);
       return;
     }
 
@@ -163,7 +163,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void getSubItems(String items, final Callback cb) {
     if (mService == null) {
-      cb.invoke("IAP not prepared. Please restart your app again.", null);
+      cb.invoke("IAP not prepared. Check if google play service is available.", null);
       return;
     }
 
@@ -241,7 +241,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void getOwnedItems(String type, final Callback cb) {
     if (mService == null) {
-      cb.invoke("IAP not prepared. Please restart your app again.", null);
+      cb.invoke("IAP not prepared. Check if google play service is available.", null);
       return;
     }
 
@@ -316,7 +316,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void refreshAllPurchaseItems(final Callback cb) {
     if (mService == null) {
-      cb.invoke("IAP not prepared. Please restart your app again.", null);
+      cb.invoke("IAP not prepared. Check if google play service is available.", null);
       return;
     }
 
@@ -365,7 +365,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void consumeItem(String token, final Callback cb) {
     if (mService == null) {
-      cb.invoke("IAP not prepared. Please restart your app again.", null);
+      cb.invoke("IAP not prepared. Check if google play service is available.", null);
       return;
     }
 
