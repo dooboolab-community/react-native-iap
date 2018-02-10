@@ -315,45 +315,48 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void refreshAllPurchaseItems(final Callback cb) {
+    if (mService == null) {
+      cb.invoke("IAP not prepared. Please restart your app again.", null);
+      return;
+    }
+
     try {
-      if (mService != null) {
-        String skuType = BillingClient.SkuType.INAPP;
-        Bundle ownedItems = mService.getPurchases(3, reactContext.getPackageName(), skuType, null);
-        int response = ownedItems.getInt("RESPONSE_CODE");
-        JSONArray jsonResponse = new JSONArray();
+      String skuType = BillingClient.SkuType.INAPP;
+      Bundle ownedItems = mService.getPurchases(3, reactContext.getPackageName(), skuType, null);
+      int response = ownedItems.getInt("RESPONSE_CODE");
+      JSONArray jsonResponse = new JSONArray();
 
-        // INAPP
-        if (response == 0) {
-          ArrayList
-              purchaseDataList = ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-          String[] tokens = new String[purchaseDataList.size()];
-          for (int i = 0; i < purchaseDataList.size(); ++i) {
-            String purchaseData = (String) purchaseDataList.get(i);
-            JSONObject jo = new JSONObject(purchaseData);
-            tokens[i] = jo.getString("purchaseToken");
-            mService.consumePurchase(3, reactContext.getPackageName(), tokens[i]);
-            jsonResponse.put(jo);
-          }
+      // INAPP
+      if (response == 0) {
+        ArrayList
+            purchaseDataList = ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+        String[] tokens = new String[purchaseDataList.size()];
+        for (int i = 0; i < purchaseDataList.size(); ++i) {
+          String purchaseData = (String) purchaseDataList.get(i);
+          JSONObject jo = new JSONObject(purchaseData);
+          tokens[i] = jo.getString("purchaseToken");
+          mService.consumePurchase(3, reactContext.getPackageName(), tokens[i]);
+          jsonResponse.put(jo);
         }
-
-        // SUBS
-        skuType = BillingClient.SkuType.SUBS;
-        ownedItems = mService.getPurchases(3, reactContext.getPackageName(), skuType, null);
-        if (response == 0) {
-          ArrayList
-              purchaseDataList = ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-          String[] tokens = new String[purchaseDataList.size()];
-          for (int i = 0; i < purchaseDataList.size(); ++i) {
-            String purchaseData = (String) purchaseDataList.get(i);
-            JSONObject jo = new JSONObject(purchaseData);
-            tokens[i] = jo.getString("purchaseToken");
-            mService.consumePurchase(3, reactContext.getPackageName(), tokens[i]);
-            jsonResponse.put(jo);
-          }
-        }
-
-        cb.invoke(null, jsonResponse.toString());
       }
+
+      // SUBS
+      skuType = BillingClient.SkuType.SUBS;
+      ownedItems = mService.getPurchases(3, reactContext.getPackageName(), skuType, null);
+      if (response == 0) {
+        ArrayList
+            purchaseDataList = ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+        String[] tokens = new String[purchaseDataList.size()];
+        for (int i = 0; i < purchaseDataList.size(); ++i) {
+          String purchaseData = (String) purchaseDataList.get(i);
+          JSONObject jo = new JSONObject(purchaseData);
+          tokens[i] = jo.getString("purchaseToken");
+          mService.consumePurchase(3, reactContext.getPackageName(), tokens[i]);
+          jsonResponse.put(jo);
+        }
+      }
+
+      cb.invoke(null, jsonResponse.toString());
     } catch (Exception e) {
       cb.invoke(e.toString(), null);
     }
