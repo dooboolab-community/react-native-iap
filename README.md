@@ -118,38 +118,42 @@ const itemSkus = {
 Next, call the prepare function (ios it's not needed, but android it is. No need to check platform though since nothing will happen in ios:
 
 ```javascript
-RNIap.prepareAndroid().then(message=>{
-  // Ready to call RNIap.getItems()
-}).catch(errorCode=>{
-  // Depending on the situation, Android will have a different error code. Handle accordingly. Visit the link below for current info
-  // https://developer.android.com/reference/com/android/billingclient/api/BillingClient.BillingResponse.html
-  /*
-    -2: FEATURE_NOT_SUPPORTED
-    -1: SERVICE_DISCONNECTED
-    0: SUCCESS (should never be successful since only errors are caught)
-    1: USER_CANCELED
-    2: SERVICE_UNAVAILABLE
-    3: BILLING_UNAVAILABLE
-    4: ITEM_UNAVAILABLE
-    5: DEVELOPER_ERROR
-    6: ERROR
-    7: ITEM_ALREADY_OWNED
-    8: ITEM_NOT_OWNED
-  */
-})
+async preparing function() {
+  try {
+    const message = await RNIap.prepareAndroid()
+    // Ready to call RNIap.getItems()
+  } catch(errorCode) {
+    // Depending on the situation, Android will have a different error code. Handle accordingly. Visit the link below for current info
+    // https://developer.android.com/reference/com/android/billingclient/api/BillingClient.BillingResponse.html
+    // This catch will never be called on ios
+    /*
+      -2: FEATURE_NOT_SUPPORTED
+      -1: SERVICE_DISCONNECTED
+      0: SUCCESS (should never be successful since only errors are caught)
+      1: USER_CANCELED
+      2: SERVICE_UNAVAILABLE
+      3: BILLING_UNAVAILABLE
+      4: ITEM_UNAVAILABLE
+      5: DEVELOPER_ERROR
+      6: ERROR
+      7: ITEM_ALREADY_OWNED
+      8: ITEM_NOT_OWNED
+    */ 
+  }
+}
 ```
 
 ## Get Valid Items
-You should do prepareAndroid() in componentDidMount in necessary component.
-Then call getItems().
+Once you called prepareAndroid(), call getItems(). Both are async funcs. You can do it in componentDidMount(), or other area as appropriate for you app. Since a user may first start your app with a bad internet connection, then later have an internet connection, making preparing/getting items more than once may be a good idea. Like if the user has no IAPs available when the app first starts, you may want to check again when the user enters the your IAP store.
 ```javascript
 async componentDidMount() {
-  const msg = await RNIap.prepare();
-  console.log('msg: ' + msg);
-  const items = await RNIap.getItems(itemSkus);
-  this.setState({ items, });
-
-  // iOS will support currency_type after v0.1.4
+  try {
+    const message = await RNIap.prepareAndroid()
+    const items = await RNIap.getItems(itemSkus)
+    this.setState({items})
+  } catch(errorCode) {
+  
+  }
 }
 ```
 #### Each item is a JavaScript object containing these keys:
@@ -166,7 +170,7 @@ async componentDidMount() {
 
 
 ## Purchase
-Finally when you getItems with RNIap module, you can buyItem using it's api.
+Once you have called getItems(), and you have a valid response, you can call buyItem().
 ```javascript
   const receipt = await RNIap.buyItem('com.cooni.point1000');
   // above will return receipt string which can be used to validate on your server.
@@ -217,28 +221,32 @@ buySubscribeItem = async(sku) => {
 }
 ```
 Subscribable products can be included in item object and purchased just like consumable product.
-You can cancel subscription on iOS system setting.
+Users can cancel subscriptions by using the iOS System Settings.
 
 
 ## Restore, Refresh
+Non consumable products can be restored after user deletes the app and redownloads. Things like a Premium Version should be restorable. Currently for iOS / Android.
+Refer to RNIapExample's source code.
 
-Non consumable products can be restored after user delete App. Currently for iOS / Android.
-Refer the RNIapExample's source code.
-
-The restoring (refreshing) processes in iOS and Android differ each other. It's similar but function names and exact processes are slightly different.
-RefreshAllItems has both platform's function, but we added 'restoreIosNonConsumableProducts' function to module for iOS use.
-It has same refesh function but only iOS. (We may remove iOS part in refreshAllItems function in the future.)
+The restoring/refreshing processes for iOS and Android differ. It's similar, though function names and the exact processes are slightly different.
+Using RNIap.refreshAllItems() will achieve the same effect for both iOS and Android. Note that we added a restoreIosNonConsumableProducts() function to the module for iOS use. You do not need to call this. Just use refreshAllItems().
+(We may remove the iOS part in the refreshAllItems() function in the future)
 
 ```javascript
 restorePreProdducts = async() => {
   try {
-    const rslts = await RNIap.refreshAllItems();
-    // const rslts = await RNIap.restoreIosNonConsumableProducts();  // iOS only case
-    console.log(" Restored Item :: ", rslts);
-    this.setState({
-      restoredItems: ` Restored ${rslts.length} items.  ${rslts[0].productIdentifier} `,
-      receipt: rslts[0].transactionReceipt,
-    });
+    const results = await RNIap.refreshAllItems() // cross platform case
+    let restoredTitles = ""
+    results.forEach(result=>{
+      if (result.productIdentifier == "com.mywebsite.MyAppPremiumVersion") {
+        this.setState({premium:true})
+        restoredTitles += "Premium Version"
+      } else if (result.productIdentifier == "com.mywebsite.MyAppRemoveAds") {
+        this.setState({ads:false})
+        restoredTitles += restoredTitles.length > 0 ? "No Ads" : ", No Ads"
+      }
+    })
+    Alert.alert("Restore Successful", "You successfully restored the following purchases: " + restoredTitles)
   } catch(err) {
     console.log(err);
     Alert.alert(`${err}`);
@@ -246,109 +254,6 @@ restorePreProdducts = async() => {
 }
 ```
 
-Next, call the prepareAndroid function (ios it's not needed, but android it is. No need to check platform though since nothing will happen in ios:
-
-```javascript
-RNIap.prepareAndroid().then(message=>{
-  // Ready to call RNIap.getItems()
-}).catch(errorCode=>{
-  // Depending on the situation, Android will have a different error code. Handle accordingly. Visit the link below for current info
-  // https://developer.android.com/reference/com/android/billingclient/api/BillingClient.BillingResponse.html
-  /*
-    -2: FEATURE_NOT_SUPPORTED
-    -1: SERVICE_DISCONNECTED
-    0: SUCCESS (should never be successful since only errors are caught)
-    1: USER_CANCELED
-    2: SERVICE_UNAVAILABLE
-    3: BILLING_UNAVAILABLE
-    4: ITEM_UNAVAILABLE
-    5: DEVELOPER_ERROR
-    6: ERROR
-    7: ITEM_ALREADY_OWNED
-    8: ITEM_NOT_OWNED
-  */
-})
-```
-
-## Get Valid Items
-You should do prepareAndroid() in componentDidMount in necessary component.
-Then call getItems().
-```javascript
-async componentDidMount() {
-  const msg = await RNIap.prepareAndroid();
-  console.log('msg: ' + msg);
-  const items = await RNIap.getItems(itemSkus);
-  this.setState({ items, });
-
-  // iOS will support currency_type after v0.1.4
-}
-```
-#### Each item is a JavaScript object containing these keys:
-|    | ios | android | info |
-|----|-----|---------|------|
-|price| ✓ | ✓ | will return localizedPrice on Android (default), or a decimal point number on iOS (default) |
-|productId| ✓ | ✓ | returns a string needed to purchase the item later |
-|currency| ✓ | ✓ | returns the currency code |
-|localizedPrice| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
-|title| ✓ | ✓ | returns the title Android and localizedTitle on iOS |
-|description| ✓ | ✓ | returns the description on Android and localizedDescription on iOS |
-|type|  | ✓ | returns SKU type |
-|price_currency|  | ✓ | same as currency, but left in here to not break any code users may have written before |
-
-
-## Purchase
-Finally when you getItems with RNIap module, you can buyItem using it's api.
-```javascript
-  const receipt = await RNIap.buyItem('com.cooni.point1000');
-  // above will return receipt string which can be used to validate on your server.
-```
-In RNIapExample, at receiving receipt string, main page will navigate to Second.js.
-
-## Purchase Example 2 (Advanced)
-```javascript
-this.setState({progressTitle:"Please wait..."});
-RNIap.buyItem('com.cooni.point1000').then(receipt=>{
-    this.setState({
-      receipt:receipt, // save the receipt if you need it, whether locally, or to your server.
-      progressTitle:"Purchase Successful!",
-      points:this.state.points + 1000
-    });
-  }).catch(error=>{
-    // resetting UI
-    this.setState({progressTitle:"Buy 1000 Points for only $0.99"})
-    if (Platform.OS == 'ios') {
-      if (error.code == 2) {
-        // ios error.code 2 means that the user cancelled. No need to alert them. Just reset the UI.
-      } else {
-        // ios error.description gives a so-so English description of the error that the user should be able to understand.
-        // You could also give your own descriptions based on error.code instead:  
-        // https://developer.apple.com/documentation/storekit/skerror.code
-        alert(error.description)
-      }
-    } else {
-      // haven't added specific error handling yet for android. todo.
-      alert("Purchase Unsuccessful");
-    }
-  })
-```
-
-## Subscription
-```javascript
-buySubscribeItem = async(sku) => {
-  try {
-    console.log('buyItem: ' + sku);
-    const receipt = await RNIap.buyItem(sku);
-    // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
-    console.log(receipt);
-    this.setState({ receipt }, () => this.goToNext());
-  } catch (err) {
-    console.log(`${err}`);
-    Alert.alert(`${err}`);
-  }
-}
-```
-Subscribable products can be included in item object and purchased just like consumable product.
-You can cancel subscription on iOS system setting.
 
 ## Todo
 iOS : restore non-consumable products via restoreCompletedTransactions()
