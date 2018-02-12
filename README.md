@@ -253,36 +253,14 @@ restorePreProdducts = async() => {
   }
 }
 ```
-
-
-## Todo
-iOS : restore non-consumable products via restoreCompletedTransactions()
-
-Thanks.
-
-by JJMoon and dooboolab.
-```
-  try {
-    const rslts = await RNIap.refreshAllItems();
-    console.log(' Restored Item :: ', rslts);
-    this.setState({
-      restoredItems: ` Restored ${rslts.length} items.  ${rslts[0].productIdentifier} `,
-      receipt: rslts[0].transactionReceipt,
-    });
-  } catch(err) {
-    console.log(err);
-    Alert.alert(`${err}`);
-  }
-}
-
-```
-Returned rslts is a List of each transactions(non-consumable) and each has items as follows.
-{ transactionDate, transactionIdentifier, productIdentifier, transactionReceipt }
+Returned results is an array of each transaction (non-consumable) with the following keys:
+```{ transactionDate, transactionIdentifier, productIdentifier, transactionReceipt }```
 
 You need to test with one sandbox account, because the account holds previous purchase history.
 
 ## Todo
-iOS :
+
+Nothing at the moment.
 
 Thanks.
 
