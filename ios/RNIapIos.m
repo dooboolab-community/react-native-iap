@@ -183,6 +183,17 @@ RCT_EXPORT_METHOD(purchaseSubscribeItem:(NSString *)productID callback:(RCTRespo
   }
 }
 
+-(void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
+    NSLog(@"\n\n\n restoreCompletedTransactionsFailedWithError \n\n.");
+    if (historyCB) {
+        historyCB(@[@{
+                        @"code":[NSString stringWithFormat:@"%i", (int)error.code],
+                        @"description":[self englishErrorCodeDescription:(int)error.code]
+                    }]);
+        historyCB = nil;
+    }
+}
+
 -(void)purchaseProcess:(SKPaymentTransaction *)trans {
   NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
 
