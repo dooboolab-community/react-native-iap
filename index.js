@@ -109,7 +109,7 @@ export const buyItem = (item) => {
  */
 export const buySubscribeItem = (item) => {
   if (Platform.OS === 'ios') {
-    buyItem(item);
+    return buyItem(item);
   } else if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {
       RNIapModule.buySubscribeItem(item, (err, purchase) => {
