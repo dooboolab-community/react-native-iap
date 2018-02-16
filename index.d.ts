@@ -3,19 +3,19 @@ export interface Skus {
   android: string[];
 }
 
-/*
-  currency: string,
-  description: string,
-  localizedPrice: string;
-  price: string;
-  price_currency: string;
+export interface ItemDescription {
+  type?: string; // only on Android
   productId: string;
   title: string;
-  type: string;
-*/
-export function getItems(skus: Skus) : Promise<any>;
-export function getSubscribeItems(skus: Skus) : Promise<any>;
-export function buyItem(item: string) : Promise<any>;
+  description: string;
+  price: number | string; // number on iOS, string on Android
+  currency: string;
+  localizedPrice: string; // only on Android
+}
+
+export function getItems(skus: Skus) : Promise<ItemDescription[]>;
+export function getSubscribeItems(skus: Skus) : Promise<ItemDescription[]>;
+export function buyItem(item: string) : Promise<string>;
 export function buySubscribeItem(item: string) : Promise<any>;
 export function refreshAllItems() : Promise<any>;
 
