@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.author             = { "author" => "author@domain.cn" }
   s.platform     = :ios, "7.0"
   s.source       = { :git => "https://github.com/author/RNIap.git", :tag => "master" }
-  s.source_files  = "RNIap/**/*.{h,m}"
+  s.source_files  = "ios/RNIap/**/*.{h,m}"
   s.requires_arc = true
 
 
