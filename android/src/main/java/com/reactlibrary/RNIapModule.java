@@ -414,13 +414,20 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     public void onPurchasesUpdated(int responseCode, @Nullable List<Purchase> purchases) {
       Log.d(TAG, "Purchase Updated Listener");
       Log.d(TAG, "responseCode: " + responseCode);
-      if (responseCode == 0) {
-        Log.d(TAG, purchases.toString());
+      if (responseCode == BillingClient.BillingResponse.OK) {
+        if (buyItemCB != null && purchases.size() >= 1) {
+          Log.d(TAG, purchases.toString());
 
-        if (buyItemCB != null) {
-          Log.d(TAG, "return : " + purchases.get(0).getOriginalJson());
-          buyItemCB.invoke(null, purchases.get(0).getOriginalJson());
-          buyItemCB = null;
+          JSONObject json = new JSONObject();
+          try {
+            json.put("data", purchases.get(0).getOriginalJson());
+            json.put("signature", purchases.get(0).getSignature());
+            Log.d(TAG, "return : " + json.toString());
+            buyItemCB.invoke(null, json.toString());
+            buyItemCB = null;
+          } catch (JSONException e) {
+            buyItemCB.invoke(e, null);
+          }
         }
         return;
       }
