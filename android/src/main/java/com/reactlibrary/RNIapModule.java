@@ -424,9 +424,10 @@ public class RNIapModule extends ReactContextBaseJavaModule {
             json.put("signature", purchases.get(0).getSignature());
             Log.d(TAG, "return : " + json.toString());
             buyItemCB.invoke(null, json.toString());
-            buyItemCB = null;
           } catch (JSONException e) {
             buyItemCB.invoke(e, null);
+          } finally {
+            buyItemCB = null;
           }
         }
         return;
