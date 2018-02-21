@@ -44,6 +44,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   private ReactContext reactContext;
   private Callback prepareCB = null;
   private Callback buyItemCB = null;
+  private Callback buyItemWithSignCB = null;
   private IInAppBillingService mService;
   private BillingClient mBillingClient;
 
@@ -223,6 +224,19 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     Log.d(TAG, "buyItem responseCode: " + responseCode);
 
     buyItemCB = cb;
+  }
+  
+  @ReactMethod
+  public void buyItemWithSign(String id_item, Callback cb) {
+    BillingFlowParams flowParams = BillingFlowParams.newBuilder()
+        .setSku(id_item)
+        .setType(BillingClient.SkuType.INAPP)
+        .build();
+
+    int responseCode = mBillingClient.launchBillingFlow(getCurrentActivity(), flowParams);
+    Log.d(TAG, "buyItem responseCode: " + responseCode);
+
+    buyItemWithSignCB = cb;
   }
 
   @ReactMethod
@@ -410,18 +424,26 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       Log.d(TAG, "Purchase Updated Listener");
       Log.d(TAG, "responseCode: " + responseCode);
       if (responseCode == BillingClient.BillingResponse.OK) {
+        JSONObject json = new JSONObject();
+        Log.d(TAG, purchases.toString());
         if (buyItemCB != null && purchases.size() >= 1) {
-          Log.d(TAG, purchases.toString());
-
-          JSONObject json = new JSONObject();
+          try {
+            buyItemCB.invoke(null, purchases.get(0).getOriginalJson().toString());
+          } catch (JSONException e) {
+            buyItemCB.invoke(e, null);
+          } finally {
+            buyItemCB = null;
+          }
+        } else if (buyItemWithSignCB != null && purchases.size() >= 1) {
           try {
             json.put("data", purchases.get(0).getOriginalJson());
             json.put("signature", purchases.get(0).getSignature());
             Log.d(TAG, "return : " + json.toString());
-            buyItemCB.invoke(null, json.toString());
-            buyItemCB = null;
+            buyItemWithSignCB.invoke(null, json.toString());
           } catch (JSONException e) {
-            buyItemCB.invoke(e, null);
+            buyItemWithSignCB.invoke(e, null);
+          } finally {
+            buyItemWithSignCB = null;
           }
         }
         return;
@@ -429,6 +451,9 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       if (buyItemCB != null) {
         buyItemCB.invoke(responseCode, null);
         buyItemCB = null;
+      } else if (buyItemWithSignCB != null) {
+        buyItemWithSignCB.invoke(responseCode, null);
+        buyItemWithSignCB = null;
       }
     }
   };
