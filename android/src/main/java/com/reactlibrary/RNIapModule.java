@@ -44,6 +44,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   private ReactContext reactContext;
   private Callback prepareCB = null;
   private Callback buyItemCB = null;
+  private Callback buyItemWithSignCB = null;
   private IInAppBillingService mService;
   private BillingClient mBillingClient;
 
@@ -224,6 +225,19 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
     buyItemCB = cb;
   }
+  
+  @ReactMethod
+  public void buyItemWithSign(String id_item, Callback cb) {
+    BillingFlowParams flowParams = BillingFlowParams.newBuilder()
+        .setSku(id_item)
+        .setType(BillingClient.SkuType.INAPP)
+        .build();
+
+    int responseCode = mBillingClient.launchBillingFlow(getCurrentActivity(), flowParams);
+    Log.d(TAG, "buyItem responseCode: " + responseCode);
+
+    buyItemWithSignCB = cb;
+  }
 
   @ReactMethod
   public void buySubscribeItem(String id_item, Callback cb) {
@@ -255,32 +269,27 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       @Override
       public void onPurchaseHistoryResponse(@BillingClient.BillingResponse int responseCode,
                                             List<Purchase> purchasesList) {
-        // JSONArray jsonArray = new JSONArray();
         if (responseCode == BillingClient.BillingResponse.OK && purchasesList != null) {
+          JSONArray jsonResponse = new JSONArray();
           for (Purchase purchase : purchasesList) {
             // Process the result.
             // jsonArray.put(purchase);
             Log.d(TAG, "responseCode: " + responseCode);
             Log.d(TAG, purchasesList.toString());
-
-            JSONArray jsonResponse = new JSONArray();
             try {
               JSONObject json = new JSONObject();
-              json.put("orderId", purchase.getOrderId());
-              json.put("purchaseTime", purchase.getPurchaseTime());
-              json.put("purchaseToken", purchase.getPurchaseToken());
+              json.put("data", purchase.getOriginalJson());
               json.put("signature", purchase.getSignature());
               jsonResponse.put(json);
             } catch (JSONException je) {
               cb.invoke(je.getMessage(), null);
               return;
             }
-
-            cb.invoke(null, jsonResponse.toString());
           }
+          cb.invoke(null, jsonResponse.toString());
+        } else {
+          cb.invoke(null, purchasesList.toString());
         }
-
-        cb.invoke(null, purchasesList.toString());
       }
     });
   }
@@ -415,19 +424,26 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       Log.d(TAG, "Purchase Updated Listener");
       Log.d(TAG, "responseCode: " + responseCode);
       if (responseCode == BillingClient.BillingResponse.OK) {
+        JSONObject json = new JSONObject();
+        Log.d(TAG, purchases.toString());
         if (buyItemCB != null && purchases.size() >= 1) {
-          Log.d(TAG, purchases.toString());
-
-          JSONObject json = new JSONObject();
           try {
-            json.put("data", purchases.get(0).getOriginalJson());
-            json.put("signature", purchases.get(0).getSignature());
-            Log.d(TAG, "return : " + json.toString());
-            buyItemCB.invoke(null, json.toString());
+            buyItemCB.invoke(null, purchases.get(0).getOriginalJson().toString());
           } catch (JSONException e) {
             buyItemCB.invoke(e, null);
           } finally {
             buyItemCB = null;
+          }
+        } else if (buyItemWithSignCB != null && purchases.size() >= 1) {
+          try {
+            json.put("data", purchases.get(0).getOriginalJson());
+            json.put("signature", purchases.get(0).getSignature());
+            Log.d(TAG, "return : " + json.toString());
+            buyItemWithSignCB.invoke(null, json.toString());
+          } catch (JSONException e) {
+            buyItemWithSignCB.invoke(e, null);
+          } finally {
+            buyItemWithSignCB = null;
           }
         }
         return;
@@ -435,6 +451,9 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       if (buyItemCB != null) {
         buyItemCB.invoke(responseCode, null);
         buyItemCB = null;
+      } else if (buyItemWithSignCB != null) {
+        buyItemWithSignCB.invoke(responseCode, null);
+        buyItemWithSignCB = null;
       }
     }
   };
