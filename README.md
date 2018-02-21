@@ -21,9 +21,16 @@ For new method, refreshAllItems has been implemented for both ios and android. T
 Also there are some other methods that is not supported in ios and implemented in android. You can see more in Changelogs below.
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
+RNIap.buyItem('com.cooni.point1000').then(receipt=>{
+    this.setState({
+      receipt:receipt, // save the receipt if you need it, whether locally, or to your server.
+      progressTitle:"Purchase Successful!",
+      points:this.state.points + 1000
+    });
+
 ## Changelogs
 - **[0.2.12]**
-  + Added signiture to android purchase.
+  + Added signiture to android purchase. From this version, the verification string for json string after purchasing will be receipt.data instead of receipt itself because of changes in [here](https://github.com/dooboolab/react-native-iap/issues/31). We will apply this changes to ios too so you do not have to handle these two differently.
 - **[0.2.11]**
   + [Move podspec to where "react-native link" expects it to be](https://github.com/dooboolab/react-native-iap/commit/6c2389719663f90de1862cf14dfd4d3e3d670d1b).
 - **[0.2.9]**
