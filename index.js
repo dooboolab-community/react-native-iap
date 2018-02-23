@@ -88,7 +88,13 @@ export const buyItem = (item) => {
           return;
         }
         // return string
-        resolve(purchase);
+        /**
+         * TODO: below code should be implemented in ios part since signature param could be received during the process.
+         */
+        const jsonPurchase = {};
+        jsonPurchase.data = purchase;
+        jsonPurchase.signature = '';
+        resolve(jsonPurchase);
       });
     });
   } else if (Platform.OS === 'android') {
@@ -98,7 +104,7 @@ export const buyItem = (item) => {
           reject(err);
           return;
         }
-        resolve(purchase);
+        resolve(JSON.parse(purchase));
       });
     });
   }
@@ -117,7 +123,7 @@ export const buySubscribeItem = (item) => {
           reject(err);
           return;
         }
-        resolve(purchase);
+        resolve(JSON.parse(purchase));
       });
     });
   }

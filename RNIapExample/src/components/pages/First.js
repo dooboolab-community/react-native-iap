@@ -71,7 +71,7 @@ class Page extends Component {
       const receipt = await RNIap.buyItem(sku);
       // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
       console.log(receipt);
-      this.setState({ receipt }, () => this.goToNext());
+      this.setState({ receipt: receipt.data }, () => this.goToNext());
     } catch (err) {
       console.log(`${err}`);
       Alert.alert(`${err}`);
@@ -84,7 +84,7 @@ class Page extends Component {
       const receipt = await RNIap.buyItem(sku);
       // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
       console.log(receipt);
-      this.setState({ receipt }, () => this.goToNext());
+      this.setState({ receipt: receipt.data }, () => this.goToNext());
     } catch (err) {
       console.log(`${err}`);
       Alert.alert(`${err}`);

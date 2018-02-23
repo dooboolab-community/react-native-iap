@@ -14,6 +14,8 @@ react-native-iap@0.2.0 has been published and it is recommended to use version a
 `react-native-iap` module versions that are not described in `change logs` may not run as expected so please refer to version mentioned in `Changelogs` below.
 
 ## Breaking Changes
+Recent breaking changes have made from `0.2.12`. Please read the changelogs below. The summary of change is that it now returns receipt in different format.
+
 Changes from `react-native-iap@0.1.*` to `react-native-iap@0.2.*` is that you have `prepare()` method deprecated which you should call before using `RNIap` methods. Now you have to call `prepareAndroid()` instead just to know that it is just android dependent method.
 Also to import module, previously in `react-native-iap@0.1.*` you had to `import RNIap from 'react-native-iap'` but now you have to do like `import * as RNIap from 'react-native-iap'`.
 
@@ -22,6 +24,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.2.13]**
+  + buyItem will now return object instead string. The receipt string will be result.data and signature is added in result.signature. Currently ios signature will be always empty string.
 - **[0.2.12]**
   + Added signiture to android purchase. From this version, the verification string for json string after purchasing will be receipt.data instead of receipt itself because of changes in [here](https://github.com/dooboolab/react-native-iap/issues/31). We will apply this changes to ios too so you do not have to handle these two differently.
 - **[0.2.11]**
@@ -58,7 +62,7 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
 | prepareAndroid |  | `Promise` | Prepare IAP module for android. Should be called in android before using any methods in RNIap.|
 | getItems | { android: [], ios: [] } | `Promise` | get purchasable items in array. |
 | getSubscribeItems | `string` | `Promise` | Get subscription items. |
-| buyItem | `string` | `Promise` | Purchase item. |
+| buyItem | `json object` | `Promise` | Purchase item. |
 | buySubscribeItem | `string` | `Promise` | Buy subscription item. |
 | refreshAllItems | | `Promise` | Refresh all items to make them available to buy again. |
 | refreshPurchaseItemsAndroid | `string` | `Promise` | refresh purchased items for android. What is different from refreshAllItems is that this method can get parameter to refresh `INAPP` items or `SUBS` items.|
@@ -186,7 +190,7 @@ In RNIapExample, at receiving receipt string, main page will navigate to Second.
 this.setState({progressTitle:"Please wait..."});
 RNIap.buyItem('com.cooni.point1000').then(receipt=>{
     this.setState({
-      receipt:receipt, // save the receipt if you need it, whether locally, or to your server.
+      receipt:receipt.data, // save the receipt if you need it, whether locally, or to your server.
       progressTitle:"Purchase Successful!",
       points:this.state.points + 1000
     });
@@ -217,7 +221,7 @@ buySubscribeItem = async(sku) => {
     const receipt = await RNIap.buyItem(sku);
     // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
     console.log(receipt);
-    this.setState({ receipt }, () => this.goToNext());
+    this.setState({ receipt: receipt.data }, () => this.goToNext());
   } catch (err) {
     console.log(`${err}`);
     Alert.alert(`${err}`);
