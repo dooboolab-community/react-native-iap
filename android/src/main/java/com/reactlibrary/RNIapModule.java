@@ -130,7 +130,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
             @Override
             public void onSkuDetailsResponse(int responseCode, List<SkuDetails> skuDetailsList) {
               Log.d(TAG, "responseCode: " + responseCode);
-              Log.d(TAG, skuDetailsList.toString());
+              // Log.d(TAG, skuDetailsList ? skuDetailsList.toString() : '');
 
               JSONArray jsonResponse = new JSONArray();
               try {
