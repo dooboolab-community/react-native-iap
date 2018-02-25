@@ -8,8 +8,8 @@
 
 ## Pull request(PR)
 * Do not modify the code in the `master` branch.
-* PR allows only the `develop` branch.
-* It is useful to use a topic branch that has the parent `develop` as its parent.
+* PR allows only the `dev` branch.
+* It is useful to use a topic branch that has the parent `dev` as its parent.
 
 
 ## Coding Guidelines
