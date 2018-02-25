@@ -16,6 +16,7 @@
 Please follow the Coding conventions as much as possible when contributing your code.
 * The indent tab is two spaces.
 * The class declaration and the `{}` in curly brackets such as function, if, foreach, for, and while should be in the following format. Also if you installed eslint in vscode or in your code editor, it will help you with linting.
+	* `{` should be placed in same line and `}` should be placed in next line.
 ```
 for (let i = 0; i < 10; i++) {
   ...
@@ -24,6 +25,5 @@ array.forEach((e) => {
   ...
 });
 ```
-	* `{` should be placed in same line and `}` should be placed in next line.
   * Space before `(` and after `)`.
 * **If you find code that does not fit in the coding convention, do not ever try to fix code that is not related to your purpose.**
