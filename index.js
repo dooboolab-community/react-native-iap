@@ -178,6 +178,8 @@ export const prepareAndroid = () => {
         resolve(msg);
       });
     });
+  } else {
+    return null;
   }
 };
 
@@ -209,6 +211,8 @@ export const getPurchasedItemsAndroid = (type: string | null) => {
         }
       );
     });
+  } else {
+    return null;
   }
 };
 
@@ -226,6 +230,8 @@ export const consumeItemAndroid = (token: string) => {
         resolve(success);
       });
     });
+  } else {
+    return null;
   }
 };
 
