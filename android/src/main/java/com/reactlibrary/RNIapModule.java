@@ -275,9 +275,9 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
             cb.invoke(null, jsonResponse.toString());
           }
+        } else {
+          cb.invoke(null, purchasesList.toString());
         }
-
-        cb.invoke(null, purchasesList.toString());
       }
     });
   }
