@@ -423,17 +423,11 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         Log.d(TAG, purchases.toString());
         if (buyItemCB != null) {
           buyItemCB.invoke(null, json.toString());
-        } else if (buyItemWithSignCB != null ) {
-          buyItemWithSignCB.invoke(null, json.toString());
         }
         buyItemCB = null;
-        buyItemWithSignCB = null;
       } else if (buyItemCB != null) {
         buyItemCB.invoke(responseCode, null);
         buyItemCB = null;
-      } else if (buyItemWithSignCB != null) {
-        buyItemWithSignCB.invoke(responseCode, null);
-        buyItemWithSignCB = null;
       }
     }
   };
