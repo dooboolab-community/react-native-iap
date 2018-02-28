@@ -213,6 +213,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void buyItem(String id_item, Callback cb) {
+    buyItemCB = cb;
     BillingFlowParams flowParams = BillingFlowParams.newBuilder()
         .setSku(id_item)
         .setType(BillingClient.SkuType.INAPP)
@@ -220,12 +221,11 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
     int responseCode = mBillingClient.launchBillingFlow(getCurrentActivity(), flowParams);
     Log.d(TAG, "buyItem responseCode: " + responseCode);
-
-    buyItemCB = cb;
   }
 
   @ReactMethod
   public void buySubscribeItem(String id_item, Callback cb) {
+    buyItemCB = cb;
     BillingFlowParams flowParams = BillingFlowParams.newBuilder()
         .setSku(id_item)
         .setType(BillingClient.SkuType.SUBS)
@@ -233,8 +233,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
     int responseCode = mBillingClient.launchBillingFlow(getCurrentActivity(), flowParams);
     Log.d(TAG, "buyItem responseCode: " + responseCode);
-
-    buyItemCB = cb;
   }
 
   @ReactMethod
@@ -414,26 +412,28 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       Log.d(TAG, "Purchase Updated Listener");
       Log.d(TAG, "responseCode: " + responseCode);
       if (responseCode == BillingClient.BillingResponse.OK) {
-        if (buyItemCB != null && purchases.size() >= 1) {
-          Log.d(TAG, purchases.toString());
-
-          JSONObject json = new JSONObject();
-          try {
-            json.put("data", purchases.get(0).getOriginalJson());
-            json.put("signature", purchases.get(0).getSignature());
-            Log.d(TAG, "return : " + json.toString());
-            buyItemCB.invoke(null, json.toString());
-          } catch (JSONException e) {
-            buyItemCB.invoke(e, null);
-          } finally {
-            buyItemCB = null;
-          }
+        Purchase purchase = purchases.get(0);
+        JSONObject json = new JSONObject();
+        try {
+          json.put("signature", purchase.getSignature());
+          json.put("data", purchase.getOriginalJson());
+        } catch (JSONException e) {
+          e.printStackTrace();
         }
-        return;
-      }
-      if (buyItemCB != null) {
+        Log.d(TAG, purchases.toString());
+        if (buyItemCB != null) {
+          buyItemCB.invoke(null, json.toString());
+        } else if (buyItemWithSignCB != null ) {
+          buyItemWithSignCB.invoke(null, json.toString());
+        }
+        buyItemCB = null;
+        buyItemWithSignCB = null;
+      } else if (buyItemCB != null) {
         buyItemCB.invoke(responseCode, null);
         buyItemCB = null;
+      } else if (buyItemWithSignCB != null) {
+        buyItemWithSignCB.invoke(responseCode, null);
+        buyItemWithSignCB = null;
       }
     }
   };
