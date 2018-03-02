@@ -1,4 +1,4 @@
-package com.reactlibrary;
+package com.dooboolab.RNIap;
 
 import android.app.Activity;
 import android.content.ComponentName;

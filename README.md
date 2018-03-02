@@ -14,7 +14,9 @@ react-native-iap@0.2.0 has been published and it is recommended to use version a
 `react-native-iap` module versions that are not described in `change logs` may not run as expected so please refer to version mentioned in `Changelogs` below.
 
 ## Breaking Changes
-Recent breaking changes have made from `0.2.12`. Please read the changelogs below. The summary of change is that it now returns receipt in different format.
+Recent breaking changes have made from `0.2.16` in android. Pakcage name has been fixed to `com.dooboolab.RNIap.RNIapPackage`. Read the changelogs below. There was linking [issue](https://github.com/dooboolab/react-native-iap/issues/49#issuecomment-369811257) with wrong package name.
+
+Breaking changes have made from `0.2.12`. Please read the changelogs below. The summary of change is that it now returns receipt in different format.
 
 Changes from `react-native-iap@0.1.*` to `react-native-iap@0.2.*` is that you have `prepare()` method deprecated which you should call before using `RNIap` methods. Now you have to call `prepareAndroid()` instead just to know that it is just android dependent method.
 Also to import module, previously in `react-native-iap@0.1.*` you had to `import RNIap from 'react-native-iap'` but now you have to do like `import * as RNIap from 'react-native-iap'`.
@@ -24,6 +26,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.2.16]**
+  + Changed android package name `com.reactlibrary.RNIapPackage` to `com.dooboolab.RNIap.RNIapPackage`;.
 - **[0.2.15]**
   + Removed react dependency in pod(deprecated). Handle android `buySubscribeItem` callback.
 - **[0.2.14]**
