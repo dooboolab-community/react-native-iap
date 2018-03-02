@@ -3,7 +3,7 @@ package com.dooboolab.iapexample;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.reactlibrary.RNIapPackage;
+import com.dooboolab.RNIap.RNIapPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;

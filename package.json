@@ -1,6 +1,6 @@
 {
   "name": "react-native-iap",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "description": "",
   "main": "index.js",
   "types": "index.d.ts",
