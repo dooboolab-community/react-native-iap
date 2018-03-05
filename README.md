@@ -118,7 +118,7 @@ First thing you should do is to define your items for iOS and android separately
 ```javascript
 import * as RNIap from 'react-native-iap';
 
-const itemSkus = {
+const itemSkus = Platform.select({
   ios: [
     'com.cooni.point1000',
     'com.cooni.point5000',
@@ -127,46 +127,31 @@ const itemSkus = {
     'point_1000',
     '5000_point',
   ],
-};
+});
 ```
 
 Next, call the prepare function (ios it's not needed, but android it is. No need to check platform though since nothing will happen in ios:
 
 ```javascript
-async preparing function() {
+async function() {
   try {
-    const message = await RNIap.prepareAndroid()
-    // Ready to call RNIap.getItems()
-  } catch(errorCode) {
-    // Depending on the situation, Android will have a different error code. Handle accordingly. Visit the link below for current info
-    // https://developer.android.com/reference/com/android/billingclient/api/BillingClient.BillingResponse.html
-    // This catch will never be called on ios
-    /*
-      -2: FEATURE_NOT_SUPPORTED
-      -1: SERVICE_DISCONNECTED
-      0: SUCCESS (should never be successful since only errors are caught)
-      1: USER_CANCELED
-      2: SERVICE_UNAVAILABLE
-      3: BILLING_UNAVAILABLE
-      4: ITEM_UNAVAILABLE
-      5: DEVELOPER_ERROR
-      6: ERROR
-      7: ITEM_ALREADY_OWNED
-      8: ITEM_NOT_OWNED
-    */
+    await RNIap.prepare()
+    // Ready to call RNIap.getProducts(), etc.
+  } catch(error) {
+
   }
 }
 ```
 
 ## Get Valid Items
-Once you called prepareAndroid(), call getItems(). Both are async funcs. You can do it in componentDidMount(), or other area as appropriate for you app. Since a user may first start your app with a bad internet connection, then later have an internet connection, making preparing/getting items more than once may be a good idea. Like if the user has no IAPs available when the app first starts, you may want to check again when the user enters the your IAP store.
+Once you called prepare(), call getProducts(). Both are async funcs. You can do it in componentDidMount(), or other area as appropriate for you app. Since a user may first start your app with a bad internet connection, then later have an internet connection, making preparing/getting items more than once may be a good idea. Like if the user has no IAPs available when the app first starts, you may want to check again when the user enters the your IAP store.
 ```javascript
 async componentDidMount() {
   try {
-    const message = await RNIap.prepareAndroid()
-    const items = await RNIap.getItems(itemSkus)
-    this.setState({items})
-  } catch(errorCode) {
+    await RNIap.prepare()
+    const products = await RNIap.getProducts(itemSkus)
+    this.setState({ items })
+  } catch(error) {
 
   }
 }
@@ -185,57 +170,31 @@ async componentDidMount() {
 
 
 ## Purchase
-Once you have called getItems(), and you have a valid response, you can call buyItem().
+Once you have called getProducts(), and you have a valid response, you can call buyProduct().
 ```javascript
-  const receipt = await RNIap.buyItem('com.cooni.point1000');
+  const receipt = await RNIap.buyProduct('com.cooni.point1000');
   // above will return receipt string which can be used to validate on your server.
 ```
 In RNIapExample, at receiving receipt string, main page will navigate to Second.js.
 
 ## Purchase Example 2 (Advanced)
 ```javascript
-this.setState({progressTitle:"Please wait..."});
-RNIap.buyItem('com.cooni.point1000').then(receipt=>{
+this.setState({ progressTitle: "Please wait..." });
+RNIap.buyProduct('com.cooni.point1000').then(purchase => {
     this.setState({
-      receipt:receipt.data, // save the receipt if you need it, whether locally, or to your server.
-      progressTitle:"Purchase Successful!",
-      points:this.state.points + 1000
+      receipt: purchase.transactionReceipt, // save the receipt if you need it, whether locally, or to your server.
+      progressTitle: "Purchase Successful!",
+      points: this.state.points + 1000
     });
-  }).catch(error=>{
+  }).catch(error => {
     // resetting UI
-    this.setState({progressTitle:"Buy 1000 Points for only $0.99"})
-    if (Platform.OS == 'ios') {
-      if (error.code == 2) {
-        // ios error.code 2 means that the user cancelled. No need to alert them. Just reset the UI.
-      } else {
-        // ios error.description gives a so-so English description of the error that the user should be able to understand.
-        // You could also give your own descriptions based on error.code instead:
-        // https://developer.apple.com/documentation/storekit/skerror.code
-        alert(error.description)
-      }
-    } else {
-      // haven't added specific error handling yet for android. todo.
-      alert("Purchase Unsuccessful");
-    }
+    console.error(error); // standardized error.code and error.message available
+    this.setState({ progressTitle: "Buy 1000 Points for only $0.99" });
+    alert(error.message);
   })
 ```
 
-## Subscription
-```javascript
-buySubscribeItem = async(sku) => {
-  try {
-    console.log('buyItem: ' + sku);
-    const receipt = await RNIap.buyItem(sku);
-    // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
-    console.log(receipt);
-    this.setState({ receipt: receipt.data }, () => this.goToNext());
-  } catch (err) {
-    console.log(`${err}`);
-    Alert.alert(`${err}`);
-  }
-}
-```
-Subscribable products can be included in item object and purchased just like consumable product.
+Subscribable products can be purchased just like consumable products.
 Users can cancel subscriptions by using the iOS System Settings.
 
 
