@@ -7,13 +7,7 @@
 
 ////////////////////////////////////////////////////     _//////////_  // Private Members
 @interface RNIapIos() {
-  RCTResponseSenderBlock purchaseCallback;
-  RCTResponseSenderBlock productListCB;
-  RCTResponseSenderBlock historyCB;
-
-  int cnt;
-
-  NSString * productID;
+  NSMutableDictionary *promisesByKey;
 }
 @end
 
@@ -21,56 +15,92 @@
 @implementation RNIapIos
 
 -(instancetype)init {
-  self = [super init];
-  [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+  if ((self = [super init])) {
+    promisesByKey = [NSMutableDictionary dictionary];
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+  }
   return self;
 }
 
 -(void) dealloc {
-    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+  [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+}
+
+-(void)addPromiseToKey:(NSString*)key
+               resolve:(RCTPromiseResolveBlock)resolve
+                reject:(RCTPromiseRejectBlock)reject) {
+  NSMutableArray* promises = [promisesByKey valueForKey:key];
+  
+  if (promises == nil) {
+    promises = [NSMutableArray array];
+  }
+  
+  [promises addObject:@[resolve, reject]];
+  [promisesByKey setValue:promises forKey:key];
+}
+
+-(void)resolvePromisesForKey:(NSString*)key value:(id)value {
+  NSMutableArray* promises = [promisesByKey valueForKey:key];
+  
+  if (promises != nil) {
+    for (NSMutableArray *tuple in promises) {
+      tuple[0](value);
+    }
+  }
+  
+  [promisesByKey removeObjectForKey:key];
+}
+
+-(void)rejectPromisesForKey:(NSString*)key code:(NSString*)code message:(NSString*)message error:(NSError* error) {
+  NSMutableArray* promises = [promisesByKey valueForKey:key];
+  
+  if (promises != nil) {
+    for (NSMutableArray *tuple in promises) {
+      tuple[1](code, message, error);
+    }
+  }
+  
+  [promisesByKey removeObjectForKey:key];
 }
 
 ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(fetchHistory:(RCTResponseSenderBlock)callback) {  //  Restore non consumable items.
-  RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: fetchHistory \n\n\n\n .");
-  historyCB = callback;
-  [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
-//  SKReceiptRefreshRequest *request = [[SKReceiptRefreshRequest alloc] init];
-//  request.delegate = self;
-//  [request start];
-}
-
-RCT_EXPORT_METHOD(fetchProducts:(NSString *)prodJsonArray callback:(RCTResponseSenderBlock)callback) {
-  RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: fetchProducts \n\n\n\n .");
-  productListCB = callback;
-  // Parsing...
-  NSData* data = [prodJsonArray dataUsingEncoding:NSUTF8StringEncoding];
-  NSArray *arrProd = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-  NSLog(@"   Obj c >> InAppPurchase  :: fetchProducts  >>  arrProd parsed as follows  ... %@", arrProd);
-  NSSet * productIdentifiers = [NSSet setWithObject:arrProd[0]];
-  for (int k = 0; k < arrProd.count; k++) {
-    productIdentifiers = [productIdentifiers setByAddingObject:arrProd[k]];
-  }
+RCT_EXPORT_METHOD(getItems
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  NSSet* productIdentifiers = [NSSet setWithArray:skus];
   productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
   productsRequest.delegate = self;
+  NSString* key = RCTKeyForInstance(productsRequest);
+  [self addPromiseToKey:key resolve:resolve reject:reject];
   [productsRequest start];
 }
 
-// RCT_EXPORT_METHOD(login:(NSString *)keyJson callback:(RCTResponseSenderBlock)callback) {
-RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSenderBlock)callback) {
-  RCTLogInfo(@"\n\n\n\n Obj c >> InAppPurchase  :: purchaseItem :: %@    Valid Product : %ld  \n\n\n\n .", productID, (unsigned long)validProducts.count);
-  purchaseCallback = callback;
+RCT_EXPORT_METHOD(getAvailableItems
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  [self addPromiseToKey:@"availableItems" resolve:resolve reject:reject];
+  [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+}
 
-  for (int k = 0; k < validProducts.count; k++) {
-    SKProduct *theProd = [validProducts objectAtIndex:k];
-    if ([productID isEqualToString:theProd.productIdentifier]) {
-      NSLog(@"\n\n\n Obj c >> InAppPurchase  :: purchaseItem :: Product Found  \n\n\n.");
-      SKPayment *payment = [SKPayment paymentWithProduct:theProd];
-      [[SKPaymentQueue defaultQueue] addPayment:payment];
-      return;
+RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  SKProduct *product;
+  for (SKProduct *p in validProducts) {
+    if([sku isEqualToString:p.productIdentifier]) {
+      product = p;
+      break;
     }
+  }
+  
+  if (product) {
+    SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
+    [[SKPaymentQueue defaultQueue] addPayment:payment];
+    [self addPromiseToKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
+  } else {
+    reject(@"E_PURCHASE_FAILED", @"Invalid product ID.");
   }
 }
 
@@ -78,39 +108,13 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
 
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
   validProducts = response.products;
-  long count = [validProducts count];
-  NSLog(@"\n\n\n Obj c >> InAppPurchase   ###  didReceiveResponse :: Valid Product Count ::  %ld", count);
-
-  if (count == 0) {
-    productListCB(@[@"No Valid Product returned !!", [NSNull null]]);
-    return;
+  NSMutableArray* items = [NSMutableArray array];
+  
+  for (SKProduct* product in validProducts) {
+    [items addObject:[self getProductObject:product]];
   }
-
-  NSMutableArray *ids = [NSMutableArray arrayWithCapacity: count];
-  // Valid Product .. send callback.
-  for (int k = 0; k < count; k++) {
-    SKProduct *theProd = [validProducts objectAtIndex:k];
-    [ids addObject:[self getProductString:theProd]];
-    NSLog(@"\n\n\n Obj c >> InAppPurchase   ###  didReceiveResponse  유효 상품 Id : %@", theProd.productIdentifier);
-  }
-  if(productListCB) productListCB(@[[NSNull null], ids]);
-  productListCB = nil;
-}
-
--(NSString *)englishErrorCodeDescription : (int) code {
-    NSArray *descriptions = @[@"An unknown or unexpected error has occured. Please try again later.",
-                              @"Unable to process the transaction: your client is not allowed to make purchases.",
-                              @"User cancelled.",
-                              @"Oops! Payment information invalid. Did you put in your password correctly?",
-                              @"Payment is not allowed on this device. If you are the one authorized to make purchases on this device, you can toggle this on in your Settings.",
-                              @"Sorry, but this product is currently not available in the store.",
-                              @"Unable to make purchase: Cloud service permission denied.",
-                              @"Unable to process transaction: Your internet connection isn't stable! Try again later.",
-                              @"Unable to process transaction: Cloud service revoked."];
-    if (code > descriptions.count - 1) {
-        return descriptions[0];
-    }
-    return descriptions[code];
+  
+  [self resolvePromisesForKey:RCTKeyForInstance(request) value:items];
 }
 
 -(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
@@ -130,13 +134,11 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
       case SKPaymentTransactionStateFailed:
         NSLog(@"\n\n\n\n\n\n Purchase Failed  !! \n\n\n\n\n");
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-        if (purchaseCallback) {
-            purchaseCallback(@[
-                               @{@"code":[NSString stringWithFormat:@"%i", (int)transaction.error.code],
-                                 @"description":[self englishErrorCodeDescription:(int)transaction.error.code]}
-                               ]);
-            purchaseCallback = nil;
-        }
+        NSString *key = RCTKeyForInstance(transaction.payment.productIdentifier);
+        [self rejectPromisesForKey:key code:[self standardErrorCode:error.code] message:[self englishErrorCodeDescription:(int)transaction.error.code]];
+        break;
+      case SKPaymentTransactionStateDeferred:
+        NSLog(@"Deferred (awaiting approval via parental controls, etc.)");
         break;
       default:
         NSLog(@" default case ...   error  ... ");
@@ -147,49 +149,34 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
 
 -(void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {  ////////   RESTORE
   NSLog(@"\n\n\n  paymentQueueRestoreCompletedTransactionsFinished  \n\n.");
-  NSError * err;
-  NSMutableArray *ids = [NSMutableArray arrayWithCapacity: 0];
-  if (historyCB) {
-    NSLog(@"  Count : %lu", (unsigned long)queue.transactions.count);
-    for(SKPaymentTransaction *transaction in queue.transactions){
-      if(transaction.transactionState == SKPaymentTransactionStateRestored) {
-        NSDictionary *restored = [self getPurchaseData:transaction];
-        NSData * jsonData = [NSJSONSerialization dataWithJSONObject:restored options:NSJSONWritingPrettyPrinted error:&err];
-        NSString * myString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-        [ids addObject:myString];
-      }
+  NSMutableArray* items = [NSMutableArray arrayWithCapacity:queue.transactions.count];
+  
+  for(SKPaymentTransaction *transaction in queue.transactions) {
+    if(transaction.transactionState == SKPaymentTransactionStateRestored) {
+      NSDictionary *restored = [self getPurchaseData:transaction];
+      [items addObject:restored];
+      [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
     }
-    historyCB(@[[NSNull null], ids]);
-    historyCB = nil;
-  } else {
-    RCTLogWarn(@"No callback registered for restore product request.");
   }
+  
+  [self resolvePromisesForKey:@"availableItems" value:items];
 }
 
 -(void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
+  [self rejectPromisesForKey:"availableItems" code:[self standardErrorCode:error.code] message:[self englishErrorCodeDescription:(int)error.code] error:error];
     NSLog(@"\n\n\n restoreCompletedTransactionsFailedWithError \n\n.");
-    if (historyCB) {
-        historyCB(@[@{
-                        @"code":[NSString stringWithFormat:@"%i", (int)error.code],
-                        @"description":[self englishErrorCodeDescription:(int)error.code]
-                    }]);
-        historyCB = nil;
-    }
 }
 
--(void)purchaseProcess:(SKPaymentTransaction *)trans {
+-(void)purchaseProcess:(SKPaymentTransaction *)transaction {
+  [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
   NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
 
+  NSString *receipt = nil;
   if ([[NSFileManager defaultManager] fileExistsAtPath:[receiptUrl path]]) {
-    NSData *rcptData = [NSData dataWithContentsOfURL:receiptUrl];
-    NSString *rcptStr = [rcptData base64EncodedStringWithOptions:0];
-    if(purchaseCallback && rcptStr != NULL) {
-      purchaseCallback(@[[NSNull null], rcptStr]);
-      purchaseCallback = nil;
-    }
-    [[SKPaymentQueue defaultQueue] finishTransaction:trans];
-    NSLog(@"\n\n Purchasing : receipt : %@  \n\n", rcptStr);
+    NSData *receiptData = [NSData dataWithContentsOfURL:receiptUrl];
+    receipt = [receiptData base64EncodedStringWithOptions:0];
+    
+    NSLog(@"\n\n Purchasing : receipt : %@  \n\n", receipt);
   } else {
     NSLog(@"iOS 7 AppReceipt not found, refreshing...");
     //          SKReceiptRefreshRequest *refreshReceiptRequest = [[SKReceiptRefreshRequest alloc] initWithReceiptProperties:@{}];
@@ -197,25 +184,62 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
     //          [refreshReceiptRequest start];
   }
 
+  [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:receipt];
 }
 
--(NSString*)getProductString:(SKProduct *)theProd {
+-(NSString *)standardErrorCode:(int)code {
+  NSArray *descriptions = @[
+    @"E_UNKNOWN",
+    @"E_DEVICE_NOT_ALLOWED",
+    @"E_USER_CANCELLED",
+    @"E_INVALID_PAYMENT_INFORMATION",
+    @"E_PAYMENT_NOT_ALLOWED",
+    @"E_ITEM_UNAVAILABLE",
+    @"E_PERMISSION_DENIED",
+    @"E_NETWORK_CONNECTION_FAILED",
+    @"E_USER_INTERFERENCE"
+  ];
+  
+  if (code > descriptions.count - 1) {
+    return descriptions[0];
+  }
+  return descriptions[code];
+}
+
+-(NSString *)englishErrorCodeDescription:(int)code {
+  NSArray *descriptions = @[
+    @"An unknown or unexpected error has occured. Please try again later.",
+    @"Unable to process the transaction: your device is not allowed to make purchases.",
+    @"User cancelled.",
+    @"Oops! Payment information invalid. Did you enter your password correctly?",
+    @"Payment is not allowed on this device. If you are the one authorized to make purchases on this device, you can turn payments on in Settings.",
+    @"Sorry, but this product is currently not available in the store.",
+    @"Unable to make purchase: Cloud service permission denied.",
+    @"Unable to process transaction: Your internet connection isn't stable! Try again later.",
+    @"Unable to process transaction: Cloud service revoked."
+  ];
+  
+  if (code > descriptions.count - 1) {
+    return descriptions[0];
+  }
+  return descriptions[code];
+}
+
+-(NSDictionary*)getProductObject:(SKProduct *)product {
   NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
   formatter.numberStyle = NSNumberFormatterCurrencyStyle;
-  formatter.locale = theProd.priceLocale;
-  NSString *localizedPrice = [formatter stringFromNumber:theProd.price];
+  formatter.locale = product.priceLocale;
+  NSString *localizedPrice = [formatter stringFromNumber:product.price];
 
-  NSDictionary *dic = @{ @"productId" : theProd.productIdentifier,
-                         @"price" : theProd.price,
-                         @"currency" : theProd.priceLocale.currencyCode,
-                         @"title" : theProd.localizedTitle,
-                         @"description" : theProd.localizedDescription,
-                         @"localizedPrice" : localizedPrice
-                         };
-  NSError * err;
-  NSData * jsonData = [NSJSONSerialization dataWithJSONObject:dic options:0 error:&err];
-  NSString * myString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-  return myString;
+  return @{
+    @"productId" : product.productIdentifier,
+    @"price" : product.price,
+    @"currency" : product.priceLocale.currencyCode,
+    @"type": product.subscriptionPeriod == nil ? "iap" : "sub",
+    @"title" : product.localizedTitle,
+    @"description" : product.localizedDescription,
+    @"localizedPrice" : localizedPrice
+  };
 }
 
 
@@ -228,11 +252,11 @@ RCT_EXPORT_METHOD(purchaseItem:(NSString *)productID callback:(RCTResponseSender
   }
 
   NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithDictionary: @{
-                                                                                   @"transactionDate": @(transaction.transactionDate.timeIntervalSince1970 * 1000),
-                                                                                   @"transactionIdentifier": transaction.transactionIdentifier,
-                                                                                   @"productIdentifier": transaction.payment.productIdentifier,
-                                                                                   @"transactionReceipt":[receiptData base64EncodedStringWithOptions:0]
-                                                                                   }];
+    @"transactionDate": @(transaction.transactionDate.timeIntervalSince1970 * 1000),
+    @"transactionId": transaction.transactionIdentifier,
+    @"productId": transaction.payment.productIdentifier,
+    @"transactionReceipt":[receiptData base64EncodedStringWithOptions:0]
+  }];
   // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
   SKPaymentTransaction *originalTransaction = transaction.originalTransaction;
   if (originalTransaction) {

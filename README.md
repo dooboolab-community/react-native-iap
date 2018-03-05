@@ -3,7 +3,7 @@
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square"></a>
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square"></a>
 </p>
-This is a react-native link library project for in-app-purchase for both android and ios project. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project. 
+This is a react-native link library project for in-app-purchase for both android and ios project. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project.
 
 We are willing to share same in-app-purchase experience for both android and ios platform and will continuously merge methods which are standing alone.
 
@@ -59,7 +59,7 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
     - refreshPurchaseItemsAndroid(type: string)
     - getPurchasedItemsAndroid(type: string)
     - consumeItemAndroid(token: string)
-  + Able to call prepareAndroid() function without any conditional statement like if (Platform.OS === 'android'). Just use it. 
+  + Able to call prepareAndroid() function without any conditional statement like if (Platform.OS === 'android'). Just use it.
   + Updated Readme.
 - **[0.1.10]**
   + Fixed potential bug relied on preparing IAP module in Android. Updated readme to see how to use it.
@@ -67,15 +67,14 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
 #### Methods
 | Func  | Param  | Return | Description |
 | :------------ |:---------------:| :---------------:| :-----|
-| prepareAndroid |  | `Promise` | Prepare IAP module for android. Should be called in android before using any methods in RNIap.|
-| getItems | { android: [], ios: [] } | `Promise` | get purchasable items in array. |
-| getSubscribeItems | `string` | `Promise` | Get subscription items. |
-| buyItem | `json object` | `Promise` | Purchase item. |
-| buySubscribeItem | `string` | `Promise` | Buy subscription item. |
-| refreshAllItems | | `Promise` | Refresh all items to make them available to buy again. |
-| refreshPurchaseItemsAndroid | `string` | `Promise` | refresh purchased items for android. What is different from refreshAllItems is that this method can get parameter to refresh `INAPP` items or `SUBS` items.|
-| getPurchaseItemsAndroid | `string` | `Promise` | get purchased items for android. This method also gets parameter to refresh `INAPP` items or `SUBS` items.|
-| consumeItemAndroid | `string` | `Promise` | consume item for android. After buying some item from consumable item in android, you can use this method to consume it. Therefore you can purchase the item again. |
+| prepare |  | `Promise<void>` | Prepare IAP module. Must be called on Android before any other purchase flow methods. No-op on iOS.|
+| getProducts | `string[]` Product IDs/skus | `Promise<Product[]>` | Get a list of products (consumable and non-consumable items, but not subscriptions) |
+| getSubscriptions | `string[]` Subscription IDs/skus | `Promise<Subscription[]>` | Get a list of subscriptions |
+| getPurchaseHistory | | `Promise<Purchase[]>` | Gets an invetory of purchases made by the user regardless of consumption status (where possible) |
+| getAvailablePurchases | | `Promise<Purchase[]>` | Get all purchases made by the user (either non-consumable, or haven't been consumed yet)
+| buySubscription | `string` Subscription ID/sku | `Promise<Purchase>` | Create (buy) a subscription to a sku |
+| buyProduct | `string` Product ID/sku | `Promise<Purchase>` | Buy a product |
+| consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 
 ## Npm repo
 https://www.npmjs.com/package/react-native-iap
@@ -154,7 +153,7 @@ async preparing function() {
       6: ERROR
       7: ITEM_ALREADY_OWNED
       8: ITEM_NOT_OWNED
-    */ 
+    */
   }
 }
 ```
@@ -168,7 +167,7 @@ async componentDidMount() {
     const items = await RNIap.getItems(itemSkus)
     this.setState({items})
   } catch(errorCode) {
-  
+
   }
 }
 ```
@@ -210,7 +209,7 @@ RNIap.buyItem('com.cooni.point1000').then(receipt=>{
         // ios error.code 2 means that the user cancelled. No need to alert them. Just reset the UI.
       } else {
         // ios error.description gives a so-so English description of the error that the user should be able to understand.
-        // You could also give your own descriptions based on error.code instead:  
+        // You could also give your own descriptions based on error.code instead:
         // https://developer.apple.com/documentation/storekit/skerror.code
         alert(error.description)
       }
