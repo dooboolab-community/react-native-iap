@@ -76,8 +76,8 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
 | getSubscribeItems | `string` | `Promise` | Get subscription items. |
 | buyItem | `json object` | `Promise` | Purchase item. |
 | buySubscribeItem | `string` | `Promise` | Buy subscription item. |
-| refreshAllItems | | `Promise` | Refresh all items to make them available to buy again. |
-| refreshPurchaseItemsAndroid | `string` | `Promise` | refresh purchased items for android. What is different from refreshAllItems is that this method can get parameter to refresh `INAPP` items or `SUBS` items.|
+| fetchHistory | | `Promise` | Refresh all items to make them available to buy again. |
+| refreshPurchaseItemsAndroid | `string` | `Promise` | refresh purchased items for android. This method can get parameter to refresh `INAPP` items or `SUBS` items.|
 | getPurchaseItemsAndroid | `string` | `Promise` | get purchased items for android. This method also gets parameter to refresh `INAPP` items or `SUBS` items.|
 | consumeItemAndroid | `string` | `Promise` | consume item for android. After buying some item from consumable item in android, you can use this method to consume it. Therefore you can purchase the item again. |
 
@@ -249,13 +249,12 @@ Non consumable products can be restored after user deletes the app and redownloa
 Refer to RNIapExample's source code.
 
 The restoring/refreshing processes for iOS and Android differ. It's similar, though function names and the exact processes are slightly different.
-Using RNIap.refreshAllItems() will achieve the same effect for both iOS and Android. Note that we added a restoreIosNonConsumableProducts() function to the module for iOS use. You do not need to call this. Just use refreshAllItems().
-(We may remove the iOS part in the refreshAllItems() function in the future)
+Using RNIap.fetchHistory() will achieve the same effect for both iOS and Android. Note that we added a restoreIosNonConsumableProducts() function to the module for iOS use. You do not need to call this. Just use fetchHistory().
 
 ```javascript
 restorePreProdducts = async() => {
   try {
-    const results = await RNIap.refreshAllItems() // cross platform case
+    const results = await RNIap.fetchHistory() // cross platform case
     let restoredTitles = ""
     results.forEach(result=>{
       if (result.productIdentifier == "com.mywebsite.MyAppPremiumVersion") {
