@@ -230,7 +230,7 @@ RNIap.buyItem('com.cooni.point1000').then(receipt=>{
 buySubscribeItem = async(sku) => {
   try {
     console.log('buyItem: ' + sku);
-    const receipt = await RNIap.buyItem(sku);
+    const receipt = await RNIap.buySubscribeItem(sku);
     // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
     console.log(receipt);
     this.setState({ receipt: receipt.data }, () => this.goToNext());
