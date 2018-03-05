@@ -130,9 +130,9 @@ export const buySubscribeItem = (item) => {
 };
 
 /**
- * refresh items to buy items again.
+ * fetch histories for purchase items.
  */
-export const refreshAllItems = () => {
+export const fetchHistory = () => {
   if (Platform.OS === 'ios') {
     return new Promise(function (resolve, reject) {
       RNIapIos.fetchHistory((err, items) => {
@@ -147,7 +147,7 @@ export const refreshAllItems = () => {
   } else if (Platform.OS === 'android') {
     return new Promise(function (resolve, reject) {
       try {
-        RNIapModule.refreshAllPurchaseItems((err, items) => {
+        RNIapModule.getPurchaseHistory((err, items) => {
           if ((typeof items) === 'string') {
             resolve(JSON.parse(items));
           } else {
@@ -176,6 +176,29 @@ export const prepareAndroid = () => {
         }
         RNIapModule.refreshPurchaseItems(null);
         resolve(msg);
+      });
+    });
+  } else {
+    return null;
+  }
+};
+
+/**
+ * This method returns the current un-consumed products owned by the user, including both purchased items and items acquired by redeeming a promo code.
+ */
+export const getPurchasesAndroid = () => {
+  if (Platform.OS === 'android') {
+    return new Promise(function(resolve, reject) {
+      RNIapModule.getPurchases((err, items) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        if ((typeof items) === 'string') {
+          resolve(JSON.parse(items));
+        } else {
+          resolve(items);
+        }
       });
     });
   } else {
