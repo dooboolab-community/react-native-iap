@@ -101,7 +101,7 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
     [[SKPaymentQueue defaultQueue] addPayment:payment];
     [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
   } else {
-    reject(@"E_PURCHASE_FAILED", @"Invalid product ID.", nil);
+    reject(@"E_DEVELOPER_ERROR", @"Invalid product ID.", nil);
   }
 }
 
@@ -188,14 +188,14 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
 -(NSString *)standardErrorCode:(int)code {
   NSArray *descriptions = @[
     @"E_UNKNOWN",
-    @"E_DEVICE_NOT_ALLOWED",
+    @"E_SERVICE_ERROR",
     @"E_USER_CANCELLED",
-    @"E_INVALID_PAYMENT_INFORMATION",
-    @"E_PAYMENT_NOT_ALLOWED",
+    @"E_USER_ERROR",
+    @"E_USER_ERROR",
+    @"E_ITEM_UNAVAILABLE",
     @"E_REMOTE_ERROR",
-    @"E_REMOTE_ERROR",
-    @"E_NETWORK_CONNECTION_FAILED",
-    @"E_USER_INTERFERENCE"
+    @"E_NETWORK_ERROR",
+    @"E_SERVICE_ERROR"
   ];
   
   if (code > descriptions.count - 1) {
@@ -208,7 +208,7 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
   NSArray *descriptions = @[
     @"An unknown or unexpected error has occured. Please try again later.",
     @"Unable to process the transaction: your device is not allowed to make purchases.",
-    @"User cancelled.",
+    @"Cancelled.",
     @"Oops! Payment information invalid. Did you enter your password correctly?",
     @"Payment is not allowed on this device. If you are the one authorized to make purchases on this device, you can turn payments on in Settings.",
     @"Sorry, but this product is currently not available in the store.",

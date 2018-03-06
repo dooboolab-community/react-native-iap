@@ -43,19 +43,14 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   private static final String E_UNKNOWN = "E_UNKNOWN";
   private static final String E_NOT_PREPARED = "E_NOT_PREPARED";
-  private static final String E_DEVICE_NOT_ALLOWED = "E_DEVICE_NOT_ALLOWED";
-  private static final String E_PAYMENT_NOT_ALLOWED = "E_PAYMENT_NOT_ALLOWED";
   private static final String E_USER_CANCELLED = "E_USER_CANCELLED";
-  private static final String E_INVALID_PAYMENT_INFORMATION = "E_INVALID_PAYMENT_INFORMATION";
-  private static final String E_PURCHASE_HISTORY_FETCH_FAILED = "E_PURCHASE_HISTORY_FETCH_FAILED";
   private static final String E_ITEM_UNAVAILABLE = "E_ITEM_UNAVAILABLE";
-  private static final String E_PERMISSION_DENIED = "E_PERMISSION_DENIED";
-  private static final String E_NETWORK_CONNECTION_FAILED = "E_NETWORK_CONNECTION_FAILED";
-  private static final String E_ITEMS_FETCH_FAILED = "E_ITEMS_FETCH_FAILED";
-  private static final String E_PURCHASE_FAILED = "E_PURCHASE_FAILED";
-  private static final String E_PURCHASE_CONSUME_FAILED = "E_PURCHASE_CONSUME_FAILED";
-  private static final String E_USER_INTERFERENCE = "E_USER_INTERFERENCE";
+  private static final String E_NETWORK_ERROR = "E_NETWORK_ERROR";
+  private static final String E_SERVICE_ERROR = "E_SERVICE_ERROR";
+  private static final String E_ALREADY_OWNED = "E_ALREADY_OWNED";
   private static final String E_REMOTE_ERROR = "E_REMOTE_ERROR";
+  private static final String E_USER_ERROR = "E_USER_ERROR";
+  private static final String E_DEVELOPER_ERROR = "E_DEVELOPER_ERROR";
 
   final Activity activity = getCurrentActivity();
   private ReactContext reactContext;
@@ -157,7 +152,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
               promise.resolve(items);
             }
             else {
-              promise.reject(E_ITEMS_FETCH_FAILED, "Get items failed with code: " + responseCode);
+              rejectPromiseWithBillingError(promise, responseCode);
             }
           }
         }
@@ -209,7 +204,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       promise.resolve(items);
     }
     else {
-      promise.reject(E_PURCHASE_HISTORY_FETCH_FAILED, "Failed to get purchases with code: " + responseCode);
+      rejectPromiseWithBillingError(promise, responseCode);
     }
   }
 
@@ -248,7 +243,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
           }
           promise.resolve(items);
         } else {
-          promise.reject(E_PURCHASE_HISTORY_FETCH_FAILED, "Failed to get purchase history with code: " + responseCode);
+          rejectPromiseWithBillingError(promise, responseCode);
         }
       }
     });
@@ -263,7 +258,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         .build();
 
     int responseCode = mBillingClient.launchBillingFlow(getCurrentActivity(), flowParams);
-    Log.d(TAG, "buyItemByType (type: " + type + ", sku: " + sku + ") responseCode: " + responseCode);
+    Log.d(TAG, "buyItemByType (type: " + type + ", sku: " + sku + ") responseCode: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
   }
 
   @ReactMethod
@@ -281,16 +276,76 @@ public class RNIapModule extends ReactContextBaseJavaModule {
           promise.resolve(null);
         }
         else {
-          promise.reject(E_PURCHASE_CONSUME_FAILED, "Consumption failed with code: " + responseCode);
+          rejectPromiseWithBillingError(promise, responseCode);
         }
       }
     });
   }
 
+  private void rejectPromiseWithBillingError(final Promise promise, int responseCode) {
+    if (responseCode == BillingClient.BillingResponse.FEATURE_NOT_SUPPORTED) {
+      promise.reject(E_SERVICE_ERROR, "This feature is not available on your device.");
+    }
+    else if (responseCode == BillingClient.BillingResponse.SERVICE_DISCONNECTED) {
+      promise.reject(E_NETWORK_ERROR, "The service is disconnected (check your internet connection.)");
+    }
+    else if (responseCode == BillingClient.BillingResponse.USER_CANCELED) {
+      promise.reject(E_USER_CANCELLED, "Cancelled.");
+    }
+    else if (responseCode == BillingClient.BillingResponse.SERVICE_UNAVAILABLE) {
+      promise.reject(E_SERVICE_ERROR, "The service is unreachable. This may be your internet connection, or the Play Store may be down.");
+    }
+    else if (responseCode == BillingClient.BillingResponse.BILLING_UNAVAILABLE) {
+      promise.reject(E_SERVICE_ERROR, "Billing is unavailable. This may be a problem with your device, or the Play Store may be down.");
+    }
+    else if (responseCode == BillingClient.BillingResponse.ITEM_UNAVAILABLE) {
+      promise.reject(E_ITEM_UNAVAILABLE, "That item is unavailable.");
+    }
+    else if (responseCode == BillingClient.BillingResponse.DEVELOPER_ERROR) {
+      promise.reject(E_DEVELOPER_ERROR, "Google is indicating that we have an error in our code. Sorry about that.");
+    }
+    else if (responseCode == BillingClient.BillingResponse.ERROR) {
+      promise.reject(E_UNKNOWN, "An unknown or unexpected error has occured. Please try again later.");
+    }
+    else if (responseCode == BillingClient.BillingResponse.ITEM_ALREADY_OWNED) {
+      promise.reject(E_ALREADY_OWNED, "You already own this item.");
+    }
+    else {
+      promise.reject(E_UNKNOWN, "Purchase failed with code: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
+    }
+  }
+
+  private String getBillingResponseCodeName(int responseCode) {
+    switch (responseCode) {
+      case BillingClient.BillingResponse.FEATURE_NOT_SUPPORTED:
+        return "FEATURE_NOT_SUPPORTED";
+      case BillingClient.BillingResponse.SERVICE_DISCONNECTED:
+        return "SERVICE_DISCONNECTED";
+      case BillingClient.BillingResponse.OK:
+        return "OK";
+      case BillingClient.BillingResponse.USER_CANCELED:
+        return "USER_CANCELED";
+      case BillingClient.BillingResponse.SERVICE_UNAVAILABLE:
+        return "SERVICE_UNAVAILABLE";
+      case BillingClient.BillingResponse.BILLING_UNAVAILABLE:
+        return "BILLING_UNAVAILABLE";
+      case BillingClient.BillingResponse.ITEM_UNAVAILABLE:
+        return "ITEM_UNAVAILABLE";
+      case BillingClient.BillingResponse.DEVELOPER_ERROR:
+        return "DEVELOPER_ERROR";
+      case BillingClient.BillingResponse.ERROR:
+        return "ERROR";
+      case BillingClient.BillingResponse.ITEM_ALREADY_OWNED:
+        return "ITEM_ALREADY_OWNED";
+    }
+
+    return null;
+  }
+
   BillingClientStateListener billingClientStateListener = new BillingClientStateListener() {
     @Override
-    public void onBillingSetupFinished(@BillingClient.BillingResponse int billingResponseCode) {
-      if (billingResponseCode == BillingClient.BillingResponse.OK) {
+    public void onBillingSetupFinished(@BillingClient.BillingResponse int responseCode) {
+      if (responseCode == BillingClient.BillingResponse.OK) {
         // The billing client is ready.
         Log.d(TAG, "billing client ready");
         if (preparePromise != null) {
@@ -298,8 +353,8 @@ public class RNIapModule extends ReactContextBaseJavaModule {
           return;
         }
       }
-      if (preparePromise != null) {
-        preparePromise.reject(E_NOT_PREPARED, "Billing setup finished with code: " + billingResponseCode);
+      else {
+        rejectPromiseWithBillingError(preparePromise, responseCode);
       }
     }
     @Override
@@ -333,7 +388,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         buyItemPromise.resolve(item);
       }
       else {
-        buyItemPromise.reject(E_PURCHASE_FAILED, "Purchase failed with code: " + responseCode);
+        rejectPromiseWithBillingError(buyItemPromise, responseCode);
       }
     }
   };
