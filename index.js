@@ -82,7 +82,7 @@ export const buySubscription = (sku) => Platform.select({
  */
 export const buyProduct = (sku) => Platform.select({
   ios: () => RNIapIos.buyProduct(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_INAPP_PRODUCT, sku)
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku)
 })();
 
 /**
