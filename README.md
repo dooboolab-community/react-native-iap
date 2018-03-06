@@ -169,10 +169,11 @@ async componentDidMount() {
 ## Purchase
 Once you have called getProducts(), and you have a valid response, you can call buyProduct().
 ```javascript
-  const receipt = await RNIap.buyProduct('com.example.coins100');
-  // above will return receipt string which can be used to validate on your server.
+  // Will return a purchase object with a receipt which can be used to validate on your server.
+  const purchase = await RNIap.buyProduct('com.example.coins100');
 ```
-In RNIapExample, at receiving receipt string, main page will navigate to Second.js.
+
+In RNIapExample, upon receiving receiving a purchase receipt, main page will navigate to Second.js.
 
 ## Purchase Example 2 (Advanced)
 ```javascript
@@ -201,7 +202,7 @@ By default all items that are purchased will not be consumed unless they are aut
 ```javascript
 getPurchases = async() => {
   try {
-    const purchases = await RNIap.getAvailablePurcahses();
+    const purchases = await RNIap.getAvailablePurchases();
     let restoredTitles = '';
     let coins = CoinStore.getCount();
     purchases.forEach(purchase => {
