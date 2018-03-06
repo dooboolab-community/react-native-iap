@@ -36,6 +36,7 @@ import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.android.vending.billing.IInAppBillingService;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
@@ -122,14 +123,20 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void getItemsByType(String type, List<String> skus, final Promise promise) {
+  public void getItemsByType(String type, ReadableArray skus, final Promise promise) {
     if (mService == null) {
       promise.reject(E_NOT_PREPARED, "IAP not prepared. Check if Google Play service is available.");
       return;
     }
 
+    ArrayList<String> skusList = new ArrayList<>();
+
+    for (int i = 0; i < skus.size(); i++) {
+      skusList.add(skus.getString(i));
+    }
+
     SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
-    params.setSkusList(skus).setType(type);
+    params.setSkusList(skusList).setType(type);
     mBillingClient.querySkuDetailsAsync(params.build(),
         new SkuDetailsResponseListener() {
           @Override
