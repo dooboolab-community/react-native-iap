@@ -120,13 +120,11 @@ import * as RNIap from 'react-native-iap';
 
 const itemSkus = Platform.select({
   ios: [
-    'com.cooni.point1000',
-    'com.cooni.point5000',
+    'com.example.coins100'
   ],
   android: [
-    'point_1000',
-    '5000_point',
-  ],
+    'com.example.coins100'
+  ]
 });
 ```
 
@@ -137,8 +135,8 @@ async function() {
   try {
     await RNIap.prepare()
     // Ready to call RNIap.getProducts(), etc.
-  } catch(error) {
-
+  } catch(err) {
+    console.warn(err); // standardized err.code and err.message available
   }
 }
 ```
@@ -151,46 +149,45 @@ async componentDidMount() {
     await RNIap.prepare()
     const products = await RNIap.getProducts(itemSkus)
     this.setState({ items })
-  } catch(error) {
-
+  } catch(err) {
+    console.warn(err); // standardized err.code and err.message available
   }
 }
 ```
 #### Each item is a JavaScript object containing these keys:
-|    | ios | android | info |
+|    | iOS | Android | Comment |
 |----|-----|---------|------|
-|price| ✓ | ✓ | will return localizedPrice on Android (default), or a decimal point number on iOS (default) |
-|productId| ✓ | ✓ | returns a string needed to purchase the item later |
-|currency| ✓ | ✓ | returns the currency code |
-|localizedPrice| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
-|title| ✓ | ✓ | returns the title Android and localizedTitle on iOS |
-|description| ✓ | ✓ | returns the description on Android and localizedDescription on iOS |
-|type|  | ✓ | returns SKU type |
-|price_currency|  | ✓ | same as currency, but left in here to not break any code users may have written before |
+|`price`| ✓ | ✓ | Will return localizedPrice on Android (default) or a string price (eg. `1.99`) (iOS) |
+|`productId`| ✓ | ✓ | Returns a string needed to purchase the item later |
+|`currency`| ✓ | ✓ | Returns the currency code |
+|`localizedPrice`| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
+|`title`| ✓ | ✓ | Returns the title Android and localizedTitle on iOS |
+|`description`| ✓ | ✓ | Returns the description of the product |
+|`type`| ✓ | ✓ | Returns SKU type (subscription or in-app product). iOS < 11.2 will always return `iap` |
 
 
 ## Purchase
 Once you have called getProducts(), and you have a valid response, you can call buyProduct().
 ```javascript
-  const receipt = await RNIap.buyProduct('com.cooni.point1000');
+  const receipt = await RNIap.buyProduct('com.example.coins100');
   // above will return receipt string which can be used to validate on your server.
 ```
 In RNIapExample, at receiving receipt string, main page will navigate to Second.js.
 
 ## Purchase Example 2 (Advanced)
 ```javascript
-this.setState({ progressTitle: "Please wait..." });
-RNIap.buyProduct('com.cooni.point1000').then(purchase => {
+this.setState({ progressTitle: 'Please wait...' });
+RNIap.buyProduct('com.example.coins100').then(purchase => {
     this.setState({
       receipt: purchase.transactionReceipt, // save the receipt if you need it, whether locally, or to your server.
-      progressTitle: "Purchase Successful!",
-      points: this.state.points + 1000
+      progressTitle: 'Purchase Successful!',
+      coins: this.state.coins + 100
     });
-  }).catch(error => {
+  }).catch(err => {
     // resetting UI
-    console.error(error); // standardized error.code and error.message available
-    this.setState({ progressTitle: "Buy 1000 Points for only $0.99" });
-    alert(error.message);
+    console.warn(err); // standardized err.code and err.message available
+    this.setState({ progressTitle: 'Buy 100 Coins for only $0.99' });
+    alert(err.message);
   })
 ```
 
@@ -198,37 +195,46 @@ Subscribable products can be purchased just like consumable products.
 Users can cancel subscriptions by using the iOS System Settings.
 
 
-## Restore, Refresh
-Non consumable products can be restored after user deletes the app and redownloads. Things like a Premium Version should be restorable. Currently for iOS / Android.
-Refer to RNIapExample's source code.
-
-The restoring/refreshing processes for iOS and Android differ. It's similar, though function names and the exact processes are slightly different.
-Using RNIap.refreshAllItems() will achieve the same effect for both iOS and Android. Note that we added a restoreIosNonConsumableProducts() function to the module for iOS use. You do not need to call this. Just use refreshAllItems().
-(We may remove the iOS part in the refreshAllItems() function in the future)
+## Consumption and Restoring Purchases
+By default all items that are purchased will not be consumed unless they are automatically consumed by the store (for example, if you create a consumable item for iOS.) This means that you must manage consumption yourself. Once an item is consumed, it will no longer be available in `getAvailablePurchases()` and will only be available via `getPurchaseHistory()`. However, this method has some caviats on Android -- namely that purchase history only exists for the single most recent purchase of each SKU -- so your best bet is to track consumption in your app yourself. Items can be consumed by calling `consumeItem()`. If you want to consume all items, you have to iterate over the purchases returned by `getAvailablePurchases()`.
 
 ```javascript
-restorePreProdducts = async() => {
+getPurchases = async() => {
   try {
-    const results = await RNIap.refreshAllItems() // cross platform case
-    let restoredTitles = ""
-    results.forEach(result=>{
-      if (result.productIdentifier == "com.mywebsite.MyAppPremiumVersion") {
-        this.setState({premium:true})
-        restoredTitles += "Premium Version"
-      } else if (result.productIdentifier == "com.mywebsite.MyAppRemoveAds") {
-        this.setState({ads:false})
-        restoredTitles += restoredTitles.length > 0 ? "No Ads" : ", No Ads"
+    const purchases = await RNIap.getAvailablePurcahses();
+    let restoredTitles = '';
+    let coins = CoinStore.getCount();
+    purchases.forEach(purchase => {
+      if (purchase.productId == 'com.example.premium') {
+        this.setState({ premium: true });
+        restoredTitles += 'Premium Version';
+      } else if (purchase.productId == 'com.example.no_ads') {
+        this.setState({ ads: false });
+        restoredTitles += restoredTitles.length > 0 ? 'No Ads' : ', No Ads';
+      } else if (purchase.productId == 'com.example.coins100') {
+        CoinStore.addCoins(100);
       }
     })
-    Alert.alert("Restore Successful", "You successfully restored the following purchases: " + restoredTitles)
+    Alert.alert("Restore Successful", "You successfully restored the following purchases: " + restoredTitles);
   } catch(err) {
-    console.log(err);
-    Alert.alert(`${err}`);
+    console.warn(err); // standardized err.code and err.message available
+    Alert.alert(err.message);
   }
 }
 ```
-Returned results is an array of each transaction (non-consumable) with the following keys:
-```{ transactionDate, transactionIdentifier, productIdentifier, transactionReceipt }```
+Returned purchases is an array of each purchase transaction with the following keys:
+```javascript
+{
+  transactionDate,
+  transactionId,
+  productId,
+  transactionReceipt,
+  purchaseToken, // available on Android (same as transactionReceipt)
+  autoRenewing, // available on Android
+  originalTransactionDate, // available on iOS
+  originalTransactionIdentifier // available on iOS
+}
+```
 
 You need to test with one sandbox account, because the account holds previous purchase history.
 
