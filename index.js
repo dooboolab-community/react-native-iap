@@ -23,7 +23,7 @@ export const prepare = () => Platform.select({
  * @returns {Promise<Product[]>}
  */
 export const getProducts = (skus) => Platform.select({
-  ios: () => RNIapIos.getItems()
+  ios: () => RNIapIos.getItems(skus)
     .then(items => items.filter(item => item.type === IOS_ITEM_TYPE_IAP && skus.indexOf(item.productId) > -1)),
   android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_IAP, skus)
 })();
