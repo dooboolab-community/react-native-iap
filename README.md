@@ -133,7 +133,7 @@ Next, call the prepare function (ios it's not needed, but android it is. No need
 ```javascript
 async function() {
   try {
-    await RNIap.prepare()
+    await RNIap.prepare();
     // Ready to call RNIap.getProducts(), etc.
   } catch(err) {
     console.warn(err); // standardized err.code and err.message available
@@ -146,9 +146,9 @@ Once you called prepare(), call getProducts(). Both are async funcs. You can do 
 ```javascript
 async componentDidMount() {
   try {
-    await RNIap.prepare()
-    const products = await RNIap.getProducts(itemSkus)
-    this.setState({ items })
+    await RNIap.prepare();
+    const products = await RNIap.getProducts(itemSkus);
+    this.setState({ items });
   } catch(err) {
     console.warn(err); // standardized err.code and err.message available
   }
