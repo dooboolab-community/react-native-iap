@@ -197,7 +197,7 @@ Users can cancel subscriptions by using the iOS System Settings.
 
 
 ## Consumption and Restoring Purchases
-By default all items that are purchased will not be consumed unless they are automatically consumed by the store (for example, if you create a consumable item for iOS.) This means that you must manage consumption yourself. Once an item is consumed, it will no longer be available in `getAvailablePurchases()` and will only be available via `getPurchaseHistory()`. However, this method has some caviats on Android -- namely that purchase history only exists for the single most recent purchase of each SKU -- so your best bet is to track consumption in your app yourself. Items can be consumed by calling `consumeItem()`. If you want to consume all items, you have to iterate over the purchases returned by `getAvailablePurchases()`.
+You can use `getAvailablePurchases()` to do what's commonly understood as "restoring" purchases. Once an item is consumed, it will no longer be available in `getAvailablePurchases()` and will only be available via `getPurchaseHistory()`. However, this method has some caviats on Android -- namely that purchase history only exists for the single most recent purchase of each SKU -- so your best bet is to track consumption in your app yourself. By default all items that are purchased will not be consumed unless they are automatically consumed by the store (for example, if you create a consumable item for iOS.) This means that you must manage consumption yourself.  Purchases can be consumed by calling `consumePurchase()`. If you want to consume all items, you have to iterate over the purchases returned by `getAvailablePurchases()`.
 
 ```javascript
 getPurchases = async() => {
