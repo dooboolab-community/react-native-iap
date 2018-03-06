@@ -34,7 +34,7 @@ export const getProducts = (skus) => Platform.select({
  * @returns {Promise<Subscription[]>}
  */
 export const getSubscriptions = (skus) => Platform.select({
-  ios: () => RNIapIos.getItems()
+  ios: () => RNIapIos.getItems(skus)
     .then(items => items.filter(item => item.type === IOS_ITEM_TYPE_SUBSCRIPTION && skus.indexOf(item.productId) > -1)),
   android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus)
 })();
