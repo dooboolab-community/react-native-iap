@@ -30,39 +30,37 @@
                resolve:(RCTPromiseResolveBlock)resolve
                 reject:(RCTPromiseRejectBlock)reject {
   NSMutableArray* promises = [promisesByKey valueForKey:key];
-  
+
   if (promises == nil) {
     promises = [NSMutableArray array];
+    [promisesByKey setValue:promises forKey:key];
   }
-  
+
   [promises addObject:@[resolve, reject]];
-  [promisesByKey setValue:promises forKey:key];
 }
 
 -(void)resolvePromisesForKey:(NSString*)key value:(id)value {
   NSMutableArray* promises = [promisesByKey valueForKey:key];
-  
+
   if (promises != nil) {
     for (NSMutableArray *tuple in promises) {
       RCTPromiseResolveBlock resolve = tuple[0];
       resolve(value);
     }
+    [promisesByKey removeObjectForKey:key];
   }
-  
-  [promisesByKey removeObjectForKey:key];
 }
 
 -(void)rejectPromisesForKey:(NSString*)key code:(NSString*)code message:(NSString*)message error:(NSError*) error {
   NSMutableArray* promises = [promisesByKey valueForKey:key];
-  
+
   if (promises != nil) {
     for (NSMutableArray *tuple in promises) {
       RCTPromiseRejectBlock reject = tuple[1];
       reject(code, message, error);
     }
+    [promisesByKey removeObjectForKey:key];
   }
-  
-  [promisesByKey removeObjectForKey:key];
 }
 
 ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
@@ -95,7 +93,7 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
       break;
     }
   }
-  
+
   if (product) {
     SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
     [[SKPaymentQueue defaultQueue] addPayment:payment];
@@ -110,11 +108,11 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
   validProducts = response.products;
   NSMutableArray* items = [NSMutableArray array];
-  
+
   for (SKProduct* product in validProducts) {
     [items addObject:[self getProductObject:product]];
   }
-  
+
   [self resolvePromisesForKey:RCTKeyForInstance(request) value:items];
 }
 
@@ -148,7 +146,7 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
 -(void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {  ////////   RESTORE
   NSLog(@"\n\n\n  paymentQueueRestoreCompletedTransactionsFinished  \n\n.");
   NSMutableArray* items = [NSMutableArray arrayWithCapacity:queue.transactions.count];
-  
+
   for(SKPaymentTransaction *transaction in queue.transactions) {
     if(transaction.transactionState == SKPaymentTransactionStateRestored) {
       NSDictionary *restored = [self getPurchaseData:transaction];
@@ -156,7 +154,7 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
       [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
     }
   }
-  
+
   [self resolvePromisesForKey:@"availableItems" value:items];
 }
 
@@ -173,7 +171,7 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
   if ([[NSFileManager defaultManager] fileExistsAtPath:[receiptUrl path]]) {
     NSData *receiptData = [NSData dataWithContentsOfURL:receiptUrl];
     receipt = [receiptData base64EncodedStringWithOptions:0];
-    
+
     NSLog(@"\n\n Purchasing : receipt : %@  \n\n", receipt);
   } else {
     NSLog(@"iOS 7 AppReceipt not found, refreshing...");
@@ -197,7 +195,7 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
     @"E_NETWORK_ERROR",
     @"E_SERVICE_ERROR"
   ];
-  
+
   if (code > descriptions.count - 1) {
     return descriptions[0];
   }
@@ -216,7 +214,7 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
     @"Unable to process transaction: Your internet connection isn't stable! Try again later.",
     @"Unable to process transaction: Cloud service revoked."
   ];
-  
+
   if (code > descriptions.count - 1) {
     return descriptions[0];
   }

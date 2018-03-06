@@ -115,14 +115,14 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     Intent intent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
     // This is the key line that fixed everything for me
     intent.setPackage("com.android.vending");
-    addPromiseForKey(PROMISE_PREPARE, promise);
 
     try {
+      addPromiseForKey(PROMISE_PREPARE, promise);
       reactContext.bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
       mBillingClient = BillingClient.newBuilder(reactContext).setListener(purchasesUpdatedListener).build();
       mBillingClient.startConnection(billingClientStateListener);
     } catch (Exception e) {
-      promise.reject(E_NOT_PREPARED, e);
+      rejectPromisesForKey(PROMISE_PREPARE, E_NOT_PREPARED, e.getMessage(), e);
     }
   }
 
@@ -334,7 +334,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         item.putString("purchaseToken", purchase.getPurchaseToken());
         item.putBoolean("autoRenewing", purchase.isAutoRenewing());
 
-        resolvePromisesForKey(PROMISE_BUY_ITEM, (Object)item);
+        resolvePromisesForKey(PROMISE_BUY_ITEM, item);
       }
       else {
         rejectPromisesWithBillingError(PROMISE_BUY_ITEM, responseCode);
@@ -409,6 +409,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     }
     else {
       list = new ArrayList<Promise>();
+      promises.put(key, list);
     }
 
     list.add(promise);
