@@ -36,6 +36,7 @@ import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.android.vending.billing.IInAppBillingService;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
 public class RNIapModule extends ReactContextBaseJavaModule {
@@ -135,7 +136,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
           public void onSkuDetailsResponse(int responseCode, List<SkuDetails> skuDetailsList) {
             Log.d(TAG, "responseCode: " + responseCode);
             if (responseCode == BillingClient.BillingResponse.OK) {
-              ArrayList<WritableMap> items = new ArrayList<WritableMap>();
+              WritableArray items = Arguments.createArray();
 
               for (SkuDetails skuDetails : skuDetailsList) {
                 WritableMap item = Arguments.createMap();
@@ -146,7 +147,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
                 item.putString("localizedPrice", skuDetails.getPrice());
                 item.putString("title", skuDetails.getTitle());
                 item.putString("description", skuDetails.getDescription());
-                items.add(item);
+                items.pushMap(item);
               }
 
               promise.resolve(items);
@@ -177,7 +178,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
     int responseCode = availableItems.getInt("RESPONSE_CODE");
 
-    ArrayList<WritableMap> items = new ArrayList<>();
+    WritableArray items = Arguments.createArray();
     ArrayList<String> purchaseDataList = availableItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
 
     if (responseCode == BillingClient.BillingResponse.OK && purchaseDataList != null) {
@@ -195,7 +196,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
             item.putBoolean("autoRenewing", json.getBoolean("autoRenewing"));
           }
 
-          items.add(item);
+          items.pushMap(item);
         } catch (JSONException e) {
           e.printStackTrace();
         }
@@ -223,7 +224,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         Log.d(TAG, purchasesList.toString());
 
         if (responseCode == BillingClient.BillingResponse.OK) {
-          ArrayList<WritableMap> items = new ArrayList<>();
+          WritableArray items = Arguments.createArray();
 
           for (Purchase purchase : purchasesList) {
             WritableMap item = Arguments.createMap();
@@ -239,7 +240,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
               item.putBoolean("autoRenewing", purchase.isAutoRenewing());
             }
 
-            items.add(item);
+            items.pushMap(item);
           }
           promise.resolve(items);
         } else {
