@@ -3,7 +3,7 @@
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square"></a>
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square"></a>
 </p>
-This is a react-native link library project for in-app-purchase for both android and ios project. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project. 
+This is a react-native link library project for in-app-purchase for both android and ios project. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project.
 
 We are willing to share same in-app-purchase experience for both android and ios platform and will continuously merge methods which are standing alone.
 
@@ -63,7 +63,7 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
     - refreshPurchaseItemsAndroid(type: string)
     - getPurchasedItemsAndroid(type: string)
     - consumeItemAndroid(token: string)
-  + Able to call prepareAndroid() function without any conditional statement like if (Platform.OS === 'android'). Just use it. 
+  + Able to call prepareAndroid() function without any conditional statement like if (Platform.OS === 'android'). Just use it.
   + Updated Readme.
 - **[0.1.10]**
   + Fixed potential bug relied on preparing IAP module in Android. Updated readme to see how to use it.
@@ -71,15 +71,14 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
 #### Methods
 | Func  | Param  | Return | Description |
 | :------------ |:---------------:| :---------------:| :-----|
-| prepareAndroid |  | `Promise` | Prepare IAP module for android. Should be called in android before using any methods in RNIap.|
-| getItems | { android: [], ios: [] } | `Promise` | get purchasable items in array. |
-| getSubscribeItems | `string` | `Promise` | Get subscription items. |
-| buyItem | `json object` | `Promise` | Purchase item. |
-| buySubscribeItem | `string` | `Promise` | Buy subscription item. |
-| fetchHistory | | `Promise` | Refresh all items to make them available to buy again. |
-| refreshPurchaseItemsAndroid | `string` | `Promise` | refresh purchased items for android. This method can get parameter to refresh `INAPP` items or `SUBS` items.|
-| getPurchaseItemsAndroid | `string` | `Promise` | get purchased items for android. This method also gets parameter to refresh `INAPP` items or `SUBS` items.|
-| consumeItemAndroid | `string` | `Promise` | consume item for android. After buying some item from consumable item in android, you can use this method to consume it. Therefore you can purchase the item again. |
+| prepare |  | `Promise<void>` | Prepare IAP module. Must be called on Android before any other purchase flow methods. No-op on iOS.|
+| getProducts | `string[]` Product IDs/skus | `Promise<Product[]>` | Get a list of products (consumable and non-consumable items, but not subscriptions) |
+| getSubscriptions | `string[]` Subscription IDs/skus | `Promise<Subscription[]>` | Get a list of subscriptions |
+| getPurchaseHistory | | `Promise<Purchase[]>` | Gets an invetory of purchases made by the user regardless of consumption status (where possible) |
+| getAvailablePurchases | | `Promise<Purchase[]>` | Get all purchases made by the user (either non-consumable, or haven't been consumed yet)
+| buySubscription | `string` Subscription ID/sku | `Promise<Purchase>` | Create (buy) a subscription to a sku |
+| buyProduct | `string` Product ID/sku | `Promise<Purchase>` | Buy a product |
+| consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 
 ## Npm repo
 https://www.npmjs.com/package/react-native-iap
@@ -123,157 +122,125 @@ First thing you should do is to define your items for iOS and android separately
 ```javascript
 import * as RNIap from 'react-native-iap';
 
-const itemSkus = {
+const itemSkus = Platform.select({
   ios: [
-    'com.cooni.point1000',
-    'com.cooni.point5000',
+    'com.example.coins100'
   ],
   android: [
-    'point_1000',
-    '5000_point',
-  ],
-};
+    'com.example.coins100'
+  ]
+});
 ```
 
 Next, call the prepare function (ios it's not needed, but android it is. No need to check platform though since nothing will happen in ios:
 
 ```javascript
-async preparing function() {
+async function() {
   try {
-    const message = await RNIap.prepareAndroid()
-    // Ready to call RNIap.getItems()
-  } catch(errorCode) {
-    // Depending on the situation, Android will have a different error code. Handle accordingly. Visit the link below for current info
-    // https://developer.android.com/reference/com/android/billingclient/api/BillingClient.BillingResponse.html
-    // This catch will never be called on ios
-    /*
-      -2: FEATURE_NOT_SUPPORTED
-      -1: SERVICE_DISCONNECTED
-      0: SUCCESS (should never be successful since only errors are caught)
-      1: USER_CANCELED
-      2: SERVICE_UNAVAILABLE
-      3: BILLING_UNAVAILABLE
-      4: ITEM_UNAVAILABLE
-      5: DEVELOPER_ERROR
-      6: ERROR
-      7: ITEM_ALREADY_OWNED
-      8: ITEM_NOT_OWNED
-    */ 
+    await RNIap.prepare();
+    // Ready to call RNIap.getProducts(), etc.
+  } catch(err) {
+    console.warn(err); // standardized err.code and err.message available
   }
 }
 ```
 
 ## Get Valid Items
-Once you called prepareAndroid(), call getItems(). Both are async funcs. You can do it in componentDidMount(), or other area as appropriate for you app. Since a user may first start your app with a bad internet connection, then later have an internet connection, making preparing/getting items more than once may be a good idea. Like if the user has no IAPs available when the app first starts, you may want to check again when the user enters the your IAP store.
+Once you called prepare(), call getProducts(). Both are async funcs. You can do it in componentDidMount(), or other area as appropriate for you app. Since a user may first start your app with a bad internet connection, then later have an internet connection, making preparing/getting items more than once may be a good idea. Like if the user has no IAPs available when the app first starts, you may want to check again when the user enters the your IAP store.
 ```javascript
 async componentDidMount() {
   try {
-    const message = await RNIap.prepareAndroid()
-    const items = await RNIap.getItems(itemSkus)
-    this.setState({items})
-  } catch(errorCode) {
-  
+    await RNIap.prepare();
+    const products = await RNIap.getProducts(itemSkus);
+    this.setState({ items });
+  } catch(err) {
+    console.warn(err); // standardized err.code and err.message available
   }
 }
 ```
 #### Each item is a JavaScript object containing these keys:
-|    | ios | android | info |
+|    | iOS | Android | Comment |
 |----|-----|---------|------|
-|price| ✓ | ✓ | will return localizedPrice on Android (default), or a decimal point number on iOS (default) |
-|productId| ✓ | ✓ | returns a string needed to purchase the item later |
-|currency| ✓ | ✓ | returns the currency code |
-|localizedPrice| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
-|title| ✓ | ✓ | returns the title Android and localizedTitle on iOS |
-|description| ✓ | ✓ | returns the description on Android and localizedDescription on iOS |
-|type|  | ✓ | returns SKU type |
-|price_currency|  | ✓ | same as currency, but left in here to not break any code users may have written before |
+|`price`| ✓ | ✓ | Will return localizedPrice on Android (default) or a string price (eg. `1.99`) (iOS) |
+|`productId`| ✓ | ✓ | Returns a string needed to purchase the item later |
+|`currency`| ✓ | ✓ | Returns the currency code |
+|`localizedPrice`| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
+|`title`| ✓ | ✓ | Returns the title Android and localizedTitle on iOS |
+|`description`| ✓ | ✓ | Returns the description of the product |
+|`type`| ✓ | ✓ | Returns SKU type (subscription or in-app product). iOS < 11.2 will always return `iap` |
 
 
 ## Purchase
-Once you have called getItems(), and you have a valid response, you can call buyItem().
+Once you have called getProducts(), and you have a valid response, you can call buyProduct().
 ```javascript
-  const receipt = await RNIap.buyItem('com.cooni.point1000');
-  // above will return receipt string which can be used to validate on your server.
+  // Will return a purchase object with a receipt which can be used to validate on your server.
+  const purchase = await RNIap.buyProduct('com.example.coins100');
 ```
-In RNIapExample, at receiving receipt string, main page will navigate to Second.js.
+
+In RNIapExample, upon receiving receiving a purchase receipt, main page will navigate to Second.js.
 
 ## Purchase Example 2 (Advanced)
 ```javascript
-this.setState({progressTitle:"Please wait..."});
-RNIap.buyItem('com.cooni.point1000').then(receipt=>{
+this.setState({ progressTitle: 'Please wait...' });
+RNIap.buyProduct('com.example.coins100').then(purchase => {
     this.setState({
-      receipt:receipt.data, // save the receipt if you need it, whether locally, or to your server.
-      progressTitle:"Purchase Successful!",
-      points:this.state.points + 1000
+      receipt: purchase.transactionReceipt, // save the receipt if you need it, whether locally, or to your server.
+      progressTitle: 'Purchase Successful!',
+      coins: this.state.coins + 100
     });
-  }).catch(error=>{
+  }).catch(err => {
     // resetting UI
-    this.setState({progressTitle:"Buy 1000 Points for only $0.99"})
-    if (Platform.OS == 'ios') {
-      if (error.code == 2) {
-        // ios error.code 2 means that the user cancelled. No need to alert them. Just reset the UI.
-      } else {
-        // ios error.description gives a so-so English description of the error that the user should be able to understand.
-        // You could also give your own descriptions based on error.code instead:  
-        // https://developer.apple.com/documentation/storekit/skerror.code
-        alert(error.description)
-      }
-    } else {
-      // haven't added specific error handling yet for android. todo.
-      alert("Purchase Unsuccessful");
-    }
+    console.warn(err); // standardized err.code and err.message available
+    this.setState({ progressTitle: 'Buy 100 Coins for only $0.99' });
+    alert(err.message);
   })
 ```
 
-## Subscription
-```javascript
-buySubscribeItem = async(sku) => {
-  try {
-    console.log('buyItem: ' + sku);
-    const receipt = await RNIap.buyItem(sku);
-    // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
-    console.log(receipt);
-    this.setState({ receipt: receipt.data }, () => this.goToNext());
-  } catch (err) {
-    console.log(`${err}`);
-    Alert.alert(`${err}`);
-  }
-}
-```
-Subscribable products can be included in item object and purchased just like consumable product.
+Subscribable products can be purchased just like consumable products.
 Users can cancel subscriptions by using the iOS System Settings.
 
 
-## Restore, Refresh
-Non consumable products can be restored after user deletes the app and redownloads. Things like a Premium Version should be restorable. Currently for iOS / Android.
-Refer to RNIapExample's source code.
-
-The restoring/refreshing processes for iOS and Android differ. It's similar, though function names and the exact processes are slightly different.
-Using RNIap.fetchHistory() will achieve the same effect for both iOS and Android. Note that we added a restoreIosNonConsumableProducts() function to the module for iOS use. You do not need to call this. Just use fetchHistory().
+## Consumption and Restoring Purchases
+You can use `getAvailablePurchases()` to do what's commonly understood as "restoring" purchases. Once an item is consumed, it will no longer be available in `getAvailablePurchases()` and will only be available via `getPurchaseHistory()`. However, this method has some caviats on Android -- namely that purchase history only exists for the single most recent purchase of each SKU -- so your best bet is to track consumption in your app yourself. By default all items that are purchased will not be consumed unless they are automatically consumed by the store (for example, if you create a consumable item for iOS.) This means that you must manage consumption yourself.  Purchases can be consumed by calling `consumePurchase()`. If you want to consume all items, you have to iterate over the purchases returned by `getAvailablePurchases()`.
 
 ```javascript
-restorePreProdducts = async() => {
+getPurchases = async() => {
   try {
-    const results = await RNIap.fetchHistory() // cross platform case
-    let restoredTitles = ""
-    results.forEach(result=>{
-      if (result.productIdentifier == "com.mywebsite.MyAppPremiumVersion") {
-        this.setState({premium:true})
-        restoredTitles += "Premium Version"
-      } else if (result.productIdentifier == "com.mywebsite.MyAppRemoveAds") {
-        this.setState({ads:false})
-        restoredTitles += restoredTitles.length > 0 ? "No Ads" : ", No Ads"
+    const purchases = await RNIap.getAvailablePurchases();
+    let restoredTitles = '';
+    let coins = CoinStore.getCount();
+    purchases.forEach(purchase => {
+      if (purchase.productId == 'com.example.premium') {
+        this.setState({ premium: true });
+        restoredTitles += 'Premium Version';
+      } else if (purchase.productId == 'com.example.no_ads') {
+        this.setState({ ads: false });
+        restoredTitles += restoredTitles.length > 0 ? 'No Ads' : ', No Ads';
+      } else if (purchase.productId == 'com.example.coins100') {
+        CoinStore.addCoins(100);
+        await RNIap.consumePurchase(purchase.transactionReceipt);
       }
     })
-    Alert.alert("Restore Successful", "You successfully restored the following purchases: " + restoredTitles)
+    Alert.alert('Restore Successful', 'You successfully restored the following purchases: ' + restoredTitles);
   } catch(err) {
-    console.log(err);
-    Alert.alert(`${err}`);
+    console.warn(err); // standardized err.code and err.message available
+    Alert.alert(err.message);
   }
 }
 ```
-Returned results is an array of each transaction (non-consumable) with the following keys:
-```{ transactionDate, transactionIdentifier, productIdentifier, transactionReceipt }```
+Returned purchases is an array of each purchase transaction with the following keys:
+```javascript
+{
+  transactionDate,
+  transactionId,
+  productId,
+  transactionReceipt,
+  purchaseToken, // available on Android (same as transactionReceipt)
+  autoRenewing, // available on Android
+  originalTransactionDate, // available on iOS
+  originalTransactionIdentifier // available on iOS
+}
+```
 
 You need to test with one sandbox account, because the account holds previous purchase history.
 

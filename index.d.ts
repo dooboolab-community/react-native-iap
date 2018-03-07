@@ -1,106 +1,89 @@
-export interface Skus {
-  ios: string[];
-  android: string[];
+export type SkuTypeAndroid = 'INAPP' | 'SUBS'
+export type SkuTypeIOS = 'iap' | 'sub'
+
+export interface SkuTypes {
+  android: { [key: string]: SkuTypeAndroid }
+  ios: { [key: string]: SkuTypeIOS }
 }
 
-export type ItemDescription = ItemDescriptionAndroid | ItemDescriptionIos 
+export const SkuTypes: SkuTypes
 
-export type SkuTypeAndroid = 'INAPP' | 'SUBS'
-
-export interface ItemDescriptionAndroid {
-  type: SkuTypeAndroid;
+export interface Product {
+  type: SkuTypeAndroid | SkuTypeIOS;
   productId: string;
   title: string;
   description: string;
   price: string;
   currency: string;
-  price_currency: string;
   localizedPrice: string;
 }
 
-export interface ItemDescriptionIos {
-  productId: string;
-  title: string;
-  description: string;
-  price: number;
-  currency: string;
+export interface Subscription extends Product {
+
 }
 
-/**
- * Get purchasable items in array.
- * @param {Skus} skus
- * @returns {Promise<ItemDescription[]>} Promise of the array of purchasable items
- */
-export function getItems(skus: Skus) : Promise<ItemDescription[]>;
+export interface ProductPurchase {
+  productId: string;
+  transactionId: string;
+  transactionDate: string;
+  transactionReceipt: string;
+}
+
+export interface SubscriptionPurchase extends ProductPurchase {
+  autoRenewing: boolean;
+}
+
+export type Purchase = ProductPurchase | SubscriptionPurchase
 
 /**
- * Get subscription items.
- * @param {Skus} skus
- * @returns {Promise<ItemDescription[]>} Promise of the array of subscription items
+ * Prepare module for purchase flow. Required on Android. No-op on iOS.
+ * @returns {Promise<void>}
  */
-export function getSubscribeItems(skus: Skus) : Promise<ItemDescription[]>;
+export function prepare() : Promise<void>;
 
 /**
- * Purchase item.
- * @param {string} item
- * @returns {Promise<string>} Promise of the ...
+ * Get a list of products (consumable and non-consumable items, but not subscriptions)
+ * @param {string[]} skus The item skus
+ * @returns {Promise<Product[]>}
  */
-export function buyItem(item: string) : Promise<string>;
+export function getProducts(skus: string[]) : Promise<Product[]>;
 
 /**
- * Buy subscription item.
- * @param {string} item
- * @returns {Promise<any>} Promise of the ...
+ * Get a list of subscriptions
+ * @param {string[]} skus The item skus
+ * @returns {Promise<Subscription[]>}
  */
-export function buySubscribeItem(item: string) : Promise<any>;
-
-/** 
- * Get history of purchases.
- * @returns {Promise<any>} Promise of the refreshed items.
-*/
-export function fetchHistory() : Promise<any>;
+export function getSubscriptions(skus: string[]) : Promise<Subscription[]>;
 
 /**
- * Prepare IAP module for android. Should be called in android before using any methods in RNIap.
- * @returns {Promise<string>|null} Promise of the messages, or null if the Platform is not Android.
+ * Gets an invetory of purchases made by the user regardless of consumption status
+ * @returns {Promise<Purchase[]>}
  */
-export function prepareAndroid() : Promise<string> | null;
+export function getPurchaseHistory() : Promise<Purchase[]>;
 
 /**
- * Refresh purchased items for android.
- * What is different from refreshAllItems is that this method can get parameter to refresh INAPP items or SUBS items.
- * @param {SkuTypeAndroid} [type] `'INAPP'` or `'SUBS'`
+ * Get all purchases made by the user (either non-consumable, or haven't been consumed yet)
+ * @returns {Promise<Purchase[]>}
  */
-export function refreshPurchaseItemsAndroid(type?: SkuTypeAndroid) : void;
+export function getAvailablePurchases() : Promise<Purchase[]>;
 
 /**
- * Get purchased items for android.
- * This method returns the current un-consumed products owned by the user, including both purchased items and items acquired by redeeming a promo code.
- * This method also gets parameter to refresh INAPP items or SUBS items.
- * @param {SkuTypeAndroid} [type] `'INAPP'` or `'SUBS' and default for 'INAPP'`
- * @returns {Promise<any>|null} Promise of the purchased items, or null if the Platform is not Android.
+ * Create a subscription to a sku
+ * @param {string} sku The product's sku/ID
+ * @returns {Promise<Purchase>}
  */
-export function getPurchasesAndroid(type?: SkuTypeAndroid) : Promise<any> | null;
+export function buySubscription(sku: string) : Promise<SubscriptionPurchase>;
 
 /**
- * Get purchased items for android.
- * This method also gets parameter to refresh INAPP items or SUBS items.
- * @param {SkuTypeAndroid} [type] `'INAPP'` or `'SUBS'`
- * @returns {Promise<any>|null} Promise of the purchased items, or null if the Platform is not Android.
+ * Buy a product
+ * @param {string} sku The product's sku/ID
+ * @returns {Promise<Purchase>}
  */
-export function getPurchasedItemsAndroid(type?: SkuTypeAndroid) : Promise<any> | null;
+export function buyProduct(sku: string) : Promise<ProductPurchase>;
 
 /**
- * Consume item for android.
- * After buying some item from consumable item in android, you can use this method to consume it.
- * Therefore you can purchase the item again.
- * @param {string} token
- * @returns {boolean|null} Promise of the status of billing response, or null if the Platform is not Android.
+ * Consume a product (on Android.) No-op on iOS.
+ * @param {string} token The product's token (on Android)
+ * @returns {Promise}
  */
-export function consumeItemAndroid(token: string) : Promise<boolean> | null;
-
-/**
- * TODO: Add description here.
- * @returns {Promise<Object>|null} Promise of somthing, or null if the Platform is not iOS
- */
-export function restoreIosNonConsumableProducts() : Promise<Object> | null;
+export function consumePurchase(token: string) : Promise<void>;
