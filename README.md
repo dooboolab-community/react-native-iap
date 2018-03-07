@@ -214,9 +214,10 @@ getPurchases = async() => {
         restoredTitles += restoredTitles.length > 0 ? 'No Ads' : ', No Ads';
       } else if (purchase.productId == 'com.example.coins100') {
         CoinStore.addCoins(100);
+        await RNIap.consumePurchase(purchase.transactionReceipt);
       }
     })
-    Alert.alert("Restore Successful", "You successfully restored the following purchases: " + restoredTitles);
+    Alert.alert('Restore Successful', 'You successfully restored the following purchases: ' + restoredTitles);
   } catch(err) {
     console.warn(err); // standardized err.code and err.message available
     Alert.alert(err.message);
