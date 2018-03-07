@@ -167,20 +167,9 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
   [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
   NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
 
-  NSString *receipt = nil;
-  if ([[NSFileManager defaultManager] fileExistsAtPath:[receiptUrl path]]) {
-    NSData *receiptData = [NSData dataWithContentsOfURL:receiptUrl];
-    receipt = [receiptData base64EncodedStringWithOptions:0];
+  NSDictionary* purchase = [self getPurchaseData:transaction];
 
-    NSLog(@"\n\n Purchasing : receipt : %@  \n\n", receipt);
-  } else {
-    NSLog(@"iOS 7 AppReceipt not found, refreshing...");
-    //          SKReceiptRefreshRequest *refreshReceiptRequest = [[SKReceiptRefreshRequest alloc] initWithReceiptProperties:@{}];
-    //          refreshReceiptRequest.delegate = self;
-    //          [refreshReceiptRequest start];
-  }
-
-  [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:receipt];
+  [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:purchase];
 }
 
 -(NSString *)standardErrorCode:(int)code {
