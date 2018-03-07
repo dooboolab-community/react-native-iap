@@ -45,7 +45,7 @@ export const getSubscriptions = (skus) => Platform.select({
  */
 export const getPurchaseHistory = () => Platform.select({
   ios: () => RNIapIos.getAvailableItems(),
-  android: () => async () => {
+  android: async () => {
     let products = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_IAP);
     let subscriptions = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
     return products.concat(subscriptions);
@@ -58,7 +58,7 @@ export const getPurchaseHistory = () => Platform.select({
  */
 export const getAvailablePurchases = () => Platform.select({
   ios: () => RNIapIos.getAvailableItems(),
-  android: () => async () => {
+  android: async () => {
     let products = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_IAP);
     let subscriptions = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
     return products.concat(subscriptions);
