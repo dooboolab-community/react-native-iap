@@ -15,7 +15,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 // App Bundle > com.dooboolab.test
 
-const itemSkus = {
+const itemSkus = Platform.select({
   ios: [
     // 'prod.consume.santi.099', 'prod.consume.santi.199', 'prod.nonconsume.santi.only',
     // 'scrip.auto.santi', 'scrip.non.auto.santi', // com.kretone.santiago
@@ -26,7 +26,7 @@ const itemSkus = {
     'point_1000',
     '5000_point',
   ],
-};
+});
 
 class Page extends Component {
   constructor(props) {
@@ -35,79 +35,76 @@ class Page extends Component {
     this.state = {
       productList: [],
       receipt: '',
-      restoredItems: '',
+      availableItemsMessage: '',
     };
   }
 
   async componentDidMount(){
-    const msg = await RNIap.prepareAndroid();
+    try {
+      await RNIap.prepare();
+    }
+    catch (err) {
+      console.warn(err.code, err.message);
+    }
   }
 
   goToNext = () => {
     this.props.navigation.navigate('Second', {
-      receipt: this.state.receipt,
+      receipt: this.state.receipt
     });
   }
 
-  getItems = async() =>{
+  getItems = async() => {
     try {
-      // const items = await RNIap.getItems(someSkus); itemSkus
-      const items = await RNIap.getItems(itemSkus);
-      // console.log('items: ' + typeof (items));
-      console.log('getItems');
-      console.log(items); // , JSON.stringify(items));
-      // [ {price: 2.19, productId: "react.iap.consum.1000"},   //   iOS result...
-      //   {price: 1.09, productId: "react.iap.consum.500"}  ]
-      this.setState({ productList: items });
+      const products = await RNIap.getProducts(itemSkus);
+      console.log('Products', products);
+      this.setState({ productList: products });
     } catch (err) {
-      console.log('err');
-      console.log(err);
+      console.warn(err.code, err.message);
     }
   }
 
   buyItem = async(sku) => {
     try {
-      console.log('buyItem: ' + sku);
-      const receipt = await RNIap.buyItem(sku);
-      // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
-      console.log(receipt);
-      this.setState({ receipt: receipt.data }, () => this.goToNext());
+      console.info('buyItem: ' + sku);
+      const purchase = await RNIap.buyProduct(sku);
+      console.info(purchase);
+      this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
     } catch (err) {
-      console.log(`${err}`);
-      Alert.alert(`${err}`);
+      console.warn(err.code, err.message);
+      Alert.alert(err.message);
     }
   }
 
   buySubscribeItem = async(sku) => {
     try {
-      console.log('buyItem: ' + sku);
-      const receipt = await RNIap.buyItem(sku);
-      // ios case parsing  리턴값이 어레이가 아님...  0, 1 를 키로 갖는 객체임..
-      console.log(receipt);
-      this.setState({ receipt: receipt.data }, () => this.goToNext());
+      console.log('buySubscribeItem: ' + sku);
+      const purchase = await RNIap.buySubscription(sku);
+      console.info(purchase);
+      this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
     } catch (err) {
-      console.log(`${err}`);
-      Alert.alert(`${err}`);
+      console.warn(err.code, err.message);
+      Alert.alert(err.message);
     }
   }
 
-  restorePreProdducts = async() => {
+  getAvailablePurchases = async() => {
     try {
-      console.log(' Restore Pre Purchased Non Consumable Products ', RNIap);
-      const rslts = await RNIap.restoreProducts();
-      console.log(' Restored Item :: ', rslts);
+      console.info('Get available purchases (non-consumable or unconsumed consumable)');
+      const purchases = await RNIap.getAvailablePurchases();
+      console.info('Available purchases :: ', purchases);
       this.setState({
-        restoredItems: ` Restored ${rslts.length} items.  ${rslts[0].productIdentifier} `,
-        receipt: rslts[0].transactionReceipt,
+        availableItemsMessage: `Got ${purchases.length} items.`,
+        receipt: purchases[0].transactionReceipt
       });
     } catch(err) {
-      console.log(err);
-      Alert.alert(`${err}`);
+      console.warn(err.code, err.message);
+      Alert.alert(err.message);
     }
   }
 
   render() {
-    const { productList, receipt, restoredItems } = this.state;
+    const { productList, receipt, availableItemsMessage } = this.state;
     const receipt100 = receipt.substring(0, 100);
 
     return (
@@ -121,13 +118,13 @@ class Page extends Component {
           >
             <View style={{ height: 50 }} />
             <NativeButton
-              onPress={this.restorePreProdducts}
+              onPress={this.getAvailablePurchases}
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
-            >Restore Items</NativeButton>
+            >Get available purchases</NativeButton>
 
-            <Text style={{ margin: 5, fontSize: 15, alignSelf: 'center' }} >{restoredItems}</Text>
+            <Text style={{ margin: 5, fontSize: 15, alignSelf: 'center' }} >{availableItemsMessage}</Text>
 
             <Text style={{ margin: 5, fontSize: 9, alignSelf: 'center' }} >{receipt100}</Text>
 
@@ -136,7 +133,7 @@ class Page extends Component {
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
-            >Get Items {productList.length}</NativeButton>
+            >Get Products ({productList.length})</NativeButton>
             {
               productList.map((product, i) => {
                 return(
@@ -154,7 +151,7 @@ class Page extends Component {
                       activeOpacity={0.5}
                       style={styles.btn}
                       textStyle={styles.txt}
-                    >Buy Above Item</NativeButton>
+                    >Buy Above Product</NativeButton>
                   </View>
                 )
               })
