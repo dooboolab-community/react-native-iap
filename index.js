@@ -24,7 +24,7 @@ export const prepare = () => Platform.select({
  */
 export const getProducts = (skus) => Platform.select({
   ios: () => RNIapIos.getItems(skus)
-    .then(items => items.filter(item => item.type === IOS_ITEM_TYPE_IAP && skus.indexOf(item.productId) > -1)),
+    .then(items => items.filter(item => (!item.type || item.type === IOS_ITEM_TYPE_IAP) && skus.indexOf(item.productId) > -1)),
   android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_IAP, skus)
 })();
 
@@ -35,7 +35,7 @@ export const getProducts = (skus) => Platform.select({
  */
 export const getSubscriptions = (skus) => Platform.select({
   ios: () => RNIapIos.getItems(skus)
-    .then(items => items.filter(item => item.type === IOS_ITEM_TYPE_SUBSCRIPTION && skus.indexOf(item.productId) > -1)),
+    .then(items => items.filter(item => (!item.type || item.type === IOS_ITEM_TYPE_SUBSCRIPTION) && skus.indexOf(item.productId) > -1)),
   android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus)
 })();
 
