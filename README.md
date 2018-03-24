@@ -14,9 +14,11 @@ react-native-iap@0.2.0 has been published and it is recommended to use version a
 `react-native-iap` module versions that are not described in `change logs` may not run as expected so please refer to version mentioned in `Changelogs` below.
 
 ## Breaking Changes
-Recent breaking changes have made from `0.2.17`. `refreshAllItems` has changed name to `fetchHistory`. See the changelogs below.
+`0.3.0-alpha` has released. All the methods are renamed and current methods are merged into each single method. See `Methods` section below to see what's been changed.
 
-Recent breaking changes have made from `0.2.16` in android. Package name has been fixed to `com.dooboolab.RNIap.RNIapPackage`. Read the changelogs below. There was linking [issue](https://github.com/dooboolab/react-native-iap/issues/49#issuecomment-369811257) with wrong package name.
+Breaking changes have made from `0.2.17`. `refreshAllItems` has changed name to `fetchHistory`. See the changelogs below.
+
+Breaking changes have made from `0.2.16` in android. Package name has been fixed to `com.dooboolab.RNIap.RNIapPackage`. Read the changelogs below. There was linking [issue](https://github.com/dooboolab/react-native-iap/issues/49#issuecomment-369811257) with wrong package name.
 
 Breaking changes have made from `0.2.12`. Please read the changelogs below. The summary of change is that it now returns receipt in different format.
 
@@ -28,6 +30,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.3.0-alpha]**
+  + Methods names are fully renamed to avoid the confusion. Current methods are `prepare`, `getProducts`, `getSubscriptions`, `getPurchaseHistory`, `getAvailablePurchases`, `buySubscription`, `buyProduct`, `consumeProduct`. Please compare these methods with your previous methods used in `0.2.*` if you want to upgrade to `0.3.0`.
 - **[0.2.17]**
   + `refreshAllItems` has changed name to `fetchHistory` since android and ios had different functionality and fixed to fetching history of purchases.
 - **[0.2.16]**
