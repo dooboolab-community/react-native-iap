@@ -10,7 +10,6 @@ We are willing to share same in-app-purchase experience for both android and ios
 Android iap is implemented with iap version 3 which is currently recent.
 
 ## Important
-react-native-iap@0.2.0 has been published and it is recommended to use version after `0.2.0` from `2018/01/23`.
 `react-native-iap` module versions that are not described in `change logs` may not run as expected so please refer to version mentioned in `Changelogs` below.
 
 ## Breaking Changes
