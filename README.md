@@ -13,7 +13,7 @@ Android iap is implemented with iap version 3 which is currently recent.
 `react-native-iap` module versions that are not described in `change logs` may not run as expected so please refer to version mentioned in `Changelogs` below.
 
 ## Breaking Changes
-`0.3.0-alpha` has released. All the methods are renamed and current methods are merged into each single method. See `Methods` section below to see what's been changed.
+`0.3.0-alpha1` has released. All the methods are renamed and current methods are merged into each single method. See `Methods` section below to see what's been changed.
 
 Breaking changes have made from `0.2.17`. `refreshAllItems` has changed name to `fetchHistory`. See the changelogs below.
 
@@ -29,7 +29,7 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
-- **[0.3.0-alpha]**
+- **[0.3.0-alpha1]**
   + Methods names are fully renamed to avoid the confusion. Current methods are `prepare`, `getProducts`, `getSubscriptions`, `getPurchaseHistory`, `getAvailablePurchases`, `buySubscription`, `buyProduct`, `consumeProduct`. Please compare these methods with your previous methods used in `0.2.*` if you want to upgrade to `0.3.0`.
 - **[0.2.17]**
   + `refreshAllItems` has changed name to `fetchHistory` since android and ios had different functionality and fixed to fetching history of purchases.
