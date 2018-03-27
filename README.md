@@ -14,6 +14,7 @@ Android iap is implemented with iap version 3 which is currently recent.
 
 ## Migration Guide
 To migrate `0.2.*` to `0.3.*`, You can follow below guide.
+
 | 0.2.* | 0.3.* |
 | --- | --- |
 | `prepareAndroid` | `prepare` |
@@ -26,6 +27,7 @@ To migrate `0.2.*` to `0.3.*`, You can follow below guide.
 | `consumeItemAndroid` | `consumeProduct` |
 | `refreshAllItems` | <span style="color: red">Not Available</span> |
 | `refreshPurchaseItemsAndroid` | <span style="color: red">Not Available</span> |
+
 From above method changes, `getProducts` gets `itemSkus` as parameter in different way then as used in `getItems`. In `getItems` you had to put parameter as
 ```
 const itemSkus = {
