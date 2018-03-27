@@ -216,8 +216,8 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
   formatter.locale = product.priceLocale;
   NSString *localizedPrice = [formatter stringFromNumber:product.price];
 
-  NSString* itemType = nil;
-  NSString* currencyCode = nil;
+  NSString* itemType = @"";
+  NSString* currencyCode = @"";
 
   if (@available(iOS 11.2, *)) {
     itemType = product.subscriptionPeriod ? @"sub" : @"iap";
