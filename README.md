@@ -3,7 +3,7 @@
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square"></a>
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square"></a>
 </p>
-This is a react-native link library project for in-app-purchase for both android and ios project. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project.
+This is a react-native link library project for in app purchase for both android and ios platforms. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project.
 
 We are willing to share same in-app-purchase experience for both android and ios platform and will continuously merge methods which are standing alone.
 
@@ -11,6 +11,44 @@ Android iap is implemented with iap version 3 which is currently recent.
 
 ## Important
 `react-native-iap` module versions that are not described in `change logs` may not run as expected so please refer to version mentioned in `Changelogs` below.
+
+## Migration Guide
+To migrate `0.2.*` to `0.3.*`, You can follow below guide.
+| 0.2.* | 0.3.* |
+| --- | --- |
+| `prepareAndroid` | `prepare` |
+| `getItems` | `getProducts` |
+| `getSubscribeItems` | `getSubscriptions` |
+| `getPurchasedItemsAndroid` | `getPurchaseHistory` |
+| `` | `getAvailablePurchases` |
+| `buySubscribeItem` | `buySubscription` |
+| `buyItem` | `buyProduct` |
+| `consumeItemAndroid` | `consumeProduct` |
+| `refreshAllItems` | <span style="color: red">Not Available</span> |
+| `refreshPurchaseItemsAndroid` | <span style="color: red">Not Available</span> |
+From above method changes, `getProducts` gets `itemSkus` as parameter in different way then as used in `getItems`. In `getItems` get put parameter as
+```
+const itemSkus = {
+  ios: [
+	'point_1000',
+  ],
+  android: [
+    'point_1000',
+  ],
+};
+```
+But now you should do like below which will just pass single array instead of object.
+```
+const itemSkus = Platform.select({
+  ios: [
+	'point_1000',
+  ],
+  android: [
+    'point_1000',
+  ],
+});
+```
+Also, note that this is our last migration for renaming method names without any deprecation warning. Thank you for your understanding.
 
 ## Breaking Changes
 `0.3.0-alpha1` has released. All the methods are renamed and current methods are merged into each single method. See `Methods` section below to see what's been changed.
@@ -248,9 +286,49 @@ Returned purchases is an array of each purchase transaction with the following k
 You need to test with one sandbox account, because the account holds previous purchase history.
 
 ## Todo
+- Add introductory price as in [issue](https://github.com/dooboolab/react-native-iap/issues/23).
+- Local receipt validation as in [issue](https://github.com/dooboolab/react-native-iap/issues/51).
 
-Nothing at the moment.
+## Contribution Guide
 
-Thanks.
+### Issue
+* Please search and register if you already have the issue you want to create. If you have a similar issue, you can add additional comments.
+* Please write a problem or suggestion in the issue. Never include more than one item in an issue.
+* Please be as detailed and concise as possible.
+	* If necessary, please take a screenshot and upload an image.
 
-by JJMoon and dooboolab.
+### Pull request(PR)
+* Do not modify the code in the `master` branch.
+* PR allows only the `dev` branch.
+* It is useful to use a topic branch that has the parent `dev` as its parent.
+
+
+### Coding Guidelines
+Please follow the Coding conventions as much as possible when contributing your code.
+* The indent tab is two spaces.
+* The class declaration and the `{}` in curly brackets such as function, if, foreach, for, and while should be in the following format. Also if you installed eslint in vscode or in your code editor, it will help you with linting.
+	* `{` should be placed in same line and `}` should be placed in next line.
+```
+for (let i = 0; i < 10; i++) {
+  ...
+}
+array.forEach((e) => {
+  ...
+});
+```
+  * Space before `(` and after `)`.
+* **If you find code that does not fit in the coding convention, do not ever try to fix code that is not related to your purpose.**
+
+
+## LICENSE
+
+The MIT License (MIT)
+
+Copyright (c) 2017 dooboolab
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
