@@ -26,6 +26,10 @@
   [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
++(BOOL)requiresMainQueueSetup {
+  return YES;
+}
+
 -(void)addPromiseForKey:(NSString*)key
                resolve:(RCTPromiseResolveBlock)resolve
                 reject:(RCTPromiseRejectBlock)reject {
