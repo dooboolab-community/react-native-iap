@@ -1,6 +1,6 @@
 {
   "name": "react-native-iap",
-  "version": "0.3.0-beta3",
+  "version": "0.3.0-beta4",
   "description": "",
   "main": "index.js",
   "types": "index.d.ts",
@@ -9,7 +9,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "react-native"
+    "react-native",
+    "in app purchase",
+    "in-app-purchase",
+    "billing"
   ],
   "author": "",
   "license": "",
