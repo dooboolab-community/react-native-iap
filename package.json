@@ -1,7 +1,7 @@
 {
   "name": "react-native-iap",
   "version": "0.3.0-beta3",
-  "description": "",
+  "description": "React Native In App Purchase Module.",
   "main": "index.js",
   "types": "index.d.ts",
   "postinstall": "dooboolab-welcome postinstall",
