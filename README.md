@@ -24,7 +24,7 @@ To migrate `0.2.*` to `0.3.*`, You can follow below guide.
 | `` | `getAvailablePurchases` |
 | `buySubscribeItem` | `buySubscription` |
 | `buyItem` | `buyProduct` |
-| `consumeItemAndroid` | `consumeProduct` |
+| `consumeItemAndroid` | `consumePurchase` |
 | `refreshAllItems` | <span style="color: red">Not Available</span> |
 | `refreshPurchaseItemsAndroid` | <span style="color: red">Not Available</span> |
 
@@ -146,7 +146,7 @@ https://github.com/dooboolab/react-native-iap
 
 #### Android
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
-  - Add `import com.reactlibrary.RNIapPackage;` to the imports at the top of the file
+  - Add `import com.dooboolab.RNIap.RNIapPackage;` to the imports at the top of the file
   - Add `new RNIapPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
   	```
