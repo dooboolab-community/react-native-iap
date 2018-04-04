@@ -136,6 +136,16 @@ https://github.com/dooboolab/react-native-iap
 ### Mostly automatic installation
 `$ react-native link react-native-iap`
 
+**Note for Ejected iOS Apps:** 
+
+The above command will add the following to your `Podfile`:
+
+```ruby
+pod 'RNIap', :path => '../node_modules/react-native-iap'
+```
+
+You should remove this before running `pod install` and follow the manual installation instructions below. 
+ 
 ### Manual installation
 
 #### iOS
