@@ -136,6 +136,16 @@ https://github.com/dooboolab/react-native-iap
 ### Mostly automatic installation
 `$ react-native link react-native-iap`
 
+**Note for Ejected iOS Apps:** 
+
+The above command will add the following to your `Podfile`:
+
+```ruby
+pod 'RNIap', :path => '../node_modules/react-native-iap'
+```
+
+You should remove this before running `pod install` and follow the manual installation instructions below. 
+ 
 ### Manual installation
 
 #### iOS
@@ -157,6 +167,11 @@ https://github.com/dooboolab/react-native-iap
   	```
       compile project(':react-native-iap')
   	```
+4. Add the following to the `<permission>` block in `android/app/src/main/AndroidManifest.xml`:
+    ```
+    <uses-permission android:name="com.android.vending.BILLING" />
+    ```
+     
 ## Usage
 You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
 
