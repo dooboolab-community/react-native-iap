@@ -69,6 +69,11 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.3.1]**
+  + Fixed linking manual dependency in ios from [PR](https://github.com/dooboolab/react-native-iap/pull/94).
+  + Fixed returning localizedPrice when need actual price in Android from [ISSUE](https://github.com/dooboolab/react-native-iap/issues/86).
+  + Fixed other minor bugs relied on ios.
+  + Some purchasing senarios have been tested throughly.
 - **[0.3.0-alpha1]**
   + Methods names are fully renamed to avoid the confusion. Current methods are `prepare`, `getProducts`, `getSubscriptions`, `getPurchaseHistory`, `getAvailablePurchases`, `buySubscription`, `buyProduct`, `consumeProduct`. Please compare these methods with your previous methods used in `0.2.*` if you want to upgrade to `0.3.0`.
 - **[0.2.17]**
@@ -136,6 +141,16 @@ https://github.com/dooboolab/react-native-iap
 ### Mostly automatic installation
 `$ react-native link react-native-iap`
 
+**Note for Ejected iOS Apps:** 
+
+The above command will add the following to your `Podfile`:
+
+```ruby
+pod 'RNIap', :path => '../node_modules/react-native-iap'
+```
+
+You should remove this before running `pod install` and follow the manual installation instructions below. 
+ 
 ### Manual installation
 
 #### iOS
@@ -157,6 +172,11 @@ https://github.com/dooboolab/react-native-iap
   	```
       compile project(':react-native-iap')
   	```
+4. Add the following to the `<permission>` block in `android/app/src/main/AndroidManifest.xml`:
+    ```
+    <uses-permission android:name="com.android.vending.BILLING" />
+    ```
+     
 ## Usage
 You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
 
