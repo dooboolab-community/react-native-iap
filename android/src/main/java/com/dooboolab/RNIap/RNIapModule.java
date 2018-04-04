@@ -152,7 +152,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
               for (SkuDetails skuDetails : skuDetailsList) {
                 WritableMap item = Arguments.createMap();
                 item.putString("productId", skuDetails.getSku());
-                item.putString("price", String.valueOf(skuDetails.getPriceAmountMicros() / 1000000));
+                item.putString("price", String.format("%.02f", skuDetails.getPriceAmountMicros() / 1000000f));
                 item.putString("currency", skuDetails.getPriceCurrencyCode());
                 item.putString("type", skuDetails.getType());
                 item.putString("localizedPrice", skuDetails.getPrice());
