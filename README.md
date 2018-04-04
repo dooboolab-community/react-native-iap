@@ -167,6 +167,11 @@ You should remove this before running `pod install` and follow the manual instal
   	```
       compile project(':react-native-iap')
   	```
+4. Add the following to the `<permission>` block in `android/app/src/main/AndroidManifest.xml`:
+    ```
+    <uses-permission android:name="com.android.vending.BILLING" />
+    ```
+     
 ## Usage
 You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
 
