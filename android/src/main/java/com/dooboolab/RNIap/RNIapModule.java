@@ -232,9 +232,9 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       public void onPurchaseHistoryResponse(@BillingClient.BillingResponse int responseCode,
                                             List<Purchase> purchasesList) {
         Log.d(TAG, "responseCode: " + responseCode);
-        Log.d(TAG, purchasesList.toString());
 
-        if (responseCode == BillingClient.BillingResponse.OK) {
+        if (purchaseList != null && responseCode == BillingClient.BillingResponse.OK) {
+          Log.d(TAG, purchasesList.toString());
           WritableArray items = Arguments.createArray();
 
           for (Purchase purchase : purchasesList) {
