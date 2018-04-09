@@ -269,7 +269,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         .setType(type)
         .build();
 
-    int responseCode = mBillingClient.launchBillingFlow(getCurrentActivity(), flowParams);
+    int responseCode = mBillingClient.launchBillingFlow(activity, flowParams);
     Log.d(TAG, "buyItemByType (type: " + type + ", sku: " + sku + ") responseCode: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
   }
 
