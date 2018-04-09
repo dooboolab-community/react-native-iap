@@ -9,6 +9,9 @@ We are willing to share same in-app-purchase experience for both android and ios
 
 Android iap is implemented with iap version 3 which is currently recent.
 
+## Playstore & Itunnesconnect configuration
+  - Please refer to [Blog](https://medium.com/@dooboolab/react-native-in-app-purchase-121622d26b67).
+
 ## Important
 `react-native-iap` module versions that are not described in `change logs` may not run as expected so please refer to version mentioned in `Changelogs` below.
 
