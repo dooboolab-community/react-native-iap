@@ -13,6 +13,7 @@ Android iap is implemented with iap version 3 which is currently recent.
   - Please refer to [Blog](https://medium.com/@dooboolab/react-native-in-app-purchase-121622d26b67).
 
 ## Important
+Do not use version `0.3.4` ~ `0.3.8` because there was some issues in merging PR. Also please commit to `dev` branch and not `master` branch please if requesting PR.
 `react-native-iap` module versions that are not described in `change logs` may not run as expected so please refer to version mentioned in `Changelogs` below.
 
 ## Migration Guide
@@ -72,7 +73,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
-- **[0.3.8]**
+- **[0.3.9]**
+  + stable version that fixes bug in `0.3.4` ~ `0.3.8`.
   + fix crash when localizedDescription is nil from [PR](https://github.com/dooboolab/react-native-iap/pull/112).
   + fix crash on launchBillingFlow failure in Android from [PR](https://github.com/dooboolab/react-native-iap/pull/107).
   + Fixed typings.
