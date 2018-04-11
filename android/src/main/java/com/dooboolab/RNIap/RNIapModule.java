@@ -60,7 +60,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   private HashMap<String, ArrayList<Promise>> promises = new HashMap<>();
 
-  final Activity activity = getCurrentActivity();
+  private Activity activity = getCurrentActivity();
   private ReactContext reactContext;
   private IInAppBillingService mService;
   private BillingClient mBillingClient;
@@ -269,6 +269,9 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         .setType(type)
         .build();
 
+    if (activity == null) {
+      activity = getCurrentActivity();
+    }
     int responseCode = mBillingClient.launchBillingFlow(activity, flowParams);
     Log.d(TAG, "buyItemByType (type: " + type + ", sku: " + sku + ") responseCode: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
   }

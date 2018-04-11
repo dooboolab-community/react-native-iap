@@ -1,6 +1,6 @@
 {
   "name": "react-native-iap",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "React Native In App Purchase Module.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -14,15 +14,13 @@
     "in-app-purchase",
     "billing"
   ],
-  "author": "",
-  "license": "",
+  "author": "dooboolab",
+  "license": "MIT",
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
   },
   "dependencies": {
-    "chalk": "^2.3.0",
-    "dooboolab-welcome": "^1.0.5",
-    "shelljs": "^0.7.8"
+    "dooboolab-welcome": "^1.0.5"
   }
 }

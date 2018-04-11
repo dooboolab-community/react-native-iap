@@ -72,9 +72,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
-- **[0.3.5]**
+- **[0.3.6]**
   + fix crash when localizedDescription is nil from [PR](https://github.com/dooboolab/react-native-iap/pull/112).
-- **[0.3.4]**
   + fix crash on launchBillingFlow failure in Android from [PR](https://github.com/dooboolab/react-native-iap/pull/107).
   + Fixed typings.
 - **[0.3.1]**
