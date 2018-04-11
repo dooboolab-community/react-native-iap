@@ -59,8 +59,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   private static final String PROMISE_BUY_ITEM = "PROMISE_BUY_ITEM";
 
   private HashMap<String, ArrayList<Promise>> promises = new HashMap<>();
-
-  private Activity activity = getCurrentActivity();
   private ReactContext reactContext;
   private IInAppBillingService mService;
   private BillingClient mBillingClient;
@@ -263,17 +261,22 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void buyItemByType(String type, String sku, Promise promise) {
-    addPromiseForKey(PROMISE_BUY_ITEM, promise);
-    BillingFlowParams flowParams = BillingFlowParams.newBuilder()
-        .setSku(sku)
-        .setType(type)
-        .build();
-
+    final Activity activity = getCurrentActivity();
     if (activity == null) {
-      activity = getCurrentActivity();
+      promise.reject(E_UNKNOWN, "getCurrentActivity returned null");
+    } else {
+      addPromiseForKey(PROMISE_BUY_ITEM, promise);
+      BillingFlowParams flowParams = BillingFlowParams.newBuilder()
+          .setSku(sku)
+          .setType(type)
+          .build();
+
+      int responseCode = mBillingClient.launchBillingFlow(activity,flowParams);
+      Log.d(TAG, "buyItemByType (type: " + type + ", sku: " + sku + ") responseCode: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
+      if (responseCode != BillingClient.BillingResponse.OK) {
+        rejectPromisesWithBillingError(PROMISE_BUY_ITEM,responseCode);
+      }
     }
-    int responseCode = mBillingClient.launchBillingFlow(activity, flowParams);
-    Log.d(TAG, "buyItemByType (type: " + type + ", sku: " + sku + ") responseCode: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
   }
 
   @ReactMethod
