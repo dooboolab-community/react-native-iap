@@ -236,8 +236,8 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
     @"price" : [product.price stringValue],
     @"currency" : currencyCode,
     @"type": itemType,
-    @"title" : product.localizedTitle,
-    @"description" : product.localizedDescription,
+    @"title" : product.localizedTitle ? product.localizedTitle : @"",
+    @"description" : product.localizedDescription ? product.localizedDescription : @"",
     @"localizedPrice" : localizedPrice
   };
 }
