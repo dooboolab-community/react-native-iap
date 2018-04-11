@@ -59,6 +59,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   private static final String PROMISE_BUY_ITEM = "PROMISE_BUY_ITEM";
 
   private HashMap<String, ArrayList<Promise>> promises = new HashMap<>();
+
   private ReactContext reactContext;
   private IInAppBillingService mService;
   private BillingClient mBillingClient;
@@ -126,7 +127,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void getItemsByType(String type, ReadableArray skus, final Promise promise) {
-    if (mService == null) {
+    if (mService == null || mBillingClient == null) {
       promise.reject(E_NOT_PREPARED, "IAP not prepared. Check if Google Play service is available.");
       return;
     }
@@ -220,7 +221,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void getPurchaseHistoryByType(final String type, final Promise promise) {
-    if (mService == null) {
+    if (mService == null || mBillingClient == null) {
       promise.reject(E_NOT_PREPARED, "IAP not prepared. Check if Google Play service is available.");
       return;
     }
@@ -281,7 +282,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void consumeProduct(String token, final Promise promise) {
-    if (mService == null) {
+    if (mService == null || mBillingClient == null) {
       promise.reject(E_NOT_PREPARED, "IAP not prepared. Check if google play service is available.");
       return;
     }

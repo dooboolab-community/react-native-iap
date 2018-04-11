@@ -90,7 +90,18 @@ export const buyProduct = (sku) => Platform.select({
  * @param {string} token The product's token (on Android)
  * @returns {Promise}
  */
-export const consumeProduct = (token) => Platform.select({
+export const consumePurchase = (token) => Platform.select({
   ios: () => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
   android: () => RNIapModule.consumeProduct(token)
 })();
+
+export default {
+  prepare,
+  getProducts,
+  getSubscriptions,
+  getPurchaseHistory,
+  getAvailablePurchases,
+  buySubscription,
+  buyProduct,
+  consumeProduct,
+};
