@@ -103,5 +103,5 @@ export default {
   getAvailablePurchases,
   buySubscription,
   buyProduct,
-  consumeProduct,
+  consumePurchase,
 };
