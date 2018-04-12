@@ -18,6 +18,15 @@ export const prepare = () => Platform.select({
 })();
 
 /**
+ * End module for purchase flow. Required on Android. No-op on iOS.
+ * @returns {Promise<void>}
+ */
+export const endConnection = () => Platform.select({
+  ios: () => Promise.resolve(),
+  android: () => RNIapModule.endConnection()
+})();
+
+/**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
  * @param {string[]} skus The item skus
  * @returns {Promise<Product[]>}

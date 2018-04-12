@@ -42,6 +42,12 @@ export type Purchase = ProductPurchase | SubscriptionPurchase
 export function prepare() : Promise<void>;
 
 /**
+ * End billing client. Will enchance android app's performance by releasing service. No-op on iOS.
+ * @returns {Promise<void>}
+ */
+export function endConnection() : Promise<void>;
+
+/**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
  * @param {string[]} skus The item skus
  * @returns {Promise<Product[]>}

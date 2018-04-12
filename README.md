@@ -73,6 +73,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.3.10]**
+  + Implemented `endConnection` in android.
 - **[0.3.9]**
   + stable version that fixes bug in `0.3.4` ~ `0.3.8`.
   + fix crash when localizedDescription is nil from [PR](https://github.com/dooboolab/react-native-iap/pull/112).
@@ -136,6 +138,7 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
 | buySubscription | `string` Subscription ID/sku | `Promise<Purchase>` | Create (buy) a subscription to a sku |
 | buyProduct | `string` Product ID/sku | `Promise<Purchase>` | Buy a product |
 | consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
+| endConnection | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
 
 ## Npm repo
 https://www.npmjs.com/package/react-native-iap
@@ -241,6 +244,8 @@ async componentDidMount() {
 |`description`| ✓ | ✓ | Returns the description of the product |
 |`type`| ✓ | ✓ | Returns SKU type (subscription or in-app product). iOS < 11.2 will always return `null` |
 
+## End Billing Connection
+When you are done with the billing, you should release it for android([READ](https://developer.android.com/reference/com/android/billingclient/api/BillingClient.html#endConnection())). It is not needed in ios. No need to check platform either since nothing will happen in ios. This can be used in `componentWillUnMount`.
 
 ## Purchase
 Once you have called getProducts(), and you have a valid response, you can call buyProduct().
