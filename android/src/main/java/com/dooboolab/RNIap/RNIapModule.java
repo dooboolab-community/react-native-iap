@@ -126,6 +126,16 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void endConnection(Promise promise) {
+    try {
+      mBillingClient.endConnection();
+      promise.resolve("end billing client.");
+    } catch (Exception e) {
+      promise.reject("endConnection", e.getMessage());
+    }
+  }
+
+  @ReactMethod
   public void getItemsByType(String type, ReadableArray skus, final Promise promise) {
     if (mService == null || mBillingClient == null) {
       promise.reject(E_NOT_PREPARED, "IAP not prepared. Check if Google Play service is available.");
