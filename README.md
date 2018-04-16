@@ -73,6 +73,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.3.13]**
+  + Implemented `refreshItems` in android. This is to consume all products in anroid to rebuy the item. Becareful to use this method because if will affect your history of playstore. Only use this when you don't care about the history in playstore. Use this method after `prepare` method.
 - **[0.3.10]**
   + Implemented `endConnection` in android.
 - **[0.3.9]**
@@ -139,6 +141,7 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
 | buyProduct | `string` Product ID/sku | `Promise<Purchase>` | Buy a product |
 | consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 | endConnection | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
+| refreshItems | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
 
 ## Npm repo
 https://www.npmjs.com/package/react-native-iap
