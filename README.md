@@ -1,4 +1,5 @@
 # react-native-iap
+
 <p align="left">
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square"></a>
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square"></a>
@@ -232,7 +233,7 @@ async componentDidMount() {
     console.warn(err); // standardized err.code and err.message available
   }
 }
-```
+
 #### Each item is a JavaScript object containing these keys:
 |    | iOS | Android | Comment |
 |----|-----|---------|------|
@@ -320,6 +321,14 @@ Returned purchases is an array of each purchase transaction with the following k
 ```
 
 You need to test with one sandbox account, because the account holds previous purchase history.
+
+## Platform depedent functions
+
+### Introductory Price (iOS)
+
+Introductory price is discounted prices for your auto-renewable subscriptions.
+See details : https://developer.apple.com/app-store/subscriptions/ 
+Document : https://help.apple.com/itunes-connect/developer/#/deve1d49254f
 
 ## Todo
 - Add introductory price as in [issue](https://github.com/dooboolab/react-native-iap/issues/23).
