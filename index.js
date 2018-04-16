@@ -27,6 +27,15 @@ export const endConnection = () => Platform.select({
 })();
 
 /**
+ * Consume all remaining tokens. Android only.
+ * @returns {Promise<void>}
+ */
+export const refreshItems = () => Platform.select({
+  ios: () => Promise.resolve(),
+  android: () => RNIapModule.refreshItems(),
+})();
+
+/**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
  * @param {string[]} skus The item skus
  * @returns {Promise<Product[]>}

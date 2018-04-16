@@ -48,6 +48,12 @@ export function prepare() : Promise<void>;
 export function endConnection() : Promise<void>;
 
 /**
+ * Refresh all remaining items. No-op in iOS.
+ * @returns {Promise<void>}
+ */
+export function refreshItems() : Promise<void>;
+
+/**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
  * @param {string[]} skus The item skus
  * @returns {Promise<Product[]>}
