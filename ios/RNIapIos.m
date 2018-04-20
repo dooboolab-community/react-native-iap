@@ -211,7 +211,7 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
   if (0 <= code && code < descriptions.count) 
     return descriptions[code];
   else
-    return [NSString stringWithFormat:"%@ (Error code: %d)", descriptions[0], code];
+    return [NSString stringWithFormat:@"%@ (Error code: %d)", descriptions[0], code];
 }
 
 -(NSDictionary*)getProductObject:(SKProduct *)product {
