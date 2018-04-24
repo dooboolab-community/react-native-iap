@@ -324,11 +324,11 @@ You need to test with one sandbox account, because the account holds previous pu
 
 ## Platform depedent functions
 
-### Introductory Price (iOS)
+### Introductory Price (IP, iOS only)
 
 Introductory price is discounted prices for your auto-renewable subscriptions.
 See details : https://developer.apple.com/app-store/subscriptions/ 
-Document : https://help.apple.com/itunes-connect/developer/#/deve1d49254f
+IP needs settings in iTunesConnect. Document : https://help.apple.com/itunes-connect/developer/#/deve1d49254f
 
 ## Todo
 - Add introductory price as in [issue](https://github.com/dooboolab/react-native-iap/issues/23).
