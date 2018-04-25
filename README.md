@@ -144,8 +144,8 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
 | consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 | endConnection | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
 | refreshItems | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
-| validateReceiptIos | `object, boolean` | `object or boolean` | validate receipt for ios. Only works RN `>= 0.55` |
-| validateReceiptAndroid | `string, string, string, string, boolean` | `object or boolean` | validate receipt for android. Only works RN `>= 0.55` |
+| validateReceiptIos | `object` receiptBody, `boolean` isTest | `object or boolean` result | validate receipt for ios. Only works RN `>= 0.55` |
+| validateReceiptAndroid | `string` packageName, `string` productId, `string` productToken, `string` accessToken, `boolean` isSubscription | `object or boolean` result | validate receipt for android. Only works RN `>= 0.55` |
 
 ## Npm repo
 https://www.npmjs.com/package/react-native-iap
