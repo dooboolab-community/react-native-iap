@@ -73,7 +73,7 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
-- **[0.3.16]**
+- **[0.3.17]**
   + Implemented receipt validation. See the `Receipt validation` section in the readme. For `android`, you should have your own backend to get `access_token` from `googleapis`.
 - **[0.3.13]**
   + Implemented `refreshItems` in android. This is to consume all products in anroid to rebuy the item. Becareful to use this method because if will affect your history of playstore. Only use this when you don't care about the history in playstore. Use this method after `prepare` method.
@@ -144,8 +144,8 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
 | consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 | endConnection | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
 | refreshItems | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
-| validateReceiptIos | `object, boolean` | `object | boolean` | validate receipt for ios. Only works RN `>= 0.55` |
-| validateReceiptAndroid | `string, string, string, string, boolean` | `object | boolean` | validate receipt for android. Only works RN `>= 0.55` |
+| validateReceiptIos | `object, boolean` | `object or boolean` | validate receipt for ios. Only works RN `>= 0.55` |
+| validateReceiptAndroid | `string, string, string, string, boolean` | `object or boolean` | validate receipt for android. Only works RN `>= 0.55` |
 
 ## Npm repo
 https://www.npmjs.com/package/react-native-iap
