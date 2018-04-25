@@ -113,6 +113,78 @@ export const consumePurchase = (token) => Platform.select({
   android: () => RNIapModule.consumeProduct(token)
 })();
 
+/**
+ * Validate receipt for ios.
+ * @param {receipt-data: string, password?: string} receiptBody the receipt body to send to apple server.
+ * @param {string} isTest whether this is in test environment which is sandbox.
+ * @returns {json | boolean}
+ */
+export const validateReceiptIos = async (receiptBody, isTest) => {
+  if (Platform.OS === 'ios') {
+    const URL = !isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
+    try {
+      let res = await fetch(URL, {
+        method: 'POST',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify(receiptBody),
+      });
+  
+      const json = await res.text();
+      console.log(json);
+      res = JSON.parse(json);
+  
+      if (res) {
+        return res;
+      }
+      return false;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+  console.log('No ops in android.');
+  return false;
+};
+
+/**
+ * Validate receipt for ios.
+ * @param {string} packageName package name of your app.
+ * @param {string} productId product id for your in app product.
+ * @param {string} productToken token for your purchase.
+ * @param {string} accessToken accessToken from googleApis.
+ * @param {boolean} isSub whether this is subscription or inapp. `true` for subscription.
+ * @returns {json | boolean}
+ */
+export const validateReceiptAndroid = async (packageName, productId, productToken, accessToken, isSub) => {
+  const URL = !isSub
+    ? `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/products/${productId}/tokens/${productToken}?access_token=${accessnToken}`
+    : `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/subscriptions/${productId}/tokens/${productToken}?access_token=${accessToken}`;
+  try {
+    let res = await fetch(URL, {
+      method: 'GET',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }),
+    });
+
+    const json = await res.text();
+    console.log(json);
+    res = JSON.parse(json);
+
+    if (res) {
+      return res;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export default {
   prepare,
   getProducts,
@@ -122,4 +194,6 @@ export default {
   buySubscription,
   buyProduct,
   consumePurchase,
+  validateReceiptIos,
+  validateReceiptAndroid,
 };
