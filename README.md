@@ -233,6 +233,7 @@ async componentDidMount() {
     console.warn(err); // standardized err.code and err.message available
   }
 }
+```
 
 #### Each item is a JavaScript object containing these keys:
 |    | iOS | Android | Comment |
