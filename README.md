@@ -73,6 +73,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.3.19]**
+  + Upted `validateReceiptIos` and `validateReceiptAndroid` methods to support all RN version.
 - **[0.3.17]**
   + Implemented receipt validation. See the `Receipt validation` section in the readme. For `android`, you should have your own backend to get `access_token` from `googleapis`.
 - **[0.3.13]**
@@ -144,8 +146,8 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
 | consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 | endConnection | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
 | refreshItems | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
-| validateReceiptIos | `object` receiptBody, `boolean` isTest | `object or boolean` result | validate receipt for ios. Only works RN `>= 0.55` |
-| validateReceiptAndroid | `string` packageName, `string` productId, `string` productToken, `string` accessToken, `boolean` isSubscription | `object or boolean` result | validate receipt for android. Only works RN `>= 0.55` |
+| validateReceiptIos | `object` receiptBody, `boolean` isTest, `number` RNVersion | `object or boolean` result | validate receipt for ios. |
+| validateReceiptAndroid | `string` packageName, `string` productId, `string` productToken, `string` accessToken, `boolean` isSubscription, `number` RNVersion | `object or boolean` result | validate receipt for android. |
 
 ## Npm repo
 https://www.npmjs.com/package/react-native-iap
@@ -329,15 +331,15 @@ You need to test with one sandbox account, because the account holds previous pu
 
 
 ## Receipt validation
-From `react-native-iap@0.3.16`, we support receipt validation. For android, you need seperate json file from service account to get the `access_token` from `google-apis`, therefore it is impossible to implement serverlessly. You should have your own backend and get `access_token` from there. With that you can simple call `validateReceiptAndroid` method we implemented. Further reading is [here](https://stackoverflow.com/questions/35127086/android-inapp-purchase-receipt-validation-google-play?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa).
+From `react-native-iap@0.3.16`, we support receipt validation. For android, you need seperate json file from service account to get the `access_token` from `google-apis`, therefore it is impossible to implement serverlessly. You should have your own backend and get `access_token`. With `access_token` you can simplly call `validateReceiptAndroid` method we implemented. Further reading is [here](https://stackoverflow.com/questions/35127086/android-inapp-purchase-receipt-validation-google-play?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa).
 
-Only, serverless receipt validation is possible currently using `validateReceiptIos` method. First parameter, you should pass `transactionReceipt` which returns after `buyProduct`. Second parameter, you should pass whether this is `test` environment. If `true`, it will request to `sandbox` and `false` it will request to `production`.
+Currently, serverless receipt validation is possible using `validateReceiptIos` method. First parameter, you should pass `transactionReceipt` which returns after `buyProduct`. Second parameter, you should pass whether this is `test` environment. If `true`, it will request to `sandbox` and `false` it will request to `production`.
 
 ```javascript
 const receiptBody = {
   'receipt-data': purchase.transactionReceipt,
 };
-const result = await validateReceiptIos(receiptBody, false);
+const result = await validateReceiptIos(receiptBody, false, 54);
 console.log(result);
 ```
 For further information, please refer to [guide](https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).

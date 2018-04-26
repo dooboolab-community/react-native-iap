@@ -117,9 +117,10 @@ export const consumePurchase = (token) => Platform.select({
  * Validate receipt for ios.
  * @param {receipt-data: string, password?: string} receiptBody the receipt body to send to apple server.
  * @param {string} isTest whether this is in test environment which is sandbox.
+ * @param {number} RNVersion version of react-native.
  * @returns {json | boolean}
  */
-export const validateReceiptIos = async (receiptBody, isTest) => {
+export const validateReceiptIos = async (receiptBody, isTest, RNVersion) => {
   if (Platform.OS === 'ios') {
     const URL = !isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
     try {
@@ -131,14 +132,17 @@ export const validateReceiptIos = async (receiptBody, isTest) => {
         }),
         body: JSON.stringify(receiptBody),
       });
-  
-      const json = await res.text();
-      console.log(json);
-      res = JSON.parse(json);
-  
+
       if (res) {
-        return res;
+        if (RNVersion < 54) {
+          const json = JSON.parse(res._bodyInit);
+          return json;
+        }
+  
+        const json = await res.text();
+        res = JSON.parse(json);
       }
+  
       return false;
     } catch (err) {
       console.log(err);
@@ -156,9 +160,10 @@ export const validateReceiptIos = async (receiptBody, isTest) => {
  * @param {string} productToken token for your purchase.
  * @param {string} accessToken accessToken from googleApis.
  * @param {boolean} isSub whether this is subscription or inapp. `true` for subscription.
+ * @param {number} RNVersion version of react-native.
  * @returns {json | boolean}
  */
-export const validateReceiptAndroid = async (packageName, productId, productToken, accessToken, isSub) => {
+export const validateReceiptAndroid = async (packageName, productId, productToken, accessToken, isSub, RNVersion) => {
   const URL = !isSub
     ? `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/products/${productId}/tokens/${productToken}?access_token=${accessnToken}`
     : `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/subscriptions/${productId}/tokens/${productToken}?access_token=${accessToken}`;
@@ -171,13 +176,16 @@ export const validateReceiptAndroid = async (packageName, productId, productToke
       }),
     });
 
-    const json = await res.text();
-    console.log(json);
-    res = JSON.parse(json);
-
     if (res) {
-      return res;
+      if (RNVersion < 54) {
+        const json = JSON.parse(res._bodyInit);
+        return json;
+      }
+  
+      const json = await res.text();
+      res = JSON.parse(json);
     }
+
     return false;
   } catch (err) {
     console.log(err);
