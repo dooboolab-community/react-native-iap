@@ -1,4 +1,5 @@
 # react-native-iap
+
 <p align="left">
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square"></a>
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square"></a>
@@ -242,6 +243,7 @@ async componentDidMount() {
   }
 }
 ```
+
 #### Each item is a JavaScript object containing these keys:
 |    | iOS | Android | Comment |
 |----|-----|---------|------|
@@ -329,6 +331,13 @@ Returned purchases is an array of each purchase transaction with the following k
 ```
 You need to test with one sandbox account, because the account holds previous purchase history.
 
+## Platform depedent functions
+
+### Introductory Price (IP, iOS only)
+
+Introductory price is discounted prices for your auto-renewable subscriptions.
+See details : https://developer.apple.com/app-store/subscriptions/ 
+IP needs settings in iTunesConnect. Document : https://help.apple.com/itunes-connect/developer/#/deve1d49254f
 
 ## Receipt validation
 From `react-native-iap@0.3.16`, we support receipt validation. For android, you need seperate json file from service account to get the `access_token` from `google-apis`, therefore it is impossible to implement serverlessly. You should have your own backend and get `access_token`. With `access_token` you can simplly call `validateReceiptAndroid` method we implemented. Further reading is [here](https://stackoverflow.com/questions/35127086/android-inapp-purchase-receipt-validation-google-play?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa).
@@ -343,7 +352,6 @@ const result = await validateReceiptIos(receiptBody, false, 54);
 console.log(result);
 ```
 For further information, please refer to [guide](https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
-
 
 ## Todo
 - Add introductory price as in [issue](https://github.com/dooboolab/react-native-iap/issues/23).
