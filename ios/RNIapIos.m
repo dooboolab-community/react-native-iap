@@ -208,10 +208,10 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
     @"Unable to process transaction: Cloud service revoked."
   ];
 
-  if (code > descriptions.count - 1) {
-    return descriptions[0];
-  }
-  return descriptions[code];
+  if (0 <= code && code < descriptions.count) 
+    return descriptions[code];
+  else
+    return [NSString stringWithFormat:@"%@ (Error code: %d)", descriptions[0], code];
 }
 
 -(NSDictionary*)getProductObject:(SKProduct *)product {

@@ -27,6 +27,15 @@ export const endConnection = () => Platform.select({
 })();
 
 /**
+ * Consume all remaining tokens. Android only.
+ * @returns {Promise<void>}
+ */
+export const refreshItems = () => Platform.select({
+  ios: () => Promise.resolve(),
+  android: () => RNIapModule.refreshItems(),
+})();
+
+/**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
  * @param {string[]} skus The item skus
  * @returns {Promise<Product[]>}
@@ -104,6 +113,86 @@ export const consumePurchase = (token) => Platform.select({
   android: () => RNIapModule.consumeProduct(token)
 })();
 
+/**
+ * Validate receipt for ios.
+ * @param {receipt-data: string, password?: string} receiptBody the receipt body to send to apple server.
+ * @param {string} isTest whether this is in test environment which is sandbox.
+ * @param {number} RNVersion version of react-native.
+ * @returns {json | boolean}
+ */
+export const validateReceiptIos = async (receiptBody, isTest, RNVersion) => {
+  if (Platform.OS === 'ios') {
+    const URL = !isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
+    try {
+      let res = await fetch(URL, {
+        method: 'POST',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify(receiptBody),
+      });
+
+      if (res) {
+        if (RNVersion < 54) {
+          const json = JSON.parse(res._bodyInit);
+          return json;
+        }
+  
+        const json = await res.text();
+        res = JSON.parse(json);
+      }
+  
+      return false;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+  console.log('No ops in android.');
+  return false;
+};
+
+/**
+ * Validate receipt for ios.
+ * @param {string} packageName package name of your app.
+ * @param {string} productId product id for your in app product.
+ * @param {string} productToken token for your purchase.
+ * @param {string} accessToken accessToken from googleApis.
+ * @param {boolean} isSub whether this is subscription or inapp. `true` for subscription.
+ * @param {number} RNVersion version of react-native.
+ * @returns {json | boolean}
+ */
+export const validateReceiptAndroid = async (packageName, productId, productToken, accessToken, isSub, RNVersion) => {
+  const URL = !isSub
+    ? `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/products/${productId}/tokens/${productToken}?access_token=${accessnToken}`
+    : `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/subscriptions/${productId}/tokens/${productToken}?access_token=${accessToken}`;
+  try {
+    let res = await fetch(URL, {
+      method: 'GET',
+      headers: new Headers({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }),
+    });
+
+    if (res) {
+      if (RNVersion < 54) {
+        const json = JSON.parse(res._bodyInit);
+        return json;
+      }
+  
+      const json = await res.text();
+      res = JSON.parse(json);
+    }
+
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export default {
   prepare,
   getProducts,
@@ -113,4 +202,6 @@ export default {
   buySubscription,
   buyProduct,
   consumePurchase,
+  validateReceiptIos,
+  validateReceiptAndroid,
 };

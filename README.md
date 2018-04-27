@@ -74,6 +74,12 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.3.19]**
+  + Upted `validateReceiptIos` and `validateReceiptAndroid` methods to support all RN version.
+- **[0.3.17]**
+  + Implemented receipt validation. See the `Receipt validation` section in the readme. For `android`, you should have your own backend to get `access_token` from `googleapis`.
+- **[0.3.13]**
+  + Implemented `refreshItems` in android. This is to consume all products in anroid to rebuy the item. Becareful to use this method because if will affect your history of playstore. Only use this when you don't care about the history in playstore. Use this method after `prepare` method.
 - **[0.3.10]**
   + Implemented `endConnection` in android.
 - **[0.3.9]**
@@ -140,6 +146,9 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
 | buyProduct | `string` Product ID/sku | `Promise<Purchase>` | Buy a product |
 | consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 | endConnection | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
+| refreshItems | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
+| validateReceiptIos | `object` receiptBody, `boolean` isTest, `number` RNVersion | `object or boolean` result | validate receipt for ios. |
+| validateReceiptAndroid | `string` packageName, `string` productId, `string` productToken, `string` accessToken, `boolean` isSubscription, `number` RNVersion | `object or boolean` result | validate receipt for android. |
 
 ## Npm repo
 https://www.npmjs.com/package/react-native-iap
@@ -280,7 +289,7 @@ Users can cancel subscriptions by using the iOS System Settings.
 
 
 ## Consumption and Restoring Purchases
-You can use `getAvailablePurchases()` to do what's commonly understood as "restoring" purchases. Once an item is consumed, it will no longer be available in `getAvailablePurchases()` and will only be available via `getPurchaseHistory()`. However, this method has some caviats on Android -- namely that purchase history only exists for the single most recent purchase of each SKU -- so your best bet is to track consumption in your app yourself. By default all items that are purchased will not be consumed unless they are automatically consumed by the store (for example, if you create a consumable item for iOS.) This means that you must manage consumption yourself.  Purchases can be consumed by calling `consumePurchase()`. If you want to consume all items, you have to iterate over the purchases returned by `getAvailablePurchases()`.
+You can use `getAvailablePurchases()` to do what's commonly understood as "restoring" purchases. Once an item is consumed, it will no longer be available in `getAvailablePurchases()` and will only be available via `getPurchaseHistory()`. However, this method has some caveats on Android -- namely that purchase history only exists for the single most recent purchase of each SKU -- so your best bet is to track consumption in your app yourself. By default all items that are purchased will not be consumed unless they are automatically consumed by the store (for example, if you create a consumable item for iOS.) This means that you must manage consumption yourself.  Purchases can be consumed by calling `consumePurchase()`. If you want to consume all items, you have to iterate over the purchases returned by `getAvailablePurchases()`.
 
 ```javascript
 getPurchases = async() => {
@@ -320,7 +329,6 @@ Returned purchases is an array of each purchase transaction with the following k
   originalTransactionIdentifier // available on iOS
 }
 ```
-
 You need to test with one sandbox account, because the account holds previous purchase history.
 
 ## Platform depedent functions
@@ -331,17 +339,33 @@ Introductory price is discounted prices for your auto-renewable subscriptions.
 See details : https://developer.apple.com/app-store/subscriptions/ 
 IP needs settings in iTunesConnect. Document : https://help.apple.com/itunes-connect/developer/#/deve1d49254f
 
+## Receipt validation
+From `react-native-iap@0.3.16`, we support receipt validation. For android, you need seperate json file from service account to get the `access_token` from `google-apis`, therefore it is impossible to implement serverlessly. You should have your own backend and get `access_token`. With `access_token` you can simplly call `validateReceiptAndroid` method we implemented. Further reading is [here](https://stackoverflow.com/questions/35127086/android-inapp-purchase-receipt-validation-google-play?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa).
+
+Currently, serverless receipt validation is possible using `validateReceiptIos` method. First parameter, you should pass `transactionReceipt` which returns after `buyProduct`. Second parameter, you should pass whether this is `test` environment. If `true`, it will request to `sandbox` and `false` it will request to `production`.
+
+```javascript
+const receiptBody = {
+  'receipt-data': purchase.transactionReceipt,
+};
+const result = await validateReceiptIos(receiptBody, false, 54);
+console.log(result);
+```
+For further information, please refer to [guide](https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
+
 ## Todo
 - Add introductory price as in [issue](https://github.com/dooboolab/react-native-iap/issues/23).
-- Local receipt validation as in [issue](https://github.com/dooboolab/react-native-iap/issues/51).
+
 
 ## Contribution Guide
+
 
 ### Issue
 * Please search and register if you already have the issue you want to create. If you have a similar issue, you can add additional comments.
 * Please write a problem or suggestion in the issue. Never include more than one item in an issue.
 * Please be as detailed and concise as possible.
 	* If necessary, please take a screenshot and upload an image.
+
 
 ### Pull request(PR)
 * Do not modify the code in the `master` branch.

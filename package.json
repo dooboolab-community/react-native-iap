@@ -1,12 +1,16 @@
 {
   "name": "react-native-iap",
-  "version": "0.3.10",
+  "version": "0.3.19",
   "description": "React Native In App Purchase Module.",
   "main": "index.js",
   "types": "index.d.ts",
   "postinstall": "dooboolab-welcome postinstall",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dooboolab/react-native-iap"
   },
   "keywords": [
     "react-native",

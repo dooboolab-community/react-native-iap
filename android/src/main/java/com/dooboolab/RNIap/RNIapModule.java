@@ -136,6 +136,29 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void refreshItems(Promise promise) {
+    try {
+      Bundle ownedItems = mService.getPurchases(3, reactContext.getPackageName(), "inapp", null);
+      int response = ownedItems.getInt("RESPONSE_CODE");
+      if (response == 0) {
+        ArrayList purchaseDataList = ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+        String[] tokens = new String[purchaseDataList.size()];
+        for (int i = 0; i < purchaseDataList.size(); ++i) {
+          String purchaseData = (String) purchaseDataList.get(i);
+          JSONObject jo = new JSONObject(purchaseData);
+          tokens[i] = jo.getString("purchaseToken");
+          // Consume all remainingTokens
+          mService.consumePurchase(3, reactContext.getPackageName(), tokens[i]);
+        }
+        promise.resolve("All items have been consumed");
+        Log.d(TAG, "All items have been consumed");
+      }
+    } catch (Exception e) {
+      promise.reject(E_UNKNOWN, e.getMessage());
+    }
+  }
+
+  @ReactMethod
   public void getItemsByType(String type, ReadableArray skus, final Promise promise) {
     if (mService == null || mBillingClient == null) {
       promise.reject(E_NOT_PREPARED, "IAP not prepared. Check if Google Play service is available.");
@@ -179,7 +202,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         }
     );
   }
-
 
   @ReactMethod
   public void getAvailableItemsByType(String type, final Promise promise) {
