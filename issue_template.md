@@ -6,4 +6,6 @@
 
 ### Actual behavior
 
-### Steps to reprodue the behabior
+### Tested environment (Emulator? Real Device?)
+
+### Steps to reproduce the behavior

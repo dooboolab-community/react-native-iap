@@ -346,11 +346,9 @@ For further information, please refer to [guide](https://developer.apple.com/lib
 
 
 ## Todo
-- Add introductory price as in [issue](https://github.com/dooboolab/react-native-iap/issues/23).
-
+- 
 
 ## Contribution Guide
-
 
 ### Issue
 * Please search and register if you already have the issue you want to create. If you have a similar issue, you can add additional comments.
