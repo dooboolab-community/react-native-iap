@@ -67,7 +67,8 @@ class Page extends Component {
   buyItem = async(sku) => {
     try {
       console.info('buyItem: ' + sku);
-      const purchase = await RNIap.buyProduct(sku);
+      // const purchase = await RNIap.buyProduct(sku);
+      const purchase = await RNIap.buyProductWithoutFinishTransaction(sku);
       console.info(purchase);
       this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
     } catch (err) {
