@@ -103,6 +103,29 @@ export const buyProduct = (sku) => Platform.select({
   android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku)
 })();
 
+
+/**
+ * Buy a product without transaction finish (iOS only)
+ *   Call finishTransaction after receipt validation process.
+ * @param {string} sku The product's sku/ID
+ * @returns {Promise<ProductPurchase>}
+ */
+export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
+  ios: () => RNIapIos.buyProductWithoutAutoConfirm(sku),
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku)
+})();
+
+/**
+ * Finish Transaction (iOS only)
+ *   Explicitly call transaction finish
+ * @param {string} sku The product's sku/ID
+ * @returns {Promise<ProductPurchase>}
+ */
+export const finishTransaction = (sku) => Platform.select({
+  ios: () => RNIapIos.finishTransaction(),
+  android: () => console.log('android doesn\'t need finish Transaction. Void function')
+})();
+
 /**
  * Consume a product (on Android.) No-op on iOS.
  * @param {string} token The product's token (on Android)
@@ -201,7 +224,9 @@ export default {
   getAvailablePurchases,
   buySubscription,
   buyProduct,
+  buyProductWithoutFinishTransaction,
+  finishTransaction,
   consumePurchase,
   validateReceiptIos,
-  validateReceiptAndroid,
+  validateReceiptAndroid
 };
