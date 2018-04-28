@@ -17,9 +17,9 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 const itemSkus = Platform.select({
   ios: [
-    // 'prod.consume.santi.099', 'prod.consume.santi.199', 'prod.nonconsume.santi.only',
-    // 'scrip.auto.santi', 'scrip.non.auto.santi', // com.kretone.santiago
-    'com.cooni.point1000', 'com.cooni.point5000', 'non.consumable.product', // dooboolab
+    'prod.consume.santi.099', 'prod.consume.santi.199', 'prod.nonconsume.santi.only',
+    'scrip.auto.santi', 'scrip.non.auto.santi', // com.kretone.santiago
+    // 'com.cooni.point1000', 'com.cooni.point5000', 'non.consumable.product', // dooboolab
   ],
   android: [
     'android.test.purchased',
