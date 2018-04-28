@@ -337,6 +337,15 @@ From `react-native-iap@0.3.16`, we support receipt validation. For android, you 
 
 Currently, serverless receipt validation is possible using `validateReceiptIos` method. First parameter, you should pass `transactionReceipt` which returns after `buyProduct`. Second parameter, you should pass whether this is `test` environment. If `true`, it will request to `sandbox` and `false` it will request to `production`.
 
+```javascript
+const receiptBody = {
+  'receipt-data': purchase.transactionReceipt,
+};
+const result = await validateReceiptIos(receiptBody, false, 54);
+console.log(result);
+```
+For further information, please refer to [guide](https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
+
 ### iOS Purchasing process right way.
 
 Purchasing consumable products in iOS consists of the following steps.
@@ -350,17 +359,6 @@ Step 3 : Apply the product to the Application
 But, sometimes app doesn't make it to step 3, and user loose the product with successful payment.
 Non-consumable products can be restored via getPurchaseHistory function, but consumable products can be lost.
 In this case, use buyProductWithoutFinishTransaction to purchase action and use finishTransaction to finish payment after receipt validation and supply the products to user.
-
-
-```javascript
-const receiptBody = {
-  'receipt-data': purchase.transactionReceipt,
-};
-const result = await validateReceiptIos(receiptBody, false, 54);
-console.log(result);
-```
-For further information, please refer to [guide](https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
-
 
 ## Todo
 - Add introductory price as in [issue](https://github.com/dooboolab/react-native-iap/issues/23).
