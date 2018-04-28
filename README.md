@@ -341,11 +341,11 @@ Currently, serverless receipt validation is possible using `validateReceiptIos` 
 
 Purchasing consumable products in iOS consists of the following steps.
 
-<a> Purchasing via IAP (Apple server)
-<b> Check the validation of the receipt (either on device or server)
-<c> Apply the product to the Application
+<1> Purchasing via IAP (Apple server)
+<2> Check the validation of the receipt (either on device or server)
+<3> Apply the product to the Application
 
-But, sometimes app doesn't make it to state <c>, and user loose the product with successful payment.
+But, sometimes app doesn't make it to state <3>, and user loose the product with successful payment.
 Non-consumable products can be restored via getPurchaseHistory function, but consumable products can be lost.
 In this case, use buyProductWithoutFinishTransaction to purchase action and use finishTransaction to finish payment after receipt validation and supply the products to user.
 
