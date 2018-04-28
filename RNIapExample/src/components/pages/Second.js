@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import NativeButton from 'apsl-react-native-button';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import * as RNIap from 'react-native-iap';
 
 import Navbar from '../shared/Navbar';
 
@@ -20,40 +21,54 @@ class Page extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchViewVisible: false,
+      searchViewVisible: false
     };
   }
 
   handleBack = () => {
     this.props.navigation.goBack();
-    console.log('handleBack');
-  }
+    console.log("handleBack");
+  };
 
   onNaverLogout = () => {
     this.props.navigation.goBack();
-    console.log('onNaverLogout');
-  }
+    console.log("onNaverLogout");
+  };
+
+  renderFinishTransaction() {
+    if (Platform.OS === 'android') return null;
+    return (
+       <NativeButton
+        onPress={() => RNIap.finishTransaction()}
+        activeOpacity={0.5}
+        style={styles.btn}
+        textStyle={styles.txt}
+      >Finish Transaction (iOS)</NativeButton>
+    );
+  };
 
   render() {
     return (
       <View style={styles.container}>
-        <View style={ styles.header }>
-          <Navbar
-            showBack={true}
-            handleBack={this.handleBack}
-          >Receipt</Navbar>
+        <View style={styles.header}>
+          <Navbar showBack={true} handleBack={this.handleBack}>
+            Receipt
+          </Navbar>
         </View>
-        <View style={ styles.content }>
-          <ScrollView style={{ alignSelf: 'stretch', }}>
-            <Text style={ styles.txtResult }>
+        <View style={styles.content}>
+          <ScrollView style={{ alignSelf: "stretch" }}>
+            <Text style={styles.txtResult}>
               {this.props.navigation.state.params.receipt}
             </Text>
+            {this.renderFinishTransaction()}
             <NativeButton
               onPress={this.onNaverLogout}
               activeOpacity={0.5}
               style={styles.btnNaverLogin}
               textStyle={styles.txtNaverLogin}
-            >LOGOUT</NativeButton>
+            >
+              LOGOUT
+            </NativeButton>
           </ScrollView>
         </View>
       </View>
