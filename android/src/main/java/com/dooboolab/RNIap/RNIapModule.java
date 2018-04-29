@@ -350,7 +350,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       // Try to restart the connection on the next request to
       // Google Play by calling the startConnection() method.
       Log.d(TAG, "billing client disconnected");
-      mBillingClient.startConnection(this);
+      // mBillingClient.startConnection(this);
     }
   };
 
