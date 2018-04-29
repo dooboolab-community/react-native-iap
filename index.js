@@ -118,10 +118,9 @@ export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
 /**
  * Finish Transaction (iOS only)
  *   Explicitly call transaction finish
- * @param {string} sku The product's sku/ID
  * @returns {Promise<ProductPurchase>}
  */
-export const finishTransaction = (sku) => Platform.select({
+export const finishTransaction = () => Platform.select({
   ios: () => RNIapIos.finishTransaction(),
   android: () => console.log('android doesn\'t need finish Transaction. Void function')
 })();
