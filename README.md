@@ -183,7 +183,7 @@ You should remove this before running `pod install` and follow the manual instal
 4. Run your project (`Cmd+R`)<
 
 #### Android
-1. Open up `android/app/src/main/java/[...]/MainActivity.java`
+1. Open up `android/app/src/main/java/[...]/MainApplication.java`
   - Add `import com.dooboolab.RNIap.RNIapPackage;` to the imports at the top of the file
   - Add `new RNIapPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
