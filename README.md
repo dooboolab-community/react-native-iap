@@ -73,8 +73,10 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.3.21]**
+  + Able to manage consumption in ios with `buyProductWithoutFinishTransaction` and `finishTransaction`.
 - **[0.3.19]**
-  + Upted `validateReceiptIos` and `validateReceiptAndroid` methods to support all RN version.
+  + Updated `validateReceiptIos` and `validateReceiptAndroid` methods to support all RN version.
 - **[0.3.17]**
   + Implemented receipt validation. See the `Receipt validation` section in the readme. For `android`, you should have your own backend to get `access_token` from `googleapis`.
 - **[0.3.13]**
