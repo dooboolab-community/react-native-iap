@@ -185,7 +185,7 @@ You should remove this before running `pod install` and follow the manual instal
 4. Run your project (`Cmd+R`)<
 
 #### Android
-1. Open up `android/app/src/main/java/[...]/MainActivity.java`
+1. Open up `android/app/src/main/java/[...]/MainApplication.java`
   - Add `import com.dooboolab.RNIap.RNIapPackage;` to the imports at the top of the file
   - Add `new RNIapPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
@@ -308,7 +308,7 @@ getPurchases = async() => {
         restoredTitles += restoredTitles.length > 0 ? 'No Ads' : ', No Ads';
       } else if (purchase.productId == 'com.example.coins100') {
         CoinStore.addCoins(100);
-        await RNIap.consumePurchase(purchase.transactionReceipt);
+        await RNIap.consumePurchase(purchase.purchaseToken);
       }
     })
     Alert.alert('Restore Successful', 'You successfully restored the following purchases: ' + restoredTitles);
@@ -375,10 +375,7 @@ In this case, use buyProductWithoutFinishTransaction to purchase action and use 
 
 
 ### Pull request(PR)
-* Do not modify the code in the `master` branch.
-* PR allows only the `dev` branch.
-* It is useful to use a topic branch that has the parent `dev` as its parent.
-
+* Now PR is available to `master` branch.
 
 ### Coding Guidelines
 Please follow the Coding conventions as much as possible when contributing your code.
