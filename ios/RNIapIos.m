@@ -254,12 +254,12 @@ RCT_EXPORT_METHOD(finishTransaction) {
   formatter.locale = product.priceLocale;
   NSString *localizedPrice = [formatter stringFromNumber:product.price];
 
-  NSString* itemType = @"";
+  NSString* itemType = @"Do not use this. It returned sub only before";
   NSString* currencyCode = @"";
 
-  if (@available(iOS 11.2, *)) {
-    itemType = product.subscriptionPeriod ? @"sub" : @"iap";
-  }
+//  if (@available(iOS 11.2, *)) {
+//    itemType = product.subscriptionPeriod ? @"sub" : @"iap";
+//  }
 
   if (@available(iOS 10.0, *)) {
     currencyCode = product.priceLocale.currencyCode;
