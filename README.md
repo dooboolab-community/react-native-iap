@@ -73,6 +73,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[0.3.24]**
+  + [existing iOS bug] `itemType` of `Product` information always returns `sub`. It is unnecessary in iOS and will be deprecated.
 - **[0.3.21]**
   + Able to manage consumption in ios with `buyProductWithoutFinishTransaction` and `finishTransaction`.
 - **[0.3.19]**
