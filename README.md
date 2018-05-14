@@ -78,6 +78,8 @@ Lastly, this module also supports types for typescript users from `0.2.5`.
 - **[1.0.0]**
   + Renamed `refreshItems` to `consumeAllItems` for clear understanding.
   + Fixed critical bug in ios which products are recognized as `subs` only.
+- **[0.3.24]**
+  + [existing iOS bug] `itemType` of `Product` information always returns `sub`. It is unnecessary in iOS and will be deprecated.
 - **[0.3.21]**
   + Able to manage consumption in ios with `buyProductWithoutFinishTransaction` and `finishTransaction`.
 - **[0.3.19]**
