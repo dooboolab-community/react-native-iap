@@ -30,7 +30,7 @@ export const endConnection = () => Platform.select({
  * Consume all remaining tokens. Android only.
  * @returns {Promise<void>}
  */
-export const refreshItems = () => Platform.select({
+export const consumeAllItems = () => Platform.select({
   ios: () => Promise.resolve(),
   android: () => RNIapModule.refreshItems(),
 })();
@@ -221,6 +221,7 @@ export default {
   getSubscriptions,
   getPurchaseHistory,
   getAvailablePurchases,
+  consumeAllItems,
   buySubscription,
   buyProduct,
   buyProductWithoutFinishTransaction,

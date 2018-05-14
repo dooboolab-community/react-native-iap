@@ -17,6 +17,8 @@ Do not use version `0.3.4` ~ `0.3.8` because there was some issues in merging PR
 `react-native-iap` module versions that are not described in `change logs` may not run as expected so please refer to version mentioned in `Changelogs` below.
 
 ## Migration Guide
+Difference between `0.3.*` and `1.0.0` has only one method renaming `refreshItems` to `consumeAllItems`.
+
 To migrate `0.2.*` to `0.3.*`, You can follow below guide.
 
 | 0.2.* | 0.3.* |
@@ -73,6 +75,9 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[1.0.0]**
+  + Renamed `refreshItems` to `consumeAllItems` for clear understanding.
+  + Fixed critical bug in ios which products are recognized as `subs` only.
 - **[0.3.21]**
   + Able to manage consumption in ios with `buyProductWithoutFinishTransaction` and `finishTransaction`.
 - **[0.3.19]**
