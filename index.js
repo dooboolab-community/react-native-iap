@@ -53,7 +53,7 @@ export const getProducts = (skus) => Platform.select({
  */
 export const getSubscriptions = (skus) => Platform.select({
   ios: () => RNIapIos.getItems(skus)
-    .then(items => items.filter(item => (!item.type || item.type === IOS_ITEM_TYPE_SUBSCRIPTION) && skus.indexOf(item.productId) > -1)),
+    .then(items => items.filter(item => item.productId)),
   android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus)
 })();
 
