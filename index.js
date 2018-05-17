@@ -122,7 +122,7 @@ export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
  */
 export const finishTransaction = () => Platform.select({
   ios: () => RNIapIos.finishTransaction(),
-  android: () => console.log('android doesn\'t need finish Transaction. Void function')
+  android: () => Promise.resolve(),
 })();
 
 /**
