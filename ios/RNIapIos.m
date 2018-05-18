@@ -10,6 +10,7 @@
   NSMutableDictionary *promisesByKey;
   BOOL autoReceiptConform;
   SKPaymentTransaction *currentTransaction;
+  dispatch_queue_t myQueue;
 }
 @end
 
@@ -21,6 +22,7 @@
     promisesByKey = [NSMutableDictionary dictionary];
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
   }
+  myQueue = dispatch_queue_create("reject", DISPATCH_QUEUE_SERIAL);
   return self;
 }
 
@@ -32,9 +34,7 @@
   return YES;
 }
 
--(void)addPromiseForKey:(NSString*)key
-               resolve:(RCTPromiseResolveBlock)resolve
-                reject:(RCTPromiseRejectBlock)reject {
+-(void)addPromiseForKey:(NSString*)key resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
   NSMutableArray* promises = [promisesByKey valueForKey:key];
 
   if (promises == nil) {
@@ -172,7 +172,11 @@ RCT_EXPORT_METHOD(finishTransaction) {
         NSLog(@"\n\n\n\n\n\n Purchase Failed  !! \n\n\n\n\n");
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
         NSString *key = RCTKeyForInstance(transaction.payment.productIdentifier);
-        [self rejectPromisesForKey:key code:[self standardErrorCode:transaction.error.code] message:[self englishErrorCodeDescription:(int)transaction.error.code] error:transaction.error];
+        dispatch_sync(myQueue, ^{
+          [self rejectPromisesForKey:key code:[self standardErrorCode:(int)transaction.error.code]
+                             message:[self englishErrorCodeDescription:(int)transaction.error.code]
+                               error:transaction.error];
+        });
         break;
     }
   }
@@ -194,8 +198,11 @@ RCT_EXPORT_METHOD(finishTransaction) {
 }
 
 -(void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
-  [self rejectPromisesForKey:@"availableItems" code:[self standardErrorCode:error.code] message:[self englishErrorCodeDescription:(int)error.code] error:error];
-    NSLog(@"\n\n\n restoreCompletedTransactionsFailedWithError \n\n.");
+  dispatch_sync(myQueue, ^{
+    [self rejectPromisesForKey:@"availableItems" code:[self standardErrorCode:(int)error.code]
+                       message:[self englishErrorCodeDescription:(int)error.code] error:error];
+  });
+  NSLog(@"\n\n\n restoreCompletedTransactionsFailedWithError \n\n.");
 }
 
 -(void)purchaseProcess:(SKPaymentTransaction *)transaction {
@@ -275,7 +282,6 @@ RCT_EXPORT_METHOD(finishTransaction) {
     @"localizedPrice" : localizedPrice
   };
 }
-
 
 - (NSDictionary *)getPurchaseData:(SKPaymentTransaction *)transaction {
   NSData *receiptData;
