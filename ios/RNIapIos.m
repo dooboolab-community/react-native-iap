@@ -290,6 +290,8 @@ RCT_EXPORT_METHOD(finishTransaction) {
   } else {
     receiptData = [transaction transactionReceipt];
   }
+  
+  if (receiptData == nil) return nil;
 
   NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithDictionary: @{
     @"transactionDate": @(transaction.transactionDate.timeIntervalSince1970 * 1000),
