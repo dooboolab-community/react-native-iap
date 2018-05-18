@@ -50,8 +50,8 @@
 
   if (promises != nil) {
     for (NSMutableArray *tuple in promises) {
-      RCTPromiseResolveBlock resolve = tuple[0];
-      resolve(value);
+      RCTPromiseResolveBlock resolveBlck = tuple[0];
+      resolveBlck(value);
     }
     [promisesByKey removeObjectForKey:key];
   }
