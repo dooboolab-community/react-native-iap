@@ -115,6 +115,10 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     // This is the key line that fixed everything for me
     intent.setPackage("com.android.vending");
 
+    if (mBillingClient != null) {
+      promise.resolve("Already started. Call endConnection method if you want to start over.");
+    }
+
     try {
       addPromiseForKey(PROMISE_PREPARE, promise);
       reactContext.bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
@@ -129,6 +133,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   public void endConnection(Promise promise) {
     try {
       mBillingClient.endConnection();
+      mBillingClient = null;
       promise.resolve("end billing client.");
     } catch (Exception e) {
       promise.reject("endConnection", e.getMessage());

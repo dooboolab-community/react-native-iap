@@ -75,6 +75,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[1.0.5]**
+  + Prevent starting billing client in android when already called once related to [issue](https://github.com/dooboolab/react-native-iap/issues/152).
 - **[1.0.4]**
   + Purchase is now tread-safe in ios related to [issue](https://github.com/dooboolab/react-native-iap/issues/106).
   + PurchaseData could be nil in ios. Fixed this related to [issue](https://github.com/dooboolab/react-native-iap/issues/158)
