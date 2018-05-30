@@ -226,17 +226,27 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     int responseCode = availableItems.getInt("RESPONSE_CODE");
 
     WritableArray items = Arguments.createArray();
+
     ArrayList<String> purchaseDataList = availableItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+    ArrayList<String> signatureDataList = availableItems.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
 
     if (responseCode == BillingClient.BillingResponse.OK && purchaseDataList != null) {
-      for (String purchaseJSON : purchaseDataList) {
+
+      for (int i = 0; i < purchaseDataList.size(); i++) {
+
         try {
-          JSONObject json = new JSONObject(purchaseJSON);
+          String data = purchaseDataList.get(i);
+          String signature = signatureDataList.get(i);
+
+          JSONObject json = new JSONObject(data);
+
           WritableMap item = Arguments.createMap();
           item.putString("productId", json.getString("productId"));
           item.putString("transactionId", json.getString("orderId"));
           item.putString("transactionDate", String.valueOf(json.getLong("purchaseTime")));
           item.putString("transactionReceipt", json.getString("purchaseToken"));
+          item.putString("data", data);
+          item.putString("signature", signature);
           item.putString("purchaseToken", json.getString("purchaseToken"));
 
           if (type.equals(BillingClient.SkuType.SUBS)) {
