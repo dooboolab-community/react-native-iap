@@ -27,6 +27,8 @@ export interface ProductPurchase {
   transactionId: string;
   transactionDate: string;
   transactionReceipt: string;
+  signature?: string,
+  data?: string
 }
 
 export interface SubscriptionPurchase extends ProductPurchase {
