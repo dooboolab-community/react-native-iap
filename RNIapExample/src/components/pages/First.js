@@ -25,6 +25,7 @@ const itemSkus = Platform.select({
     'android.test.purchased',
     'point_1000',
     '5000_point',
+    'android.test.canceled',
   ],
 });
 

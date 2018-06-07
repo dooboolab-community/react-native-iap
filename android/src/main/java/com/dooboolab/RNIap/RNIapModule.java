@@ -375,7 +375,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       Log.d(TAG, "Purchase Updated Listener");
       Log.d(TAG, "responseCode: " + responseCode);
 
-      if (responseCode == BillingClient.BillingResponse.OK) {
+      if (responseCode == BillingClient.BillingResponse.OK && purchases != null) {
         Purchase purchase = purchases.get(0);
 
         WritableMap item = Arguments.createMap();
