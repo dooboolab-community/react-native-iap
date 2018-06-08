@@ -151,6 +151,14 @@ RCT_EXPORT_METHOD(finishTransaction) {
   [self resolvePromisesForKey:RCTKeyForInstance(request) value:items];
 }
 
+- (void)request:(SKRequest *)request didFailWithError:(NSError *)error{
+  NSString* key = RCTKeyForInstance(productsRequest);
+  dispatch_sync(myQueue, ^{
+    [self rejectPromisesForKey:key code:[self standardErrorCode:(int)error.code]
+                       message:[self englishErrorCodeDescription:(int)error.code] error:error];
+  });
+}
+
 -(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
   for (SKPaymentTransaction *transaction in transactions) {
     switch (transaction.transactionState) {
@@ -282,7 +290,6 @@ RCT_EXPORT_METHOD(finishTransaction) {
     @"localizedPrice" : localizedPrice
   };
 }
-
 - (NSDictionary *)getPurchaseData:(SKPaymentTransaction *)transaction {
   NSData *receiptData;
   if (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0) {
