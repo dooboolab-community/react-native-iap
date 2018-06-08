@@ -290,6 +290,7 @@ RCT_EXPORT_METHOD(finishTransaction) {
     @"localizedPrice" : localizedPrice
   };
 }
+
 - (NSDictionary *)getPurchaseData:(SKPaymentTransaction *)transaction {
   NSData *receiptData;
   if (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0) {
