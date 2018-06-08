@@ -75,6 +75,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[1.1.0]**
+  + Rebased rejection code when purchase failed in android related to [issue](https://github.com/dooboolab/react-native-iap/issues/183).
 - **[1.0.8]**
   + Put another conditional statement when buying product which crashes when purchase is null related to [issue](https://github.com/dooboolab/react-native-iap/issues/177).
 - **[1.0.6]**
