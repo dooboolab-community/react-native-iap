@@ -316,7 +316,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       addPromiseForKey(PROMISE_BUY_ITEM, promise);
       BillingFlowParams.Builder builder = BillingFlowParams.newBuilder();
 
-      if (type == BillingClient.SkuType.SUBS && oldSku != null && !oldSku.isEmpty()) {
+      if (type.equals(BillingClient.SkuType.SUBS) && oldSku != null && !oldSku.isEmpty()) {
         // Subscription upgrade/downgrade
         builder.addOldSku(oldSku);
       }
