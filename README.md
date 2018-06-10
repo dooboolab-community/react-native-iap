@@ -75,6 +75,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[1.1.2]**
+  + Handle network error related to [PR](https://github.com/dooboolab/react-native-iap/pull/186).
 - **[1.1.0]**
   + Rebased rejection code when purchase failed in android related to [issue](https://github.com/dooboolab/react-native-iap/issues/183).
 - **[1.0.8]**
@@ -277,6 +279,11 @@ async componentDidMount() {
 
 ## End Billing Connection
 When you are done with the billing, you should release it for android([READ](https://developer.android.com/reference/com/android/billingclient/api/BillingClient.html#endConnection())). It is not needed in ios. No need to check platform either since nothing will happen in ios. This can be used in `componentWillUnMount`.
+```javascript
+componentWillUnmount() {
+  RNIap.endConnection();
+}
+```
 
 ## Purchase
 Once you have called getProducts(), and you have a valid response, you can call buyProduct().
