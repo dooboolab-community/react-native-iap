@@ -46,6 +46,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   private static final String E_UNKNOWN = "E_UNKNOWN";
   private static final String E_NOT_PREPARED = "E_NOT_PREPARED";
+  private static final String E_NOT_ENDED = "E_NOT_ENDED";
   private static final String E_USER_CANCELLED = "E_USER_CANCELLED";
   private static final String E_ITEM_UNAVAILABLE = "E_ITEM_UNAVAILABLE";
   private static final String E_NETWORK_ERROR = "E_NETWORK_ERROR";
@@ -116,7 +117,8 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     intent.setPackage("com.android.vending");
 
     if (mBillingClient != null) {
-      promise.resolve("Already started. Call endConnection method if you want to start over.");
+      promise.reject(E_NOT_ENDED, "Already started. Call endConnection method if you want to start over.");
+      return;
     }
 
     try {
