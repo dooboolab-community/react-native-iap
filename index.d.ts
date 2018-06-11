@@ -87,7 +87,7 @@ export function getAvailablePurchases() : Promise<Purchase[]>;
  * @param {string} oldSku Optional old product's ID for upgrade/downgrade (Android only)
  * @returns {Promise<Purchase>}
  */
-export function buySubscription(sku: string, oldSku: string) : Promise<SubscriptionPurchase>;
+export function buySubscription(sku: string, oldSku?: string) : Promise<SubscriptionPurchase>;
 
 /**
  * Buy a product
