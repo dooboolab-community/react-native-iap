@@ -86,7 +86,7 @@ export const getAvailablePurchases = () => Platform.select({
 /**
  * Create a subscription to a sku
  * @param {string} sku The product's sku/ID
- * @param {string} oldSku Optional old product's ID for upgrade/downgrade (Android only)
+ * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
  * @returns {Promise<SubscriptionPurchase>}
  */
 export const buySubscription = (sku, oldSku) => Platform.select({
