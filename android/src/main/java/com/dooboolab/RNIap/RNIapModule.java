@@ -310,19 +310,25 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void buyItemByType(String type, String sku, Promise promise) {
+  public void buyItemByType(String type, String sku, String oldSku, Promise promise) {
     final Activity activity = getCurrentActivity();
     if (activity == null) {
       promise.reject(E_UNKNOWN, "getCurrentActivity returned null");
     } else {
       addPromiseForKey(PROMISE_BUY_ITEM, promise);
-      BillingFlowParams flowParams = BillingFlowParams.newBuilder()
-          .setSku(sku)
+      BillingFlowParams.Builder builder = BillingFlowParams.newBuilder();
+
+      if (type.equals(BillingClient.SkuType.SUBS) && oldSku != null && !oldSku.isEmpty()) {
+        // Subscription upgrade/downgrade
+        builder.addOldSku(oldSku);
+      }
+
+      BillingFlowParams flowParams = builder.setSku(sku)
           .setType(type)
           .build();
 
       int responseCode = mBillingClient.launchBillingFlow(activity,flowParams);
-      Log.d(TAG, "buyItemByType (type: " + type + ", sku: " + sku + ") responseCode: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
+      Log.d(TAG, "buyItemByType (type: " + type + ", sku: " + sku + ", oldSku: " + oldSku + ") responseCode: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
       if (responseCode != BillingClient.BillingResponse.OK) {
         rejectPromisesWithBillingError(PROMISE_BUY_ITEM,responseCode);
       }

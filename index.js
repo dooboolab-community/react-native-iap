@@ -86,11 +86,12 @@ export const getAvailablePurchases = () => Platform.select({
 /**
  * Create a subscription to a sku
  * @param {string} sku The product's sku/ID
+ * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
  * @returns {Promise<SubscriptionPurchase>}
  */
-export const buySubscription = (sku) => Platform.select({
+export const buySubscription = (sku, oldSku) => Platform.select({
   ios: () => RNIapIos.buyProduct(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku)
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku)
 })();
 
 /**
