@@ -17,9 +17,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 const itemSkus = Platform.select({
   ios: [
-    'prod.consume.santi.099', 'prod.consume.santi.199', 'prod.nonconsume.santi.only',
-    'scrip.auto.santi', 'scrip.non.auto.santi', // com.kretone.santiago
-    // 'com.cooni.point1000', 'com.cooni.point5000', 'non.consumable.product', // dooboolab
+    'com.cooni.point1000','com.cooni.point5000', // dooboolab
   ],
   android: [
     'android.test.purchased',
@@ -95,10 +93,12 @@ class Page extends Component {
       console.info('Get available purchases (non-consumable or unconsumed consumable)');
       const purchases = await RNIap.getAvailablePurchases();
       console.info('Available purchases :: ', purchases);
-      this.setState({
-        availableItemsMessage: `Got ${purchases.length} items.`,
-        receipt: purchases[0].transactionReceipt
-      });
+      if (purchases && purchases.length > 0) {
+        this.setState({
+          availableItemsMessage: `Got ${purchases.length} items.`,
+          receipt: purchases[0].transactionReceipt
+        });
+      }
     } catch(err) {
       console.warn(err.code, err.message);
       Alert.alert(err.message);

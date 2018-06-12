@@ -20,7 +20,7 @@
     "react": "16.3.2",
     "react-native": "0.55.3",
     "react-native-iap": "file:../",
-    "react-navigation": "^1.0.0-beta.15"
+    "react-navigation": "^1.5.12"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.1",
