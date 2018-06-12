@@ -101,7 +101,7 @@ export const buySubscription = (sku, oldSku) => Platform.select({
  */
 export const buyProduct = (sku) => Platform.select({
   ios: () => RNIapIos.buyProduct(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku)
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null)
 })();
 
 
@@ -113,7 +113,7 @@ export const buyProduct = (sku) => Platform.select({
  */
 export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
   ios: () => RNIapIos.buyProductWithoutAutoConfirm(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku)
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null)
 })();
 
 /**
