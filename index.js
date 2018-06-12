@@ -164,6 +164,7 @@ export const validateReceiptIos = async (receiptBody, isTest, RNVersion) => {
   
         const json = await res.text();
         res = JSON.parse(json);
+        return res;
       }
   
       return false;
