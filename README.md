@@ -75,8 +75,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
-- **[1.1.5]**
-  + Fixed validate receiptIos bug from [issue](https://github.com/dooboolab/react-native-iap/issues/190).
+- **[1.1.6]**
+  + Fixed validate receiptIos bug from [issue](https://github.com/dooboolab/react-native-iap/issues/190) and the break in [issue](https://github.com/dooboolab/react-native-iap/pull/188).
 - **[1.1.3]**
   + Android reject when preparing not-ended billing client from [PR](https://github.com/dooboolab/react-native-iap/pull/189).
 - **[1.1.2]**
