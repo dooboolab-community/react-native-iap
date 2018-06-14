@@ -219,6 +219,7 @@ export const validateReceiptAndroid = async (packageName, productId, productToke
 
 export default {
   prepare,
+  endConnection,
   getProducts,
   getSubscriptions,
   getPurchaseHistory,
