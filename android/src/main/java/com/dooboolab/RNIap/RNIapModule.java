@@ -245,7 +245,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
           WritableMap item = Arguments.createMap();
           item.putString("productId", json.getString("productId"));
-          item.putString("transactionId", json.getString("orderId"));
+          item.putString("transactionId", json.optString("orderId"));
           item.putString("transactionDate", String.valueOf(json.getLong("purchaseTime")));
           item.putString("transactionReceipt", json.getString("purchaseToken"));
           item.putString("data", data);
