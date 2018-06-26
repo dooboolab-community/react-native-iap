@@ -145,7 +145,7 @@ export const consumePurchase = (token) => Platform.select({
  */
 export const validateReceiptIos = async (receiptBody, isTest, RNVersion) => {
   if (Platform.OS === 'ios') {
-    const URL = !isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
+    const URL = isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
     try {
       let res = await fetch(URL, {
         method: 'POST',
