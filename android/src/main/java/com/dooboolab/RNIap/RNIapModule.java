@@ -55,6 +55,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   private static final String E_REMOTE_ERROR = "E_REMOTE_ERROR";
   private static final String E_USER_ERROR = "E_USER_ERROR";
   private static final String E_DEVELOPER_ERROR = "E_DEVELOPER_ERROR";
+  private static final String E_BILLING_RESPONSE_JSON_PARSE_ERROR = "E_BILLING_RESPONSE_JSON_PARSE_ERROR";
 
   private static final String PROMISE_PREPARE = "PROMISE_PREPARE";
   private static final String PROMISE_BUY_ITEM = "PROMISE_BUY_ITEM";
@@ -244,7 +245,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
           WritableMap item = Arguments.createMap();
           item.putString("productId", json.getString("productId"));
-          item.putString("transactionId", json.getString("orderId"));
+          item.putString("transactionId", json.optString("orderId"));
           item.putString("transactionDate", String.valueOf(json.getLong("purchaseTime")));
           item.putString("transactionReceipt", json.getString("purchaseToken"));
           item.putString("data", data);
@@ -257,7 +258,8 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
           items.pushMap(item);
         } catch (JSONException e) {
-          e.printStackTrace();
+          promise.reject(E_BILLING_RESPONSE_JSON_PARSE_ERROR, e.getMessage());
+          return;
         }
       }
 
