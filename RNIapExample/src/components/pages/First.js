@@ -40,7 +40,8 @@ class Page extends Component {
 
   async componentDidMount(){
     try {
-      await RNIap.prepare();
+      const result = await RNIap.prepare();
+      console.log('result', result);
     }
     catch (err) {
       console.warn(err.code, err.message);

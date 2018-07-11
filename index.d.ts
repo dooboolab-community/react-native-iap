@@ -39,9 +39,9 @@ export type Purchase = ProductPurchase | SubscriptionPurchase
 
 /**
  * Prepare module for purchase flow. Required on Android. No-op on iOS.
- * @returns {Promise<void>}
+ * @returns {Promise<string>}
  */
-export function prepare() : Promise<void>;
+export function prepare() : Promise<string>;
 
 /**
  * End billing client. Will enchance android app's performance by releasing service. No-op on iOS.

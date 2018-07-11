@@ -13,7 +13,7 @@ const IOS_ITEM_TYPE_IAP = 'iap';
  * @returns {Promise<void>}
  */
 export const prepare = () => Platform.select({
-  ios: () => Promise.resolve(),
+  ios: () => RNIapIos.canMakePayments(),
   android: () => RNIapModule.prepare()
 })();
 
