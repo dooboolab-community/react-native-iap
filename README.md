@@ -75,6 +75,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[1.2.6]**
+  + Fixed invalid source in pod spec related to [issue](https://github.com/dooboolab/react-native-iap/pull/212).
 - **[1.2.5]**
   + Set android build version to that of `rootProject`'s to prevent from build failing cause of mismatched version.
 - **[1.2.4]**
