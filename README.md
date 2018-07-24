@@ -21,18 +21,18 @@ Difference between `0.3.*` and `1.0.0` has only one method renaming `refreshItem
 
 To migrate `0.2.*` to `0.3.*`, You can follow below guide.
 
-| 0.2.* | 0.3.* |
-| --- | --- |
-| `prepareAndroid` | `prepare` |
-| `getItems` | `getProducts` |
-| `getSubscribeItems` | `getSubscriptions` |
-| `getPurchasedItemsAndroid` | `getPurchaseHistory` |
-| `` | `getAvailablePurchases` |
-| `buySubscribeItem` | `buySubscription` |
-| `buyItem` | `buyProduct` |
-| `consumeItemAndroid` | `consumePurchase` |
-| `refreshAllItems` | <span style="color: red">Not Available</span> |
-| `refreshPurchaseItemsAndroid` | <span style="color: red">Not Available</span> |
+| 0.2.* | 0.3.* | 1.* |
+| --- | --- | --- |
+| `prepareAndroid` | `prepare` | `prepare` |
+| `getItems` | `getProducts` | `getProducts` |
+| `getSubscribeItems` | `getSubscriptions` | `getSubscriptions` |
+| `getPurchasedItemsAndroid` | `getPurchaseHistory` | `getPurchaseHistory` |
+| `` | `getAvailablePurchases` | `getAvailablePurchases` |
+| `buySubscribeItem` | `buySubscription` | `buySubscription` |
+| `buyItem` | `buyProduct` | `buyProduct` |
+| `consumeItemAndroid` | `consumePurchase` | `consumePurchase` |
+| `refreshAllItems` | <span style="color: red">Not Available</span> | `consumeAllItems` |
+| `refreshPurchaseItemsAndroid` | <span style="color: red">Not Available</span> | <span style="color: red">Not Available</span> |
 
 From above method changes, `getProducts` gets `itemSkus` as parameter in different way then as used in `getItems`. In `getItems` you had to put parameter as
 ```
