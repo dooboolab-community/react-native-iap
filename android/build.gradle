@@ -26,7 +26,8 @@ android {
 
   defaultConfig {
     minSdkVersion rootProject.ext.hasProperty('minSdkVersion') ? rootProject.ext.minSdkVersion : DEFAULT_TARGET_SDK_VERSION
-    targetSdkVersion rootProject.ext.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : DEFAULT_TARGET_SDK_VERSION   versionCode 1
+    targetSdkVersion rootProject.ext.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : DEFAULT_TARGET_SDK_VERSION
+    versionCode 1
     versionName "1.0"
   }
   lintOptions {
