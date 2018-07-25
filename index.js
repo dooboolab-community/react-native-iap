@@ -189,7 +189,7 @@ export const validateReceiptIos = async (receiptBody, isTest, RNVersion) => {
  */
 export const validateReceiptAndroid = async (packageName, productId, productToken, accessToken, isSub, RNVersion) => {
   const URL = !isSub
-    ? `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/products/${productId}/tokens/${productToken}?access_token=${accessnToken}`
+    ? `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/products/${productId}/tokens/${productToken}?access_token=${accessToken}`
     : `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/subscriptions/${productId}/tokens/${productToken}?access_token=${accessToken}`;
   try {
     let res = await fetch(URL, {
