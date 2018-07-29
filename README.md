@@ -12,10 +12,6 @@ Android iap is implemented with iap version 3 which is currently recent.
 ## Playstore & Itunnesconnect configuration
   - Please refer to [Blog](https://medium.com/@dooboolab/react-native-in-app-purchase-121622d26b67).
 
-## Important
-Do not use version `0.3.4` ~ `0.3.8` because there was some issues in merging PR. Also please commit to `dev` branch and not `master` branch please if requesting PR.
-`react-native-iap` module versions that are not described in `change logs` may not run as expected so please refer to version mentioned in `Changelogs` below.
-
 ## Migration Guide
 Difference between `0.3.*` and `1.0.0` has only one method renaming `refreshItems` to `consumeAllItems`.
 
