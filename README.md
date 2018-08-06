@@ -71,6 +71,8 @@ Also there are some other methods that is not supported in ios and implemented i
 Lastly, this module also supports types for typescript users from `0.2.5`.
 
 ## Changelogs
+- **[1.3.6]**
+  + Upgraded android billing client to 1.1.
 - **[1.3.0]**
   + Better android build.gradle from [PR](https://github.com/dooboolab/react-native-iap/pull/213).
 - **[1.2.6]**
