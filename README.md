@@ -274,7 +274,7 @@ async componentDidMount() {
   try {
     await RNIap.prepare();
     const products = await RNIap.getProducts(itemSkus);
-    this.setState({ items });
+    this.setState({ products });
   } catch(err) {
     console.warn(err); // standardized err.code and err.message available
   }
