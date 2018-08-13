@@ -6,7 +6,6 @@
 This is a react-native link library project for in app purchase for both android and ios platforms. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project.
 
 We are willing to share same in-app-purchase experience for both android and ios platform and will continuously merge methods which are standing alone.
-
 Android iap is implemented with iap version 3 which is currently recent.
 
 ## Playstore & Itunnesconnect configuration
@@ -69,105 +68,6 @@ Also to import module, previously in `react-native-iap@0.1.*` you had to `import
 For new method, refreshAllItems has been implemented for both ios and android. This feature will support senario for non-consumable products.
 Also there are some other methods that is not supported in ios and implemented in android. You can see more in Changelogs below.
 Lastly, this module also supports types for typescript users from `0.2.5`.
-
-## Changelogs
-- **[1.3.6]**
-  + Upgraded android billing client to 1.1.
-- **[1.3.0]**
-  + Better android build.gradle from [PR](https://github.com/dooboolab/react-native-iap/pull/213).
-- **[1.2.6]**
-  + Fixed invalid source in pod spec from [PR](https://github.com/dooboolab/react-native-iap/pull/212).
-- **[1.2.5]**
-  + Set android build version to that of `rootProject`'s to prevent from build failing cause of mismatched version.
-- **[1.2.4]**
-  + Implemented `canMakePayments` method in ios which is called in `prepare` method in the module. Related [issue](https://github.com/dooboolab/react-native-iap/pull/121).
-- **[1.2.2]**
-  + Return an err when it failse to parse json in android related to [issue](https://github.com/dooboolab/react-native-iap/pull/196).
-- **[1.2.0]**
-  + Fixed example project to work again.
-- **[1.1.6]**
-  + Fixed validate receiptIos bug from [issue](https://github.com/dooboolab/react-native-iap/issues/190) and the break in [issue](https://github.com/dooboolab/react-native-iap/pull/188).
-- **[1.1.3]**
-  + Android reject when preparing not-ended billing client from [PR](https://github.com/dooboolab/react-native-iap/pull/189).
-- **[1.1.2]**
-  + Handle network error related to [PR](https://github.com/dooboolab/react-native-iap/pull/186).
-- **[1.1.0]**
-  + Rebased rejection code when purchase failed in android related to [issue](https://github.com/dooboolab/react-native-iap/issues/183).
-- **[1.0.8]**
-  + Put another conditional statement when buying product which crashes when purchase is null related to [issue](https://github.com/dooboolab/react-native-iap/issues/177).
-- **[1.0.6]**
-  + Add signature and original purchase data to transaction from [PR](https://github.com/dooboolab/react-native-iap/pull/173)
-- **[1.0.5]**
-  + Prevent starting billing client in android when already called once related to [issue](https://github.com/dooboolab/react-native-iap/issues/152).
-- **[1.0.4]**
-  + Purchase is now tread-safe in ios related to [issue](https://github.com/dooboolab/react-native-iap/issues/106).
-  + PurchaseData could be nil in ios. Fixed this related to [issue](https://github.com/dooboolab/react-native-iap/issues/158)
-- **[1.0.0]**
-  + Renamed `refreshItems` to `consumeAllItems` for clear understanding.
-  + Fixed critical bug in ios which products are recognized as `subs` only.
-- **[0.3.24]**
-  + [existing iOS bug] `itemType` of `Product` information always returns `sub`. It is unnecessary in iOS and will be deprecated.
-- **[0.3.21]**
-  + Able to manage consumption in ios with `buyProductWithoutFinishTransaction` and `finishTransaction`.
-- **[0.3.19]**
-  + Updated `validateReceiptIos` and `validateReceiptAndroid` methods to support all RN version.
-- **[0.3.17]**
-  + Implemented receipt validation. See the `Receipt validation` section in the readme. For `android`, you should have your own backend to get `access_token` from `googleapis`.
-- **[0.3.13]**
-  + Implemented `refreshItems` in android. This is to consume all products in anroid to rebuy the item. Becareful to use this method because if will affect your history of playstore. Only use this when you don't care about the history in playstore. Use this method after `prepare` method.
-- **[0.3.10]**
-  + Implemented `endConnection` in android.
-- **[0.3.9]**
-  + stable version that fixes bug in `0.3.4` ~ `0.3.8`.
-  + fix crash when localizedDescription is nil from [PR](https://github.com/dooboolab/react-native-iap/pull/112).
-  + fix crash on launchBillingFlow failure in Android from [PR](https://github.com/dooboolab/react-native-iap/pull/107).
-  + Fixed typings.
-- **[0.3.1]**
-  + Fixed linking manual dependency in ios from [PR](https://github.com/dooboolab/react-native-iap/pull/94).
-  + Fixed returning localizedPrice when need actual price in Android from [ISSUE](https://github.com/dooboolab/react-native-iap/issues/86).
-  + Fixed other minor bugs relied on ios.
-  + Some purchasing senarios have been tested throughly.
-- **[0.3.0-alpha1]**
-  + Methods names are fully renamed to avoid the confusion. Current methods are `prepare`, `getProducts`, `getSubscriptions`, `getPurchaseHistory`, `getAvailablePurchases`, `buySubscription`, `buyProduct`, `consumeProduct`. Please compare these methods with your previous methods used in `0.2.*` if you want to upgrade to `0.3.0`.
-- **[0.2.17]**
-  + `refreshAllItems` has changed name to `fetchHistory` since android and ios had different functionality and fixed to fetching history of purchases.
-- **[0.2.16]**
-  + Changed android package name `com.reactlibrary.RNIapPackage` to `com.dooboolab.RNIap.RNIapPackage`;.
-- **[0.2.15]**
-  + Removed react dependency in pod(deprecated). Handle android `buySubscribeItem` callback.
-- **[0.2.14]**
-  + Improve typings with [JSDoc](https://github.com/dooboolab/react-native-iap/commit/5c91392136837a10c85c6c073cc254f4c2f98249).
-- **[0.2.13]**
-  + buyItem will now return object instead string. The receipt string will be result.data and signature is added in result.signature. Currently ios signature will be always empty string.
-- **[0.2.12]**
-  + Added signiture to android purchase. From this version, the verification string for json string after purchasing will be receipt.data instead of receipt itself because of changes in [here](https://github.com/dooboolab/react-native-iap/issues/31). We will apply this changes to ios too so you do not have to handle these two differently.
-- **[0.2.11]**
-  + [Move podspec to where "react-native link" expects it to be](https://github.com/dooboolab/react-native-iap/commit/6c2389719663f90de1862cf14dfd4d3e3d670d1b).
-- **[0.2.9]**
-  + Android catch error message when IAP service not prepared during refreshAllItems.
-- **[0.2.8]**
-  + `homepage` now is mandatory attribute in cocoapods from [pull request](https://github.com/dooboolab/react-native-iap/pull/21).
-- **[0.2.7]**
-  + Android `buyItem` cancel callback.
-- **[0.2.6]**
-  + Android buyItem method do not consume item right away from 0.2.6.
-- **[0.2.5]**
-  + types support.
-    ![alt text](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/typing%20screen%20shot.png?alt=media&token=ea2ef1f3-50af-4d9c-8388-7fd22ddc8aa0)
-  + call new Method for android inside refreshItems(). This will now return object values like ios.
-- **[0.2.3]**
-  + Support annotations to hint while using our module.
-- **[0.2.0]**
-  + Implemented senario for consumable and non-consumable item.
-  + Seperated methods that only exists in IOS and Android.
-    - prepareAndroid()
-    - refreshPurchaseItemsAndroid(type: string)
-    - getPurchasedItemsAndroid(type: string)
-    - consumeItemAndroid(token: string)
-  + Able to call prepareAndroid() function without any conditional statement like if (Platform.OS === 'android'). Just use it.
-  + Updated Readme.
-- **[0.1.10]**
-  + Fixed potential bug relied on preparing IAP module in Android. Updated readme to see how to use it.
 
 #### Methods
 | Func  | Param  | Return | Description |
@@ -401,47 +301,22 @@ But, sometimes app doesn't make it to step 3, and user loose the product with su
 Non-consumable products can be restored via getPurchaseHistory function, but consumable products can be lost.
 In this case, use buyProductWithoutFinishTransaction to purchase action and use finishTransaction to finish payment after receipt validation and supply the products to user.
 
-## Todo
-- 
+----
 
-## Contribution Guide
+## Supporting react-native-iap
 
-### Issue
-* Please search and register if you already have the issue you want to create. If you have a similar issue, you can add additional comments.
-* Please write a problem or suggestion in the issue. Never include more than one item in an issue.
-* Please be as detailed and concise as possible.
-	* If necessary, please take a screenshot and upload an image.
+`react-native` is open source project with MIT license. We are willing to maintain this repository to support devs to monetize around the world. Since, `IAP` itself is not perfect in each platform, we desperately needs this project to be maintained. If you'd like to help us, please consider to be with us in [Open Collective](https://opencollective.com/react-native-iap).
 
+### Sponsors
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/react-native-iap#sponsor)]
 
-### Pull request(PR)
-* Now PR is available to `master` branch.
+### Backers
+Please be our [Backers](https://opencollective.com/react-native-iap#backer).
+<a href="https://opencollective.com/react-native-iap#backers" target="_blank"><img src="https://opencollective.com/react-native-iap/backers.svg?width=890"></a>
 
-### Coding Guidelines
-Please follow the Coding conventions as much as possible when contributing your code.
-* The indent tab is two spaces.
-* The class declaration and the `{}` in curly brackets such as function, if, foreach, for, and while should be in the following format. Also if you installed eslint in vscode or in your code editor, it will help you with linting.
-	* `{` should be placed in same line and `}` should be placed in next line.
-```
-for (let i = 0; i < 10; i++) {
-  ...
-}
-array.forEach((e) => {
-  ...
-});
-```
-  * Space before `(` and after `)`.
-* **If you find code that does not fit in the coding convention, do not ever try to fix code that is not related to your purpose.**
+### Contributing
+Please make sure to read the [Contributing Guide](CONTRIBUTING.md) before making a pull request.
+Thank you to all the people who helped to maintain and upgrade this project!
 
-
-## LICENSE
-
-The MIT License (MIT)
-
-Copyright (c) 2017 dooboolab
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+<a href="graphs/contributors"><img src="https://opencollective.com/react-native-iap/contributors.svg?width=890" /></a>
+<hr>
