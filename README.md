@@ -253,11 +253,11 @@ Returned purchases is an array of each purchase transaction with the following k
 
 |    | iOS | Android | Comment |
 |----|-----|---------|------|
-|`transactionDate`| ✓ | ✓ | Will return localizedPrice on Android (default) or a string price (eg. `1.99`) (iOS) |
-|`transactionId`| ✓ | ✓ | Returns a string needed to purchase the item later |
-|`productId`| ✓ | ✓ | Returns the currency code |
-|`transactionReceipt`| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
-|`purchaseToken`| ✓ | ✓ | Returns the title Android and localizedTitle on iOS |
+|`productId`| ✓ | ✓ | The product ID for the product. |
+|`purchaseToken`| ✓ | ✓ | A token that uniquely identifies a purchase for a given item and user pair. |
+|`transactionReceipt`| ✓ | ✓ | `receipt` for ios and `purchaseToken` for android. |
+|`transactionId`| ✓ | ✓ | A unique order identifier for the transaction. |
+|`transactionDate`| ✓ | ✓ | The time the product was purchased, in milliseconds since the epoch (Jan 1, 1970). |
 |`autoRenewingAndroid`|  | ✓ | Indicates whether the subscription renews automatically. If true, the subscription is active, and will automatically renew on the next billing date. If false, indicates that the user has canceled the subscription. |
 |`dataAndroid`|  | ✓ | Original json for purchase data. |
 |`signatureAndroid`|  | ✓ | String containing the signature of the purchase data that was signed with the private key of the developer. The data signature uses the RSASSA-PKCS1-v1_5 scheme. |
