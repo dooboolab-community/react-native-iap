@@ -12,6 +12,8 @@ Android iap is implemented with iap version 3 which is currently recent.
   - Please refer to [Blog](https://medium.com/@dooboolab/react-native-in-app-purchase-121622d26b67).
 
 ## Migration Guide
+`2.0.0-alpha1` has released. Not much difference. There were some parameters supports and changes to distinguish the differences in platform at one sight. Please follow the readme what you get in returned variables when calling `getItems` and when purchasing through `buyProduct` or `buySubscription`.
+
 Difference between `0.3.*` and `1.0.0` has only one method renaming `refreshItems` to `consumeAllItems`.
 
 To migrate `0.2.*` to `0.3.*`, You can follow below guide.
@@ -52,22 +54,6 @@ const itemSkus = Platform.select({
 });
 ```
 Also, note that this is our last migration for renaming method names without any deprecation warning. Thank you for your understanding.
-
-## Breaking Changes
-`0.3.0-alpha1` has released. All the methods are renamed and current methods are merged into each single method. See `Methods` section below to see what's been changed.
-
-Breaking changes have made from `0.2.17`. `refreshAllItems` has changed name to `fetchHistory`. See the changelogs below.
-
-Breaking changes have made from `0.2.16` in android. Package name has been fixed to `com.dooboolab.RNIap.RNIapPackage`. Read the changelogs below. There was linking [issue](https://github.com/dooboolab/react-native-iap/issues/49#issuecomment-369811257) with wrong package name.
-
-Breaking changes have made from `0.2.12`. Please read the changelogs below. The summary of change is that it now returns receipt in different format.
-
-Changes from `react-native-iap@0.1.*` to `react-native-iap@0.2.*` is that you have `prepare()` method deprecated which you should call before using `RNIap` methods. Now you have to call `prepareAndroid()` instead just to know that it is just android dependent method.
-Also to import module, previously in `react-native-iap@0.1.*` you had to `import RNIap from 'react-native-iap'` but now you have to do like `import * as RNIap from 'react-native-iap'`.
-
-For new method, refreshAllItems has been implemented for both ios and android. This feature will support senario for non-consumable products.
-Also there are some other methods that is not supported in ios and implemented in android. You can see more in Changelogs below.
-Lastly, this module also supports types for typescript users from `0.2.5`.
 
 #### Methods
 | Func  | Param  | Return | Description |
@@ -188,8 +174,13 @@ async componentDidMount() {
 |`currency`| ✓ | ✓ | Returns the currency code |
 |`localizedPrice`| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
 |`title`| ✓ | ✓ | Returns the title Android and localizedTitle on iOS |
-|`description`| ✓ | ✓ | Returns the description of the product |
-|`type`| ✓ | ✓ | Returns SKU type (subscription or in-app product). iOS < 11.2 will always return `null` |
+|`introductoryPrice`| ✓ | ✓ | Formatted introductory price of a subscription, including its currency sign, such as €3.99. The price doesn't include tax. |
+|`subscriptionPeriodNumberIOS`| ✓ |  | The unit in string like DAY or WEEK or MONTH or YEAR |
+|`subscriptionPeriodUnitIOS`| ✓ |  | The unit number of subscription period |
+|`subscriptionPeriodAndroid`|  | ✓ | Subscription period, specified in ISO 8601 format. For example, P1W equates to one week, P1M equates to one month, P3M equates to three months, P6M equates to six months, and P1Y equates to one year. |
+|`introductoryPriceCyclesAndroid`|  | ✓ | The number of subscription billing periods for which the user will be given the introductory price, such as 3. |
+|`introductoryPricePeriodAndroid`|  | ✓ | The billing period of the introductory price, specified in ISO 8601 format. |
+|`freeTrialPeriodAndroid`|  | ✓ | Trial period configured in Google Play Console, specified in ISO 8601 format. For example, P7D equates to seven days. |
 
 ## End Billing Connection
 When you are done with the billing, you should release it for android([READ](https://developer.android.com/reference/com/android/billingclient/api/BillingClient.html#endConnection())). It is not needed in ios. No need to check platform either since nothing will happen in ios. This can be used in `componentWillUnMount`.
@@ -258,18 +249,19 @@ getPurchases = async() => {
 }
 ```
 Returned purchases is an array of each purchase transaction with the following keys:
-```javascript
-{
-  transactionDate,
-  transactionId,
-  productId,
-  transactionReceipt,
-  purchaseToken, // available on Android (same as transactionReceipt)
-  autoRenewing, // available on Android
-  originalTransactionDate, // available on iOS
-  originalTransactionIdentifier // available on iOS
-}
-```
+|    | iOS | Android | Comment |
+|----|-----|---------|------|
+|`transactionDate`| ✓ | ✓ | Will return localizedPrice on Android (default) or a string price (eg. `1.99`) (iOS) |
+|`transactionId`| ✓ | ✓ | Returns a string needed to purchase the item later |
+|`productId`| ✓ | ✓ | Returns the currency code |
+|`transactionReceipt`| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
+|`purchaseToken`| ✓ | ✓ | Returns the title Android and localizedTitle on iOS |
+|`autoRenewingAndroid`|  | ✓ | Indicates whether the subscription renews automatically. If true, the subscription is active, and will automatically renew on the next billing date. If false, indicates that the user has canceled the subscription. |
+|`dataAndroid`|  | ✓ | Original json for purchase data. |
+|`signatureAndroid`|  | ✓ | String containing the signature of the purchase data that was signed with the private key of the developer. The data signature uses the RSASSA-PKCS1-v1_5 scheme. |
+|`originalTransactionDateIOS`| ✓ |  | For a transaction that restores a previous transaction, the date of the original transaction. |
+|`originalTransactionIdentifierIOS`| ✓ |  | For a transaction that restores a previous transaction, the transaction identifier of the original transaction. |
+
 You need to test with one sandbox account, because the account holds previous purchase history.
 
 

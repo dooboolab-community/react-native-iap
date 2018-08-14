@@ -16,6 +16,12 @@ export interface Product {
   price: string;
   currency: string;
   localizedPrice: string;
+  subscriptionPeriodNumberIOS: string;
+  subscriptionPeriodUnitIOS: number;
+  subscriptionPeriodAndroid: string;
+  introductoryPriceCyclesAndroid: number;
+  introductoryPricePeriodAndroid: string;
+  freeTrialPeriodAndroid: string;
 }
 
 export interface Subscription extends Product {
@@ -27,12 +33,14 @@ export interface ProductPurchase {
   transactionId: string;
   transactionDate: string;
   transactionReceipt: string;
-  signature?: string;
-  data?: string;
+  signatureAndroid?: string;
+  dataAndroid?: string;
 }
 
 export interface SubscriptionPurchase extends ProductPurchase {
-  autoRenewing: boolean;
+  autoRenewingAndroid: boolean;
+  originalTransactionDateIOS: string;
+  originalTransactionIdentifierIOS: string;
 }
 
 export type Purchase = ProductPurchase | SubscriptionPurchase

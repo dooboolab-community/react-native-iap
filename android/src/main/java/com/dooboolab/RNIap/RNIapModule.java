@@ -198,6 +198,11 @@ public class RNIapModule extends ReactContextBaseJavaModule {
                 item.putString("localizedPrice", skuDetails.getPrice());
                 item.putString("title", skuDetails.getTitle());
                 item.putString("description", skuDetails.getDescription());
+                item.putString("introductoryPrice", skuDetails.getIntroductoryPrice());
+                item.putString("subscriptionPeriodAndroid", skuDetails.getSubscriptionPeriod());
+                item.putString("freeTrialPeriodAndroid", skuDetails.getFreeTrialPeriod());
+                item.putString("introductoryPriceCyclesAndroid", skuDetails.getIntroductoryPriceCycles());
+                item.putString("introductoryPricePeriodAndroid", skuDetails.getIntroductoryPricePeriod());
                 items.pushMap(item);
               }
 
@@ -248,12 +253,12 @@ public class RNIapModule extends ReactContextBaseJavaModule {
           item.putString("transactionId", json.optString("orderId"));
           item.putString("transactionDate", String.valueOf(json.getLong("purchaseTime")));
           item.putString("transactionReceipt", json.getString("purchaseToken"));
-          item.putString("data", data);
-          item.putString("signature", signature);
           item.putString("purchaseToken", json.getString("purchaseToken"));
+          item.putString("dataAndroid", data);
+          item.putString("signatureAndroid", signature);
 
           if (type.equals(BillingClient.SkuType.SUBS)) {
-            item.putBoolean("autoRenewing", json.getBoolean("autoRenewing"));
+            item.putBoolean("autoRenewingAndroid", json.getBoolean("autoRenewingAndroid"));
           }
 
           items.pushMap(item);
@@ -293,12 +298,12 @@ public class RNIapModule extends ReactContextBaseJavaModule {
             item.putString("transactionId", purchase.getOrderId());
             item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
             item.putString("transactionReceipt", purchase.getPurchaseToken());
-            item.putString("data", purchase.getOriginalJson());
-            item.putString("signature", purchase.getSignature());
             item.putString("purchaseToken", purchase.getPurchaseToken());
+            item.putString("dataAndroid", purchase.getOriginalJson());
+            item.putString("signatureAndroid", purchase.getSignature());
 
             if (type.equals(BillingClient.SkuType.SUBS)) {
-              item.putBoolean("autoRenewing", purchase.isAutoRenewing());
+              item.putBoolean("autoRenewingAndroid", purchase.isautoRenewingAndroid());
             }
 
             items.pushMap(item);
@@ -393,10 +398,10 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         item.putString("transactionId", purchase.getOrderId());
         item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
         item.putString("transactionReceipt", purchase.getPurchaseToken());
-        item.putString("data", purchase.getOriginalJson());
-        item.putString("signature", purchase.getSignature());
         item.putString("purchaseToken", purchase.getPurchaseToken());
-        item.putBoolean("autoRenewing", purchase.isAutoRenewing());
+        item.putString("dataAndroid", purchase.getOriginalJson());
+        item.putString("signatureAndroid", purchase.getSignature());
+        item.putBoolean("autoRenewingAndroid", purchase.isautoRenewingAndroid());
 
         resolvePromisesForKey(PROMISE_BUY_ITEM, item);
       }
