@@ -248,7 +248,9 @@ getPurchases = async() => {
   }
 }
 ```
+
 Returned purchases is an array of each purchase transaction with the following keys:
+
 |    | iOS | Android | Comment |
 |----|-----|---------|------|
 |`transactionDate`| ✓ | ✓ | Will return localizedPrice on Android (default) or a string price (eg. `1.99`) (iOS) |
