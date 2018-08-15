@@ -1,3 +1,5 @@
+import * as Apple from './apple'
+
 export type SkuTypeAndroid = 'INAPP' | 'SUBS'
 export type SkuTypeIOS = 'iap' | 'sub'
 
@@ -125,13 +127,12 @@ export function finishTransaction(): void;
 export function consumePurchase(token: string) : Promise<void>;
 
 /**
- * Validate receipt for ios.
- * @param {receipt-data: string, password?: string} receiptBody the receipt body to send to apple server.
- * @param {string} isTest whether this is in test environment which is sandbox.
- * @param {number} RNVersion version of react-native.
- * @returns {json | boolean}
+ * Validate receipt for iOS.
+ * @param receiptBody the receipt body to send to apple server.
+ * @param isTest whether this is in test environment which is sandbox.
+ * @param RNVersion version of react-native.
  */
-export function validateReceiptIos(receiptBody: object, isTest:boolean) : object | boolean;
+export function validateReceiptIos(receiptBody: Apple.ReceiptValidationRequest, isTest: boolean, RNVersion: number): Promise<Apple.ReceiptValidationResponse | false>;
 
 /**
  * Validate receipt for ios.
