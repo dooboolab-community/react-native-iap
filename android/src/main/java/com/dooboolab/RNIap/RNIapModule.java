@@ -303,7 +303,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
             item.putString("signatureAndroid", purchase.getSignature());
 
             if (type.equals(BillingClient.SkuType.SUBS)) {
-              item.putBoolean("autoRenewingAndroid", purchase.isautoRenewingAndroid());
+              item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewingAndroid());
             }
 
             items.pushMap(item);
@@ -401,7 +401,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         item.putString("purchaseToken", purchase.getPurchaseToken());
         item.putString("dataAndroid", purchase.getOriginalJson());
         item.putString("signatureAndroid", purchase.getSignature());
-        item.putBoolean("autoRenewingAndroid", purchase.isautoRenewingAndroid());
+        item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewingAndroid());
 
         resolvePromisesForKey(PROMISE_BUY_ITEM, item);
       }
