@@ -1,6 +1,6 @@
 {
   "name": "react-native-iap",
-  "version": "2.0.0-alpha4",
+  "version": "2.0.0-alpha5",
   "description": "6eact Native In App Purchase Module.",
   "main": "index.js",
   "types": "index.d.ts",
