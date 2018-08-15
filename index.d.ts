@@ -1,33 +1,29 @@
 import * as Apple from './apple'
 
-export type SkuTypeAndroid = 'INAPP' | 'SUBS'
-export type SkuTypeIOS = 'iap' | 'sub'
-
-export interface SkuTypes {
-  android: { [key: string]: SkuTypeAndroid }
-  ios: { [key: string]: SkuTypeIOS }
+interface Common {
+  title: string
+  description: string
+  price: string
+  currency: string
+  localizedPrice: string
 }
 
-export const SkuTypes: SkuTypes
-
-export interface Product<ID extends string = string> {
-  type: SkuTypeAndroid | SkuTypeIOS;
-  productId: ID;
-  title: string;
-  description: string;
-  price: string;
-  currency: string;
-  localizedPrice: string;
-  subscriptionPeriodNumberIOS: string;
-  subscriptionPeriodUnitIOS: number;
-  subscriptionPeriodAndroid: string;
-  introductoryPriceCyclesAndroid: number;
-  introductoryPricePeriodAndroid: string;
-  freeTrialPeriodAndroid: string;
+export interface Product<ID extends string> extends Common {
+  type: 'inapp' | 'iap'
+  productId: ID
 }
 
-export interface Subscription<ID extends string = string> extends Product<ID> {
+export interface Subscription<ID extends string> extends Common {
+  type: 'subs' | 'sub'
+  productId: ID
 
+  subscriptionPeriodNumberIOS?: string
+  subscriptionPeriodUnitIOS?: number
+
+  freeTrialPeriodAndroid?: string
+  introductoryPriceCyclesAndroid?: number
+  introductoryPricePeriodAndroid?: string
+  subscriptionPeriodAndroid?: string
 }
 
 export interface ProductPurchase {
@@ -75,7 +71,7 @@ export function getProducts<A extends string, B extends string, C extends string
 export function getProducts<A extends string, B extends string, C extends string>(skus: [A, B, C]): Promise<[Product<A>, Product<B>, Product<C>]>;
 export function getProducts<A extends string, B extends string>(skus: [A, B]): Promise<[Product<A>, Product<B>]>;
 export function getProducts<A extends string>(skus: [A]): Promise<[Product<A>]>;
-export function getProducts(skus: string[]): Promise<Product[]>;
+export function getProducts(skus: string[]): Promise<Product<string>[]>;
 
 /**
  * Get a list of subscriptions
@@ -87,7 +83,7 @@ export function getSubscriptions<A extends string, B extends string, C extends s
 export function getSubscriptions<A extends string, B extends string, C extends string>(skus: [A, B, C]): Promise<[Subscription<A>, Subscription<B>, Subscription<C>]>;
 export function getSubscriptions<A extends string, B extends string>(skus: [A, B]): Promise<[Subscription<A>, Subscription<B>]>;
 export function getSubscriptions<A extends string>(skus: [A]): Promise<[Subscription<A>]>;
-export function getSubscriptions(skus: string[]): Promise<Subscription[]>;
+export function getSubscriptions(skus: string[]): Promise<Subscription<string>[]>;
 
 /**
  * Gets an invetory of purchases made by the user regardless of consumption status
