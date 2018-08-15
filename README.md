@@ -70,8 +70,8 @@ Also, note that this is our last migration for renaming method names without any
 | consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 | endConnection | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
 | consumeAllItems | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
-| validateReceiptIos | `object` receiptBody, `boolean` isTest, `number` RNVersion | `object or boolean` result | validate receipt for ios. |
-| validateReceiptAndroid | `string` packageName, `string` productId, `string` productToken, `string` accessToken, `boolean` isSubscription, `number` RNVersion | `object or boolean` result | validate receipt for android. |
+| validateReceiptIos | `object` receiptBody, `boolean` isTest | `object or boolean` result | validate receipt for ios. |
+| validateReceiptAndroid | `string` packageName, `string` productId, `string` productToken, `string` accessToken, `boolean` isSubscription | `object or boolean` result | validate receipt for android. |
 
 ## Npm repo
 https://www.npmjs.com/package/react-native-iap
@@ -86,7 +86,7 @@ https://github.com/dooboolab/react-native-iap
 ### Mostly automatic installation
 `$ react-native link react-native-iap`
 
-**Note for Ejected iOS Apps:** 
+**Note for Ejected iOS Apps:**
 
 The above command will add the following to your `Podfile`:
 
@@ -94,8 +94,8 @@ The above command will add the following to your `Podfile`:
 pod 'RNIap', :path => '../node_modules/react-native-iap'
 ```
 
-You should remove this before running `pod install` and follow the manual installation instructions below. 
- 
+You should remove this before running `pod install` and follow the manual installation instructions below.
+
 ### Manual installation
 
 #### iOS
@@ -121,7 +121,7 @@ You should remove this before running `pod install` and follow the manual instal
     ```
     <uses-permission android:name="com.android.vending.BILLING" />
     ```
-     
+
 ## Usage
 You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
 
