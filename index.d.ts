@@ -10,9 +10,9 @@ export interface SkuTypes {
 
 export const SkuTypes: SkuTypes
 
-export interface Product {
+export interface Product<ID extends string = string> {
   type: SkuTypeAndroid | SkuTypeIOS;
-  productId: string;
+  productId: ID;
   title: string;
   description: string;
   price: string;
@@ -26,7 +26,7 @@ export interface Product {
   freeTrialPeriodAndroid: string;
 }
 
-export interface Subscription extends Product {
+export interface Subscription<ID extends string = string> extends Product<ID> {
 
 }
 
@@ -67,17 +67,27 @@ export function consumeAllItems() : Promise<void>;
 
 /**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
- * @param {string[]} skus The item skus
- * @returns {Promise<Product[]>}
+ * @param skus The item skus
  */
-export function getProducts(skus: string[]) : Promise<Product[]>;
+export function getProducts<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string>(skus: [A, B, C, D, E, F]): Promise<[Product<A>, Product<B>, Product<C>, Product<D>, Product<E>, Product<F>]>;
+export function getProducts<A extends string, B extends string, C extends string, D extends string, E extends string>(skus: [A, B, C, D, E]): Promise<[Product<A>, Product<B>, Product<C>, Product<D>, Product<E>]>;
+export function getProducts<A extends string, B extends string, C extends string, D extends string>(skus: [A, B, C, D]): Promise<[Product<A>, Product<B>, Product<C>, Product<D>]>;
+export function getProducts<A extends string, B extends string, C extends string>(skus: [A, B, C]): Promise<[Product<A>, Product<B>, Product<C>]>;
+export function getProducts<A extends string, B extends string>(skus: [A, B]): Promise<[Product<A>, Product<B>]>;
+export function getProducts<A extends string>(skus: [A]): Promise<[Product<A>]>;
+export function getProducts(skus: string[]): Promise<Product[]>;
 
 /**
  * Get a list of subscriptions
- * @param {string[]} skus The item skus
- * @returns {Promise<Subscription[]>}
+ * @param skus The item skus
  */
-export function getSubscriptions(skus: string[]) : Promise<Subscription[]>;
+export function getSubscriptions<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string>(skus: [A, B, C, D, E, F]): Promise<[Subscription<A>, Subscription<B>, Subscription<C>, Subscription<D>, Subscription<E>, Subscription<F>]>;
+export function getSubscriptions<A extends string, B extends string, C extends string, D extends string, E extends string>(skus: [A, B, C, D, E]): Promise<[Subscription<A>, Subscription<B>, Subscription<C>, Subscription<D>, Subscription<E>]>;
+export function getSubscriptions<A extends string, B extends string, C extends string, D extends string>(skus: [A, B, C, D]): Promise<[Subscription<A>, Subscription<B>, Subscription<C>, Subscription<D>]>;
+export function getSubscriptions<A extends string, B extends string, C extends string>(skus: [A, B, C]): Promise<[Subscription<A>, Subscription<B>, Subscription<C>]>;
+export function getSubscriptions<A extends string, B extends string>(skus: [A, B]): Promise<[Subscription<A>, Subscription<B>]>;
+export function getSubscriptions<A extends string>(skus: [A]): Promise<[Subscription<A>]>;
+export function getSubscriptions(skus: string[]): Promise<Subscription[]>;
 
 /**
  * Gets an invetory of purchases made by the user regardless of consumption status
