@@ -136,9 +136,8 @@ export function consumePurchase(token: string) : Promise<void>;
  * Validate receipt for iOS.
  * @param receiptBody the receipt body to send to apple server.
  * @param isTest whether this is in test environment which is sandbox.
- * @param RNVersion version of react-native.
  */
-export function validateReceiptIos(receiptBody: Apple.ReceiptValidationRequest, isTest: boolean, RNVersion: number): Promise<Apple.ReceiptValidationResponse | false>;
+export function validateReceiptIos(receiptBody: Apple.ReceiptValidationRequest, isTest: boolean): Promise<Apple.ReceiptValidationResponse | false>;
 
 /**
  * Validate receipt for Android.
@@ -147,6 +146,5 @@ export function validateReceiptIos(receiptBody: Apple.ReceiptValidationRequest, 
  * @param productToken token for your purchase. Found in `transanctionReceipt` after `buyProduct` method.
  * @param accessToken accessToken from googleApis.
  * @param isSub whether this is subscription or inapp. `true` for subscription.
- * @param RNVersion version of react-native.
  */
-export function validateReceiptAndroid(packageName: string, productId: string, productToken: string, accessToken: string, isSub: boolean, RNVersion: number): Promise<object | false>;
+export function validateReceiptAndroid(packageName: string, productId: string, productToken: string, accessToken: string, isSub: boolean): Promise<object | false>;
