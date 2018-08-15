@@ -258,7 +258,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
           item.putString("signatureAndroid", signature);
 
           if (type.equals(BillingClient.SkuType.SUBS)) {
-            item.putBoolean("autoRenewingAndroid", json.getBoolean("autoRenewingAndroid"));
+            item.putBoolean("autoRenewingAndroid", json.getBoolean("autoRenewing"));
           }
 
           items.pushMap(item);
