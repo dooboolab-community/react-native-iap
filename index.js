@@ -137,44 +137,28 @@ export const consumePurchase = (token) => Platform.select({
 })();
 
 /**
- * Validate receipt for ios.
- * @param {receipt-data: string, password?: string} receiptBody the receipt body to send to apple server.
+ * Validate receipt for iOS.
+ * @param {object} receiptBody the receipt body to send to apple server.
  * @param {string} isTest whether this is in test environment which is sandbox.
- * @param {number} RNVersion version of react-native.
- * @returns {json | boolean}
+ * @returns {Promise<object>}
  */
-export const validateReceiptIos = async (receiptBody, isTest, RNVersion) => {
-  if (Platform.OS === 'ios') {
-    const URL = isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
-    try {
-      let res = await fetch(URL, {
-        method: 'POST',
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        }),
-        body: JSON.stringify(receiptBody),
-      });
+export const validateReceiptIos = async (receiptBody, isTest) => {
+  const url = isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
 
-      if (res) {
-        if (RNVersion < 54) {
-          const json = JSON.parse(res._bodyInit);
-          return json;
-        }
-  
-        const json = await res.text();
-        res = JSON.parse(json);
-        return res;
-      }
-  
-      return false;
-    } catch (err) {
-      console.log(err);
-      return false;
-    }
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: new Headers({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    }),
+    body: JSON.stringify(receiptBody),
+  });
+
+  if (!response.ok) {
+    throw Object.assign(new Error(response.statusText), { statusCode: response.status })
   }
-  console.log('No ops in android.');
-  return false;
+
+  return response.json();
 };
 
 /**
