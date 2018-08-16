@@ -110,8 +110,8 @@ export const buyProduct = (sku) => Platform.select({
  * @param {number} quantity The amount of product to buy
  * @returns {Promise<ProductPurchase>}
  */
-export const buyProductWithQuantity = (sku, quantity) => Platform.select({
-  ios: () => RNIapIos.buyProductWithQuantity(sku, quantity),
+export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
+  ios: () => RNIapIos.buyProductWithQuantityIOS(sku, quantity),
   android: () => Promise.resolve()
 })();
 
@@ -237,6 +237,7 @@ export default {
   consumeAllItems,
   buySubscription,
   buyProduct,
+  buyProductWithQuantityIOS,
   buyProductWithoutFinishTransaction,
   finishTransaction,
   consumePurchase,
