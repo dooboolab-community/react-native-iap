@@ -116,11 +116,11 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
   }
 }
 
-RCT_EXPORT_METHOD(buyProductWithQuantity:(NSString*)sku
+RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
                   quantity:(NSInteger*)quantity
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-  NSLog(@"\n\n\n  buyProductWithQuantity  \n\n.");
+  NSLog(@"\n\n\n  buyProductWithQuantityIOS  \n\n.");
   autoReceiptConform = true;
   SKProduct *product;
   for (SKProduct *p in validProducts) {
@@ -140,7 +140,6 @@ RCT_EXPORT_METHOD(buyProductWithQuantity:(NSString*)sku
 }
 
 RCT_EXPORT_METHOD(buyProductWithoutAutoConfirm:(NSString*)sku
-                  quantity:(NSInteger*)quantity
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
   NSLog(@"\n\n\n  buyProductWithoutAutoConfirm  \n\n.");
@@ -154,7 +153,6 @@ RCT_EXPORT_METHOD(buyProductWithoutAutoConfirm:(NSString*)sku
   }
   if (product) {
     SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
-    payment.quantity = quantity;
     [[SKPaymentQueue defaultQueue] addPayment:payment];
     [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
   } else {
@@ -300,7 +298,7 @@ RCT_EXPORT_METHOD(finishTransaction) {
   formatter.numberStyle = NSNumberFormatterCurrencyStyle;
   formatter.locale = product.priceLocale;
   NSString* localizedPrice = [formatter stringFromNumber:product.price];
-  NSString* introductoryPrice;
+  NSString* introductoryPrice = localizedPrice;
     
   // NSString* itemType = @"Do not use this. It returned sub only before";
   NSString* currencyCode = @"";

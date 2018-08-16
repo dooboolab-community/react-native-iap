@@ -106,25 +106,23 @@ export const buyProduct = (sku) => Platform.select({
 
 /**
  * Buy a product with a specified quantity (iOS only)
- *   Call finishTransaction after receipt validation process.
  * @param {string} sku The product's sku/ID
  * @param {number} quantity The amount of product to buy
  * @returns {Promise<ProductPurchase>}
  */
 export const buyProductWithQuantity = (sku, quantity) => Platform.select({
   ios: () => RNIapIos.buyProductWithQuantity(sku, quantity),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null)
+  android: () => Promise.resolve()
 })();
 
 /**
  * Buy a product without transaction finish (iOS only)
  *   Call finishTransaction after receipt validation process.
  * @param {string} sku The product's sku/ID
- * @param {number} quantity The amount of product to buy (optional, default = 1)
  * @returns {Promise<ProductPurchase>}
  */
-export const buyProductWithoutFinishTransaction = (sku, quantity = 1) => Platform.select({
-  ios: () => RNIapIos.buyProductWithoutAutoConfirm(sku, quantity),
+export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
+  ios: () => RNIapIos.buyProductWithoutAutoConfirm(sku),
   android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null)
 })();
 

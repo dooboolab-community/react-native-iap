@@ -105,11 +105,19 @@ export function buySubscription(sku: string, oldSku?: string) : Promise<Subscrip
 export function buyProduct(sku: string) : Promise<ProductPurchase>;
 
 /**
+ * Buy a product with a specified quantity (iOS only)
+ * @param {string} sku The product's sku/ID
+ * @param {number} quantity The amount of product to buy
+ * @returns {Promise<Purchase>}
+ */
+export function buyProductWithQuantityIOS(sku: string, quantity: number) : Promise<ProductPurchase>;
+
+/**
  * Buy a product without finish transanction to sync with IOS purchasing consumables. Make sure to call finishTransanction when you are done with it or the purchase may not be transferred. Also, note that this method is not changed from buyProduct in android.
  * @param {string} sku The product's sku/ID
  * @returns {Promise<Purchase>}
  */
-export function buyProductWithoutFinishTransaction(sku: string, quantity: number) : Promise<ProductPurchase>;
+export function buyProductWithoutFinishTransaction(sku: string) : Promise<ProductPurchase>;
 
 /**
  * Send finishTransaction call to Apple IAP server. Call this function after receipt validation process.
