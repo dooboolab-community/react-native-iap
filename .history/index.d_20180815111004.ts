@@ -115,6 +115,7 @@ export function buyProductWithoutFinishTransaction(sku: string, quantity: number
  * Send finishTransaction call to Apple IAP server. Call this function after receipt validation process.
  * @returns void
  */
+export function finishAllTransactions(): void;
 export function finishTransaction(): void;
 
 /**

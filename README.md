@@ -65,7 +65,8 @@ Also, note that this is our last migration for renaming method names without any
 | getAvailablePurchases | | `Promise<Purchase[]>` | Get all purchases made by the user (either non-consumable, or haven't been consumed yet)
 | buySubscription | `string` Subscription ID/sku, `string` Old Subscription ID/sku (on Android) | `Promise<Purchase>` | Create (buy) a subscription to a sku. For upgrading/downgrading subscription on Android pass second parameter with current subscription ID, on iOS this is handled automatically by store. |
 | buyProduct | `string` Product ID/sku | `Promise<Purchase>` | Buy a product |
-| buyProductWithoutFinishTransaction | `string` Product ID/sku | `Promise<Purchase>` | Buy a product without finish transaction call (iOS only) |
+| buyProductWithQuantity | `string` Product ID/sku, `int` Quantity | `Promise<Purchase>` | Buy a product with a specified quantity (iOS only) |
+| buyProductWithoutFinishTransaction | `string` Product ID/sku, `int` Quantity (optional) | `Promise<Purchase>` | Buy a product without finish transaction call (iOS only) |
 | finishTransaction | `void` | `void` | Send finishTransaction call to Apple IAP server. Call this function after receipt validation process |
 | consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 | endConnection | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |

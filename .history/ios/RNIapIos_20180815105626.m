@@ -162,6 +162,13 @@ RCT_EXPORT_METHOD(buyProductWithoutAutoConfirm:(NSString*)sku
   }
 }
 
+RCT_EXPORT_METHOD(finishAllTransactions) {
+  NSLog(@"\n\n\n  Finish all transactions  \n\n.");
+  for (SKPaymentTransaction *transaction in [[SKPaymentQueue defaultQueue] transactions]) {
+    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+  }
+}
+
 RCT_EXPORT_METHOD(finishTransaction) {
   NSLog(@"\n\n\n  finish Transaction  \n\n.");
   if (currentTransaction) {

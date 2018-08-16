@@ -128,6 +128,19 @@ export const buyProductWithoutFinishTransaction = (sku, quantity = 1) => Platfor
   android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null)
 })();
 
+
+
+
+export const getPendingPurchases = (callback) => Platform.select({
+  ios: () => RNIapIos.getPendingPurchases(callback),
+  android: () => Promise.resolve(),
+})();
+
+
+
+
+
+
 /**
  * Finish Transaction (iOS only)
  *   Explicitly call transaction finish
@@ -239,7 +252,9 @@ export default {
   consumeAllItems,
   buySubscription,
   buyProduct,
+  buyProductWithQuantity,
   buyProductWithoutFinishTransaction,
+  getPendingPurchases,
   finishTransaction,
   consumePurchase,
   validateReceiptIos,

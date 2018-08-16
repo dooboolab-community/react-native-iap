@@ -129,6 +129,16 @@ export const buyProductWithoutFinishTransaction = (sku, quantity = 1) => Platfor
 })();
 
 /**
+ * Finish all transactions (iOS only)
+ *   Explicitly call transaction finish on every pending transactions
+ * @returns {Promise<ProductPurchase>}
+ */
+export const finishAllTransaction = () => Platform.select({
+  ios: () => RNIapIos.finishAllTransaction(),
+  android: () => Promise.resolve(),
+})();
+
+/**
  * Finish Transaction (iOS only)
  *   Explicitly call transaction finish
  * @returns {Promise<ProductPurchase>}
