@@ -104,6 +104,16 @@ export const buyProduct = (sku) => Platform.select({
   android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null)
 })();
 
+/**
+ * Buy a product with a specified quantity (iOS only)
+ * @param {string} sku The product's sku/ID
+ * @param {number} quantity The amount of product to buy
+ * @returns {Promise<ProductPurchase>}
+ */
+export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
+  ios: () => RNIapIos.buyProductWithQuantityIOS(sku, quantity),
+  android: () => Promise.resolve()
+})();
 
 /**
  * Buy a product without transaction finish (iOS only)
@@ -227,6 +237,7 @@ export default {
   consumeAllItems,
   buySubscription,
   buyProduct,
+  buyProductWithQuantityIOS,
   buyProductWithoutFinishTransaction,
   finishTransaction,
   consumePurchase,
