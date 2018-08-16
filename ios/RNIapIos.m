@@ -298,7 +298,7 @@ RCT_EXPORT_METHOD(finishTransaction) {
   formatter.numberStyle = NSNumberFormatterCurrencyStyle;
   formatter.locale = product.priceLocale;
   NSString* localizedPrice = [formatter stringFromNumber:product.price];
-  NSString* introductoryPrice = localizedPrice;
+  NSString* introductoryPrice;
     
   // NSString* itemType = @"Do not use this. It returned sub only before";
   NSString* currencyCode = @"";
