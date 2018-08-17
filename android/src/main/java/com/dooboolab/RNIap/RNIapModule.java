@@ -46,6 +46,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
   private static final String E_UNKNOWN = "E_UNKNOWN";
   private static final String E_NOT_PREPARED = "E_NOT_PREPARED";
+  private static final String E_NOT_ENDED = "E_NOT_ENDED";
   private static final String E_USER_CANCELLED = "E_USER_CANCELLED";
   private static final String E_ITEM_UNAVAILABLE = "E_ITEM_UNAVAILABLE";
   private static final String E_NETWORK_ERROR = "E_NETWORK_ERROR";
@@ -54,6 +55,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   private static final String E_REMOTE_ERROR = "E_REMOTE_ERROR";
   private static final String E_USER_ERROR = "E_USER_ERROR";
   private static final String E_DEVELOPER_ERROR = "E_DEVELOPER_ERROR";
+  private static final String E_BILLING_RESPONSE_JSON_PARSE_ERROR = "E_BILLING_RESPONSE_JSON_PARSE_ERROR";
 
   private static final String PROMISE_PREPARE = "PROMISE_PREPARE";
   private static final String PROMISE_BUY_ITEM = "PROMISE_BUY_ITEM";
@@ -115,6 +117,11 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     // This is the key line that fixed everything for me
     intent.setPackage("com.android.vending");
 
+    if (mBillingClient != null) {
+      promise.reject(E_NOT_ENDED, "Already started. Call endConnection method if you want to start over.");
+      return;
+    }
+
     try {
       addPromiseForKey(PROMISE_PREPARE, promise);
       reactContext.bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
@@ -129,6 +136,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   public void endConnection(Promise promise) {
     try {
       mBillingClient.endConnection();
+      mBillingClient = null;
       promise.resolve("end billing client.");
     } catch (Exception e) {
       promise.reject("endConnection", e.getMessage());
@@ -190,6 +198,11 @@ public class RNIapModule extends ReactContextBaseJavaModule {
                 item.putString("localizedPrice", skuDetails.getPrice());
                 item.putString("title", skuDetails.getTitle());
                 item.putString("description", skuDetails.getDescription());
+                item.putString("introductoryPrice", skuDetails.getIntroductoryPrice());
+                item.putString("subscriptionPeriodAndroid", skuDetails.getSubscriptionPeriod());
+                item.putString("freeTrialPeriodAndroid", skuDetails.getFreeTrialPeriod());
+                item.putString("introductoryPriceCyclesAndroid", skuDetails.getIntroductoryPriceCycles());
+                item.putString("introductoryPricePeriodAndroid", skuDetails.getIntroductoryPricePeriod());
                 items.pushMap(item);
               }
 
@@ -221,26 +234,37 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     int responseCode = availableItems.getInt("RESPONSE_CODE");
 
     WritableArray items = Arguments.createArray();
+
     ArrayList<String> purchaseDataList = availableItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+    ArrayList<String> signatureDataList = availableItems.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
 
     if (responseCode == BillingClient.BillingResponse.OK && purchaseDataList != null) {
-      for (String purchaseJSON : purchaseDataList) {
+
+      for (int i = 0; i < purchaseDataList.size(); i++) {
+
         try {
-          JSONObject json = new JSONObject(purchaseJSON);
+          String data = purchaseDataList.get(i);
+          String signature = signatureDataList.get(i);
+
+          JSONObject json = new JSONObject(data);
+
           WritableMap item = Arguments.createMap();
           item.putString("productId", json.getString("productId"));
-          item.putString("transactionId", json.getString("orderId"));
+          item.putString("transactionId", json.optString("orderId"));
           item.putString("transactionDate", String.valueOf(json.getLong("purchaseTime")));
           item.putString("transactionReceipt", json.getString("purchaseToken"));
           item.putString("purchaseToken", json.getString("purchaseToken"));
+          item.putString("dataAndroid", data);
+          item.putString("signatureAndroid", signature);
 
           if (type.equals(BillingClient.SkuType.SUBS)) {
-            item.putBoolean("autoRenewing", json.getBoolean("autoRenewing"));
+            item.putBoolean("autoRenewingAndroid", json.getBoolean("autoRenewing"));
           }
 
           items.pushMap(item);
         } catch (JSONException e) {
-          e.printStackTrace();
+          promise.reject(E_BILLING_RESPONSE_JSON_PARSE_ERROR, e.getMessage());
+          return;
         }
       }
 
@@ -274,12 +298,12 @@ public class RNIapModule extends ReactContextBaseJavaModule {
             item.putString("transactionId", purchase.getOrderId());
             item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
             item.putString("transactionReceipt", purchase.getPurchaseToken());
-            item.putString("data", purchase.getOriginalJson());
-            item.putString("signature", purchase.getSignature());
             item.putString("purchaseToken", purchase.getPurchaseToken());
+            item.putString("dataAndroid", purchase.getOriginalJson());
+            item.putString("signatureAndroid", purchase.getSignature());
 
             if (type.equals(BillingClient.SkuType.SUBS)) {
-              item.putBoolean("autoRenewing", purchase.isAutoRenewing());
+              item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
             }
 
             items.pushMap(item);
@@ -293,22 +317,28 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void buyItemByType(String type, String sku, Promise promise) {
+  public void buyItemByType(String type, String sku, String oldSku, Promise promise) {
     final Activity activity = getCurrentActivity();
     if (activity == null) {
       promise.reject(E_UNKNOWN, "getCurrentActivity returned null");
     } else {
       addPromiseForKey(PROMISE_BUY_ITEM, promise);
-      BillingFlowParams flowParams = BillingFlowParams.newBuilder()
-          .setSku(sku)
+      BillingFlowParams.Builder builder = BillingFlowParams.newBuilder();
+
+      if (type.equals(BillingClient.SkuType.SUBS) && oldSku != null && !oldSku.isEmpty()) {
+        // Subscription upgrade/downgrade
+        builder.addOldSku(oldSku);
+      }
+
+      BillingFlowParams flowParams = builder.setSku(sku)
           .setType(type)
           .build();
 
       int responseCode = mBillingClient.launchBillingFlow(activity,flowParams);
-      Log.d(TAG, "buyItemByType (type: " + type + ", sku: " + sku + ") responseCode: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
-//      if (responseCode != BillingClient.BillingResponse.OK) {
-//        rejectPromisesWithBillingError(PROMISE_BUY_ITEM,responseCode);
-//      }
+      Log.d(TAG, "buyItemByType (type: " + type + ", sku: " + sku + ", oldSku: " + oldSku + ") responseCode: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
+      if (responseCode != BillingClient.BillingResponse.OK) {
+        rejectPromisesWithBillingError(PROMISE_BUY_ITEM,responseCode);
+      }
     }
   }
 
@@ -360,7 +390,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       Log.d(TAG, "Purchase Updated Listener");
       Log.d(TAG, "responseCode: " + responseCode);
 
-      if (responseCode == BillingClient.BillingResponse.OK) {
+      if (responseCode == BillingClient.BillingResponse.OK && purchases != null) {
         Purchase purchase = purchases.get(0);
 
         WritableMap item = Arguments.createMap();
@@ -368,10 +398,10 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         item.putString("transactionId", purchase.getOrderId());
         item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
         item.putString("transactionReceipt", purchase.getPurchaseToken());
-        item.putString("data", purchase.getOriginalJson());
-        item.putString("signature", purchase.getSignature());
         item.putString("purchaseToken", purchase.getPurchaseToken());
-        item.putBoolean("autoRenewing", purchase.isAutoRenewing());
+        item.putString("dataAndroid", purchase.getOriginalJson());
+        item.putString("signatureAndroid", purchase.getSignature());
+        item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
 
         resolvePromisesForKey(PROMISE_BUY_ITEM, item);
       }

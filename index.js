@@ -13,7 +13,7 @@ const IOS_ITEM_TYPE_IAP = 'iap';
  * @returns {Promise<void>}
  */
 export const prepare = () => Platform.select({
-  ios: () => Promise.resolve(),
+  ios: () => RNIapIos.canMakePayments(),
   android: () => RNIapModule.prepare()
 })();
 
@@ -30,7 +30,7 @@ export const endConnection = () => Platform.select({
  * Consume all remaining tokens. Android only.
  * @returns {Promise<void>}
  */
-export const refreshItems = () => Platform.select({
+export const consumeAllItems = () => Platform.select({
   ios: () => Promise.resolve(),
   android: () => RNIapModule.refreshItems(),
 })();
@@ -53,7 +53,7 @@ export const getProducts = (skus) => Platform.select({
  */
 export const getSubscriptions = (skus) => Platform.select({
   ios: () => RNIapIos.getItems(skus)
-    .then(items => items.filter(item => (!item.type || item.type === IOS_ITEM_TYPE_SUBSCRIPTION) && skus.indexOf(item.productId) > -1)),
+    .then(items => items.filter(item => item.productId)),
   android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus)
 })();
 
@@ -86,11 +86,12 @@ export const getAvailablePurchases = () => Platform.select({
 /**
  * Create a subscription to a sku
  * @param {string} sku The product's sku/ID
+ * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
  * @returns {Promise<SubscriptionPurchase>}
  */
-export const buySubscription = (sku) => Platform.select({
+export const buySubscription = (sku, oldSku) => Platform.select({
   ios: () => RNIapIos.buyProduct(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku)
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku)
 })();
 
 /**
@@ -100,9 +101,19 @@ export const buySubscription = (sku) => Platform.select({
  */
 export const buyProduct = (sku) => Platform.select({
   ios: () => RNIapIos.buyProduct(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku)
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null)
 })();
 
+/**
+ * Buy a product with a specified quantity (iOS only)
+ * @param {string} sku The product's sku/ID
+ * @param {number} quantity The amount of product to buy
+ * @returns {Promise<ProductPurchase>}
+ */
+export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
+  ios: () => RNIapIos.buyProductWithQuantityIOS(sku, quantity),
+  android: () => Promise.resolve()
+})();
 
 /**
  * Buy a product without transaction finish (iOS only)
@@ -112,7 +123,7 @@ export const buyProduct = (sku) => Platform.select({
  */
 export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
   ios: () => RNIapIos.buyProductWithoutAutoConfirm(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku)
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null)
 })();
 
 /**
@@ -122,7 +133,7 @@ export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
  */
 export const finishTransaction = () => Platform.select({
   ios: () => RNIapIos.finishTransaction(),
-  android: () => console.log('android doesn\'t need finish Transaction. Void function')
+  android: () => Promise.resolve(),
 })();
 
 /**
@@ -144,7 +155,7 @@ export const consumePurchase = (token) => Platform.select({
  */
 export const validateReceiptIos = async (receiptBody, isTest, RNVersion) => {
   if (Platform.OS === 'ios') {
-    const URL = !isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
+    const URL = isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
     try {
       let res = await fetch(URL, {
         method: 'POST',
@@ -163,6 +174,7 @@ export const validateReceiptIos = async (receiptBody, isTest, RNVersion) => {
   
         const json = await res.text();
         res = JSON.parse(json);
+        return res;
       }
   
       return false;
@@ -187,7 +199,7 @@ export const validateReceiptIos = async (receiptBody, isTest, RNVersion) => {
  */
 export const validateReceiptAndroid = async (packageName, productId, productToken, accessToken, isSub, RNVersion) => {
   const URL = !isSub
-    ? `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/products/${productId}/tokens/${productToken}?access_token=${accessnToken}`
+    ? `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/products/${productId}/tokens/${productToken}?access_token=${accessToken}`
     : `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/subscriptions/${productId}/tokens/${productToken}?access_token=${accessToken}`;
   try {
     let res = await fetch(URL, {
@@ -217,12 +229,15 @@ export const validateReceiptAndroid = async (packageName, productId, productToke
 
 export default {
   prepare,
+  endConnection,
   getProducts,
   getSubscriptions,
   getPurchaseHistory,
   getAvailablePurchases,
+  consumeAllItems,
   buySubscription,
   buyProduct,
+  buyProductWithQuantityIOS,
   buyProductWithoutFinishTransaction,
   finishTransaction,
   consumePurchase,

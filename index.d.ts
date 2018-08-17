@@ -16,6 +16,12 @@ export interface Product {
   price: string;
   currency: string;
   localizedPrice: string;
+  subscriptionPeriodNumberIOS: string;
+  subscriptionPeriodUnitIOS: number;
+  subscriptionPeriodAndroid: string;
+  introductoryPriceCyclesAndroid: number;
+  introductoryPricePeriodAndroid: string;
+  freeTrialPeriodAndroid: string;
 }
 
 export interface Subscription extends Product {
@@ -27,19 +33,23 @@ export interface ProductPurchase {
   transactionId: string;
   transactionDate: string;
   transactionReceipt: string;
+  signatureAndroid?: string;
+  dataAndroid?: string;
 }
 
 export interface SubscriptionPurchase extends ProductPurchase {
-  autoRenewing: boolean;
+  autoRenewingAndroid: boolean;
+  originalTransactionDateIOS: string;
+  originalTransactionIdentifierIOS: string;
 }
 
 export type Purchase = ProductPurchase | SubscriptionPurchase
 
 /**
  * Prepare module for purchase flow. Required on Android. No-op on iOS.
- * @returns {Promise<void>}
+ * @returns {Promise<string>}
  */
-export function prepare() : Promise<void>;
+export function prepare() : Promise<string>;
 
 /**
  * End billing client. Will enchance android app's performance by releasing service. No-op on iOS.
@@ -48,10 +58,10 @@ export function prepare() : Promise<void>;
 export function endConnection() : Promise<void>;
 
 /**
- * Refresh all remaining items. No-op in iOS.
+ * Consume all items in android. No-op in iOS.
  * @returns {Promise<void>}
  */
-export function refreshItems() : Promise<void>;
+export function consumeAllItems() : Promise<void>;
 
 /**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
@@ -82,9 +92,10 @@ export function getAvailablePurchases() : Promise<Purchase[]>;
 /**
  * Create a subscription to a sku
  * @param {string} sku The product's sku/ID
+ * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
  * @returns {Promise<Purchase>}
  */
-export function buySubscription(sku: string) : Promise<SubscriptionPurchase>;
+export function buySubscription(sku: string, oldSku?: string) : Promise<SubscriptionPurchase>;
 
 /**
  * Buy a product
@@ -92,6 +103,14 @@ export function buySubscription(sku: string) : Promise<SubscriptionPurchase>;
  * @returns {Promise<Purchase>}
  */
 export function buyProduct(sku: string) : Promise<ProductPurchase>;
+
+/**
+ * Buy a product with a specified quantity (iOS only)
+ * @param {string} sku The product's sku/ID
+ * @param {number} quantity The amount of product to buy
+ * @returns {Promise<Purchase>}
+ */
+export function buyProductWithQuantityIOS(sku: string, quantity: number) : Promise<ProductPurchase>;
 
 /**
  * Buy a product without finish transanction to sync with IOS purchasing consumables. Make sure to call finishTransanction when you are done with it or the purchase may not be transferred. Also, note that this method is not changed from buyProduct in android.

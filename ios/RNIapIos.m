@@ -10,6 +10,7 @@
   NSMutableDictionary *promisesByKey;
   BOOL autoReceiptConform;
   SKPaymentTransaction *currentTransaction;
+  dispatch_queue_t myQueue;
 }
 @end
 
@@ -21,6 +22,7 @@
     promisesByKey = [NSMutableDictionary dictionary];
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
   }
+  myQueue = dispatch_queue_create("reject", DISPATCH_QUEUE_SERIAL);
   return self;
 }
 
@@ -32,9 +34,7 @@
   return YES;
 }
 
--(void)addPromiseForKey:(NSString*)key
-               resolve:(RCTPromiseResolveBlock)resolve
-                reject:(RCTPromiseRejectBlock)reject {
+-(void)addPromiseForKey:(NSString*)key resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
   NSMutableArray* promises = [promisesByKey valueForKey:key];
 
   if (promises == nil) {
@@ -50,8 +50,8 @@
 
   if (promises != nil) {
     for (NSMutableArray *tuple in promises) {
-      RCTPromiseResolveBlock resolve = tuple[0];
-      resolve(value);
+      RCTPromiseResolveBlock resolveBlck = tuple[0];
+      resolveBlck(value);
     }
     [promisesByKey removeObjectForKey:key];
   }
@@ -71,6 +71,13 @@
 
 ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
 RCT_EXPORT_MODULE();
+
+RCT_EXPORT_METHOD(canMakePayments:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    BOOL canMakePayments = [SKPaymentQueue canMakePayments];
+    NSString* str = canMakePayments ? @"true" : @"false";
+    resolve(str);
+}
 
 RCT_EXPORT_METHOD(getItems:(NSArray*)skus
                   resolve:(RCTPromiseResolveBlock)resolve
@@ -102,6 +109,29 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
   }
   if (product) {
     SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
+    [[SKPaymentQueue defaultQueue] addPayment:payment];
+    [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
+  } else {
+    reject(@"E_DEVELOPER_ERROR", @"Invalid product ID.", nil);
+  }
+}
+
+RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
+                  quantity:(NSInteger*)quantity
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  NSLog(@"\n\n\n  buyProductWithQuantityIOS  \n\n.");
+  autoReceiptConform = true;
+  SKProduct *product;
+  for (SKProduct *p in validProducts) {
+    if([sku isEqualToString:p.productIdentifier]) {
+      product = p;
+      break;
+    }
+  }
+  if (product) {
+    SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
+    payment.quantity = quantity;
     [[SKPaymentQueue defaultQueue] addPayment:payment];
     [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
   } else {
@@ -151,6 +181,14 @@ RCT_EXPORT_METHOD(finishTransaction) {
   [self resolvePromisesForKey:RCTKeyForInstance(request) value:items];
 }
 
+- (void)request:(SKRequest *)request didFailWithError:(NSError *)error{
+  NSString* key = RCTKeyForInstance(productsRequest);
+  dispatch_sync(myQueue, ^{
+    [self rejectPromisesForKey:key code:[self standardErrorCode:(int)error.code]
+                       message:[self englishErrorCodeDescription:(int)error.code] error:error];
+  });
+}
+
 -(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
   for (SKPaymentTransaction *transaction in transactions) {
     switch (transaction.transactionState) {
@@ -172,7 +210,11 @@ RCT_EXPORT_METHOD(finishTransaction) {
         NSLog(@"\n\n\n\n\n\n Purchase Failed  !! \n\n\n\n\n");
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
         NSString *key = RCTKeyForInstance(transaction.payment.productIdentifier);
-        [self rejectPromisesForKey:key code:[self standardErrorCode:transaction.error.code] message:[self englishErrorCodeDescription:(int)transaction.error.code] error:transaction.error];
+        dispatch_sync(myQueue, ^{
+          [self rejectPromisesForKey:key code:[self standardErrorCode:(int)transaction.error.code]
+                             message:[self englishErrorCodeDescription:(int)transaction.error.code]
+                               error:transaction.error];
+        });
         break;
     }
   }
@@ -194,8 +236,11 @@ RCT_EXPORT_METHOD(finishTransaction) {
 }
 
 -(void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
-  [self rejectPromisesForKey:@"availableItems" code:[self standardErrorCode:error.code] message:[self englishErrorCodeDescription:(int)error.code] error:error];
-    NSLog(@"\n\n\n restoreCompletedTransactionsFailedWithError \n\n.");
+  dispatch_sync(myQueue, ^{
+    [self rejectPromisesForKey:@"availableItems" code:[self standardErrorCode:(int)error.code]
+                       message:[self englishErrorCodeDescription:(int)error.code] error:error];
+  });
+  NSLog(@"\n\n\n restoreCompletedTransactionsFailedWithError \n\n.");
 }
 
 -(void)purchaseProcess:(SKPaymentTransaction *)transaction {
@@ -252,13 +297,35 @@ RCT_EXPORT_METHOD(finishTransaction) {
   NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
   formatter.numberStyle = NSNumberFormatterCurrencyStyle;
   formatter.locale = product.priceLocale;
-  NSString *localizedPrice = [formatter stringFromNumber:product.price];
-
-  NSString* itemType = @"";
+  NSString* localizedPrice = [formatter stringFromNumber:product.price];
+  NSString* introductoryPrice = localizedPrice;
+    
+  // NSString* itemType = @"Do not use this. It returned sub only before";
   NSString* currencyCode = @"";
+  NSString* periodNumberIOS = @"0";
+  NSString* periodUnitIOS = @"";
+
+  NSString* itemType = @"Do not use this. It returned sub only before";
 
   if (@available(iOS 11.2, *)) {
-    itemType = product.subscriptionPeriod ? @"sub" : @"iap";
+    // itemType = product.subscriptionPeriod ? @"sub" : @"iap";
+    unsigned long numOfUnits = (unsigned long) product.subscriptionPeriod.numberOfUnits;
+    SKProductPeriodUnit unit = product.subscriptionPeriod.unit;
+
+    if (unit == SKProductPeriodUnitYear) {
+        periodUnitIOS = @"YEAR";
+    } else if (unit == SKProductPeriodUnitMonth) {
+        periodUnitIOS = @"MONTH";
+    } else if (unit == SKProductPeriodUnitWeek) {
+        periodUnitIOS = @"WEEK";
+    } else if (unit == SKProductPeriodUnitDay) {
+        periodUnitIOS = @"DAY";
+    }
+
+    periodNumberIOS = [NSString stringWithFormat:@"%lu", numOfUnits];
+
+    // subscriptionPeriod = product.subscriptionPeriod ? [product.subscriptionPeriod stringValue] : @"";
+    introductoryPrice = product.introductoryPrice ? [NSString stringWithFormat:@"%@", product.introductoryPrice] : @"";
   }
 
   if (@available(iOS 10.0, *)) {
@@ -272,10 +339,12 @@ RCT_EXPORT_METHOD(finishTransaction) {
     @"type": itemType,
     @"title" : product.localizedTitle ? product.localizedTitle : @"",
     @"description" : product.localizedDescription ? product.localizedDescription : @"",
-    @"localizedPrice" : localizedPrice
+    @"localizedPrice" : localizedPrice,
+    @"subscriptionPeriodNumberIOS" : periodNumberIOS,
+    @"subscriptionPeriodUnitIOS" : periodUnitIOS,
+    @"introductoryPrice" : introductoryPrice
   };
 }
-
 
 - (NSDictionary *)getPurchaseData:(SKPaymentTransaction *)transaction {
   NSData *receiptData;
@@ -284,6 +353,8 @@ RCT_EXPORT_METHOD(finishTransaction) {
   } else {
     receiptData = [transaction transactionReceipt];
   }
+  
+  if (receiptData == nil) return nil;
 
   NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithDictionary: @{
     @"transactionDate": @(transaction.transactionDate.timeIntervalSince1970 * 1000),
@@ -294,8 +365,8 @@ RCT_EXPORT_METHOD(finishTransaction) {
   // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
   SKPaymentTransaction *originalTransaction = transaction.originalTransaction;
   if (originalTransaction) {
-    purchase[@"originalTransactionDate"] = @(originalTransaction.transactionDate.timeIntervalSince1970 * 1000);
-    purchase[@"originalTransactionIdentifier"] = originalTransaction.transactionIdentifier;
+    purchase[@"originalTransactionDateIOS"] = @(originalTransaction.transactionDate.timeIntervalSince1970 * 1000);
+    purchase[@"originalTransactionIdentifierIOS"] = originalTransaction.transactionIdentifier;
   }
 
   return purchase;

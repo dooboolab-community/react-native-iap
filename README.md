@@ -6,31 +6,30 @@
 This is a react-native link library project for in app purchase for both android and ios platforms. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project.
 
 We are willing to share same in-app-purchase experience for both android and ios platform and will continuously merge methods which are standing alone.
-
 Android iap is implemented with iap version 3 which is currently recent.
 
 ## Playstore & Itunnesconnect configuration
   - Please refer to [Blog](https://medium.com/@dooboolab/react-native-in-app-purchase-121622d26b67).
 
-## Important
-Do not use version `0.3.4` ~ `0.3.8` because there was some issues in merging PR. Also please commit to `dev` branch and not `master` branch please if requesting PR.
-`react-native-iap` module versions that are not described in `change logs` may not run as expected so please refer to version mentioned in `Changelogs` below.
-
 ## Migration Guide
+`2.0.0-alpha1` has released. Not much difference. There were some parameters supports and changes to distinguish the differences in platform at one sight. Please follow the readme what you get in returned variables when calling `getItems` and when purchasing through `buyProduct` or `buySubscription`.
+
+Difference between `0.3.*` and `1.0.0` has only one method renaming `refreshItems` to `consumeAllItems`.
+
 To migrate `0.2.*` to `0.3.*`, You can follow below guide.
 
-| 0.2.* | 0.3.* |
-| --- | --- |
-| `prepareAndroid` | `prepare` |
-| `getItems` | `getProducts` |
-| `getSubscribeItems` | `getSubscriptions` |
-| `getPurchasedItemsAndroid` | `getPurchaseHistory` |
-| `` | `getAvailablePurchases` |
-| `buySubscribeItem` | `buySubscription` |
-| `buyItem` | `buyProduct` |
-| `consumeItemAndroid` | `consumePurchase` |
-| `refreshAllItems` | <span style="color: red">Not Available</span> |
-| `refreshPurchaseItemsAndroid` | <span style="color: red">Not Available</span> |
+| 0.2.* | 0.3.* | 1.* |
+| --- | --- | --- |
+| `prepareAndroid` | `prepare` | `prepare` |
+| `getItems` | `getProducts` | `getProducts` |
+| `getSubscribeItems` | `getSubscriptions` | `getSubscriptions` |
+| `getPurchasedItemsAndroid` | `getPurchaseHistory` | `getPurchaseHistory` |
+| `` | `getAvailablePurchases` | `getAvailablePurchases` |
+| `buySubscribeItem` | `buySubscription` | `buySubscription` |
+| `buyItem` | `buyProduct` | `buyProduct` |
+| `consumeItemAndroid` | `consumePurchase` | `consumePurchase` |
+| `refreshAllItems` | <span style="color: red">Not Available</span> | `consumeAllItems` |
+| `refreshPurchaseItemsAndroid` | <span style="color: red">Not Available</span> | <span style="color: red">Not Available</span> |
 
 From above method changes, `getProducts` gets `itemSkus` as parameter in different way then as used in `getItems`. In `getItems` you had to put parameter as
 ```
@@ -56,100 +55,22 @@ const itemSkus = Platform.select({
 ```
 Also, note that this is our last migration for renaming method names without any deprecation warning. Thank you for your understanding.
 
-## Breaking Changes
-`0.3.0-alpha1` has released. All the methods are renamed and current methods are merged into each single method. See `Methods` section below to see what's been changed.
-
-Breaking changes have made from `0.2.17`. `refreshAllItems` has changed name to `fetchHistory`. See the changelogs below.
-
-Breaking changes have made from `0.2.16` in android. Package name has been fixed to `com.dooboolab.RNIap.RNIapPackage`. Read the changelogs below. There was linking [issue](https://github.com/dooboolab/react-native-iap/issues/49#issuecomment-369811257) with wrong package name.
-
-Breaking changes have made from `0.2.12`. Please read the changelogs below. The summary of change is that it now returns receipt in different format.
-
-Changes from `react-native-iap@0.1.*` to `react-native-iap@0.2.*` is that you have `prepare()` method deprecated which you should call before using `RNIap` methods. Now you have to call `prepareAndroid()` instead just to know that it is just android dependent method.
-Also to import module, previously in `react-native-iap@0.1.*` you had to `import RNIap from 'react-native-iap'` but now you have to do like `import * as RNIap from 'react-native-iap'`.
-
-For new method, refreshAllItems has been implemented for both ios and android. This feature will support senario for non-consumable products.
-Also there are some other methods that is not supported in ios and implemented in android. You can see more in Changelogs below.
-Lastly, this module also supports types for typescript users from `0.2.5`.
-
-## Changelogs
-- **[0.3.21]**
-  + Able to manage consumption in ios with `buyProductWithoutFinishTransaction` and `finishTransaction`.
-- **[0.3.19]**
-  + Updated `validateReceiptIos` and `validateReceiptAndroid` methods to support all RN version.
-- **[0.3.17]**
-  + Implemented receipt validation. See the `Receipt validation` section in the readme. For `android`, you should have your own backend to get `access_token` from `googleapis`.
-- **[0.3.13]**
-  + Implemented `refreshItems` in android. This is to consume all products in anroid to rebuy the item. Becareful to use this method because if will affect your history of playstore. Only use this when you don't care about the history in playstore. Use this method after `prepare` method.
-- **[0.3.10]**
-  + Implemented `endConnection` in android.
-- **[0.3.9]**
-  + stable version that fixes bug in `0.3.4` ~ `0.3.8`.
-  + fix crash when localizedDescription is nil from [PR](https://github.com/dooboolab/react-native-iap/pull/112).
-  + fix crash on launchBillingFlow failure in Android from [PR](https://github.com/dooboolab/react-native-iap/pull/107).
-  + Fixed typings.
-- **[0.3.1]**
-  + Fixed linking manual dependency in ios from [PR](https://github.com/dooboolab/react-native-iap/pull/94).
-  + Fixed returning localizedPrice when need actual price in Android from [ISSUE](https://github.com/dooboolab/react-native-iap/issues/86).
-  + Fixed other minor bugs relied on ios.
-  + Some purchasing senarios have been tested throughly.
-- **[0.3.0-alpha1]**
-  + Methods names are fully renamed to avoid the confusion. Current methods are `prepare`, `getProducts`, `getSubscriptions`, `getPurchaseHistory`, `getAvailablePurchases`, `buySubscription`, `buyProduct`, `consumeProduct`. Please compare these methods with your previous methods used in `0.2.*` if you want to upgrade to `0.3.0`.
-- **[0.2.17]**
-  + `refreshAllItems` has changed name to `fetchHistory` since android and ios had different functionality and fixed to fetching history of purchases.
-- **[0.2.16]**
-  + Changed android package name `com.reactlibrary.RNIapPackage` to `com.dooboolab.RNIap.RNIapPackage`;.
-- **[0.2.15]**
-  + Removed react dependency in pod(deprecated). Handle android `buySubscribeItem` callback.
-- **[0.2.14]**
-  + Improve typings with [JSDoc](https://github.com/dooboolab/react-native-iap/commit/5c91392136837a10c85c6c073cc254f4c2f98249).
-- **[0.2.13]**
-  + buyItem will now return object instead string. The receipt string will be result.data and signature is added in result.signature. Currently ios signature will be always empty string.
-- **[0.2.12]**
-  + Added signiture to android purchase. From this version, the verification string for json string after purchasing will be receipt.data instead of receipt itself because of changes in [here](https://github.com/dooboolab/react-native-iap/issues/31). We will apply this changes to ios too so you do not have to handle these two differently.
-- **[0.2.11]**
-  + [Move podspec to where "react-native link" expects it to be](https://github.com/dooboolab/react-native-iap/commit/6c2389719663f90de1862cf14dfd4d3e3d670d1b).
-- **[0.2.9]**
-  + Android catch error message when IAP service not prepared during refreshAllItems.
-- **[0.2.8]**
-  + `homepage` now is mandatory attribute in cocoapods from [pull request](https://github.com/dooboolab/react-native-iap/pull/21).
-- **[0.2.7]**
-  + Android `buyItem` cancel callback.
-- **[0.2.6]**
-  + Android buyItem method do not consume item right away from 0.2.6.
-- **[0.2.5]**
-  + types support.
-    ![alt text](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/typing%20screen%20shot.png?alt=media&token=ea2ef1f3-50af-4d9c-8388-7fd22ddc8aa0)
-  + call new Method for android inside refreshItems(). This will now return object values like ios.
-- **[0.2.3]**
-  + Support annotations to hint while using our module.
-- **[0.2.0]**
-  + Implemented senario for consumable and non-consumable item.
-  + Seperated methods that only exists in IOS and Android.
-    - prepareAndroid()
-    - refreshPurchaseItemsAndroid(type: string)
-    - getPurchasedItemsAndroid(type: string)
-    - consumeItemAndroid(token: string)
-  + Able to call prepareAndroid() function without any conditional statement like if (Platform.OS === 'android'). Just use it.
-  + Updated Readme.
-- **[0.1.10]**
-  + Fixed potential bug relied on preparing IAP module in Android. Updated readme to see how to use it.
-
 #### Methods
 | Func  | Param  | Return | Description |
 | :------------ |:---------------:| :---------------:| :-----|
-| prepare |  | `Promise<void>` | Prepare IAP module. Must be called on Android before any other purchase flow methods. No-op on iOS.|
+| prepare |  | `Promise<void>` | Prepare IAP module. Must be called on Android before any other purchase flow methods. In ios, it will simply call `canMakePayments` method and return value.|
 | getProducts | `string[]` Product IDs/skus | `Promise<Product[]>` | Get a list of products (consumable and non-consumable items, but not subscriptions). Note: On iOS versions earlier than 11.2 this method _will_ return subscriptions if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to 11.2.  |
-| getSubscriptions | `string[]` Subscription IDs/skus | `Promise<Subscription[]>` | Get a list of subscriptions. Note: On iOS versions earlier than 11.2 this method has the same output as `getProducts`. This is because we cannot differentiate between IAP products and subscriptions prior to 11.2. |
+| getSubscriptions | `string[]` Subscription IDs/skus | `Promise<Subscription[]>` | Get a list of subscriptions. Note: On iOS  this method has the same output as `getProducts`. Because iOS does not differentiate between IAP products and subscriptions.  |
 | getPurchaseHistory | | `Promise<Purchase[]>` | Gets an invetory of purchases made by the user regardless of consumption status (where possible) |
 | getAvailablePurchases | | `Promise<Purchase[]>` | Get all purchases made by the user (either non-consumable, or haven't been consumed yet)
-| buySubscription | `string` Subscription ID/sku | `Promise<Purchase>` | Create (buy) a subscription to a sku |
+| buySubscription | `string` Subscription ID/sku, `string` Old Subscription ID/sku (on Android) | `Promise<Purchase>` | Create (buy) a subscription to a sku. For upgrading/downgrading subscription on Android pass second parameter with current subscription ID, on iOS this is handled automatically by store. |
 | buyProduct | `string` Product ID/sku | `Promise<Purchase>` | Buy a product |
+| buyProductWithQuantityIOS | `string` Product ID/sku, `number` Quantity | `Promise<Purchase>` | Buy a product with a specified quantity (iOS only) |
 | buyProductWithoutFinishTransaction | `string` Product ID/sku | `Promise<Purchase>` | Buy a product without finish transaction call (iOS only) |
 | finishTransaction | `void` | `void` | Send finishTransaction call to Apple IAP server. Call this function after receipt validation process |
 | consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 | endConnection | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
-| refreshItems | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
+| consumeAllItems | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
 | validateReceiptIos | `object` receiptBody, `boolean` isTest, `number` RNVersion | `object or boolean` result | validate receipt for ios. |
 | validateReceiptAndroid | `string` packageName, `string` productId, `string` productToken, `string` accessToken, `boolean` isSubscription, `number` RNVersion | `object or boolean` result | validate receipt for android. |
 
@@ -240,7 +161,7 @@ async componentDidMount() {
   try {
     await RNIap.prepare();
     const products = await RNIap.getProducts(itemSkus);
-    this.setState({ items });
+    this.setState({ products });
   } catch(err) {
     console.warn(err); // standardized err.code and err.message available
   }
@@ -254,11 +175,21 @@ async componentDidMount() {
 |`currency`| ✓ | ✓ | Returns the currency code |
 |`localizedPrice`| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
 |`title`| ✓ | ✓ | Returns the title Android and localizedTitle on iOS |
-|`description`| ✓ | ✓ | Returns the description of the product |
-|`type`| ✓ | ✓ | Returns SKU type (subscription or in-app product). iOS < 11.2 will always return `null` |
+|`introductoryPrice`| ✓ | ✓ | Formatted introductory price of a subscription, including its currency sign, such as €3.99. The price doesn't include tax. |
+|`subscriptionPeriodNumberIOS`| ✓ |  | The unit in string like DAY or WEEK or MONTH or YEAR |
+|`subscriptionPeriodUnitIOS`| ✓ |  | The unit number of subscription period |
+|`subscriptionPeriodAndroid`|  | ✓ | Subscription period, specified in ISO 8601 format. For example, P1W equates to one week, P1M equates to one month, P3M equates to three months, P6M equates to six months, and P1Y equates to one year. |
+|`introductoryPriceCyclesAndroid`|  | ✓ | The number of subscription billing periods for which the user will be given the introductory price, such as 3. |
+|`introductoryPricePeriodAndroid`|  | ✓ | The billing period of the introductory price, specified in ISO 8601 format. |
+|`freeTrialPeriodAndroid`|  | ✓ | Trial period configured in Google Play Console, specified in ISO 8601 format. For example, P7D equates to seven days. |
 
 ## End Billing Connection
 When you are done with the billing, you should release it for android([READ](https://developer.android.com/reference/com/android/billingclient/api/BillingClient.html#endConnection())). It is not needed in ios. No need to check platform either since nothing will happen in ios. This can be used in `componentWillUnMount`.
+```javascript
+componentWillUnmount() {
+  RNIap.endConnection();
+}
+```
 
 ## Purchase
 Once you have called getProducts(), and you have a valid response, you can call buyProduct().
@@ -318,19 +249,22 @@ getPurchases = async() => {
   }
 }
 ```
+
 Returned purchases is an array of each purchase transaction with the following keys:
-```javascript
-{
-  transactionDate,
-  transactionId,
-  productId,
-  transactionReceipt,
-  purchaseToken, // available on Android (same as transactionReceipt)
-  autoRenewing, // available on Android
-  originalTransactionDate, // available on iOS
-  originalTransactionIdentifier // available on iOS
-}
-```
+
+|    | iOS | Android | Comment |
+|----|-----|---------|------|
+|`productId`| ✓ | ✓ | The product ID for the product. |
+|`purchaseToken`| ✓ | ✓ | A token that uniquely identifies a purchase for a given item and user pair. |
+|`transactionReceipt`| ✓ | ✓ | `receipt` for ios and `purchaseToken` for android. |
+|`transactionId`| ✓ | ✓ | A unique order identifier for the transaction. |
+|`transactionDate`| ✓ | ✓ | The time the product was purchased, in milliseconds since the epoch (Jan 1, 1970). |
+|`autoRenewingAndroid`|  | ✓ | Indicates whether the subscription renews automatically. If true, the subscription is active, and will automatically renew on the next billing date. If false, indicates that the user has canceled the subscription. |
+|`dataAndroid`|  | ✓ | Original json for purchase data. |
+|`signatureAndroid`|  | ✓ | String containing the signature of the purchase data that was signed with the private key of the developer. The data signature uses the RSASSA-PKCS1-v1_5 scheme. |
+|`originalTransactionDateIOS`| ✓ |  | For a transaction that restores a previous transaction, the date of the original transaction. |
+|`originalTransactionIdentifierIOS`| ✓ |  | For a transaction that restores a previous transaction, the transaction identifier of the original transaction. |
+
 You need to test with one sandbox account, because the account holds previous purchase history.
 
 
@@ -362,47 +296,22 @@ But, sometimes app doesn't make it to step 3, and user loose the product with su
 Non-consumable products can be restored via getPurchaseHistory function, but consumable products can be lost.
 In this case, use buyProductWithoutFinishTransaction to purchase action and use finishTransaction to finish payment after receipt validation and supply the products to user.
 
-## Todo
-- 
+----
 
-## Contribution Guide
+## Supporting react-native-iap
 
-### Issue
-* Please search and register if you already have the issue you want to create. If you have a similar issue, you can add additional comments.
-* Please write a problem or suggestion in the issue. Never include more than one item in an issue.
-* Please be as detailed and concise as possible.
-	* If necessary, please take a screenshot and upload an image.
+`react-native` is open source project with MIT license. We are willing to maintain this repository to support devs to monetize around the world. Since, `IAP` itself is not perfect in each platform, we desperately needs this project to be maintained. If you'd like to help us, please consider to be with us in [Open Collective](https://opencollective.com/react-native-iap).
 
+### Sponsors
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/react-native-iap#sponsor)]
 
-### Pull request(PR)
-* Now PR is available to `master` branch.
+### Backers
+Please be our [Backers](https://opencollective.com/react-native-iap#backer).
+<a href="https://opencollective.com/react-native-iap#backers" target="_blank"><img src="https://opencollective.com/react-native-iap/backers.svg?width=890"></a>
 
-### Coding Guidelines
-Please follow the Coding conventions as much as possible when contributing your code.
-* The indent tab is two spaces.
-* The class declaration and the `{}` in curly brackets such as function, if, foreach, for, and while should be in the following format. Also if you installed eslint in vscode or in your code editor, it will help you with linting.
-	* `{` should be placed in same line and `}` should be placed in next line.
-```
-for (let i = 0; i < 10; i++) {
-  ...
-}
-array.forEach((e) => {
-  ...
-});
-```
-  * Space before `(` and after `)`.
-* **If you find code that does not fit in the coding convention, do not ever try to fix code that is not related to your purpose.**
+### Contributing
+Please make sure to read the [Contributing Guide](CONTRIBUTING.md) before making a pull request.
+Thank you to all the people who helped to maintain and upgrade this project!
 
-
-## LICENSE
-
-The MIT License (MIT)
-
-Copyright (c) 2017 dooboolab
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+<a href="graphs/contributors"><img src="https://opencollective.com/react-native-iap/contributors.svg?width=890" /></a>
+<hr>
