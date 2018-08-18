@@ -165,44 +165,35 @@ export const validateReceiptIos = async (receiptBody, isTest) => {
   });
 
   if (!response.ok) {
-    throw Object.assign(new Error(response.statusText), { statusCode: response.status })
+    throw Object.assign(new Error(response.statusText), { statusCode: response.status });
   }
 
   return response.json();
 }
 
 /**
- * Validate receipt for android.
+ * Validate receipt for Android.
  * @param {string} packageName package name of your app.
  * @param {string} productId product id for your in app product.
  * @param {string} productToken token for your purchase.
  * @param {string} accessToken accessToken from googleApis.
  * @param {boolean} isSub whether this is subscription or inapp. `true` for subscription.
- * @returns {json | boolean}
+ * @returns {Promise<object>}
  */
 export const validateReceiptAndroid = async (packageName, productId, productToken, accessToken, isSub) => {
-  const URL = !isSub
-    ? `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/products/${productId}/tokens/${productToken}?access_token=${accessToken}`
-    : `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/subscriptions/${productId}/tokens/${productToken}?access_token=${accessToken}`;
-  try {
-    let res = await fetch(URL, {
-      method: 'GET',
-      headers: new Headers({
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }),
-    });
+  const type = (isSub ? 'subscriptions' : 'products')
+  const url = `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/${type}/${productId}/tokens/${productToken}?access_token=${accessToken}`
 
-    if (res) {
-      const json = await res.text();
-      res = JSON.parse(json);
-    }
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: new Headers({ 'Accept': 'application/json' })
+  })
 
-    return false;
-  } catch (err) {
-    console.log(err);
-    return false;
+  if (!response.ok) {
+    throw Object.assign(new Error(response.statusText), { statusCode: response.status })
   }
+
+  return response.json();
 };
 
 /**
