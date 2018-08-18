@@ -1,6 +1,6 @@
 {
   "name": "react-native-iap",
-  "version": "2.0.0-alpha7",
+  "version": "2.0.0-alpha8",
   "description": "6eact Native In App Purchase Module.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -22,7 +22,7 @@
   "license": "MIT",
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": ">=0.54"
   },
   "dependencies": {
     "dooboolab-welcome": "^1.0.5"

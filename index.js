@@ -104,6 +104,16 @@ export const buyProduct = (sku) => Platform.select({
   android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null)
 })();
 
+/**
+ * Buy a product with a specified quantity (iOS only)
+ * @param {string} sku The product's sku/ID
+ * @param {number} quantity The amount of product to buy
+ * @returns {Promise<ProductPurchase>}
+ */
+export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
+  ios: () => RNIapIos.buyProductWithQuantityIOS(sku, quantity),
+  android: () => Promise.resolve()
+})();
 
 /**
  * Buy a product without transaction finish (iOS only)
@@ -157,21 +167,18 @@ export const validateReceiptIos = async (receiptBody, isTest) => {
   if (!response.ok) {
     throw Object.assign(new Error(response.statusText), { statusCode: response.status })
   }
-
-  return response.json();
-};
+}
 
 /**
- * Validate receipt for ios.
+ * Validate receipt for android.
  * @param {string} packageName package name of your app.
  * @param {string} productId product id for your in app product.
  * @param {string} productToken token for your purchase.
  * @param {string} accessToken accessToken from googleApis.
  * @param {boolean} isSub whether this is subscription or inapp. `true` for subscription.
- * @param {number} RNVersion version of react-native.
  * @returns {json | boolean}
  */
-export const validateReceiptAndroid = async (packageName, productId, productToken, accessToken, isSub, RNVersion) => {
+export const validateReceiptAndroid = async (packageName, productId, productToken, accessToken, isSub) => {
   const URL = !isSub
     ? `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/products/${productId}/tokens/${productToken}?access_token=${accessToken}`
     : `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/subscriptions/${productId}/tokens/${productToken}?access_token=${accessToken}`;
@@ -185,11 +192,6 @@ export const validateReceiptAndroid = async (packageName, productId, productToke
     });
 
     if (res) {
-      if (RNVersion < 54) {
-        const json = JSON.parse(res._bodyInit);
-        return json;
-      }
-  
       const json = await res.text();
       res = JSON.parse(json);
     }
@@ -201,6 +203,40 @@ export const validateReceiptAndroid = async (packageName, productId, productToke
   }
 };
 
+/**
+ * deprecagted codes
+ */
+/*
+export const validateReceiptIos = async (receiptBody, isTest) => {
+  if (Platform.OS === 'ios') {
+    const URL = isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
+    try {
+      let res = await fetch(URL, {
+        method: 'POST',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify(receiptBody),
+      });
+
+      if (res) {
+        const json = await res.text();
+        res = JSON.parse(json);
+        return res;
+      }
+
+      return false;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+
+  return response.json();
+};
+*/
+
 export default {
   prepare,
   endConnection,
@@ -211,6 +247,7 @@ export default {
   consumeAllItems,
   buySubscription,
   buyProduct,
+  buyProductWithQuantityIOS,
   buyProductWithoutFinishTransaction,
   finishTransaction,
   consumePurchase,

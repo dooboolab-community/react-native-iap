@@ -116,6 +116,29 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
   }
 }
 
+RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
+                  quantity:(NSInteger*)quantity
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  NSLog(@"\n\n\n  buyProductWithQuantityIOS  \n\n.");
+  autoReceiptConform = true;
+  SKProduct *product;
+  for (SKProduct *p in validProducts) {
+    if([sku isEqualToString:p.productIdentifier]) {
+      product = p;
+      break;
+    }
+  }
+  if (product) {
+    SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
+    payment.quantity = quantity;
+    [[SKPaymentQueue defaultQueue] addPayment:payment];
+    [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
+  } else {
+    reject(@"E_DEVELOPER_ERROR", @"Invalid product ID.", nil);
+  }
+}
+
 RCT_EXPORT_METHOD(buyProductWithoutAutoConfirm:(NSString*)sku
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
