@@ -1,4 +1,9 @@
 ## Changelogs
+- **[2.0.0-alpha]**
+  + Renamed the variables returned from the action getting item and purchasing item.
+  + Fixed some crashing.
+  + Typescript improvement.
+  + Dropped version < 54 for React Native (This only affects `validateReceiptIos` and `validateReceiptAndroid`).
 - **[1.3.6]**
   + Upgraded android billing client to 1.1.
 - **[1.3.0]**
