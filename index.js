@@ -167,6 +167,8 @@ export const validateReceiptIos = async (receiptBody, isTest) => {
   if (!response.ok) {
     throw Object.assign(new Error(response.statusText), { statusCode: response.status })
   }
+
+  return response.json();
 }
 
 /**
