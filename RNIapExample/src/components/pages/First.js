@@ -17,7 +17,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 const itemSkus = Platform.select({
   ios: [
-    'com.cooni.point1000','com.cooni.point5000', // dooboolab
+    'com.cooni.point1000', 'com.cooni.point5000', // dooboolab
   ],
   android: [
     'android.test.purchased',
@@ -38,19 +38,18 @@ class Page extends Component {
     };
   }
 
-  async componentDidMount(){
+  async componentDidMount() {
     try {
       const result = await RNIap.prepare();
       console.log('result', result);
-    }
-    catch (err) {
+    } catch (err) {
       console.warn(err.code, err.message);
     }
   }
 
   goToNext = () => {
     this.props.navigation.navigate('Second', {
-      receipt: this.state.receipt
+      receipt: this.state.receipt,
     });
   }
 
@@ -97,10 +96,10 @@ class Page extends Component {
       if (purchases && purchases.length > 0) {
         this.setState({
           availableItemsMessage: `Got ${purchases.length} items.`,
-          receipt: purchases[0].transactionReceipt
+          receipt: purchases[0].transactionReceipt,
         });
       }
-    } catch(err) {
+    } catch (err) {
       console.warn(err.code, err.message);
       Alert.alert(err.message);
     }
@@ -139,7 +138,7 @@ class Page extends Component {
             >Get Products ({productList.length})</NativeButton>
             {
               productList.map((product, i) => {
-                return(
+                return (
                   <View key={i} style={{
                     flexDirection: 'column',
                   }}>
@@ -156,7 +155,7 @@ class Page extends Component {
                       textStyle={styles.txt}
                     >Buy Above Product</NativeButton>
                   </View>
-                )
+                );
               })
             }
           </ScrollView>
