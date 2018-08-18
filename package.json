@@ -22,7 +22,7 @@
   "license": "MIT",
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": ">=0.54"
   },
   "dependencies": {
     "dooboolab-welcome": "^1.0.5"
