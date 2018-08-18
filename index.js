@@ -147,42 +147,30 @@ export const consumePurchase = (token) => Platform.select({
 })();
 
 /**
- * Validate receipt for ios.
- * @param {receipt-data: string, password?: string} receiptBody the receipt body to send to apple server.
+ * Validate receipt for iOS.
+ * @param {object} receiptBody the receipt body to send to apple server.
  * @param {string} isTest whether this is in test environment which is sandbox.
- * @returns {json | boolean}
+ * @returns {Promise<object>}
  */
 export const validateReceiptIos = async (receiptBody, isTest) => {
-  if (Platform.OS === 'ios') {
-    const URL = isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
-    try {
-      let res = await fetch(URL, {
-        method: 'POST',
-        headers: new Headers({
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        }),
-        body: JSON.stringify(receiptBody),
-      });
+  const url = isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
 
-      if (res) {
-        const json = await res.text();
-        res = JSON.parse(json);
-        return res;
-      }
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: new Headers({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    }),
+    body: JSON.stringify(receiptBody),
+  });
 
-      return false;
-    } catch (err) {
-      console.log(err);
-      return false;
-    }
+  if (!response.ok) {
+    throw Object.assign(new Error(response.statusText), { statusCode: response.status })
   }
-  console.log('No ops in android.');
-  return false;
-};
+}
 
 /**
- * Validate receipt for ios.
+ * Validate receipt for android.
  * @param {string} packageName package name of your app.
  * @param {string} productId product id for your in app product.
  * @param {string} productToken token for your purchase.
@@ -214,6 +202,40 @@ export const validateReceiptAndroid = async (packageName, productId, productToke
     return false;
   }
 };
+
+/**
+ * deprecagted codes
+ */
+/*
+export const validateReceiptIos = async (receiptBody, isTest) => {
+  if (Platform.OS === 'ios') {
+    const URL = isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
+    try {
+      let res = await fetch(URL, {
+        method: 'POST',
+        headers: new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify(receiptBody),
+      });
+
+      if (res) {
+        const json = await res.text();
+        res = JSON.parse(json);
+        return res;
+      }
+
+      return false;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+
+  return response.json();
+};
+*/
 
 export default {
   prepare,
