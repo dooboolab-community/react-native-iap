@@ -14,7 +14,7 @@ const IOS_ITEM_TYPE_IAP = 'iap';
  */
 export const prepare = () => Platform.select({
   ios: () => RNIapIos.canMakePayments(),
-  android: () => RNIapModule.prepare()
+  android: () => RNIapModule.prepare(),
 })();
 
 /**
@@ -23,7 +23,7 @@ export const prepare = () => Platform.select({
  */
 export const endConnection = () => Platform.select({
   ios: () => Promise.resolve(),
-  android: () => RNIapModule.endConnection()
+  android: () => RNIapModule.endConnection(),
 })();
 
 /**
@@ -42,8 +42,8 @@ export const consumeAllItems = () => Platform.select({
  */
 export const getProducts = (skus) => Platform.select({
   ios: () => RNIapIos.getItems(skus)
-    .then(items => items.filter(item => item.productId)),
-  android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_IAP, skus)
+    .then((items) => items.filter((item) => item.productId)),
+  android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_IAP, skus),
 })();
 
 /**
@@ -53,8 +53,8 @@ export const getProducts = (skus) => Platform.select({
  */
 export const getSubscriptions = (skus) => Platform.select({
   ios: () => RNIapIos.getItems(skus)
-    .then(items => items.filter(item => item.productId)),
-  android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus)
+    .then((items) => items.filter((item) => item.productId)),
+  android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus),
 })();
 
 /**
@@ -63,11 +63,11 @@ export const getSubscriptions = (skus) => Platform.select({
  */
 export const getPurchaseHistory = () => Platform.select({
   ios: () => RNIapIos.getAvailableItems(),
-  android: async () => {
+  android: async() => {
     let products = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_IAP);
     let subscriptions = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
     return products.concat(subscriptions);
-  }
+  },
 })();
 
 /**
@@ -76,11 +76,11 @@ export const getPurchaseHistory = () => Platform.select({
  */
 export const getAvailablePurchases = () => Platform.select({
   ios: () => RNIapIos.getAvailableItems(),
-  android: async () => {
+  android: async() => {
     let products = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_IAP);
     let subscriptions = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
     return products.concat(subscriptions);
-  }
+  },
 })();
 
 /**
@@ -91,7 +91,7 @@ export const getAvailablePurchases = () => Platform.select({
  */
 export const buySubscription = (sku, oldSku) => Platform.select({
   ios: () => RNIapIos.buyProduct(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku)
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku),
 })();
 
 /**
@@ -101,7 +101,7 @@ export const buySubscription = (sku, oldSku) => Platform.select({
  */
 export const buyProduct = (sku) => Platform.select({
   ios: () => RNIapIos.buyProduct(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null)
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null),
 })();
 
 /**
@@ -112,7 +112,7 @@ export const buyProduct = (sku) => Platform.select({
  */
 export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
   ios: () => RNIapIos.buyProductWithQuantityIOS(sku, quantity),
-  android: () => Promise.resolve()
+  android: () => Promise.resolve(),
 })();
 
 /**
@@ -123,7 +123,7 @@ export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
  */
 export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
   ios: () => RNIapIos.buyProductWithoutAutoConfirm(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null)
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null),
 })();
 
 /**
@@ -143,7 +143,7 @@ export const finishTransaction = () => Platform.select({
  */
 export const consumePurchase = (token) => Platform.select({
   ios: () => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
-  android: () => RNIapModule.consumeProduct(token)
+  android: () => RNIapModule.consumeProduct(token),
 })();
 
 /**
@@ -152,7 +152,7 @@ export const consumePurchase = (token) => Platform.select({
  * @param {string} isTest whether this is in test environment which is sandbox.
  * @returns {Promise<object>}
  */
-export const validateReceiptIos = async (receiptBody, isTest) => {
+export const validateReceiptIos = async(receiptBody, isTest) => {
   const url = isTest ? 'https://sandbox.itunes.apple.com/verifyReceipt' : 'https://buy.itunes.apple.com/verifyReceipt';
 
   const response = await fetch(url, {
@@ -165,42 +165,35 @@ export const validateReceiptIos = async (receiptBody, isTest) => {
   });
 
   if (!response.ok) {
-    throw Object.assign(new Error(response.statusText), { statusCode: response.status })
+    throw Object.assign(new Error(response.statusText), { statusCode: response.status });
   }
-}
+
+  return response.json();
+};
 
 /**
- * Validate receipt for android.
+ * Validate receipt for Android.
  * @param {string} packageName package name of your app.
  * @param {string} productId product id for your in app product.
  * @param {string} productToken token for your purchase.
  * @param {string} accessToken accessToken from googleApis.
  * @param {boolean} isSub whether this is subscription or inapp. `true` for subscription.
- * @returns {json | boolean}
+ * @returns {Promise<object>}
  */
-export const validateReceiptAndroid = async (packageName, productId, productToken, accessToken, isSub) => {
-  const URL = !isSub
-    ? `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/products/${productId}/tokens/${productToken}?access_token=${accessToken}`
-    : `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/subscriptions/${productId}/tokens/${productToken}?access_token=${accessToken}`;
-  try {
-    let res = await fetch(URL, {
-      method: 'GET',
-      headers: new Headers({
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }),
-    });
+export const validateReceiptAndroid = async(packageName, productId, productToken, accessToken, isSub) => {
+  const type = (isSub ? 'subscriptions' : 'products');
+  const url = `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/${type}/${productId}/tokens/${productToken}?access_token=${accessToken}`;
 
-    if (res) {
-      const json = await res.text();
-      res = JSON.parse(json);
-    }
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: new Headers({ 'Accept': 'application/json' }),
+  });
 
-    return false;
-  } catch (err) {
-    console.log(err);
-    return false;
+  if (!response.ok) {
+    throw Object.assign(new Error(response.statusText), { statusCode: response.status });
   }
+
+  return response.json();
 };
 
 /**
@@ -252,5 +245,5 @@ export default {
   finishTransaction,
   consumePurchase,
   validateReceiptIos,
-  validateReceiptAndroid
+  validateReceiptAndroid,
 };

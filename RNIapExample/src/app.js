@@ -42,7 +42,7 @@ class App extends Component {
       },
     });
     return (
-      <View style={{ flex: 1, }}>
+      <View style={{ flex: 1 }}>
         <StatusBar
           barStyle="dark-content"
         />

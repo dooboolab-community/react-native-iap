@@ -21,24 +21,24 @@ class Page extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchViewVisible: false
+      searchViewVisible: false,
     };
   }
 
   handleBack = () => {
     this.props.navigation.goBack();
-    console.log("handleBack");
+    console.log('handleBack');
   };
 
   onNaverLogout = () => {
     this.props.navigation.goBack();
-    console.log("onNaverLogout");
+    console.log('onNaverLogout');
   };
 
   renderFinishTransaction() {
     if (Platform.OS === 'android') return null;
     return (
-       <NativeButton
+      <NativeButton
         onPress={() => RNIap.finishTransaction()}
         activeOpacity={0.5}
         style={styles.btn}
@@ -56,7 +56,7 @@ class Page extends Component {
           </Navbar>
         </View>
         <View style={styles.content}>
-          <ScrollView style={{ alignSelf: "stretch" }}>
+          <ScrollView style={{ alignSelf: 'stretch' }}>
             <Text style={styles.txtResult}>
               {this.props.navigation.state.params.receipt}
             </Text>
