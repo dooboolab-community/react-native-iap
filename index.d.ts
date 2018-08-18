@@ -1,31 +1,29 @@
-export type SkuTypeAndroid = 'INAPP' | 'SUBS'
-export type SkuTypeIOS = 'iap' | 'sub'
+import * as Apple from './apple'
 
-export interface SkuTypes {
-  android: { [key: string]: SkuTypeAndroid }
-  ios: { [key: string]: SkuTypeIOS }
+interface Common {
+  title: string
+  description: string
+  price: string
+  currency: string
+  localizedPrice: string
 }
 
-export const SkuTypes: SkuTypes
-
-export interface Product {
-  type: SkuTypeAndroid | SkuTypeIOS;
-  productId: string;
-  title: string;
-  description: string;
-  price: string;
-  currency: string;
-  localizedPrice: string;
-  subscriptionPeriodNumberIOS: string;
-  subscriptionPeriodUnitIOS: number;
-  subscriptionPeriodAndroid: string;
-  introductoryPriceCyclesAndroid: number;
-  introductoryPricePeriodAndroid: string;
-  freeTrialPeriodAndroid: string;
+export interface Product<ID extends string> extends Common {
+  type: 'inapp' | 'iap'
+  productId: ID
 }
 
-export interface Subscription extends Product {
+export interface Subscription<ID extends string> extends Common {
+  type: 'subs' | 'sub'
+  productId: ID
 
+  subscriptionPeriodNumberIOS?: string
+  subscriptionPeriodUnitIOS?: number
+
+  freeTrialPeriodAndroid?: string
+  introductoryPriceCyclesAndroid?: number
+  introductoryPricePeriodAndroid?: string
+  subscriptionPeriodAndroid?: string
 }
 
 export interface ProductPurchase {
@@ -65,17 +63,27 @@ export function consumeAllItems() : Promise<void>;
 
 /**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
- * @param {string[]} skus The item skus
- * @returns {Promise<Product[]>}
+ * @param skus The item skus
  */
-export function getProducts(skus: string[]) : Promise<Product[]>;
+export function getProducts<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string>(skus: [A, B, C, D, E, F]): Promise<[Product<A>, Product<B>, Product<C>, Product<D>, Product<E>, Product<F>]>;
+export function getProducts<A extends string, B extends string, C extends string, D extends string, E extends string>(skus: [A, B, C, D, E]): Promise<[Product<A>, Product<B>, Product<C>, Product<D>, Product<E>]>;
+export function getProducts<A extends string, B extends string, C extends string, D extends string>(skus: [A, B, C, D]): Promise<[Product<A>, Product<B>, Product<C>, Product<D>]>;
+export function getProducts<A extends string, B extends string, C extends string>(skus: [A, B, C]): Promise<[Product<A>, Product<B>, Product<C>]>;
+export function getProducts<A extends string, B extends string>(skus: [A, B]): Promise<[Product<A>, Product<B>]>;
+export function getProducts<A extends string>(skus: [A]): Promise<[Product<A>]>;
+export function getProducts(skus: string[]): Promise<Product<string>[]>;
 
 /**
  * Get a list of subscriptions
- * @param {string[]} skus The item skus
- * @returns {Promise<Subscription[]>}
+ * @param skus The item skus
  */
-export function getSubscriptions(skus: string[]) : Promise<Subscription[]>;
+export function getSubscriptions<A extends string, B extends string, C extends string, D extends string, E extends string, F extends string>(skus: [A, B, C, D, E, F]): Promise<[Subscription<A>, Subscription<B>, Subscription<C>, Subscription<D>, Subscription<E>, Subscription<F>]>;
+export function getSubscriptions<A extends string, B extends string, C extends string, D extends string, E extends string>(skus: [A, B, C, D, E]): Promise<[Subscription<A>, Subscription<B>, Subscription<C>, Subscription<D>, Subscription<E>]>;
+export function getSubscriptions<A extends string, B extends string, C extends string, D extends string>(skus: [A, B, C, D]): Promise<[Subscription<A>, Subscription<B>, Subscription<C>, Subscription<D>]>;
+export function getSubscriptions<A extends string, B extends string, C extends string>(skus: [A, B, C]): Promise<[Subscription<A>, Subscription<B>, Subscription<C>]>;
+export function getSubscriptions<A extends string, B extends string>(skus: [A, B]): Promise<[Subscription<A>, Subscription<B>]>;
+export function getSubscriptions<A extends string>(skus: [A]): Promise<[Subscription<A>]>;
+export function getSubscriptions(skus: string[]): Promise<Subscription<string>[]>;
 
 /**
  * Gets an invetory of purchases made by the user regardless of consumption status
@@ -133,22 +141,18 @@ export function finishTransaction(): void;
 export function consumePurchase(token: string) : Promise<void>;
 
 /**
- * Validate receipt for ios.
- * @param {receipt-data: string, password?: string} receiptBody the receipt body to send to apple server.
- * @param {string} isTest whether this is in test environment which is sandbox.
- * @param {number} RNVersion version of react-native.
- * @returns {json | boolean}
+ * Validate receipt for iOS.
+ * @param receiptBody the receipt body to send to apple server.
+ * @param isTest whether this is in test environment which is sandbox.
  */
-export function validateReceiptIos(receiptBody: object, isTest:boolean) : object | boolean;
+export function validateReceiptIos(receiptBody: Apple.ReceiptValidationRequest, isTest: boolean): Promise<Apple.ReceiptValidationResponse | false>;
 
 /**
- * Validate receipt for ios.
- * @param {string} packageName package name of your app.
- * @param {string} productId product id for your in app product.
- * @param {string} productToken token for your purchase. Found in `transanctionReceipt` after `buyProduct` method.
- * @param {string} accessToken accessToken from googleApis.
- * @param {boolean} isSub whether this is subscription or inapp. `true` for subscription.
- * @param {number} RNVersion version of react-native.
- * @returns {json | boolean}
+ * Validate receipt for Android.
+ * @param packageName package name of your app.
+ * @param productId product id for your in app product.
+ * @param productToken token for your purchase. Found in `transanctionReceipt` after `buyProduct` method.
+ * @param accessToken accessToken from googleApis.
+ * @param isSub whether this is subscription or inapp. `true` for subscription.
  */
-export function validateReceiptAndroid (packageName: string, productId: string, productToken: string, accessToken: string, isSub: boolean);
+export function validateReceiptAndroid(packageName: string, productId: string, productToken: string, accessToken: string, isSub: boolean): Promise<object | false>;
