@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-const NavBar = ({ showBack, showOption, handleBack, handleOption, children, }) => {
+const NavBar = ({ showBack, showOption, handleBack, handleOption, children }) => {
   return (
     <View style = { styles.container }>
       {
