@@ -4,6 +4,7 @@
   + Fixed some crashing.
   + Typescript improvement.
   + Dropped version < 54 for React Native (This only affects `validateReceiptIos` and `validateReceiptAndroid`).
+  + Improve receipt validation.
 - **[1.3.6]**
   + Upgraded android billing client to 1.1.
 - **[1.3.0]**
