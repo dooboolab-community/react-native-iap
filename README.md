@@ -3,7 +3,7 @@
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square"></a>
   <a href="https://npmjs.org/package/react-native-iap"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square"></a>
 </p>
-This is a react-native link library project for in app purchase for both android and ios platforms. The goal for this project is to have similar experience between the two platforms for in-app-purchase. Basically android platform has more functions for in-app-purchase and is not our specific interests for this project.
+This is a react-native link library project for in-app purchase for both android and ios platforms. The goal of this project is to have similar experience between the two platforms for in-app-purchase. Basically, android platform has more functions for in-app-purchase and is not our specific interests for this project.
 
 We are willing to share same in-app-purchase experience for both android and ios platform and will continuously merge methods which are standing alone.
 Android iap is implemented with iap version 3 which is currently recent.
@@ -16,7 +16,7 @@ Android iap is implemented with iap version 3 which is currently recent.
 
 Difference between `0.3.*` and `1.0.0` has only one method renaming `refreshItems` to `consumeAllItems`.
 
-To migrate `0.2.*` to `0.3.*`, You can follow below guide.
+To migrate `0.2.*` to `0.3.*`, You can follow the below guide.
 
 | 0.2.* | 0.3.* | 1.* |
 | --- | --- | --- |
@@ -63,7 +63,7 @@ Also, note that this is our last migration for renaming method names without any
 | getSubscriptions | `string[]` Subscription IDs/skus | `Promise<Subscription[]>` | Get a list of subscriptions. Note: On iOS versions earlier than 11.2 this method _will_ return subscriptions if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to 11.2. |
 | getPurchaseHistory | | `Promise<Purchase[]>` | Gets an invetory of purchases made by the user regardless of consumption status (where possible) |
 | getAvailablePurchases | | `Promise<Purchase[]>` | Get all purchases made by the user (either non-consumable, or haven't been consumed yet)
-| buySubscription | `string` Subscription ID/sku, `string` Old Subscription ID/sku (on Android) | `Promise<Purchase>` | Create (buy) a subscription to a sku. For upgrading/downgrading subscription on Android pass second parameter with current subscription ID, on iOS this is handled automatically by store. |
+| buySubscription | `string` Subscription ID/sku, `string` Old Subscription ID/sku (on Android) | `Promise<Purchase>` | Create (buy) a subscription to a sku. For upgrading/downgrading subscription on Android pass the second parameter with current subscription ID, on iOS this is handled automatically by store. |
 | buyProduct | `string` Product ID/sku | `Promise<Purchase>` | Buy a product |
 | buyProductWithQuantityIOS | `string` Product ID/sku, `number` Quantity | `Promise<Purchase>` | Buy a product with a specified quantity (iOS only) |
 | buyProductWithoutFinishTransaction | `string` Product ID/sku | `Promise<Purchase>` | Buy a product without finish transaction call (iOS only) |
@@ -100,7 +100,7 @@ You should remove this before running `pod install` and follow the manual instal
 ### Manual installation
 
 #### iOS
-1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
+1. In XCode, in the project navigator, right-click `Libraries` ➜ `Add Files to [your project's name]`
 2. Go to `node_modules` ➜ `react-native-iap` and add `RNIap.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libRNIap.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
@@ -155,7 +155,7 @@ async function() {
 ```
 
 ## Get Valid Items
-Once you called prepare(), call getProducts(). Both are async funcs. You can do it in componentDidMount(), or other area as appropriate for you app. Since a user may first start your app with a bad internet connection, then later have an internet connection, making preparing/getting items more than once may be a good idea. Like if the user has no IAPs available when the app first starts, you may want to check again when the user enters the your IAP store.
+Once you called prepare(), call getProducts(). Both are async funcs. You can do it in componentDidMount(), or another area as appropriate for you app. Since a user may first start your app with a bad internet connection, then later have an internet connection, making preparing/getting items more than once may be a good idea. Like if the user has no IAPs available when the app first starts, you may want to check again when the user enters your IAP store.
 ```javascript
 async componentDidMount() {
   try {
@@ -198,7 +198,7 @@ Once you have called getProducts(), and you have a valid response, you can call 
   const purchase = await RNIap.buyProduct('com.example.coins100');
 ```
 
-In RNIapExample, upon receiving receiving a purchase receipt, main page will navigate to Second.js.
+In RNIapExample, upon receiving a purchase receipt, main page will navigate to Second.js.
 
 ## Purchase Example 2 (Advanced)
 ```javascript
@@ -222,7 +222,7 @@ Users can cancel subscriptions by using the iOS System Settings.
 
 
 ## Consumption and Restoring Purchases
-You can use `getAvailablePurchases()` to do what's commonly understood as "restoring" purchases. Once an item is consumed, it will no longer be available in `getAvailablePurchases()` and will only be available via `getPurchaseHistory()`. However, this method has some caveats on Android -- namely that purchase history only exists for the single most recent purchase of each SKU -- so your best bet is to track consumption in your app yourself. By default all items that are purchased will not be consumed unless they are automatically consumed by the store (for example, if you create a consumable item for iOS.) This means that you must manage consumption yourself.  Purchases can be consumed by calling `consumePurchase()`. If you want to consume all items, you have to iterate over the purchases returned by `getAvailablePurchases()`.
+You can use `getAvailablePurchases()` to do what's commonly understood as "restoring" purchases. Once an item is consumed, it will no longer be available in `getAvailablePurchases()` and will only be available via `getPurchaseHistory()`. However, this method has some caveats on Android -- namely, that purchase history only exists for the single most recent purchase of each SKU -- so your best bet is to track consumption in your app yourself. By default, all items that are purchased will not be consumed unless they are automatically consumed by the store (for example, if you create a consumable item for iOS.) This means that you must manage consumption yourself.  Purchases can be consumed by calling `consumePurchase()`. If you want to consume all items, you have to iterate over the purchases returned by `getAvailablePurchases()`.
 
 ```javascript
 getPurchases = async() => {
@@ -269,9 +269,9 @@ You need to test with one sandbox account, because the account holds previous pu
 
 
 ## Receipt validation
-From `react-native-iap@0.3.16`, we support receipt validation. For android, you need seperate json file from service account to get the `access_token` from `google-apis`, therefore it is impossible to implement serverlessly. You should have your own backend and get `access_token`. With `access_token` you can simplly call `validateReceiptAndroid` method we implemented. Further reading is [here](https://stackoverflow.com/questions/35127086/android-inapp-purchase-receipt-validation-google-play?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa).
+From `react-native-iap@0.3.16`, we support receipt validation. For Android, you need separate json file from the service account to get the `access_token` from `google-apis`, therefore it is impossible to implement serverless. You should have your own backend and get `access_token`. With `access_token` you can simply call `validateReceiptAndroid` method we implemented. Further reading is [here](https://stackoverflow.com/questions/35127086/android-inapp-purchase-receipt-validation-google-play?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa).
 
-Currently, serverless receipt validation is possible using `validateReceiptIos` method. First parameter, you should pass `transactionReceipt` which returns after `buyProduct`. Second parameter, you should pass whether this is `test` environment. If `true`, it will request to `sandbox` and `false` it will request to `production`.
+Currently, serverless receipt validation is possible using `validateReceiptIos` method. The first parameter, you should pass `transactionReceipt` which returns after `buyProduct`. The second parameter, you should pass whether this is `test` environment. If `true`, it will request to `sandbox` and `false` it will request to `production`.
 
 ```javascript
 const receiptBody = {
@@ -300,7 +300,7 @@ In this case, use buyProductWithoutFinishTransaction to purchase action and use 
 
 ## Supporting react-native-iap
 
-`react-native` is open source project with MIT license. We are willing to maintain this repository to support devs to monetize around the world. Since, `IAP` itself is not perfect in each platform, we desperately needs this project to be maintained. If you'd like to help us, please consider to be with us in [Open Collective](https://opencollective.com/react-native-iap).
+`react-native` is an open source project with MIT license. We are willing to maintain this repository to support devs to monetize around the world. Since `IAP` itself is not perfect on each platform, we desperately need this project to be maintained. If you'd like to help us, please consider being with us in [Open Collective](https://opencollective.com/react-native-iap).
 
 ### Sponsors
 Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/react-native-iap#sponsor)]
