@@ -325,7 +325,7 @@ RCT_EXPORT_METHOD(finishTransaction) {
     periodNumberIOS = [NSString stringWithFormat:@"%lu", numOfUnits];
 
     // subscriptionPeriod = product.subscriptionPeriod ? [product.subscriptionPeriod stringValue] : @"";
-    introductoryPrice = product.introductoryPrice ? [NSString stringWithFormat:@"%@", product.introductoryPrice] : @"";
+    introductoryPrice = product.introductoryPrice != nil ? [NSString stringWithFormat:@"%@", product.introductoryPrice] : @"";
   }
 
   if (@available(iOS 10.0, *)) {
