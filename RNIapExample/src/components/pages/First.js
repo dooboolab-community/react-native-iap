@@ -46,7 +46,7 @@ class Page extends Component {
 
   async componentDidMount() {
     try {
-      const result = await RNIap.prepare();
+      const result = await RNIap.initConnection();
       console.log('result', result);
     } catch (err) {
       console.warn(err.code, err.message);

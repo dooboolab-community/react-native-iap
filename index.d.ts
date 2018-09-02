@@ -44,10 +44,16 @@ export interface SubscriptionPurchase extends ProductPurchase {
 export type Purchase = ProductPurchase | SubscriptionPurchase
 
 /**
- * Prepare module for purchase flow. Required on Android. No-op on iOS.
+ * Deprecated. Prepare module for purchase flow. Required on Android. No-op on iOS.
  * @returns {Promise<string>}
  */
 export function prepare() : Promise<string>;
+
+/**
+ * Init module for purchase flow. Required on Android. No-op on iOS.
+ * @returns {Promise<string>}
+ */
+export function initConnection() : Promise<string>;
 
 /**
  * End billing client. Will enchance android app's performance by releasing service. No-op on iOS.
