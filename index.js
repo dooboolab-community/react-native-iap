@@ -12,7 +12,19 @@ const IOS_ITEM_TYPE_IAP = 'iap';
  * Prepare module for purchase flow. Required on Android. No-op on iOS.
  * @returns {Promise<void>}
  */
-export const prepare = () => Platform.select({
+export const prepare = () => {
+  console.warn('prepare moethod will be deprecated in 2.0.1. Use initConnection method instead.');
+  Platform.select({
+    ios: () => RNIapIos.canMakePayments(),
+    android: () => RNIapModule.prepare(),
+  })();
+};
+
+/**
+ * Init module for purchase flow. Required on Android. No-op on iOS.
+ * @returns {Promise<void>}
+ */
+export const initConnection = () => Platform.select({
   ios: () => RNIapIos.canMakePayments(),
   android: () => RNIapModule.prepare(),
 })();
