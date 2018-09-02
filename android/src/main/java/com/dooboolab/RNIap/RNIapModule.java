@@ -321,6 +321,8 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     final Activity activity = getCurrentActivity();
     if (activity == null) {
       promise.reject(E_UNKNOWN, "getCurrentActivity returned null");
+    } else if (mService == null || mBillingClient == null) {
+      promise.reject(E_NOT_PREPARED, "IAP not prepared. Was prepare method called successfully?");
     } else {
       addPromiseForKey(PROMISE_BUY_ITEM, promise);
       BillingFlowParams.Builder builder = BillingFlowParams.newBuilder();

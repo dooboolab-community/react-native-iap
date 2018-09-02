@@ -20,10 +20,16 @@ const itemSkus = Platform.select({
     'com.cooni.point1000', 'com.cooni.point5000', // dooboolab
   ],
   android: [
-    'android.test.purchased',
-    'point_1000',
-    '5000_point',
-    'android.test.canceled',
+    'test.sub1', // subscription
+  ],
+});
+
+const itemSubs = Platform.select({
+  ios: [
+    'com.cooni.point1000', 'com.cooni.point5000', // dooboolab
+  ],
+  android: [
+    'test.sub1', // subscription
   ],
 });
 
@@ -56,6 +62,16 @@ class Page extends Component {
   getItems = async() => {
     try {
       const products = await RNIap.getProducts(itemSkus);
+      console.log('Products', products);
+      this.setState({ productList: products });
+    } catch (err) {
+      console.warn(err.code, err.message);
+    }
+  }
+
+  getSubscriptions = async() => {
+    try {
+      const products = await RNIap.getSubscriptions(itemSubs);
       console.log('Products', products);
       this.setState({ productList: products });
     } catch (err) {
