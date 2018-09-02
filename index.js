@@ -9,7 +9,7 @@ const IOS_ITEM_TYPE_SUBSCRIPTION = 'sub';
 const IOS_ITEM_TYPE_IAP = 'iap';
 
 /**
- * Prepare module for purchase flow. Required on Android. No-op on iOS.
+ * @deprecated Deprecated since 2.0.0. Use initConnection instead.
  * @returns {Promise<void>}
  */
 export const prepare = () => {
@@ -21,7 +21,7 @@ export const prepare = () => {
 };
 
 /**
- * Init module for purchase flow. Required on Android. No-op on iOS.
+ * Init module for purchase flow. Required on Android. In ios it will check wheter user canMakePayment.
  * @returns {Promise<void>}
  */
 export const initConnection = () => Platform.select({
