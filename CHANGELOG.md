@@ -1,5 +1,7 @@
 ## Changelogs
-- **[2.0.0-alpha]**
+- **[2.0.3]**
+  + Properly setup new method `initConnection` and deprecate `prepare`.
+- **[2.0.0]**
   + Renamed the variables returned from the action getting item and purchasing item.
   + Fixed some crashing.
   + Typescript improvement.
