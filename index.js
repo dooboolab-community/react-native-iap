@@ -244,6 +244,7 @@ export const validateReceiptIos = async (receiptBody, isTest) => {
 
 export default {
   prepare,
+  initConnection,
   endConnection,
   getProducts,
   getSubscriptions,
