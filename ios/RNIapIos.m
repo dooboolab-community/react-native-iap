@@ -171,7 +171,10 @@ RCT_EXPORT_METHOD(finishTransaction) {
 #pragma mark ===== StoreKit Delegate
 
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
-  validProducts = response.products;
+  // validProducts = response.products; // do not set directly. use addProduct methods.
+  for (SKProduct* prod in response.products) {
+    [self addProduct:prod];
+  }
   NSMutableArray* items = [NSMutableArray array];
 
   for (SKProduct* product in validProducts) {
