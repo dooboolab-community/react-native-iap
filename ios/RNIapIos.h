@@ -9,7 +9,7 @@
 @interface RNIapIos : NSObject <RCTBridgeModule, SKProductsRequestDelegate,SKPaymentTransactionObserver>
 {
   SKProductsRequest *productsRequest;
-  NSArray *validProducts;
+  NSMutableArray *validProducts;
 }
 @end
   

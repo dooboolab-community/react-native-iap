@@ -171,7 +171,10 @@ RCT_EXPORT_METHOD(finishTransaction) {
 #pragma mark ===== StoreKit Delegate
 
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
-  validProducts = response.products;
+  // validProducts = response.products; // do not set directly. use addProduct methods.
+  for (SKProduct* prod in response.products) {
+    [self addProduct:prod];
+  }
   NSMutableArray* items = [NSMutableArray array];
 
   for (SKProduct* product in validProducts) {
@@ -179,6 +182,23 @@ RCT_EXPORT_METHOD(finishTransaction) {
   }
 
   [self resolvePromisesForKey:RCTKeyForInstance(request) value:items];
+}
+
+// Add to valid products from Apple server response. Allowing getProducts, getSubscriptions call several times.
+// Doesn't allow duplication. Replace new product.
+-(void)addProduct:(SKProduct *)aProd {
+  NSLog(@"\n  Add new object : %@", aProd.productIdentifier);
+  int delTar = -1;
+  for (int k = 0; k < validProducts.count; k++) {
+    SKProduct *cur = validProducts[k];
+    if (cur.productIdentifier == aProd.productIdentifier) {
+      delTar = k;
+    }
+  }
+  if (delTar > 0) {
+    [validProducts removeObjectAtIndex:delTar];
+  }
+  [validProducts addObject:aProd];
 }
 
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error{
