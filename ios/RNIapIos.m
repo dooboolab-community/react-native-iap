@@ -23,6 +23,7 @@
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
   }
   myQueue = dispatch_queue_create("reject", DISPATCH_QUEUE_SERIAL);
+  validProducts = [NSMutableArray array];
   return self;
 }
 
