@@ -177,8 +177,11 @@ async componentDidMount() {
 |`localizedPrice`| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
 |`title`| ✓ | ✓ | Returns the title Android and localizedTitle on iOS |
 |`introductoryPrice`| ✓ | ✓ | Formatted introductory price of a subscription, including its currency sign, such as €3.99. The price doesn't include tax. |
-|`subscriptionPeriodNumberIOS`| ✓ |  | The unit in string like DAY or WEEK or MONTH or YEAR |
-|`subscriptionPeriodUnitIOS`| ✓ |  | The unit number of subscription period |
+|`introductoryPricePaymentModeIOS`| ✓ | | The payment mode for this product discount. |
+|`introductoryPriceNumberOfPeriods`| ✓ | | An integer that indicates the number of periods the product discount is available. |
+|`introductoryPriceSubscriptionPeriod`| ✓ | | An object that defines the period for the product discount. |
+|`subscriptionPeriodNumberIOS`| ✓ |  | The unit in string like DAY or WEEK or MONTH or YEAR. |
+|`subscriptionPeriodUnitIOS`| ✓ |  | The unit number of subscription period. |
 |`subscriptionPeriodAndroid`|  | ✓ | Subscription period, specified in ISO 8601 format. For example, P1W equates to one week, P1M equates to one month, P3M equates to three months, P6M equates to six months, and P1Y equates to one year. |
 |`introductoryPriceCyclesAndroid`|  | ✓ | The number of subscription billing periods for which the user will be given the introductory price, such as 3. |
 |`introductoryPricePeriodAndroid`|  | ✓ | The billing period of the introductory price, specified in ISO 8601 format. |
