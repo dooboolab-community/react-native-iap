@@ -192,11 +192,11 @@ RCT_EXPORT_METHOD(finishTransaction) {
   int delTar = -1;
   for (int k = 0; k < validProducts.count; k++) {
     SKProduct *cur = validProducts[k];
-    if (cur.productIdentifier == aProd.productIdentifier) {
+    if ([cur.productIdentifier isEqualToString:aProd.productIdentifier]) {
       delTar = k;
     }
   }
-  if (delTar > 0) {
+  if (delTar >= 0) {
     [validProducts removeObjectAtIndex:delTar];
   }
   [validProducts addObject:aProd];
