@@ -90,7 +90,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     @Override
     public void onHostDestroy() {
       try {
-        if (mServiceConn != null) {
+        if (mService != null) {
           reactContext.unbindService(mServiceConn);
         }
       } catch (IllegalArgumentException ie) {
