@@ -149,6 +149,17 @@ export const finishTransaction = () => Platform.select({
 })();
 
 /**
+ * Clear Transaction (iOS only)
+ *   Finish remaining transactions. Related to issue #257
+ *     link : https://github.com/dooboolab/react-native-iap/issues/257
+ * @returns {null}
+ */
+export const clearTransaction = () => Platform.select({
+  ios: () => RNIapIos.clearTransaction(),
+  android: () => console.log(' No effect on Android!'),
+})();
+
+/**
  * Consume a product (on Android.) No-op on iOS.
  * @param {string} token The product's token (on Android)
  * @returns {Promise}
@@ -256,6 +267,7 @@ export default {
   buyProductWithQuantityIOS,
   buyProductWithoutFinishTransaction,
   finishTransaction,
+  clearTransaction,
   consumePurchase,
   validateReceiptIos,
   validateReceiptAndroid,
