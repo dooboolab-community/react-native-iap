@@ -312,7 +312,7 @@ sendToServer(transactionReceipt, {
 });
 ```
 
-However, sometimes apple internally causes problem itself before `finishTransaction` which queues are not resolved which may result in failure in next purchase ([related issue #256](https://github.com/dooboolab/react-native-iap/issues/257)). Therefore, we've made another method that may resolve this kind of issue in after purchase which is to finish up the queues at the start of each purchase. To resolve this, try code like below.
+However, sometimes apple internally causes problem itself before `finishTransaction` where queues are not resolved that may result in failure in next purchases ([related issue #256](https://github.com/dooboolab/react-native-iap/issues/257)). Therefore, we've made another method that may resolve this kind of issues in next purchases which is to finish up the queues at the start of each purchase. To resolve this, try the code like below.
 ```javascript
 await RNIap.clearTransaction(); // add this method at the start of purchase.
 const purchase = await RNIap.buyProductWithoutFinishTransaction(productId);
