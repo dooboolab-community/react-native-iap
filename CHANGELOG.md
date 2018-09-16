@@ -1,4 +1,8 @@
 ## Changelogs
+- **[2.2.0]**
+  + Added `clearTransaction` method which resolve #257.
+- **[2.1.3]**
+  + Use mutable array in ios not to clear up the array each time products are fetched.
 - **[2.0.3]**
   + Properly setup new method `initConnection` and deprecate `prepare`.
 - **[2.0.0]**

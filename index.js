@@ -156,7 +156,7 @@ export const finishTransaction = () => Platform.select({
  */
 export const clearTransaction = () => Platform.select({
   ios: () => RNIapIos.clearTransaction(),
-  android: () => console.log(' No effect on Android!'),
+  android: () => console.log(' No ops in Android!'),
 })();
 
 /**

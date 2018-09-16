@@ -69,6 +69,7 @@ Also, note that this is our last migration for renaming method names without any
 | buyProductWithQuantityIOS | `string` Product ID/sku, `number` Quantity | `Promise<Purchase>` | Buy a product with a specified quantity (iOS only) |
 | buyProductWithoutFinishTransaction | `string` Product ID/sku | `Promise<Purchase>` | Buy a product without finish transaction call (iOS only) |
 | finishTransaction | `void` | `void` | Send finishTransaction call to Apple IAP server. Call this function after receipt validation process |
+| clearTransaction | `void` | `void` | Clear up the unfinished transanction which sometimes causes problem. Read more in below readme. |
 | consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 | endConnection | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
 | consumeAllItems | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
@@ -298,8 +299,32 @@ Step 3 : Apply the product to the Application
 
 But, sometimes app doesn't make it to step 3, and user loose the product with successful payment.
 Non-consumable products can be restored via getPurchaseHistory function, but consumable products can be lost.
-In this case, use buyProductWithoutFinishTransaction to purchase action and use finishTransaction to finish payment after receipt validation and supply the products to user.
+In this case, use `buyProductWithoutFinishTransaction` to purchase action and use `finishTransaction` to finish payment after receipt validation and supply the products to user.
 
+```javascript
+const purchase = await RNIap.buyProductWithoutFinishTransaction(productId);
+// to something in your server
+const { transactionReceipt, purchaseToken } = purchase;
+sendToServer(transactionReceipt, {
+  onSuccess: () => {
+    RNIap.finishTransaction();
+  },
+});
+```
+
+However, sometimes apple internally causes problem itself before `finishTransaction` which queues are not resolved which may result in failure in next purchase ([related issue #256](https://github.com/dooboolab/react-native-iap/issues/257)). Therefore, we've made another method that may resolve this kind of issue in after purchase which is to finish up the queues at the start of each purchase. To resolve this, try code like below.
+```javascript
+await RNIap.clearTransaction(); // add this method at the start of purchase.
+const purchase = await RNIap.buyProductWithoutFinishTransaction(productId);
+// to something in your server
+const { transactionReceipt, purchaseToken } = purchase;
+sendToServer(transactionReceipt, {
+  onSuccess: () => {
+    RNIap.finishTransaction();
+  },
+});
+```
+We've like to update this solution as version changes in `react-native-iap`.
 ----
 
 ## Supporting react-native-iap
