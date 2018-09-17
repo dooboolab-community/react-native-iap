@@ -134,6 +134,14 @@ export function buyProductWithQuantityIOS(sku: string, quantity: number) : Promi
 export function buyProductWithoutFinishTransaction(sku: string) : Promise<ProductPurchase>;
 
 /**
+ * Clear Transaction (iOS only)
+ *   Finish remaining transactions. Related to issue #257
+ *     link : https://github.com/dooboolab/react-native-iap/issues/257
+ * @returns void
+ */
+export function clearTransaction(): void;
+
+/**
  * Send finishTransaction call to Apple IAP server. Call this function after receipt validation process.
  * @returns void
  */

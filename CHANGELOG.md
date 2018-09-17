@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.2.1]**
+  + Added types for `clearTransaction`.
 - **[2.2.0]**
   + Added `clearTransaction` method which resolve #257.
 - **[2.1.3]**
