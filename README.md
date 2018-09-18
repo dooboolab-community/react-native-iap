@@ -58,8 +58,8 @@ Also, note that this is our last migration for renaming method names without any
 #### Methods
 | Func  | Param  | Return | Description |
 | :------------ |:---------------:| :---------------:| :-----|
-| prepare |  | `Promise<boolean>` | Deprecated. Use `initConnection instead` |
-| initConnection |  | `Promise<boolean>` | Init IAP module. Must be called on Android before any other purchase flow methods. In ios, it will simply call `canMakePayments` method and return value.|
+| prepare |  | `Promise<void>` | Deprecated. Use `initConnection instead` |
+| initConnection |  | `Promise<void>` | Init IAP module. On Android this can be called to preload the connection to Play Services. In iOS, it will simply call `canMakePayments` method and return value.|
 | getProducts | `string[]` Product IDs/skus | `Promise<Product[]>` | Get a list of products (consumable and non-consumable items, but not subscriptions). Note: On iOS versions earlier than 11.2 this method _will_ return subscriptions if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to 11.2. |
 | getSubscriptions | `string[]` Subscription IDs/skus | `Promise<Subscription[]>` | Get a list of subscriptions. Note: On iOS versions earlier than 11.2 this method _will_ return subscriptions if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to 11.2. |
 | getPurchaseHistory | | `Promise<Purchase[]>` | Gets an invetory of purchases made by the user regardless of consumption status (where possible) |
@@ -143,25 +143,11 @@ const itemSkus = Platform.select({
 });
 ```
 
-Next, call the `initConnection` function (ios it's not needed, but android it is. No need to check platform though since nothing will happen in ios:
-
-```javascript
-async function() {
-  try {
-    await RNIap.initConnection();
-    // Ready to call RNIap.getProducts(), etc.
-  } catch(err) {
-    console.warn(err); // standardized err.code and err.message available
-  }
-}
-```
-
 ## Get Valid Items
-Once you called `initConnection()`, call `getProducts()`. Both are async funcs. You can do it in componentDidMount(), or another area as appropriate for you app. Since a user may first start your app with a bad internet connection, then later have an internet connection, making preparing/getting items more than once may be a good idea. Like if the user has no IAPs available when the app first starts, you may want to check again when the user enters your IAP store.
+To get a list of valid items, call `getProducts()`. You can do it in componentDidMount(), or another area as appropriate for you app. Since a user may first start your app with a bad internet connection, then later have an internet connection, making preparing/getting items more than once may be a good idea. Like if the user has no IAPs available when the app first starts, you may want to check again when the user enters your IAP store.
 ```javascript
 async componentDidMount() {
   try {
-    await RNIap.initConnection();
     const products = await RNIap.getProducts(itemSkus);
     this.setState({ products });
   } catch(err) {

@@ -13,10 +13,10 @@ const IOS_ITEM_TYPE_IAP = 'iap';
  * @returns {Promise<void>}
  */
 export const prepare = () => {
-  console.warn('prepare moethod will be deprecated. Use initConnection method instead.');
+  console.warn('The `prepare` method is deprecated. Use initConnection method instead.');
   Platform.select({
     ios: () => RNIapIos.canMakePayments(),
-    android: () => RNIapModule.prepare(),
+    android: () => RNIapModule.initConnection(),
   })();
 };
 
@@ -26,7 +26,7 @@ export const prepare = () => {
  */
 export const initConnection = () => Platform.select({
   ios: () => RNIapIos.canMakePayments(),
-  android: () => RNIapModule.prepare(),
+  android: () => RNIapModule.initConnection(),
 })();
 
 /**
