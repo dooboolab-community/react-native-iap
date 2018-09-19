@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.2.2]**
+  + Automatically handle connection initialization.
 - **[2.2.1]**
   + Added types for `clearTransaction`.
 - **[2.2.0]**
