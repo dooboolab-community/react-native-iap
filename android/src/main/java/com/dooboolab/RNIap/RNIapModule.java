@@ -347,7 +347,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void buyItemByType(final String type, final String sku, final String oldSku, final Promise promise) {
+  public void buyItemByType(final String type, final String sku, final String oldSku, final int prorationMode, final Promise promise) {
     final Activity activity = getCurrentActivity();
 
     if (activity == null) {
@@ -363,13 +363,21 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
         if (type.equals(BillingClient.SkuType.SUBS) && oldSku != null && !oldSku.isEmpty()) {
           // Subscription upgrade/downgrade
-          builder.addOldSku(oldSku);
+          builder.setOldSku(oldSku);
+          if (prorationMode != null) {
+            if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE) {
+              builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE);
+            }
+            if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION) {
+              builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
+            }
+          }
         }
 
         BillingFlowParams flowParams = builder.setSku(sku).setType(type).build();
 
         int responseCode = mBillingClient.launchBillingFlow(activity,flowParams);
-        Log.d(TAG, "buyItemByType (type: " + type + ", sku: " + sku + ", oldSku: " + oldSku + ") responseCode: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
+        Log.d(TAG, "buyItemByType (type: " + type + ", sku: " + sku + ", oldSku: " + oldSku + ", prorationMode: " + prorationMode + ") responseCode: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
         if (responseCode != BillingClient.BillingResponse.OK) {
           rejectPromisesWithBillingError(PROMISE_BUY_ITEM,responseCode);
         }
