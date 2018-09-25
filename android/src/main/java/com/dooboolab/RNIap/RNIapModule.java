@@ -347,7 +347,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void buyItemByType(final String type, final String sku, final String oldSku, final int prorationMode, final Promise promise) {
+  public void buyItemByType(final String type, final String sku, final String oldSku, final Integer prorationMode, final Promise promise) {
     final Activity activity = getCurrentActivity();
 
     if (activity == null) {
