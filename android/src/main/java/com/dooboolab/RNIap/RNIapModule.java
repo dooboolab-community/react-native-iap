@@ -363,14 +363,16 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
         if (type.equals(BillingClient.SkuType.SUBS) && oldSku != null && !oldSku.isEmpty()) {
           // Subscription upgrade/downgrade
-          builder.addOldSku(oldSku);
-          if (prorationMode != null) {
+          if (prorationMode != null && prorationMode != 1) {
+            builder.setOldSku(oldSku);
             if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE) {
               builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE);
             }
             if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION) {
               builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
             }
+          } else {
+            builder.addOldSku(oldSku);
           }
         }
 
