@@ -177,6 +177,11 @@ RCT_EXPORT_METHOD(clearTransaction) {
   }
 }
 
+RCT_EXPORT_METHOD(clearProducts) {
+  NSLog(@"\n\n\n  ***  clear valid products. \n\n.");
+  [validProducts removeAllObjects];
+}
+
 #pragma mark ===== StoreKit Delegate
 
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {

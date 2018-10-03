@@ -160,6 +160,16 @@ export const clearTransaction = () => Platform.select({
 })();
 
 /**
+ * Clear valid Products (iOS only)
+ *   Remove all products which are validated by Apple server.
+ * @returns {null}
+ */
+export const clearProducts = () => Platform.select({
+  ios: () => RNIapIos.clearProducts(),
+  android: () => console.log(' No ops in Android!'),
+})();
+
+/**
  * Consume a product (on Android.) No-op on iOS.
  * @param {string} token The product's token (on Android)
  * @returns {Promise}
