@@ -310,6 +310,16 @@ sendToServer(transactionReceipt, {
   },
 });
 ```
+
+Another issue regarding `valid products`. In iOS, generally you are fetching valid products at App launching process.
+If you fetch again, or fetch valid subscription, the products are added to the array object in iOS side (objective-c NSMutableArray).
+This makes unexpected behavior when you fetch with a part of product lists.
+(For example, if you have products of [A, B, C], and you call fetch function with only [A], this module returns [A, B, C])
+This is weird, but it works.
+But, weird result is weird, so we made a new method which remove all valid products.
+If you need to clear all products, subscriptions in that array, just call `clearProducts()`, and do the fetching job again, and you will receive what you expected.
+
+
 We've like to update this solution as version changes in `react-native-iap`.
 ----
 
