@@ -62,6 +62,7 @@ class Page extends Component {
   getItems = async() => {
     try {
       const products = await RNIap.getProducts(itemSkus);
+      // const products = await RNIap.getSubscriptions(itemSkus);
       console.log('Products', products);
       this.setState({ productList: products });
     } catch (err) {
@@ -83,6 +84,7 @@ class Page extends Component {
     try {
       console.info('buyItem: ' + sku);
       // const purchase = await RNIap.buyProduct(sku);
+      // const products = await RNIap.buySubscription(sku);
       const purchase = await RNIap.buyProductWithoutFinishTransaction(sku);
       console.info(purchase);
       this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());

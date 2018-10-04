@@ -102,10 +102,13 @@ export const getAvailablePurchases = () => Platform.select({
  * @param {number} [prorationMode] Optional proration mode for upgrade/downgrade (Android only)
  * @returns {Promise<SubscriptionPurchase>}
  */
-export const buySubscription = (sku, oldSku, prorationMode) => Platform.select({
-  ios: () => RNIapIos.buyProduct(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku, prorationMode),
-})();
+export const buySubscription = (sku, oldSku, prorationMode) => {
+  if (!prorationMode) prorationMode = -1;
+  Platform.select({
+    ios: () => RNIapIos.buyProduct(sku),
+    android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku, prorationMode),
+  })();
+};
 
 /**
  * Buy a product
