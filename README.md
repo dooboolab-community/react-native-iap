@@ -268,8 +268,9 @@ Currently, serverless receipt validation is possible using `validateReceiptIos` 
 ```javascript
 const receiptBody = {
   'receipt-data': purchase.transactionReceipt,
+  'password': '******'
 };
-const result = await validateReceiptIos(receiptBody, false, 54);
+const result = await validateReceiptIos(receiptBody, false);
 console.log(result);
 ```
 For further information, please refer to [guide](https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
