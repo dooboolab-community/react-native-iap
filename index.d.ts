@@ -142,6 +142,13 @@ export function buyProductWithoutFinishTransaction(sku: string) : Promise<Produc
 export function clearTransaction(): void;
 
 /**
+ * Clear valid Products (iOS only)
+ *   Remove all products which are validated by Apple server.
+ * @returns {null}
+ */
+export function clearProducts(): void;
+
+/**
  * Send finishTransaction call to Apple IAP server. Call this function after receipt validation process.
  * @returns void
  */
