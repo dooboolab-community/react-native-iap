@@ -107,6 +107,7 @@ export function getAvailablePurchases() : Promise<Purchase[]>;
  * Create a subscription to a sku
  * @param {string} sku The product's sku/ID
  * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
+ * @param {number} [prorationMode] Optional proration mode for upgrade/downgrade (Android only)
  * @returns {Promise<Purchase>}
  */
 export function buySubscription(sku: string, oldSku?: string) : Promise<SubscriptionPurchase>;

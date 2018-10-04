@@ -64,12 +64,13 @@ Also, note that this is our last migration for renaming method names without any
 | getSubscriptions | `string[]` Subscription IDs/skus | `Promise<Subscription[]>` | Get a list of subscriptions. Note: On iOS versions earlier than 11.2 this method _will_ return subscriptions if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to 11.2. |
 | getPurchaseHistory | | `Promise<Purchase[]>` | Gets an invetory of purchases made by the user regardless of consumption status (where possible) |
 | getAvailablePurchases | | `Promise<Purchase[]>` | Get all purchases made by the user (either non-consumable, or haven't been consumed yet)
-| buySubscription | `string` Subscription ID/sku, `string` Old Subscription ID/sku (on Android) | `Promise<Purchase>` | Create (buy) a subscription to a sku. For upgrading/downgrading subscription on Android pass the second parameter with current subscription ID, on iOS this is handled automatically by store. |
+| buySubscription | `string` Subscription ID/sku, `string` Old Subscription ID/sku (on Android), `int` Proration Mode (on Android) | `Promise<Purchase>` | Create (buy) a subscription to a sku. For upgrading/downgrading subscription on Android pass the second parameter with current subscription ID, on iOS this is handled automatically by store. You can also optionally pass in a proration mode integer for upgrading/downgrading subscriptions on Android |
 | buyProduct | `string` Product ID/sku | `Promise<Purchase>` | Buy a product |
 | buyProductWithQuantityIOS | `string` Product ID/sku, `number` Quantity | `Promise<Purchase>` | Buy a product with a specified quantity (iOS only) |
 | buyProductWithoutFinishTransaction | `string` Product ID/sku | `Promise<Purchase>` | Buy a product without finish transaction call (iOS only) |
 | finishTransaction | `void` | `void` | Send finishTransaction call to Apple IAP server. Call this function after receipt validation process |
 | clearTransaction | `void` | `void` | Clear up the unfinished transanction which sometimes causes problem. Read more in below readme. |
+| clearProducts | `void` | `void` | Clear all products, subscriptions in ios. Read more in below readme. |
 | consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 | endConnection | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
 | consumeAllItems | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
