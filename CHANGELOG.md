@@ -1,4 +1,8 @@
 ## Changelogs
+- **[2.3.1]**
+  + Fixed breakings.
+- **[2.3.0]**
+  + Add prorationMode.
 - **[2.2.2]**
   + Automatically handle connection initialization.
 - **[2.2.1]**
