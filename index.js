@@ -117,7 +117,7 @@ export const buySubscription = (sku, oldSku, prorationMode) => {
  */
 export const buyProduct = (sku) => Platform.select({
   ios: () => RNIapIos.buyProduct(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null),
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
 })();
 
 /**
