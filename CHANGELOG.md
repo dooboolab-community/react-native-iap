@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.3.2]**
+  + Replace deprecated 'compile' gradle configuration with 'implementation' #282
 - **[2.3.1]**
   + Fixed breakings.
 - **[2.3.0]**
