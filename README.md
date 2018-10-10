@@ -334,6 +334,11 @@ We've like to update this solution as version changes in `react-native-iap`.
 - Official doc is [here](https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
 - Resolved issues in #203, #237.
 
+#### How do I validate receipt in android?
+- Offical doc is [here](https://developer.android.com/google/play/billing/billing_library_overview).
+- I've developed this feature for other developers to contribute easily who are aware of these things. The doc says you can also get the `accessToken` via play console without any of your backend server. You can get this by following process.
+  * Select your app > Services & APIs > "YOUR LICENSE KEY FOR THIS APPLICATION Base64-encoded RSA public key to include in your binary". [reference](https://stackoverflow.com/questions/27132443/how-to-find-my-google-play-services-android-base64-public-key).
+
 #### How do I use react-native-iap in expo?
 - You should detach from `expo` and get `expokit` out of it.
 - Releated issue in #174.
