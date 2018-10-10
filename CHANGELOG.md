@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.3.6]**
+  + Fixed `types` for `buySubscription`.
 - **[2.3.5]**
   + Fixed `transactionReceipt` field in `android`.
 - **[2.3.4]**

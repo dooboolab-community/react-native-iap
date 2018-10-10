@@ -110,7 +110,7 @@ export function getAvailablePurchases() : Promise<Purchase[]>;
  * @param {number} [prorationMode] Optional proration mode for upgrade/downgrade (Android only)
  * @returns {Promise<Purchase>}
  */
-export function buySubscription(sku: string, oldSku?: string) : Promise<SubscriptionPurchase>;
+export function buySubscription(sku: string, oldSku?: string, prorationMode?: number) : Promise<SubscriptionPurchase>;
 
 /**
  * Buy a product
