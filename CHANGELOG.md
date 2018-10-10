@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.3.3]**
+  + Fixed regression in adding proration mode. #279.
 - **[2.3.2]**
   + Replace deprecated 'compile' gradle configuration with 'implementation' #282
 - **[2.3.1]**
