@@ -327,33 +327,33 @@ We've like to update this solution as version changes in `react-native-iap`.
 ## Q & A
 
 #### Can I buy product right away skipping fetching products if I already know productId?
-You can in `Android` but not in `ios`. In `ios` you should always `fetchProducts` first. You can see more info [here](https://medium.com/ios-development-tips-and-tricks/working-with-ios-in-app-purchases-e4b55491479b).
+- You can in `Android` but not in `ios`. In `ios` you should always `fetchProducts` first. You can see more info [here](https://medium.com/ios-development-tips-and-tricks/working-with-ios-in-app-purchases-e4b55491479b).
 - Related issue in #283.
 
 #### How do I validate receipt in ios?
-Official doc is [here](https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
+- Official doc is [here](https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
 - Resolved issues in #203, #237.
 
 #### How do I use react-native-iap in expo?
-You should detach from `expo` and get `expokit` out of it.
+- You should detach from `expo` and get `expokit` out of it.
 - Releated issue in #174.
 
 #### Invalid productId in ios.
-Please try below and make sure you've done belows.
-- Steps
-  1. Completed an effective "Agreements, Tax, and Banking."
-  2. Setup sandbox testing account in "Users and Roles."
-  3. Signed into iOS device with sandbox account.
-  3. Set up three In-App Purchases with the following status:
-     i. Ready to Submit
-     ii. Missing Metadata
-     iii. Waiting for Review
-  4. Enable "In-App Purchase" in Xcode "Capabilities" and in Apple Developer -> "App ID" setting.
+- Please try below and make sure you've done belows.
+  - Steps
+    1. Completed an effective "Agreements, Tax, and Banking."
+    2. Setup sandbox testing account in "Users and Roles."
+    3. Signed into iOS device with sandbox account.
+    3. Set up three In-App Purchases with the following status:
+       i. Ready to Submit
+       ii. Missing Metadata
+       iii. Waiting for Review
+    4. Enable "In-App Purchase" in Xcode "Capabilities" and in Apple Developer -> "App ID" setting.
 Delete app / Restart device / Quit "store" related processes in Activity Monitor / Xcode Development Provisioning Profile -> Clean -> Build.
-- Related issues #256, #263.
+  - Related issues #256, #263.
 
-### Module is not working as expected. Throws error.
-The `react-native link` script isn't perfect and sometimes broke. Please try `unlinking` and `linking` again. Or try manual installing.
+#### Module is not working as expected. Throws error.
+- The `react-native link` script isn't perfect and sometimes broke. Please try `unlinking` and `linking` again. Or try manual installing.
 
 
 ## Supporting react-native-iap
