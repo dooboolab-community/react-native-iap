@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.3.5]**
+  + Fixed `transactionReceipt` field in `android`.
 - **[2.3.4]**
   + Get originalJson in Android as a transanctionReceipt for validation #277.
 - **[2.3.3]**

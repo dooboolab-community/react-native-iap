@@ -283,7 +283,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
             item.putString("productId", json.getString("productId"));
             item.putString("transactionId", json.optString("orderId"));
             item.putString("transactionDate", String.valueOf(json.getLong("purchaseTime")));
-            item.putString("transactionReceipt", json.getString("purchaseToken"));
+            item.putString("transactionReceipt", json.getString("originalJson"));
             item.putString("purchaseToken", json.getString("purchaseToken"));
             item.putString("dataAndroid", data);
             item.putString("signatureAndroid", signature);
@@ -327,7 +327,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
               item.putString("productId", purchase.getSku());
               item.putString("transactionId", purchase.getOrderId());
               item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
-              item.putString("transactionReceipt", purchase.getPurchaseToken());
+              item.putString("transactionReceipt", purchase.getOriginalJson());
               item.putString("purchaseToken", purchase.getPurchaseToken());
               item.putString("dataAndroid", purchase.getOriginalJson());
               item.putString("signatureAndroid", purchase.getSignature());
