@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.3.4]**
+  + Get originalJson in Android as a transanctionReceipt for validation #277.
 - **[2.3.3]**
   + Fixed regression in adding proration mode. #279.
 - **[2.3.2]**

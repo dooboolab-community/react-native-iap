@@ -427,7 +427,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       item.putString("productId", purchase.getSku());
       item.putString("transactionId", purchase.getOrderId());
       item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
-      item.putString("transactionReceipt", purchase.getPurchaseToken());
+      item.putString("transactionReceipt", purchase.getOriginalJson());
       item.putString("purchaseToken", purchase.getPurchaseToken());
       item.putString("dataAndroid", purchase.getOriginalJson());
       item.putString("signatureAndroid", purchase.getSignature());
