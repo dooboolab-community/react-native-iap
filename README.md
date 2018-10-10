@@ -325,6 +325,39 @@ If you need to clear all products, subscriptions in that array, just call `clear
 We've like to update this solution as version changes in `react-native-iap`.
 ----
 
+
+## Q & A
+
+#### Can I buy product right away skipping fetching products if I already know productId?
+You can in `Android` but not in `ios`. In `ios` you should always `fetchProducts` first. You can see more info [here](https://medium.com/ios-development-tips-and-tricks/working-with-ios-in-app-purchases-e4b55491479b).
+- Related issue in #283.
+
+#### How do I validate receipt in ios?
+Official doc is [here](https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
+- Resolved issues in #203, #237.
+
+#### How do I use react-native-iap in expo?
+You should detach from `expo` and get `expokit` out of it.
+- Releated issue in #174.
+
+#### Invalid productId in ios.
+Please try below and make sure you've done belows.
+- Steps
+  1. Completed an effective "Agreements, Tax, and Banking."
+  2. Setup sandbox testing account in "Users and Roles."
+  3. Signed into iOS device with sandbox account.
+  3. Set up three In-App Purchases with the following status:
+     i. Ready to Submit
+     ii. Missing Metadata
+     iii. Waiting for Review
+  4. Enable "In-App Purchase" in Xcode "Capabilities" and in Apple Developer -> "App ID" setting.
+Delete app / Restart device / Quit "store" related processes in Activity Monitor / Xcode Development Provisioning Profile -> Clean -> Build.
+- Related issues #256, #263.
+
+### Module is not working as expected. Throws error.
+The `react-native link` script isn't perfect and sometimes broke. Please try `unlinking` and `linking` again. Or try manual installing.
+
+
 ## Supporting react-native-iap
 
 `react-native` is an open source project with MIT license. We are willing to maintain this repository to support devs to monetize around the world. Since `IAP` itself is not perfect on each platform, we desperately need this project to be maintained. If you'd like to help us, please consider being with us in [Open Collective](https://opencollective.com/react-native-iap).
