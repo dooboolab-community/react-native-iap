@@ -33,6 +33,7 @@ export interface ProductPurchase {
   transactionReceipt: string;
   signatureAndroid?: string;
   dataAndroid?: string;
+  purchaseToken?: string;
 }
 
 export interface SubscriptionPurchase extends ProductPurchase {
