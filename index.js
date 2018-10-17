@@ -103,10 +103,12 @@ export const getAvailablePurchases = () => Platform.select({
  * @returns {Promise<SubscriptionPurchase>}
  */
 export const buySubscription = (sku, oldSku, prorationMode) => {
-  if (!prorationMode) prorationMode = -1;
   Platform.select({
     ios: () => RNIapIos.buyProduct(sku),
-    android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku, prorationMode),
+    android: () => {
+      if (!prorationMode) prorationMode = -1;
+      return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku, prorationMode);
+    },
   })();
 };
 
