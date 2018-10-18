@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.3.9]**
+  + Fixes for unsafe getting originalJson when restoring item and Android.
 - **[2.3.6]**
   + Fixed `types` for `buySubscription`.
 - **[2.3.5]**
