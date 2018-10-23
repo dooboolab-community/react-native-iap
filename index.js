@@ -104,7 +104,7 @@ export const getAvailablePurchases = () => Platform.select({
  */
 export const buySubscription = (sku, oldSku, prorationMode) => {
   return Platform.select({
-    ios: () => RNIapIos.buyProduct(sku),
+    ios: async () => await RNIapIos.buyProduct(sku),
     android: () => {
       if (!prorationMode) prorationMode = -1;
       return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku, prorationMode);
@@ -118,7 +118,7 @@ export const buySubscription = (sku, oldSku, prorationMode) => {
  * @returns {Promise<ProductPurchase>}
  */
 export const buyProduct = (sku) => Platform.select({
-  ios: () => RNIapIos.buyProduct(sku),
+  ios: async () => await RNIapIos.buyProduct(sku),
   android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
 })();
 
@@ -140,7 +140,7 @@ export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
  * @returns {Promise<ProductPurchase>}
  */
 export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
-  ios: () => RNIapIos.buyProductWithoutAutoConfirm(sku),
+  ios: async () => await RNIapIos.buyProductWithoutAutoConfirm(sku),
   android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null),
 })();
 
