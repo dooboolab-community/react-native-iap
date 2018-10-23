@@ -141,7 +141,7 @@ export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
  */
 export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
   ios: () => RNIapIos.buyProductWithoutAutoConfirm(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null),
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
 })();
 
 /**
