@@ -22,7 +22,7 @@ export const prepare = () => {
 
 /**
  * Init module for purchase flow. Required on Android. In ios it will check wheter user canMakePayment.
- * @returns {Promise<void>}
+ * @returns {Promise<string>}
  */
 export const initConnection = () => Platform.select({
   ios: async() => RNIapIos.canMakePayments(),
