@@ -419,12 +419,21 @@ RCT_EXPORT_METHOD(clearProducts) {
   
   if (receiptData == nil) return nil;
 
-  NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithDictionary: @{
-    @"transactionDate": @(transaction.transactionDate.timeIntervalSince1970 * 1000),
-    @"transactionId": transaction.transactionIdentifier,
-    @"productId": transaction.payment.productIdentifier,
-    @"transactionReceipt":[receiptData base64EncodedStringWithOptions:0]
-  }];
+  NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+      @(transaction.transactionDate.timeIntervalSince1970 * 1000), @"transactionDate",
+      transaction.transactionIdentifier, @"transactionId",
+      transaction.payment.productIdentifier, @"productId",
+      [receiptData base64EncodedStringWithOptions:0], @"transactionReceipt",
+      nil
+  ];
+
+  // NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithDictionary: @{
+  //   @"transactionDate": @(transaction.transactionDate.timeIntervalSince1970 * 1000),
+  //   @"transactionId": transaction.transactionIdentifier,
+  //   @"productId": transaction.payment.productIdentifier,
+  //   @"transactionReceipt":[receiptData base64EncodedStringWithOptions:0],
+  // }];
+
   // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
   SKPaymentTransaction *originalTransaction = transaction.originalTransaction;
   if (originalTransaction) {
