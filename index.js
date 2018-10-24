@@ -15,8 +15,8 @@ const IOS_ITEM_TYPE_IAP = 'iap';
 export const prepare = () => {
   console.warn('The `prepare` method is deprecated. Use initConnection method instead.');
   Platform.select({
-    ios: () => RNIapIos.canMakePayments(),
-    android: () => RNIapModule.initConnection(),
+    ios: async() => RNIapIos.canMakePayments(),
+    android: async() => RNIapModule.initConnection(),
   })();
 };
 
@@ -25,8 +25,8 @@ export const prepare = () => {
  * @returns {Promise<void>}
  */
 export const initConnection = () => Platform.select({
-  ios: () => RNIapIos.canMakePayments(),
-  android: () => RNIapModule.initConnection(),
+  ios: async() => RNIapIos.canMakePayments(),
+  android: async() => RNIapModule.initConnection(),
 })();
 
 /**
@@ -34,8 +34,8 @@ export const initConnection = () => Platform.select({
  * @returns {Promise<void>}
  */
 export const endConnection = () => Platform.select({
-  ios: () => Promise.resolve(),
-  android: () => RNIapModule.endConnection(),
+  ios: async() => Promise.resolve(),
+  android: async() => RNIapModule.endConnection(),
 })();
 
 /**
@@ -43,8 +43,8 @@ export const endConnection = () => Platform.select({
  * @returns {Promise<void>}
  */
 export const consumeAllItems = () => Platform.select({
-  ios: () => Promise.resolve(),
-  android: () => RNIapModule.refreshItems(),
+  ios: async() => Promise.resolve(),
+  android: async() => RNIapModule.refreshItems(),
 })();
 
 /**
@@ -53,9 +53,9 @@ export const consumeAllItems = () => Platform.select({
  * @returns {Promise<Product[]>}
  */
 export const getProducts = (skus) => Platform.select({
-  ios: () => RNIapIos.getItems(skus)
+  ios: async() => RNIapIos.getItems(skus)
     .then((items) => items.filter((item) => item.productId)),
-  android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_IAP, skus),
+  android: async() => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_IAP, skus),
 })();
 
 /**
@@ -64,9 +64,9 @@ export const getProducts = (skus) => Platform.select({
  * @returns {Promise<Subscription[]>}
  */
 export const getSubscriptions = (skus) => Platform.select({
-  ios: () => RNIapIos.getItems(skus)
+  ios: async() => RNIapIos.getItems(skus)
     .then((items) => items.filter((item) => item.productId)),
-  android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus),
+  android: async() => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus),
 })();
 
 /**
@@ -74,7 +74,7 @@ export const getSubscriptions = (skus) => Platform.select({
  * @returns {Promise<Purchase[]>}
  */
 export const getPurchaseHistory = () => Platform.select({
-  ios: () => RNIapIos.getAvailableItems(),
+  ios: async() => RNIapIos.getAvailableItems(),
   android: async() => {
     let products = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_IAP);
     let subscriptions = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
@@ -87,7 +87,7 @@ export const getPurchaseHistory = () => Platform.select({
  * @returns {Promise<Purchase[]>}
  */
 export const getAvailablePurchases = () => Platform.select({
-  ios: () => RNIapIos.getAvailableItems(),
+  ios: async() => RNIapIos.getAvailableItems(),
   android: async() => {
     let products = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_IAP);
     let subscriptions = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
@@ -104,8 +104,8 @@ export const getAvailablePurchases = () => Platform.select({
  */
 export const buySubscription = (sku, oldSku, prorationMode) => {
   return Platform.select({
-    ios: async () => await RNIapIos.buyProduct(sku),
-    android: () => {
+    ios: async() => RNIapIos.buyProduct(sku),
+    android: async() => {
       if (!prorationMode) prorationMode = -1;
       return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku, prorationMode);
     },
@@ -118,8 +118,8 @@ export const buySubscription = (sku, oldSku, prorationMode) => {
  * @returns {Promise<ProductPurchase>}
  */
 export const buyProduct = (sku) => Platform.select({
-  ios: async () => await RNIapIos.buyProduct(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
+  ios: async() => RNIapIos.buyProduct(sku),
+  android: async() => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
 })();
 
 /**
@@ -129,8 +129,8 @@ export const buyProduct = (sku) => Platform.select({
  * @returns {Promise<ProductPurchase>}
  */
 export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
-  ios: () => RNIapIos.buyProductWithQuantityIOS(sku, quantity),
-  android: () => Promise.resolve(),
+  ios: async() => RNIapIos.buyProductWithQuantityIOS(sku, quantity),
+  android: async() => Promise.resolve(),
 })();
 
 /**
@@ -140,8 +140,8 @@ export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
  * @returns {Promise<ProductPurchase>}
  */
 export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
-  ios: async () => await RNIapIos.buyProductWithoutAutoConfirm(sku),
-  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
+  ios: async() => RNIapIos.buyProductWithoutAutoConfirm(sku),
+  android: async() => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
 })();
 
 /**
@@ -150,8 +150,8 @@ export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
  * @returns {Promise<ProductPurchase>}
  */
 export const finishTransaction = () => Platform.select({
-  ios: () => RNIapIos.finishTransaction(),
-  android: () => Promise.resolve(),
+  ios: async() => RNIapIos.finishTransaction(),
+  android: async() => Promise.resolve(),
 })();
 
 /**
@@ -161,8 +161,8 @@ export const finishTransaction = () => Platform.select({
  * @returns {null}
  */
 export const clearTransaction = () => Platform.select({
-  ios: () => RNIapIos.clearTransaction(),
-  android: () => console.log(' No ops in Android!'),
+  ios: async() => RNIapIos.clearTransaction(),
+  android: async() => Promise.resolve(),
 })();
 
 /**
@@ -171,8 +171,8 @@ export const clearTransaction = () => Platform.select({
  * @returns {null}
  */
 export const clearProducts = () => Platform.select({
-  ios: () => RNIapIos.clearProducts(),
-  android: () => console.log(' No ops in Android!'),
+  ios: async() => RNIapIos.clearProducts(),
+  android: async() => Promise.resolve,
 })();
 
 /**
@@ -181,8 +181,8 @@ export const clearProducts = () => Platform.select({
  * @returns {Promise}
  */
 export const consumePurchase = (token) => Platform.select({
-  ios: () => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
-  android: () => RNIapModule.consumeProduct(token),
+  ios: async() => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
+  android: async() => RNIapModule.consumeProduct(token),
 })();
 
 /**
