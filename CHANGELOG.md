@@ -1,4 +1,8 @@
 ## Changelogs
+- **[2.3.17]**
+  + Avoid iml file to be uploaded to npm repo that may fail from build in android.
+- **[2.3.16]**
+  + Fixes not responding to successful purchase.
 - **[2.3.9]**
   + Fixes for unsafe getting originalJson when restoring item and Android.
 - **[2.3.6]**

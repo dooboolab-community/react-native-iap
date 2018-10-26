@@ -2,3 +2,5 @@ RNIapExample/
 .idea/
 gen/
 node_modules/
+android/react-native-iap.iml
+android/android.iml
