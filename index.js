@@ -103,13 +103,19 @@ export const getAvailablePurchases = () => Platform.select({
  * @returns {Promise<SubscriptionPurchase>}
  */
 export const buySubscription = (sku, oldSku, prorationMode) => {
-  return Platform.select({
-    ios: async() => RNIapIos.buyProduct(sku),
-    android: async() => {
-      if (!prorationMode) prorationMode = -1;
-      return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku, prorationMode);
-    },
-  })();
+    return new Promise((resolve, reject) => {
+        Platform.select({
+            ios: async() => {
+                const result = await RNIapIos.buyProduct(sku);
+                resolve(result);
+            },
+            android: async() => {
+                if (!prorationMode) prorationMode = -1;
+                const result = await RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku, prorationMode);
+                resolve(result);
+            },
+        })();
+    });
 };
 
 /**
