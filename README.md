@@ -270,7 +270,7 @@ const receiptBody = {
   'receipt-data': purchase.transactionReceipt,
   'password': '******'
 };
-const result = await validateReceiptIos(receiptBody, false);
+const result = await RNIap.validateReceiptIos(receiptBody, false);
 console.log(result);
 ```
 For further information, please refer to [guide](https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
