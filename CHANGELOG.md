@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.3.18]**
+  + Resolve `true` rather than `null` in android with successful interaction.
 - **[2.3.17]**
   + Avoid iml file to be uploaded to npm repo that may fail from build in android.
 - **[2.3.16]**
