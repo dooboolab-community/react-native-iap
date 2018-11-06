@@ -151,7 +151,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     ensureConnection(promise, new Runnable() {
       @Override
       public void run() {
-        promise.resolve(null);
+        promise.resolve(true);
       }
     });
   }
@@ -168,7 +168,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     }
 
     mBillingClient = null;
-    promise.resolve(null);
+    promise.resolve(true);
   }
 
   @ReactMethod
@@ -405,7 +405,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
               return;
             }
 
-            promise.resolve(null);
+            promise.resolve(true);
           }
         });
       }
