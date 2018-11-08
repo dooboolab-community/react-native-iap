@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import java.lang.NullPointerException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -257,6 +258,9 @@ public class RNIapModule extends ReactContextBaseJavaModule {
           availableItems = mService.getPurchases(3, reactContext.getPackageName(), type, null);
         } catch (RemoteException e) {
           promise.reject(E_REMOTE_ERROR, e.getMessage());
+          return;
+        } catch (NullPointerException e){
+          promise.reject(E_SERVICE_ERROR, e.getMessage());
           return;
         }
 
