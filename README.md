@@ -361,7 +361,7 @@ Delete app / Restart device / Quit "store" related processes in Activity Monitor
 - The `react-native link` script isn't perfect and sometimes broke. Please try `unlinking` and `linking` again. Or try manual installing.
 
 #### getAvailablePurchases return empty array.
-- `getAvailablePurcahses` is used only when you purchase a non-consumable product. This can be restored only. If you want to find out if a user subscribes the product, you should check the receipt which you should store in your own database. Apple suggests you handle this in your own backend to do things like what you are trying to achieve.
+- `getAvailablePurchases` is used only when you purchase a non-consumable product. This can be restored only. If you want to find out if a user subscribes the product, you should check the receipt which you should store in your own database. Apple suggests you handle this in your own backend to do things like what you are trying to achieve.
 
 
 ## Supporting react-native-iap
