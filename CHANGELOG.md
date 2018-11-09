@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.3.19]**
+  + Additional catch for npe.
 - **[2.3.18]**
   + Resolve `true` rather than `null` in android with successful interaction.
 - **[2.3.17]**
