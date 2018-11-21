@@ -58,7 +58,7 @@ Also, note that this is our last migration for renaming method names without any
 #### Methods
 | Func  | Param  | Return | Description |
 | :------------ |:---------------:| :---------------:| :-----|
-| prepare |  | `Promise<void>` | Deprecated. Use `initConnection instead` |
+| prepare |  | `Promise<void>` | Deprecated. Use `initConnection` instead. |
 | initConnection |  | `Promise<string>` | Init IAP module. On Android this can be called to preload the connection to Play Services. In iOS, it will simply call `canMakePayments` method and return value.|
 | getProducts | `string[]` Product IDs/skus | `Promise<Product[]>` | Get a list of products (consumable and non-consumable items, but not subscriptions). Note: On iOS versions earlier than 11.2 this method _will_ return subscriptions if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to 11.2. |
 | getSubscriptions | `string[]` Subscription IDs/skus | `Promise<Subscription[]>` | Get a list of subscriptions. Note: On iOS versions earlier than 11.2 this method _will_ return subscriptions if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to 11.2. |
@@ -164,6 +164,7 @@ async componentDidMount() {
 |`currency`| ✓ | ✓ | Returns the currency code |
 |`localizedPrice`| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
 |`title`| ✓ | ✓ | Returns the title Android and localizedTitle on iOS |
+|`description`| ✓ | ✓ | Returns the localized description on Android and iOS |
 |`introductoryPrice`| ✓ | ✓ | Formatted introductory price of a subscription, including its currency sign, such as €3.99. The price doesn't include tax. |
 |`introductoryPricePaymentModeIOS`| ✓ | | The payment mode for this product discount. |
 |`introductoryPriceNumberOfPeriods`| ✓ | | An integer that indicates the number of periods the product discount is available. |
