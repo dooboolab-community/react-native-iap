@@ -271,7 +271,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         ArrayList<String> purchaseDataList = availableItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
         ArrayList<String> signatureDataList = availableItems.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
 
-        if (responseCode != BillingClient.BillingResponse.OK && purchaseDataList != null) {
+        if (responseCode != BillingClient.BillingResponse.OK && purchaseDataList == null) {
           rejectPromiseWithBillingError(promise, responseCode);
           return;
         }
