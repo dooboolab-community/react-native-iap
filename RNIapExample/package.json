@@ -16,26 +16,32 @@
     "build:android": "react-native bundle --entry-file index.js --platform android --dev false --bundle-output android/main.jsbundle --assets-dest android"
   },
   "dependencies": {
-    "apsl-react-native-button": "^3.1.0",
-    "react": "16.3.2",
-    "react-native": "0.55.3",
-    "react-native-iap": "file:../",
-    "react-navigation": "^1.5.12"
+    "apsl-react-native-button": "^3.1.1",
+    "react": "16.6.3",
+    "react-native": "0.57.7",
+    "react-native-gesture-handler": "^1.0.10",
+    "react-native-iap": "2.3.21",
+    "react-navigation": "^3.0.5"
   },
   "devDependencies": {
-    "babel-eslint": "^8.0.1",
-    "babel-jest": "^21.2.0",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-preset-react-native": "4.0.0",
-    "eslint": "^4.9.0",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^5.2.1",
-    "eslint-plugin-promise": "^3.6.0",
-    "jest": "21.2.1",
-    "react-native-debugger-open": "^0.3.15",
-    "react-native-extended-stylesheet": "^0.7.0",
-    "react-test-renderer": "16.0.0-beta.5"
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "7.2.0",
+    "@babel/plugin-proposal-decorators": "7.2.0",
+    "@babel/plugin-transform-runtime": "7.2.0",
+    "@babel/preset-flow": "^7.0.0",
+    "@babel/runtime": "7.2.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "jest": "23.6.0",
+    "react-native-debugger-open": "^0.3.17",
+    "react-native-extended-stylesheet": "^0.10.0",
+    "metro-react-native-babel-preset": "^0.50.0",
+    "react-test-renderer": "16.6.3"
   },
   "jest": {
     "preset": "react-native"

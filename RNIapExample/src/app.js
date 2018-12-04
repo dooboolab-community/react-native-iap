@@ -10,7 +10,7 @@ import {
 
 import Styles from './Styles';
 
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 import FirstPage from './components/pages/First';
 import SecondPage from './components/pages/Second';
 
@@ -24,7 +24,7 @@ class App extends Component {
   }
 
   render() {
-    const Navigator = StackNavigator({
+    const routeConfig = {
       First: {
         screen: FirstPage,
         path: 'first',
@@ -33,7 +33,8 @@ class App extends Component {
         screen: SecondPage,
         path: 'second',
       },
-    }, {
+    };
+    const Navigator = createStackNavigator(routeConfig, {
       initialRouteName: startPage,
       header: null,
       headerMode: 'none',
@@ -41,12 +42,20 @@ class App extends Component {
         header: null,
       },
     });
+    const AppContainer = createAppContainer(Navigator);
     return (
       <View style={{ flex: 1 }}>
         <StatusBar
           barStyle="dark-content"
         />
-        <Navigator/>
+        <AppContainer
+          onNavigationStateChange={(prevState, currentState) => {
+            this.getActiveRouteName(currentState);
+          }}
+          uriPrefix='/'
+        >
+          <Navigator/>
+        </AppContainer>
       </View>
     );
   }
