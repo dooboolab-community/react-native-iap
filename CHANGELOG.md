@@ -1,5 +1,5 @@
 ## Changelogs
-- **[2.3.20]**
+- **[2.3.21]**
   + Fixed npe when `getAvailablePurcase` in android.
 - **[2.3.19]**
   + Additional catch for npe.
