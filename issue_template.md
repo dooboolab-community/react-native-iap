@@ -1,5 +1,7 @@
 ### Version of react-native-iap
 
+### Version of react-native
+
 ### Platforms you faced the error (IOS or Android or both?)
 
 ### Expected behavior
