@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.3.22]**
+  + Resolve [#288](https://github.com/dooboolab/react-native-iap/issues/288).
 - **[2.3.21]**
   + Fixed npe when `getAvailablePurcase` in android.
 - **[2.3.19]**
