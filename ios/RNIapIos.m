@@ -392,21 +392,24 @@ RCT_EXPORT_METHOD(clearProducts) {
     currencyCode = product.priceLocale.currencyCode;
   }
 
-  return @{
-    @"productId" : product.productIdentifier,
-    @"price" : [product.price stringValue],
-    @"currency" : currencyCode,
-    @"type": itemType,
-    @"title" : product.localizedTitle ? product.localizedTitle : @"",
-    @"description" : product.localizedDescription ? product.localizedDescription : @"",
-    @"localizedPrice" : localizedPrice,
-    @"subscriptionPeriodNumberIOS" : periodNumberIOS,
-    @"subscriptionPeriodUnitIOS" : periodUnitIOS,
-    @"introductoryPrice" : introductoryPrice,
-    @"introductoryPricePaymentModeIOS" : introductoryPricePaymentMode,
-    @"introductoryPriceNumberOfPeriodsIOS" : introductoryPriceNumberOfPeriods,
-    @"introductoryPriceSubscriptionPeriodIOS" : introductoryPriceSubscriptionPeriod
-  };
+  NSDictionary *obj = [NSDictionary dictionaryWithObjectsAndKeys:
+     product.productIdentifier, @"productId",
+     [product.price stringValue], @"price",
+     currencyCode, @"currency",
+     itemType, @"type",
+     product.localizedTitle ? product.localizedTitle : @"", @"title",
+     product.localizedDescription ? product.localizedDescription : @"", @"description",
+     localizedPrice, @"localizedPrice",
+     periodNumberIOS, @"subscriptionPeriodNumberIOS",
+     periodUnitIOS, @"subscriptionPeriodUnitIOS",
+     introductoryPrice, @"introductoryPrice",
+     introductoryPricePaymentMode, @"introductoryPricePaymentModeIOS",
+     introductoryPriceNumberOfPeriods, @"introductoryPriceNumberOfPeriodsIOS",
+     introductoryPriceSubscriptionPeriod, @"introductoryPriceSubscriptionPeriodIOS",
+     nil
+ ];
+
+  return obj;
 }
 
 - (NSDictionary *)getPurchaseData:(SKPaymentTransaction *)transaction {
