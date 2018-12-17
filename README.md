@@ -293,7 +293,7 @@ In this case, use `buyProductWithoutFinishTransaction` to purchase action and us
 ```javascript
 const purchase = await RNIap.buyProductWithoutFinishTransaction(productId);
 // to something in your server
-const { transactionReceipt, purchaseToken } = purchase;
+const { transactionReceipt } = purchase;
 sendToServer(transactionReceipt, {
   onSuccess: () => {
     RNIap.finishTransaction();
@@ -306,7 +306,7 @@ However, sometimes apple internally causes problem itself before `finishTransact
 await RNIap.clearTransaction(); // add this method at the start of purchase.
 const purchase = await RNIap.buyProductWithoutFinishTransaction(productId);
 // to something in your server
-const { transactionReceipt, purchaseToken } = purchase;
+const { transactionReceipt } = purchase;
 sendToServer(transactionReceipt, {
   onSuccess: () => {
     RNIap.finishTransaction();
