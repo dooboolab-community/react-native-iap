@@ -1,0 +1,97 @@
+// @flow
+
+declare type Common = {
+  title: string,
+  description: string,
+  price: string,
+  currency: string,
+  localizedPrice: string,
+}
+
+declare type ID = string
+
+export type Product<ID> = Common & {
+  type: "inapp" | "iap",
+  productId: ID,
+}
+
+export type Subscription<ID> = Common & {
+  type: "subs" | "sub",
+  productId: ID,
+
+  introductoryPrice?: string,
+  introductoryPricePaymentModeIOS?: string,
+  introductoryPriceNumberOfPeriods?: number,
+  introductoryPriceSubscriptionPeriod: {},
+
+  subscriptionPeriodNumberIOS?: string,
+  subscriptionPeriodUnitIOS?: number,
+
+  introductoryPriceCyclesAndroid?: number,
+  introductoryPricePeriodAndroid?: string,
+  subscriptionPeriodAndroid?: string,
+  freeTrialPeriodAndroid: string,
+}
+
+export type ProductPurchase = {|
+  productId: string,
+  transactionId: string,
+  transactionDate: string,
+  transactionReceipt: string,
+  signatureAndroid?: string,
+  dataAndroid?: string,
+  purchaseToken?: string,
+|}
+
+export type SubscriptionPurchase = ProductPurchase & {
+  autoRenewingAndroid: boolean,
+  originalTransactionDateIOS: string,
+  originalTransactionIdentifierIOS: string,
+}
+
+export type Purchase = ProductPurchase | SubscriptionPurchase
+
+declare module.exports: {
+  getProducts: (string[]) => Promise<Product<string>[]>,
+  getSubscriptions(string[]): Promise<Subscription<string>[]>,
+  initConnection(): Promise<string>,
+  buyProduct: string => Promise<ProductPurchase>,
+  endConnection: () => Promise<void>,
+  consumeAllItems(): Promise<void>,
+  getPurchaseHistory(): Promise<Purchase[]>,
+  getAvailablePurchases(): Promise<Purchase[]>,
+  buySubscription(
+    sku: string,
+    oldSku?: string,
+    prorationMode?: number,
+  ): Promise<SubscriptionPurchase>,
+  buyProductWithQuantityIOS(
+    sku: string,
+    quantity: number,
+  ): Promise<ProductPurchase>,
+  buyProductWithoutFinishTransaction(sku: string): Promise<ProductPurchase>,
+  clearTransaction(): void,
+  clearProducts(): void,
+  finishTransaction(): void,
+  consumePurchase(token: string): Promise<void>,
+  validateReceiptIos(
+    receiptBody: AppleReceiptValidationRequest,
+    isTest: boolean,
+  ): Promise<AppleReceiptValidationResponse | false>,
+  validateReceiptAndroid(
+    packageName: string,
+    productId: string,
+    productToken: string,
+    accessToken: string,
+    isSub: boolean,
+  ): Promise<{} | false>,
+  addAdditionalSuccessPurchaseListenerIOS(
+    fn: (any) => any,
+  ): EmitterSubscription,
+}
+
+// TODO: the following definitions should be more specific
+
+export type AppleReceiptValidationResponse = any
+export type AppleReceiptValidationRequest = any
+export type EmitterSubscription = any
