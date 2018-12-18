@@ -12,7 +12,7 @@ const IOS_ITEM_TYPE_IAP = 'iap';
  * @deprecated Deprecated since 2.0.0. Use initConnection instead.
  * @returns {Promise<void>}
  */
-export const prepare = async() => {
+export const prepare = () => {
   console.warn('The `prepare` method is deprecated. Use initConnection method instead.');
   Platform.select({
     ios: async() => RNIapIos.canMakePayments(),
@@ -24,27 +24,27 @@ export const prepare = async() => {
  * Init module for purchase flow. Required on Android. In ios it will check wheter user canMakePayment.
  * @returns {Promise<string>}
  */
-export const initConnection = async() => Platform.select({
-  ios: async() => RNIapIos.canMakePayments(),
-  android: async() => RNIapModule.initConnection(),
+export const initConnection = () => Platform.select({
+  ios: () => RNIapIos.canMakePayments(),
+  android: () => RNIapModule.initConnection(),
 })();
 
 /**
  * End module for purchase flow. Required on Android. No-op on iOS.
  * @returns {Promise<void>}
  */
-export const endConnection = async() => Platform.select({
-  ios: async() => Promise.resolve(),
-  android: async() => RNIapModule.endConnection(),
+export const endConnection = () => Platform.select({
+  ios: () => Promise.resolve(),
+  android: () => RNIapModule.endConnection(),
 })();
 
 /**
  * Consume all remaining tokens. Android only.
  * @returns {Promise<void>}
  */
-export const consumeAllItems = async() => Platform.select({
-  ios: async() => Promise.resolve(),
-  android: async() => RNIapModule.refreshItems(),
+export const consumeAllItems = () => Platform.select({
+  ios: () => Promise.resolve(),
+  android: () => RNIapModule.refreshItems(),
 })();
 
 /**
@@ -52,10 +52,10 @@ export const consumeAllItems = async() => Platform.select({
  * @param {string[]} skus The item skus
  * @returns {Promise<Product[]>}
  */
-export const getProducts = async(skus) => Platform.select({
-  ios: async() => RNIapIos.getItems(skus)
+export const getProducts = (skus) => Platform.select({
+  ios: () => RNIapIos.getItems(skus)
     .then((items) => items.filter((item) => item.productId)),
-  android: async() => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_IAP, skus),
+  android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_IAP, skus),
 })();
 
 /**
@@ -63,18 +63,18 @@ export const getProducts = async(skus) => Platform.select({
  * @param {string[]} skus The item skus
  * @returns {Promise<Subscription[]>}
  */
-export const getSubscriptions = async(skus) => Platform.select({
-  ios: async() => RNIapIos.getItems(skus)
+export const getSubscriptions = (skus) => Platform.select({
+  ios: () => RNIapIos.getItems(skus)
     .then((items) => items.filter((item) => item.productId)),
-  android: async() => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus),
+  android: () => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus),
 })();
 
 /**
  * Gets an invetory of purchases made by the user regardless of consumption status
  * @returns {Promise<Purchase[]>}
  */
-export const getPurchaseHistory = async() => Platform.select({
-  ios: async() => RNIapIos.getAvailableItems(),
+export const getPurchaseHistory = () => Platform.select({
+  ios: () => RNIapIos.getAvailableItems(),
   android: async() => {
     let products = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_IAP);
     let subscriptions = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
@@ -86,8 +86,8 @@ export const getPurchaseHistory = async() => Platform.select({
  * Get all purchases made by the user (either non-consumable, or haven't been consumed yet)
  * @returns {Promise<Purchase[]>}
  */
-export const getAvailablePurchases = async() => Platform.select({
-  ios: async() => RNIapIos.getAvailableItems(),
+export const getAvailablePurchases = () => Platform.select({
+  ios: () => RNIapIos.getAvailableItems(),
   android: async() => {
     let products = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_IAP);
     let subscriptions = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
@@ -102,10 +102,10 @@ export const getAvailablePurchases = async() => Platform.select({
  * @param {number} [prorationMode] Optional proration mode for upgrade/downgrade (Android only)
  * @returns {Promise<SubscriptionPurchase>}
  */
-export const buySubscription = async(sku, oldSku, prorationMode) => {
+export const buySubscription = (sku, oldSku, prorationMode) => {
   return Platform.select({
-    ios: async() => RNIapIos.buyProduct(sku),
-    android: async() => {
+    ios: () => RNIapIos.buyProduct(sku),
+    android: () => {
       if (!prorationMode) prorationMode = -1;
       return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku, prorationMode);
     },
@@ -117,9 +117,9 @@ export const buySubscription = async(sku, oldSku, prorationMode) => {
  * @param {string} sku The product's sku/ID
  * @returns {Promise<ProductPurchase>}
  */
-export const buyProduct = async(sku) => Platform.select({
-  ios: async() => RNIapIos.buyProduct(sku),
-  android: async() => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
+export const buyProduct = (sku) => Platform.select({
+  ios: () => RNIapIos.buyProduct(sku),
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
 })();
 
 /**
@@ -128,9 +128,9 @@ export const buyProduct = async(sku) => Platform.select({
  * @param {number} quantity The amount of product to buy
  * @returns {Promise<ProductPurchase>}
  */
-export const buyProductWithQuantityIOS = async(sku, quantity) => Platform.select({
-  ios: async() => RNIapIos.buyProductWithQuantityIOS(sku, quantity),
-  android: async() => Promise.resolve(),
+export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
+  ios: () => RNIapIos.buyProductWithQuantityIOS(sku, quantity),
+  android: () => Promise.resolve(),
 })();
 
 /**
@@ -139,9 +139,9 @@ export const buyProductWithQuantityIOS = async(sku, quantity) => Platform.select
  * @param {string} sku The product's sku/ID
  * @returns {Promise<ProductPurchase>}
  */
-export const buyProductWithoutFinishTransaction = async(sku) => Platform.select({
-  ios: async() => RNIapIos.buyProductWithoutAutoConfirm(sku),
-  android: async() => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
+export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
+  ios: () => RNIapIos.buyProductWithoutAutoConfirm(sku),
+  android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
 })();
 
 /**
@@ -149,9 +149,9 @@ export const buyProductWithoutFinishTransaction = async(sku) => Platform.select(
  *   Explicitly call transaction finish
  * @returns {Promise<ProductPurchase>}
  */
-export const finishTransaction = async() => Platform.select({
-  ios: async() => RNIapIos.finishTransaction(),
-  android: async() => Promise.resolve(),
+export const finishTransaction = () => Platform.select({
+  ios: () => RNIapIos.finishTransaction(),
+  android: () => Promise.resolve(),
 })();
 
 /**
@@ -160,9 +160,9 @@ export const finishTransaction = async() => Platform.select({
  *     link : https://github.com/dooboolab/react-native-iap/issues/257
  * @returns {null}
  */
-export const clearTransaction = async() => Platform.select({
-  ios: async() => RNIapIos.clearTransaction(),
-  android: async() => Promise.resolve(),
+export const clearTransaction = () => Platform.select({
+  ios: () => RNIapIos.clearTransaction(),
+  android: () => Promise.resolve(),
 })();
 
 /**
@@ -170,9 +170,9 @@ export const clearTransaction = async() => Platform.select({
  *   Remove all products which are validated by Apple server.
  * @returns {null}
  */
-export const clearProducts = async() => Platform.select({
-  ios: async() => RNIapIos.clearProducts(),
-  android: async() => Promise.resolve,
+export const clearProducts = () => Platform.select({
+  ios: () => RNIapIos.clearProducts(),
+  android: () => Promise.resolve,
 })();
 
 /**
@@ -180,9 +180,9 @@ export const clearProducts = async() => Platform.select({
  * @param {string} token The product's token (on Android)
  * @returns {Promise}
  */
-export const consumePurchase = async(token) => Platform.select({
-  ios: async() => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
-  android: async() => RNIapModule.consumeProduct(token),
+export const consumePurchase = (token) => Platform.select({
+  ios: () => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
+  android: () => RNIapModule.consumeProduct(token),
 })();
 
 /**

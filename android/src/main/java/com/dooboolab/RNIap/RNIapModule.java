@@ -192,6 +192,8 @@ public class RNIapModule extends ReactContextBaseJavaModule {
             }
             promise.resolve("All items have been consumed");
             Log.d(TAG, "All items have been consumed");
+          } else {
+            promise.reject(E_UNKNOWN, "response: " + response);
           }
         } catch (Exception e) {
           promise.reject(E_UNKNOWN, e.getMessage());
