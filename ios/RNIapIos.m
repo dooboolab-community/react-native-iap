@@ -315,6 +315,7 @@ RCT_EXPORT_METHOD(clearProducts) {
 	
   NSString* localizedPrice = [formatter stringFromNumber:product.price];
   NSString* introductoryPrice = localizedPrice;
+  NSString* locale = localeIdentifierToBCP47(product.priceLocale.localeIdentifier);
 	
   NSString* introductoryPricePaymentMode = @"";
   NSString* introductoryPriceNumberOfPeriods = @"";
@@ -400,6 +401,7 @@ RCT_EXPORT_METHOD(clearProducts) {
      product.localizedTitle ? product.localizedTitle : @"", @"title",
      product.localizedDescription ? product.localizedDescription : @"", @"description",
      localizedPrice, @"localizedPrice",
+     locale, @"localeIOS",
      periodNumberIOS, @"subscriptionPeriodNumberIOS",
      periodUnitIOS, @"subscriptionPeriodUnitIOS",
      introductoryPrice, @"introductoryPrice",
@@ -450,6 +452,13 @@ RCT_EXPORT_METHOD(clearProducts) {
 static NSString *RCTKeyForInstance(id instance)
 {
     return [NSString stringWithFormat:@"%p", instance];
+}
+
+static NSString *localeIdentifierToBCP47(NSString* localeIdentifier) 
+{
+  // e.g. `en_US@currency=USD` -> `en-US`.
+  NSString *identifier = [[product.priceLocale.localeIdentifier componentsSeparatedByString:@"@"] objectAtIndex:0];
+  return [identifier stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
 }
 
 @end

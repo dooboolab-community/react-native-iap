@@ -164,6 +164,7 @@ async componentDidMount() {
 |`productId`| ✓ | ✓ | Returns a string needed to purchase the item later |
 |`currency`| ✓ | ✓ | Returns the currency code |
 |`localizedPrice`| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
+|`localeIOS`| ✓ |   | Returns the BCP 47 language tag. (eg. `en-US`) (iOS). |
 |`title`| ✓ | ✓ | Returns the title Android and localizedTitle on iOS |
 |`description`| ✓ | ✓ | Returns the localized description on Android and iOS |
 |`introductoryPrice`| ✓ | ✓ | Formatted introductory price of a subscription, including its currency sign, such as €3.99. The price doesn't include tax. |
