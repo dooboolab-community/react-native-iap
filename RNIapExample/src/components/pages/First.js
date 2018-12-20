@@ -106,6 +106,28 @@ class Page extends Component {
     }
   }
 
+  /**
+   * This method will be sent as additional purchase success callback.
+   * And can be called after the purchase promise is rejected (not resolved).
+   */
+  additionalAction = async (err, purchase) => {
+    this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext()); 
+  }
+
+  buyItemWithAdditionalCallback = async(sku) => {
+    try {
+      console.info('buy Item with additinal callback: ' + sku);
+      // purchase is the return promise.
+      const purchase = await RNIap.buyProduct(sku, this.additionalAction);
+      // Resolved Case
+      this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
+    } catch (err) {
+      // Reject case
+      console.warn(err.code, err.message);
+      Alert.alert(err.message);
+    }
+  }
+
   getAvailablePurchases = async() => {
     try {
       console.info('Get available purchases (non-consumable or unconsumed consumable)');

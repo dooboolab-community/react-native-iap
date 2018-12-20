@@ -11,6 +11,9 @@
   BOOL autoReceiptConform;
   SKPaymentTransaction *currentTransaction;
   dispatch_queue_t myQueue;
+  // Additinal Callback in case of IAP-Flow
+  RCTResponseSenderBlock successCB;
+  int theState; // State of transaction. 0: Started, 1: Resolved, 2: Rejected, 3: Success with successCB.
 }
 @end
 
@@ -24,6 +27,7 @@
   }
   myQueue = dispatch_queue_create("reject", DISPATCH_QUEUE_SERIAL);
   validProducts = [NSMutableArray array];
+  theState = -1;
   return self;
 }
 
@@ -98,9 +102,12 @@ RCT_EXPORT_METHOD(getAvailableItems:(RCTPromiseResolveBlock)resolve
 }
 
 RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
+                  additionalCallback:(RCTResponseSenderBlock)addCB // Additional success Callback
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
   autoReceiptConform = true;
+  successCB = addCB; // Set Callback for IAP-Flow success after failure.
+  theState = 0;
   SKProduct *product;
   for (SKProduct *p in validProducts) {
     if([sku isEqualToString:p.productIdentifier]) {
@@ -121,6 +128,7 @@ RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
                   quantity:(NSInteger*)quantity
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
+  theState = -1; // not use additional callback
   NSLog(@"\n\n\n  buyProductWithQuantityIOS  \n\n.");
   autoReceiptConform = true;
   SKProduct *product;
@@ -144,6 +152,7 @@ RCT_EXPORT_METHOD(buyProductWithoutAutoConfirm:(NSString*)sku
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
   NSLog(@"\n\n\n  buyProductWithoutAutoConfirm  \n\n.");
+  theState = -1;
   autoReceiptConform = false;
   SKProduct *product;
   for (SKProduct *p in validProducts) {
@@ -163,6 +172,7 @@ RCT_EXPORT_METHOD(buyProductWithoutAutoConfirm:(NSString*)sku
 
 RCT_EXPORT_METHOD(finishTransaction) {
   NSLog(@"\n\n\n  finish Transaction  \n\n.");
+  theState = -1;
   if (currentTransaction) {
     [[SKPaymentQueue defaultQueue] finishTransaction:currentTransaction];
   }
@@ -170,6 +180,7 @@ RCT_EXPORT_METHOD(finishTransaction) {
 }
 
 RCT_EXPORT_METHOD(clearTransaction) {
+  theState = -1;
   NSArray *pendingTrans = [[SKPaymentQueue defaultQueue] transactions];
   NSLog(@"\n\n\n  ***  clear remaining Transactions. Call this before make a new transaction   \n\n.");
   for (int k = 0; k < pendingTrans.count; k++) {
@@ -178,6 +189,7 @@ RCT_EXPORT_METHOD(clearTransaction) {
 }
 
 RCT_EXPORT_METHOD(clearProducts) {
+  theState = -1;
   NSLog(@"\n\n\n  ***  clear valid products. \n\n.");
   [validProducts removeAllObjects];
 }
@@ -242,6 +254,7 @@ RCT_EXPORT_METHOD(clearProducts) {
         break;
       case SKPaymentTransactionStateFailed:
         NSLog(@"\n\n\n\n\n\n Purchase Failed  !! \n\n\n\n\n");
+        if (theState == 0) theState = 2;
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
         NSString *key = RCTKeyForInstance(transaction.payment.productIdentifier);
         dispatch_sync(myQueue, ^{
@@ -286,7 +299,13 @@ RCT_EXPORT_METHOD(clearProducts) {
   }
   NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
   NSDictionary* purchase = [self getPurchaseData:transaction];
-  [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:purchase];
+  if (theState == 2 && successCB) { // first transaction failed, but after success
+    successCB(@[[NSNull null], purchase]);
+    theState = 3;
+  } else {
+    [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:purchase];
+    theState = 1;
+  }
 }
 
 -(NSString *)standardErrorCode:(int)code {

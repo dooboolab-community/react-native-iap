@@ -117,8 +117,8 @@ export const buySubscription = (sku, oldSku, prorationMode) => {
  * @param {string} sku The product's sku/ID
  * @returns {Promise<ProductPurchase>}
  */
-export const buyProduct = (sku) => Platform.select({
-  ios: () => RNIapIos.buyProduct(sku),
+export const buyProduct = (sku, iosSuccess) => Platform.select({
+  ios: () => RNIapIos.buyProduct(sku, iosSuccess),
   android: () => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
 })();
 
