@@ -49,6 +49,20 @@ export const consumeAllItems = () => Platform.select({
 
 /**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
+ * @param {any} successCB the call back method
+ * @returns void {
+
+ */
+export const iosHandlePrevTransaction = (successCB) => Platform.select({
+  ios: () => {
+    console.log('  success cb in index.ts', successCB, typeof successCB);
+    RNIapIos.handleMissingTransaction(successCB)
+  },
+  android: () => console.log(' No method for android '),
+})();
+
+/**
+ * Get a list of products (consumable and non-consumable items, but not subscriptions)
  * @param {string[]} skus The item skus
  * @returns {Promise<Product[]>}
  */
@@ -287,4 +301,5 @@ export default {
   consumePurchase,
   validateReceiptIos,
   validateReceiptAndroid,
+  iosHandlePrevTransaction,
 };

@@ -126,6 +126,7 @@ class Page extends Component {
   render() {
     const { productList, receipt, availableItemsMessage } = this.state;
     const receipt100 = receipt.substring(0, 100);
+    const { OS } = Platform;
 
     return (
       <View style={ styles.container }>
@@ -143,6 +144,26 @@ class Page extends Component {
               style={styles.btn}
               textStyle={styles.txt}
             >Get available purchases</NativeButton>
+
+            {OS === 'ios' ? 
+              <NativeButton
+                onPress={() => RNIap.iosHandlePrevTransaction((err, purchase) => {
+                  this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
+                })}
+                activeOpacity={0.5}
+                style={styles.btn}
+                textStyle={styles.txt}
+              >Fetch Preveous Transaction </NativeButton>
+            : null}
+
+            {OS === 'ios' ? 
+              <NativeButton
+                onPress={() => RNIap.finishTransaction()}
+                activeOpacity={0.5}
+                style={styles.btn}
+                textStyle={styles.txt}
+              >Finish Transaction </NativeButton>
+            : null}
 
             <Text style={{ margin: 5, fontSize: 15, alignSelf: 'center' }} >{availableItemsMessage}</Text>
 

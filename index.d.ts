@@ -69,6 +69,15 @@ export function endConnection() : Promise<void>;
 export function consumeAllItems() : Promise<void>;
 
 /**
+ * Consume all items in android. No-op in iOS.
+ * @param {object} successCB the call back method
+ * @returns void {
+
+ } Promise<void>}
+ */
+export function iosHandlePrevTransaction(successCB: any): void;
+
+/**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
  * @param skus The item skus
  */

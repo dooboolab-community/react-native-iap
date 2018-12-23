@@ -11,6 +11,7 @@
   BOOL autoReceiptConform;
   SKPaymentTransaction *currentTransaction;
   dispatch_queue_t myQueue;
+  NSDictionary* prevPurchase;
 }
 @end
 
@@ -24,6 +25,7 @@
   }
   myQueue = dispatch_queue_create("reject", DISPATCH_QUEUE_SERIAL);
   validProducts = [NSMutableArray array];
+  prevPurchase = nil;
   return self;
 }
 
@@ -55,6 +57,7 @@
       resolveBlck(value);
     }
     [promisesByKey removeObjectForKey:key];
+    prevPurchase = nil;
   }
 }
 
@@ -72,6 +75,13 @@
 
 ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
 RCT_EXPORT_MODULE();
+
+RCT_EXPORT_METHOD(handleMissingTransaction:(RCTResponseSenderBlock)successCB) {
+  NSLog(@"\n\n\n handle Missing Transaction \n\n\n.");
+  if (prevPurchase) {
+    successCB(@[[NSNull null], prevPurchase]);
+  }
+}
 
 RCT_EXPORT_METHOD(canMakePayments:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
@@ -100,6 +110,7 @@ RCT_EXPORT_METHOD(getAvailableItems:(RCTPromiseResolveBlock)resolve
 RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
+  prevPurchase = nil;
   autoReceiptConform = true;
   SKProduct *product;
   for (SKProduct *p in validProducts) {
@@ -122,6 +133,7 @@ RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
   NSLog(@"\n\n\n  buyProductWithQuantityIOS  \n\n.");
+  prevPurchase = nil;
   autoReceiptConform = true;
   SKProduct *product;
   for (SKProduct *p in validProducts) {
@@ -286,6 +298,8 @@ RCT_EXPORT_METHOD(clearProducts) {
   }
   NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
   NSDictionary* purchase = [self getPurchaseData:transaction];
+  
+  prevPurchase = purchase;
   [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:purchase];
 }
 
