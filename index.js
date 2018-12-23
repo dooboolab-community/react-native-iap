@@ -1,5 +1,5 @@
 
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules, Platform, NativeEventEmitter } from 'react-native';
 
 const { RNIapIos, RNIapModule } = NativeModules;
 
@@ -236,6 +236,19 @@ export const validateReceiptAndroid = async(packageName, productId, productToken
 };
 
 /**
+ * Add IAP purchase event in ios.
+ * @returns {callback(e: Event)}
+ */
+export const addAdditionalSuccessPurchaseListenerIOS = (e) => {
+  if (Platform.OS === 'ios') {
+    const myModuleEvt = new NativeEventEmitter(RNIapIos);
+    return myModuleEvt.addListener('iap-purchase-event', e);
+  } else {
+    console.log('adding purchase listener is only provided in ios.');
+  }
+};
+
+/**
  * deprecagted codes
  */
 /*
@@ -287,4 +300,5 @@ export default {
   consumePurchase,
   validateReceiptIos,
   validateReceiptAndroid,
+  addAdditionalSuccessPurchaseListenerIOS,
 };

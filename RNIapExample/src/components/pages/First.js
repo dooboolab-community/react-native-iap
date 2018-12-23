@@ -81,16 +81,19 @@ class Page extends Component {
   }
 
   buyItem = async(sku) => {
+    console.info('buyItem: ' + sku);
+    // const purchase = await RNIap.buyProduct(sku);
+    // const products = await RNIap.buySubscription(sku);
+    // const purchase = await RNIap.buyProductWithoutFinishTransaction(sku);
     try {
-      console.info('buyItem: ' + sku);
-      // const purchase = await RNIap.buyProduct(sku);
-      // const products = await RNIap.buySubscription(sku);
-      const purchase = await RNIap.buyProductWithoutFinishTransaction(sku);
-      console.info(purchase);
+      const purchase: any = await RNIap.buyProduct(sku);
       this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
     } catch (err) {
       console.warn(err.code, err.message);
-      Alert.alert(err.message);
+      const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async (purchase) => {
+        this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
+        subscription.remove();
+      });
     }
   }
 

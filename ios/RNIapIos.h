@@ -1,12 +1,8 @@
-#if __has_include("RCTBridgeModule.h")
-#import "RCTBridgeModule.h"
-#else
 #import <React/RCTBridgeModule.h>
-#endif
-
+#import <React/RCTEventEmitter.h>
 #import <StoreKit/StoreKit.h>
 
-@interface RNIapIos : NSObject <RCTBridgeModule, SKProductsRequestDelegate,SKPaymentTransactionObserver>
+@interface RNIapIos : RCTEventEmitter <RCTBridgeModule, SKProductsRequestDelegate,SKPaymentTransactionObserver>
 {
   SKProductsRequest *productsRequest;
   NSMutableArray *validProducts;
