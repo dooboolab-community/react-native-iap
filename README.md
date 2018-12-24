@@ -230,7 +230,7 @@ try {
 ```
 If you need to handle the success of purchase which could be called even after purchase failed,
 you can add `addAdditionalSuccessPurchaseListenerIOS` to handle nex `successPurchase`.
-* This feature is provided from `react-native-iap` version `2.4.0-beta1`.
+* This feature is provided from `react-native-iap` version `2.4.0-beta1`. Currently this feature is in test.
 
 
 ## Consumption and Restoring Purchases
