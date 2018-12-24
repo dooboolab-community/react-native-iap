@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.4.+]**
+  + Implemented `addAdditionalSuccessPurchaseListenerIOS` to handle extra successed purchase event. Related to [#307].
 - **[2.3.23]**
   + Resolve [#288](https://github.com/dooboolab/react-native-iap/issues/288).
 - **[2.3.21]**
