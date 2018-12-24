@@ -214,6 +214,23 @@ RNIap.buyProduct('com.example.coins100').then(purchase => {
 Subscribable products can be purchased just like consumable products.
 Users can cancel subscriptions by using the iOS System Settings.
 
+## Purchase Example 3 (Advanced)
+```javascript
+try {
+  const purchase: any = await RNIap.buyProduct(sku);
+  this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
+} catch (err) {
+  console.warn(err.code, err.message);
+  const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async (purchase) => {
+    this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
+    subscription.remove();
+  });
+}
+```
+If you need to handle the success of purchase which could be called even after purchase failed,
+you can add `addAdditionalSuccessPurchaseListenerIOS` to handle nex `successPurchase`.
+* This feature is provided from `react-native-iap` version `2.4.0-beta1`. Currently this feature is in test.
+
 
 ## Consumption and Restoring Purchases
 You can use `getAvailablePurchases()` to do what's commonly understood as "restoring" purchases. Once an item is consumed, it will no longer be available in `getAvailablePurchases()` and will only be available via `getPurchaseHistory()`. However, this method has some caveats on Android -- namely, that purchase history only exists for the single most recent purchase of each SKU -- so your best bet is to track consumption in your app yourself. By default, all items that are purchased will not be consumed unless they are automatically consumed by the store (for example, if you create a consumable item for iOS.) This means that you must manage consumption yourself.  Purchases can be consumed by calling `consumePurchase()`. If you want to consume all items, you have to iterate over the purchases returned by `getAvailablePurchases()`.

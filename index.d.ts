@@ -17,6 +17,11 @@ export interface Subscription<ID extends string> extends Common {
   type: 'subs' | 'sub'
   productId: ID
 
+  introductoryPrice?: string
+  introductoryPricePaymentModeIOS?: string
+  introductoryPriceNumberOfPeriods?: number
+  introductoryPriceSubscriptionPeriod: object
+
   subscriptionPeriodNumberIOS?: string
   subscriptionPeriodUnitIOS?: number
 
@@ -24,6 +29,7 @@ export interface Subscription<ID extends string> extends Common {
   introductoryPriceCyclesAndroid?: number
   introductoryPricePeriodAndroid?: string
   subscriptionPeriodAndroid?: string
+  freeTrialPeriodAndroid: string
 }
 
 export interface ProductPurchase {
@@ -179,3 +185,9 @@ export function validateReceiptIos(receiptBody: Apple.ReceiptValidationRequest, 
  * @param isSub whether this is subscription or inapp. `true` for subscription.
  */
 export function validateReceiptAndroid(packageName: string, productId: string, productToken: string, accessToken: string, isSub: boolean): Promise<object | false>;
+
+/**
+  * Add IAP purchase event in ios.
+ * @returns {callback(e: Event)}
+ */
+export function addAdditionalSuccessPurchaseListenerIOS(fn: Function);

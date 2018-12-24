@@ -73,6 +73,11 @@
 ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
 RCT_EXPORT_MODULE();
 
+- (NSArray<NSString *> *)supportedEvents
+{
+    return @[@"iap-purchase-event"];
+}
+
 RCT_EXPORT_METHOD(canMakePayments:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     BOOL canMakePayments = [SKPaymentQueue canMakePayments];
@@ -287,6 +292,9 @@ RCT_EXPORT_METHOD(clearProducts) {
   NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
   NSDictionary* purchase = [self getPurchaseData:transaction];
   [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:purchase];
+
+  // additionally send event
+  [self sendEventWithName:@"iap-purchase-event" body: purchase];
 }
 
 -(NSString *)standardErrorCode:(int)code {
