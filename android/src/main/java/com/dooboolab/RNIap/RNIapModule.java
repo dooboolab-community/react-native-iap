@@ -102,7 +102,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     }
   };
 
-  private RNIapModule(ReactApplicationContext reactContext) {
+  public RNIapModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
     reactContext.addLifecycleEventListener(lifecycleEventListener);
