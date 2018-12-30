@@ -109,7 +109,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   private void ensureConnection (final Promise promise, final Runnable callback) {
-    if (mBillingClient != null) {
+    if (clientReady) {
       callback.run();
       return;
     }
@@ -121,7 +121,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
     final BillingClientStateListener billingClientStateListener = new BillingClientStateListener() {
       @Override
       public void onBillingSetupFinished(@BillingClient.BillingResponse int responseCode) {
-        if (responseCode == BillingClient.BillingResponse.OK && !clientReady) {
+        if (responseCode == BillingClient.BillingResponse.OK ) {
           Log.d(TAG, "billing client ready");
           callback.run();
           clientReady = true;
@@ -141,6 +141,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       reactContext.bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
       mBillingClient = BillingClient.newBuilder(reactContext).setListener(purchasesUpdatedListener).build();
       mBillingClient.startConnection(billingClientStateListener);
+      clientReady = true;
     } catch (Exception e) {
       promise.reject(E_NOT_PREPARED, e.getMessage(), e);
     }
