@@ -1,3 +1,4 @@
+
 package com.dooboolab.RNIap;
 
 import android.app.Activity;
@@ -66,8 +67,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   private IInAppBillingService mService;
   private BillingClient mBillingClient;
 
-  private boolean clientReady = false;
-
   private ServiceConnection mServiceConn = new ServiceConnection() {
     @Override public void onServiceDisconnected(ComponentName name) {
       mService = null;
@@ -109,7 +108,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
   }
 
   private void ensureConnection (final Promise promise, final Runnable callback) {
-    if (clientReady) {
+    if (mBillingClient != null && mBillingClient.isReady()) {
       callback.run();
       return;
     }
@@ -124,7 +123,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         if (responseCode == BillingClient.BillingResponse.OK ) {
           Log.d(TAG, "billing client ready");
           callback.run();
-          clientReady = true;
         } else {
           rejectPromiseWithBillingError(promise, responseCode);
         }
@@ -133,7 +131,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       @Override
       public void onBillingServiceDisconnected() {
         Log.d(TAG, "billing client disconnected");
-        clientReady = false;
       }
     };
 
@@ -141,7 +138,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
       reactContext.bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
       mBillingClient = BillingClient.newBuilder(reactContext).setListener(purchasesUpdatedListener).build();
       mBillingClient.startConnection(billingClientStateListener);
-      clientReady = true;
     } catch (Exception e) {
       promise.reject(E_NOT_PREPARED, e.getMessage(), e);
     }
@@ -172,8 +168,6 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         return;
       }
     }
-
-    mBillingClient = null;
     promise.resolve(true);
   }
 
