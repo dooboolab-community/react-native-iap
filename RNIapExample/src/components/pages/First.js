@@ -141,7 +141,7 @@ class Page extends Component {
           >
             <View style={{ height: 50 }} />
             <NativeButton
-              onPress={this.getItems}
+              onPress={this.getAvailablePurchases}
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
