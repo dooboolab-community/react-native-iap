@@ -25,7 +25,6 @@ export interface Subscription<ID extends string> extends Common {
   subscriptionPeriodNumberIOS?: string
   subscriptionPeriodUnitIOS?: number
 
-  freeTrialPeriodAndroid?: string
   introductoryPriceCyclesAndroid?: number
   introductoryPricePeriodAndroid?: string
   subscriptionPeriodAndroid?: string
