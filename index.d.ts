@@ -1,3 +1,5 @@
+import { EmitterSubscription } from 'react-native';
+
 import * as Apple from './apple'
 
 interface Common {
@@ -190,4 +192,4 @@ export function validateReceiptAndroid(packageName: string, productId: string, p
   * Add IAP purchase event in ios.
  * @returns {callback(e: Event)}
  */
-export function addAdditionalSuccessPurchaseListenerIOS(fn: Function);
+export function addAdditionalSuccessPurchaseListenerIOS(fn: Function) : EmitterSubscription;
