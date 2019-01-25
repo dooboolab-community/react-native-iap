@@ -269,7 +269,7 @@ Returned purchases is an array of each purchase transaction with the following k
 |    | iOS | Android | Comment |
 |----|-----|---------|------|
 |`productId`| ✓ | ✓ | The product ID for the product. |
-|`transactionReceipt`| ✓ | ✓ | `receipt` for ios and `purchaseToken` for android. |
+|`transactionReceipt`| ✓ | ✓ | `receipt` for ios and stringified JSON of the original purchase object for android. |
 |`transactionId`| ✓ | ✓ | A unique order identifier for the transaction. |
 |`transactionDate`| ✓ | ✓ | The time the product was purchased, in milliseconds since the epoch (Jan 1, 1970). |
 |`purchaseToken`| | ✓ | A token that uniquely identifies a purchase for a given item and user pair. |
