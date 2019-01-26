@@ -4,6 +4,7 @@
   + Attempt to fix crashing in `ensureConnection` for android. Related [#315](https://github.com/dooboolab/react-native-iap/issues/315).
   + Fixed promise not resolving putting back `async` wrapper.
   + Fixed types for `addAdditionalSuccessPurchaseListenerIOS`.
+  + Update `build.gradle` to match version in react-native `0.58`.
 - **[2.3.23]**
   + Resolve [#288](https://github.com/dooboolab/react-native-iap/issues/288).
 - **[2.3.21]**
