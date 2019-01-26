@@ -33,7 +33,6 @@ android {
   lintOptions {
     abortOnError false
   }
-  buildToolsVersion '27.0.3'
 }
 
 repositories {
