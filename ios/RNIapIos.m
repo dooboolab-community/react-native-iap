@@ -11,6 +11,9 @@
   BOOL autoReceiptConform;
   SKPaymentTransaction *currentTransaction;
   dispatch_queue_t myQueue;
+  BOOL hasListeners;
+  SKProduct *promotedProduct;
+  SKPayment *promotedPayment;
 }
 @end
 
@@ -33,6 +36,14 @@
 
 +(BOOL)requiresMainQueueSetup {
   return YES;
+}
+
+- (void)startObserving {
+  hasListeners = YES;
+}
+
+- (void)stopObserving {
+  hasListeners = NO;
 }
 
 -(void)addPromiseForKey:(NSString*)key resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
@@ -75,7 +86,7 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents
 {
-    return @[@"iap-purchase-event"];
+  return @[@"iap-purchase-event", @"iap-promoted-product"];
 }
 
 RCT_EXPORT_METHOD(canMakePayments:(RCTPromiseResolveBlock)resolve
@@ -187,6 +198,23 @@ RCT_EXPORT_METHOD(clearProducts) {
   [validProducts removeAllObjects];
 }
 
+RCT_EXPORT_METHOD(promotedProduct:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  NSLog(@"\n\n\n  ***  get promoted product. \n\n.");
+  resolve(promotedProduct ? promotedProduct.productIdentifier : [NSNull null]);
+}
+
+RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  if (promotedPayment) {
+    NSLog(@"\n\n\n  ***  buy promoted product. \n\n.");
+    [[SKPaymentQueue defaultQueue] addPayment:promotedPayment];
+    [self addPromiseForKey:RCTKeyForInstance(promotedPayment.productIdentifier) resolve:resolve reject:reject];
+  } else {
+    reject(@"E_DEVELOPER_ERROR", @"Invalid product ID.", nil);
+  }
+}
+
 #pragma mark ===== StoreKit Delegate
 
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
@@ -282,6 +310,18 @@ RCT_EXPORT_METHOD(clearProducts) {
   NSLog(@"\n\n\n restoreCompletedTransactionsFailedWithError \n\n.");
 }
 
+- (BOOL)paymentQueue:(SKPaymentQueue *)queue shouldAddStorePayment:(SKPayment *)payment forProduct:(SKProduct *)product {
+  NSLog(@"\n\n\n  ***  should add store payment. \n\n.");
+  promotedProduct = product;
+  promotedPayment = payment;
+
+  if (hasListeners) {
+    [self sendEventWithName:@"iap-promoted-product" body:payment.productIdentifier];
+  }
+
+  return NO;
+}
+
 -(void)purchaseProcess:(SKPaymentTransaction *)transaction {
   if (autoReceiptConform) {
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
@@ -294,7 +334,9 @@ RCT_EXPORT_METHOD(clearProducts) {
   [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:purchase];
 
   // additionally send event
-  [self sendEventWithName:@"iap-purchase-event" body: purchase];
+  if (hasListeners) {
+    [self sendEventWithName:@"iap-purchase-event" body: purchase];
+  }
 }
 
 -(NSString *)standardErrorCode:(int)code {

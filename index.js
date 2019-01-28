@@ -8,6 +8,8 @@ const ANDROID_ITEM_TYPE_IAP = 'inapp';
 const IOS_ITEM_TYPE_SUBSCRIPTION = 'sub';
 const IOS_ITEM_TYPE_IAP = 'iap';
 
+export const onPromotedProduct = 'iap-promoted-product';
+
 /**
  * @deprecated Deprecated since 2.0.0. Use initConnection instead.
  * @returns {Promise<void>}
@@ -184,6 +186,26 @@ export const consumePurchase = (token) => Platform.select({
   ios: async() => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
   android: async() => RNIapModule.consumeProduct(token),
 })();
+
+/**
+ * Should Add Store Payment (iOS only)
+ *   Indicates the the App Store purchase should continue from the app instead of the App Store. 
+ * @returns {null}
+ */
+export const getPromotedProduct = () => Platform.select({
+  ios: async() => RNIapIos.promotedProduct(),
+  android: async() => Promise.resolve()
+})()
+
+/**
+ * Buy the currently selected promoted product (iOS only)
+ *   Initiates the payment process for a promoted product. Should only be called in response to the `iap-promoted-product` event.  
+ * @returns {null}
+ */
+export const buyPromotedProduct = () => Platform.select({
+  ios: async() => RNIapIos.buyPromotedProduct(),
+  android: async() => Promise.resolve()
+})()
 
 /**
  * Validate receipt for iOS.
