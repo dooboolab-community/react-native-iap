@@ -20,7 +20,7 @@ const itemSkus = Platform.select({
     'com.cooni.point1000', 'com.cooni.point5000', // dooboolab
   ],
   android: [
-    'test.sub1', // subscription
+    'android.test.purchased',
   ],
 });
 
@@ -47,6 +47,7 @@ class Page extends Component {
   async componentDidMount() {
     try {
       const result = await RNIap.initConnection();
+      await RNIap.consumeAllItems();
       console.log('result', result);
     } catch (err) {
       console.warn(err.code, err.message);

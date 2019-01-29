@@ -49,9 +49,6 @@ class App extends Component {
           barStyle="dark-content"
         />
         <AppContainer
-          onNavigationStateChange={(prevState, currentState) => {
-            this.getActiveRouteName(currentState);
-          }}
           uriPrefix='/'
         >
           <Navigator/>
