@@ -46,6 +46,14 @@
   hasListeners = NO;
 }
 
+- (void)addListener:(NSString *)eventName {
+  [super addListener:eventName];
+
+  if ([eventName isEqualToString:@"iap-promoted-product"] && promotedPayment != nil) {
+    [self sendEventWithName:@"iap-promoted-product" body:promotedPayment.productIdentifier];
+  }
+}
+
 -(void)addPromiseForKey:(NSString*)key resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
   NSMutableArray* promises = [promisesByKey valueForKey:key];
 
