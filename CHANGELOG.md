@@ -1,5 +1,6 @@
 ## Changelogs
 - **[2.4.+]**
+  + Add support for iOS In-App Purchase promotions [#388](https://github.com/dooboolab/react-native-iap/pull/388).
   + Implemented `addAdditionalSuccessPurchaseListenerIOS` to handle extra successed purchase event. Related to [#307](https://github.com/dooboolab/react-native-iap/issues/307).
   + Attempt to fix crashing in `ensureConnection` for android. Related [#315](https://github.com/dooboolab/react-native-iap/issues/315).
   + Fixed promise not resolving putting back `async` wrapper.
