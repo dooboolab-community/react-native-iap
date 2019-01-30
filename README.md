@@ -345,7 +345,6 @@ If you need to clear all products, subscriptions in that array, just call `clear
 
 We've like to update this solution as version changes in `react-native-iap`.
 
-
 ## Q & A
 
 #### Can I buy product right away skipping fetching products if I already know productId?
@@ -364,6 +363,29 @@ We've like to update this solution as version changes in `react-native-iap`.
 #### How do I use react-native-iap in expo?
 - You should detach from `expo` and get `expokit` out of it.
 - Releated issue in #174.
+
+#### How do I handle promoted products in ios?
+
+- Offical doc is [here](https://developer.apple.com/app-store/promoting-in-app-purchases/)
+- Add an event listener for the `iap-promoted-product` event somewhere early in your app's lifecycle:
+
+  ```javascript
+  // Import the `NativeModules` and `NativeEventEmitter` components from 'react-native'
+  const { RNIapIos } = NativeModules;
+  const IAPEmitter = new NativeEventEmitter(RNIapIos);
+
+  IAPEmitter.addListener('iap-promoted-product', async () => {
+    // Check if there's a persisted promoted product
+    const productID = await RNIap.getPromotedProduct();
+    if (productID !== null) { // You may want to validate the product ID against your own SKUs
+      try {
+        await RNIap.buyPromotedProduct(); // This will trigger the App Store purchase process
+      } catch(e) {
+        console.warn(e);
+      }
+    }
+  });
+  ```
 
 #### Invalid productId in ios.
 - Please try below and make sure you've done belows.
