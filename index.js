@@ -8,7 +8,7 @@ const ANDROID_ITEM_TYPE_IAP = 'inapp';
 const IOS_ITEM_TYPE_SUBSCRIPTION = 'sub';
 const IOS_ITEM_TYPE_IAP = 'iap';
 
-export const onPromotedProduct = 'iap-promoted-product';
+export const PROMOTED_PRODUCT = 'iap-promoted-product';
 
 /**
  * @deprecated Deprecated since 2.0.0. Use initConnection instead.
@@ -194,8 +194,8 @@ export const consumePurchase = (token) => Platform.select({
  */
 export const getPromotedProduct = () => Platform.select({
   ios: async() => RNIapIos.promotedProduct(),
-  android: async() => Promise.resolve()
-})()
+  android: async() => Promise.resolve(),
+})();
 
 /**
  * Buy the currently selected promoted product (iOS only)
@@ -204,8 +204,8 @@ export const getPromotedProduct = () => Platform.select({
  */
 export const buyPromotedProduct = () => Platform.select({
   ios: async() => RNIapIos.buyPromotedProduct(),
-  android: async() => Promise.resolve()
-})()
+  android: async() => Promise.resolve(),
+})();
 
 /**
  * Validate receipt for iOS.
