@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28CBF364220349F6005F51AC /* IAPPromotionObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CBF363220349F6005F51AC /* IAPPromotionObserver.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RNIapIos.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNIapIos.m */; };
 /* End PBXBuildFile section */
 
@@ -24,6 +25,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNIap.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNIap.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		28CBF362220349F6005F51AC /* IAPPromotionObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPPromotionObserver.h; sourceTree = "<group>"; };
+		28CBF363220349F6005F51AC /* IAPPromotionObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPPromotionObserver.m; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RNIapIos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNIapIos.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNIapIos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNIapIos.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -52,6 +55,8 @@
 			children = (
 				B3E7B5881CC2AC0600A0062D /* RNIapIos.h */,
 				B3E7B5891CC2AC0600A0062D /* RNIapIos.m */,
+				28CBF362220349F6005F51AC /* IAPPromotionObserver.h */,
+				28CBF363220349F6005F51AC /* IAPPromotionObserver.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -112,6 +117,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28CBF364220349F6005F51AC /* IAPPromotionObserver.m in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* RNIapIos.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

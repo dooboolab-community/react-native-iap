@@ -367,6 +367,13 @@ We've like to update this solution as version changes in `react-native-iap`.
 #### How do I handle promoted products in ios?
 
 - Offical doc is [here](https://developer.apple.com/app-store/promoting-in-app-purchases/)
+- Start the IAPPromotionObserver in `-[application:didFinishLaunchingWithOptions:]` your AppDelegate:
+
+    ```objc
+    // Add '#import "IAPPromotionObserver.h"' to your imports
+    [IAPPromotionObserver startObserving]; 
+    ```
+
 - Add an event listener for the `iap-promoted-product` event somewhere early in your app's lifecycle:
 
   ```javascript
