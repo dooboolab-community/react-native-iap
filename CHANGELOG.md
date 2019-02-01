@@ -6,6 +6,7 @@
   + Fixed promise not resolving putting back `async` wrapper.
   + Fixed types for `addAdditionalSuccessPurchaseListenerIOS`.
   + Update `build.gradle` to match version in react-native `0.58`.
+  + Fix issue with promoted product event not firing on older devices [#390](https://github.com/dooboolab/react-native-iap/pull/390).
 - **[2.3.23]**
   + Resolve [#288](https://github.com/dooboolab/react-native-iap/issues/288).
 - **[2.3.21]**
