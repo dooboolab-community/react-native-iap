@@ -1,4 +1,5 @@
 #import "RNIapIos.h"
+#import "IAPPromotionObserver.h"
 
 #import <React/RCTLog.h>
 #import <React/RCTConvert.h>
@@ -6,14 +7,12 @@
 #import <StoreKit/StoreKit.h>
 
 ////////////////////////////////////////////////////     _//////////_  // Private Members
-@interface RNIapIos() {
+@interface RNIapIos() <IAPPromotionObserverDelegate> {
   NSMutableDictionary *promisesByKey;
   BOOL autoReceiptConform;
   SKPaymentTransaction *currentTransaction;
   dispatch_queue_t myQueue;
   BOOL hasListeners;
-  SKProduct *promotedProduct;
-  SKPayment *promotedPayment;
 }
 @end
 
@@ -24,6 +23,7 @@
   if ((self = [super init])) {
     promisesByKey = [NSMutableDictionary dictionary];
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+    [IAPPromotionObserver sharedObserver].delegate = self;
   }
   myQueue = dispatch_queue_create("reject", DISPATCH_QUEUE_SERIAL);
   validProducts = [NSMutableArray array];
@@ -49,6 +49,7 @@
 - (void)addListener:(NSString *)eventName {
   [super addListener:eventName];
 
+  SKPayment *promotedPayment = [IAPPromotionObserver sharedObserver].payment;
   if ([eventName isEqualToString:@"iap-promoted-product"] && promotedPayment != nil) {
     [self sendEventWithName:@"iap-promoted-product" body:promotedPayment.productIdentifier];
   }
@@ -87,6 +88,14 @@
     }
     [promisesByKey removeObjectForKey:key];
   }
+}
+
+////////////////////////////////////////////////////     _//////////_  // IAPPromotionObserverDelegate
+- (BOOL)shouldAddStorePayment:(SKPayment *)payment forProduct:(SKProduct *)product {
+  if (hasListeners) {
+    [self sendEventWithName:@"iap-promoted-product" body:product.productIdentifier];
+  }
+  return NO;
 }
 
 ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
@@ -209,11 +218,13 @@ RCT_EXPORT_METHOD(clearProducts) {
 RCT_EXPORT_METHOD(promotedProduct:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
   NSLog(@"\n\n\n  ***  get promoted product. \n\n.");
+  SKProduct *promotedProduct = [IAPPromotionObserver sharedObserver].product;
   resolve(promotedProduct ? promotedProduct.productIdentifier : [NSNull null]);
 }
 
 RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
+  SKPayment *promotedPayment = [IAPPromotionObserver sharedObserver].payment;
   if (promotedPayment) {
     NSLog(@"\n\n\n  ***  buy promoted product. \n\n.");
     [[SKPaymentQueue defaultQueue] addPayment:promotedPayment];
@@ -316,18 +327,6 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
                        message:error.localizedDescription error:error];
   });
   NSLog(@"\n\n\n restoreCompletedTransactionsFailedWithError \n\n.");
-}
-
-- (BOOL)paymentQueue:(SKPaymentQueue *)queue shouldAddStorePayment:(SKPayment *)payment forProduct:(SKProduct *)product {
-  NSLog(@"\n\n\n  ***  should add store payment. \n\n.");
-  promotedProduct = product;
-  promotedPayment = payment;
-
-  if (hasListeners) {
-    [self sendEventWithName:@"iap-promoted-product" body:payment.productIdentifier];
-  }
-
-  return NO;
 }
 
 -(void)purchaseProcess:(SKPaymentTransaction *)transaction {
