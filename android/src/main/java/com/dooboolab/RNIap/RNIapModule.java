@@ -122,14 +122,14 @@ public class RNIapModule extends ReactContextBaseJavaModule {
 
       @Override
       public void onBillingSetupFinished(@BillingClient.BillingResponse int responseCode) {
-        if (responseCode == BillingClient.BillingResponse.OK ) {
-          Log.d(TAG, "billing client ready");
-          if (!bSetupCallbackConsumed) {
-            bSetupCallbackConsumed = true;
+        if (!bSetupCallbackConsumed) {
+          bSetupCallbackConsumed = true;
+          if (responseCode == BillingClient.BillingResponse.OK ) {
+            Log.d(TAG, "billing client ready");
             callback.run();
+          } else {
+            rejectPromiseWithBillingError(promise, responseCode);
           }
-        } else {
-          rejectPromiseWithBillingError(promise, responseCode);
         }
       }
 
