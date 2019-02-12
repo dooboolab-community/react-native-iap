@@ -1,5 +1,5 @@
 ## Changelogs
-- **[2.4.+]**
+- **[2.4.0]**
   + Add support for iOS In-App Purchase promotions [#388](https://github.com/dooboolab/react-native-iap/pull/388).
   + Implemented `addAdditionalSuccessPurchaseListenerIOS` to handle extra successed purchase event. Related to [#307](https://github.com/dooboolab/react-native-iap/issues/307).
   + Attempt to fix crashing in `ensureConnection` for android. Related [#315](https://github.com/dooboolab/react-native-iap/issues/315).
@@ -7,6 +7,7 @@
   + Fixed types for `addAdditionalSuccessPurchaseListenerIOS`.
   + Update `build.gradle` to match version in react-native `0.58`.
   + Fix issue with promoted product event not firing on older devices [#390](https://github.com/dooboolab/react-native-iap/pull/390).
+  + Add support for iOS In-App Purchase promotions.
 - **[2.3.23]**
   + Resolve [#288](https://github.com/dooboolab/react-native-iap/issues/288).
 - **[2.3.21]**
