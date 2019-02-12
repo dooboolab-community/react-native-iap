@@ -7,7 +7,7 @@
 
 > This is a react-native link library project for in-app purchase for both android and ios platforms. The goal of this project is to have similar experience between the two platforms for in-app-purchase. Basically, android platform has more functions for in-app-purchase and is not our specific interests for this project. We are willing to share same in-app-purchase experience for both `android` and `ios`.
 
-> Checkouit example code<br/>
+> Checkout example code<br/>
 ![wjl0ak0fgj](https://user-images.githubusercontent.com/27461460/52619625-87aa8a80-2ee5-11e9-9aee-6691c34408f3.gif)
 
 ## Playstore & Itunnesconnect configuration
