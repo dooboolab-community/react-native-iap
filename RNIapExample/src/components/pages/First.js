@@ -91,7 +91,7 @@ class Page extends Component {
       this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
     } catch (err) {
       console.warn(err.code, err.message);
-      const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async (purchase) => {
+      const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async(purchase) => {
         this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
         subscription.remove();
       });
