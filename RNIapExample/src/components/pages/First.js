@@ -168,7 +168,9 @@ class Page extends Component {
                       marginTop: 20,
                       fontSize: 12,
                       color: 'black',
+                      minHeight: 100,
                       alignSelf: 'center',
+                      paddingHorizontal: 20,
                     }} >{JSON.stringify(product)}</Text>
                     <NativeButton
                       onPress={() => this.buyItem(product.productId)}
