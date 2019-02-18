@@ -48,7 +48,7 @@ But now you should do like below which will just pass single array instead of ob
 ```
 const itemSkus = Platform.select({
   ios: [
-	'point_1000',
+    'point_1000',
   ],
   android: [
     'point_1000',
@@ -120,13 +120,13 @@ You should remove this before running `pod install` and follow the manual instal
   	project(':react-native-iap').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-iap/android')
   	```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
-      compile project(':react-native-iap')
-  	```
+	```
+	compile project(':react-native-iap')
+	```
 4. Add the following to the `<permission>` block in `android/app/src/main/AndroidManifest.xml`:
-    ```
-    <uses-permission android:name="com.android.vending.BILLING" />
-    ```
+	```
+	<uses-permission android:name="com.android.vending.BILLING" />
+	```
 
 ## Usage
 You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
@@ -191,8 +191,8 @@ componentWillUnmount() {
 ## Purchase
 Once you have called getProducts(), and you have a valid response, you can call buyProduct().
 ```javascript
-  // Will return a purchase object with a receipt which can be used to validate on your server.
-  const purchase = await RNIap.buyProduct('com.example.coins100');
+// Will return a purchase object with a receipt which can be used to validate on your server.
+const purchase = await RNIap.buyProduct('com.example.coins100');
 ```
 
 In RNIapExample, upon receiving a purchase receipt, main page will navigate to Second.js.
