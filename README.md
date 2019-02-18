@@ -350,11 +350,11 @@ We've like to update this solution as version changes in `react-native-iap`.
 
 #### Can I buy product right away skipping fetching products if I already know productId?
 - You can in `Android` but not in `ios`. In `ios` you should always `fetchProducts` first. You can see more info [here](https://medium.com/ios-development-tips-and-tricks/working-with-ios-in-app-purchases-e4b55491479b).
-- Related issue in #283.
+- Related issue in [#283](https://github.com/dooboolab/react-native-iap/issues/283).
 
 #### How do I validate receipt in ios?
 - Official doc is [here](https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
-- Resolved issues in #203, #237.
+- Resolved issues in [#203](https://github.com/dooboolab/react-native-iap/issues/203), [#237](https://github.com/dooboolab/react-native-iap/issues/237).
 
 #### How do I validate receipt in android?
 - Offical doc is [here](https://developer.android.com/google/play/billing/billing_library_overview).
@@ -363,7 +363,7 @@ We've like to update this solution as version changes in `react-native-iap`.
 
 #### How do I use react-native-iap in expo?
 - You should detach from `expo` and get `expokit` out of it.
-- Releated issue in #174.
+- Releated issue in [#174](https://github.com/dooboolab/react-native-iap/issues/174).
 
 #### How do I handle promoted products in ios?
 
@@ -407,7 +407,7 @@ We've like to update this solution as version changes in `react-native-iap`.
        iii. Waiting for Review
     4. Enable "In-App Purchase" in Xcode "Capabilities" and in Apple Developer -> "App ID" setting.
 Delete app / Restart device / Quit "store" related processes in Activity Monitor / Xcode Development Provisioning Profile -> Clean -> Build.
-  - Related issues #256, #263.
+  - Related issues [#256](https://github.com/dooboolab/react-native-iap/issues/256) , [#263](https://github.com/dooboolab/react-native-iap/issues/263).
 
 #### Module is not working as expected. Throws error.
 - The `react-native link` script isn't perfect and sometimes broke. Please try `unlinking` and `linking` again. Or try manual installing.
