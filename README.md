@@ -37,7 +37,7 @@ From above method changes, `getProducts` gets `itemSkus` as parameter in differe
 ```
 const itemSkus = {
   ios: [
-	'point_1000',
+    'point_1000',
   ],
   android: [
     'point_1000',
