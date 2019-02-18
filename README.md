@@ -115,18 +115,18 @@ You should remove this before running `pod install` and follow the manual instal
   - Add `import com.dooboolab.RNIap.RNIapPackage;` to the imports at the top of the file
   - Add `new RNIapPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
-  	```
-  	include ':react-native-iap'
-  	project(':react-native-iap').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-iap/android')
-  	```
+  ```
+  include ':react-native-iap'
+  project(':react-native-iap').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-iap/android')
+  ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-	```
-	compile project(':react-native-iap')
-	```
+  ```
+  compile project(':react-native-iap')
+  ```
 4. Add the following to the `<permission>` block in `android/app/src/main/AndroidManifest.xml`:
-	```
-	<uses-permission android:name="com.android.vending.BILLING" />
-	```
+  ```
+  <uses-permission android:name="com.android.vending.BILLING" />
+  ```
 
 ## Usage
 You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
