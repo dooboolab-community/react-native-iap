@@ -37,7 +37,7 @@ From above method changes, `getProducts` gets `itemSkus` as parameter in differe
 ```
 const itemSkus = {
   ios: [
-	'point_1000',
+    'point_1000',
   ],
   android: [
     'point_1000',
@@ -48,7 +48,7 @@ But now you should do like below which will just pass single array instead of ob
 ```
 const itemSkus = Platform.select({
   ios: [
-	'point_1000',
+    'point_1000',
   ],
   android: [
     'point_1000',
@@ -108,25 +108,25 @@ You should remove this before running `pod install` and follow the manual instal
 1. In XCode, in the project navigator, right-click `Libraries` ➜ `Add Files to [your project's name]`
 2. Go to `node_modules` ➜ `react-native-iap` and add `RNIap.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libRNIap.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
-4. Run your project (`Cmd+R`)<
+4. Run your project (`Cmd+R`)
 
 #### Android
 1. Open up `android/app/src/main/java/[...]/MainApplication.java`
   - Add `import com.dooboolab.RNIap.RNIapPackage;` to the imports at the top of the file
   - Add `new RNIapPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
-  	```
-  	include ':react-native-iap'
-  	project(':react-native-iap').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-iap/android')
-  	```
+  ```
+  include ':react-native-iap'
+  project(':react-native-iap').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-iap/android')
+  ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
-      compile project(':react-native-iap')
-  	```
+  ```
+  compile project(':react-native-iap')
+  ```
 4. Add the following to the `<permission>` block in `android/app/src/main/AndroidManifest.xml`:
-    ```
-    <uses-permission android:name="com.android.vending.BILLING" />
-    ```
+  ```
+  <uses-permission android:name="com.android.vending.BILLING" />
+  ```
 
 ## Usage
 You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
@@ -191,8 +191,8 @@ componentWillUnmount() {
 ## Purchase
 Once you have called getProducts(), and you have a valid response, you can call buyProduct().
 ```javascript
-  // Will return a purchase object with a receipt which can be used to validate on your server.
-  const purchase = await RNIap.buyProduct('com.example.coins100');
+// Will return a purchase object with a receipt which can be used to validate on your server.
+const purchase = await RNIap.buyProduct('com.example.coins100');
 ```
 
 In RNIapExample, upon receiving a purchase receipt, main page will navigate to Second.js.
@@ -350,11 +350,11 @@ We've like to update this solution as version changes in `react-native-iap`.
 
 #### Can I buy product right away skipping fetching products if I already know productId?
 - You can in `Android` but not in `ios`. In `ios` you should always `fetchProducts` first. You can see more info [here](https://medium.com/ios-development-tips-and-tricks/working-with-ios-in-app-purchases-e4b55491479b).
-- Related issue in #283.
+- Related issue in [#283](https://github.com/dooboolab/react-native-iap/issues/283).
 
 #### How do I validate receipt in ios?
 - Official doc is [here](https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
-- Resolved issues in #203, #237.
+- Resolved issues in [#203](https://github.com/dooboolab/react-native-iap/issues/203), [#237](https://github.com/dooboolab/react-native-iap/issues/237).
 
 #### How do I validate receipt in android?
 - Offical doc is [here](https://developer.android.com/google/play/billing/billing_library_overview).
@@ -363,7 +363,7 @@ We've like to update this solution as version changes in `react-native-iap`.
 
 #### How do I use react-native-iap in expo?
 - You should detach from `expo` and get `expokit` out of it.
-- Releated issue in #174.
+- Releated issue in [#174](https://github.com/dooboolab/react-native-iap/issues/174).
 
 #### How do I handle promoted products in ios?
 
@@ -407,7 +407,7 @@ We've like to update this solution as version changes in `react-native-iap`.
        iii. Waiting for Review
     4. Enable "In-App Purchase" in Xcode "Capabilities" and in Apple Developer -> "App ID" setting.
 Delete app / Restart device / Quit "store" related processes in Activity Monitor / Xcode Development Provisioning Profile -> Clean -> Build.
-  - Related issues #256, #263.
+  - Related issues [#256](https://github.com/dooboolab/react-native-iap/issues/256) , [#263](https://github.com/dooboolab/react-native-iap/issues/263).
 
 #### Module is not working as expected. Throws error.
 - The `react-native link` script isn't perfect and sometimes broke. Please try `unlinking` and `linking` again. Or try manual installing.
