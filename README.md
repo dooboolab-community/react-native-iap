@@ -73,7 +73,7 @@ Also, note that this is our last migration for renaming method names without any
 | finishTransaction | `void` | `void` | Send finishTransaction call to Apple IAP server. Call this function after receipt validation process |
 | clearTransaction | `void` | `void` | Clear up the unfinished transanction which sometimes causes problem. Read more in below readme. |
 | clearProducts | `void` | `void` | Clear all products, subscriptions in ios. Read more in below readme. |
-| consumeProduct | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
+| consumePurchase | `string` Purchase token | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
 | endConnection | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
 | consumeAllItems | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
 | validateReceiptIos | `object` receiptBody, `boolean` isTest | `object or boolean` result | validate receipt for ios. |
