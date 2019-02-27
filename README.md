@@ -189,51 +189,31 @@ componentWillUnmount() {
 ```
 
 ## Purchase
-Once you have called getProducts(), and you have a valid response, you can call buyProduct().
-```javascript
-// Will return a purchase object with a receipt which can be used to validate on your server.
-const purchase = await RNIap.buyProduct('com.example.coins100');
-```
+Once you have called `getProducts()`, and you have a valid response, you can call `buyProduct()`. Subscribable products can be purchased just like consumable products and users can cancel subscriptions by using the iOS System Settings.
 
-In RNIapExample, upon receiving a purchase receipt, main page will navigate to Second.js.
-
-## Purchase Example 2 (Advanced)
 ```javascript
-this.setState({ progressTitle: 'Please wait...' });
-RNIap.buyProduct('com.example.coins100').then(purchase => {
+  try
+    // Will return a purchase object with a receipt which can be used to validate on your server.
+    const purchase = await RNIap.buyProduct('com.example.coins100');
     this.setState({
       receipt: purchase.transactionReceipt, // save the receipt if you need it, whether locally, or to your server.
-      progressTitle: 'Purchase Successful!',
-      coins: this.state.coins + 100
     });
-  }).catch(err => {
-    // resetting UI
-    console.warn(err); // standardized err.code and err.message available
-    this.setState({ progressTitle: 'Buy 100 Coins for only $0.99' });
-    alert(err.message);
-  })
+  } catch(err) {
+    // standardized err.code and err.message available
+    console.warn(err.code, err.message);
+    const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async (purchase) => {
+      this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
+      subscription.remove();
+    });
+  }
 ```
 
-Subscribable products can be purchased just like consumable products.
-Users can cancel subscriptions by using the iOS System Settings.
-
-## Purchase Example 3 (Advanced)
-```javascript
-try {
-  const purchase: any = await RNIap.buyProduct(sku);
-  this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
-} catch (err) {
-  console.warn(err.code, err.message);
-  const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async (purchase) => {
-    this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
-    subscription.remove();
-  });
-}
-```
-If you need to handle the success of purchase which could be called even after purchase failed,
-you can add `addAdditionalSuccessPurchaseListenerIOS` to handle next `successPurchase`.
+Most likely, you'll want to handle the 'store kit flow' (detailed [here](https://forums.developer.apple.com/thread/6431#14831)), which happens when a user succesfully pays after solving a problem with his or her account - for example, when the credit card information has expired. 
+In this scenario, the initial call to `RNIap.buyProduct` would fail and you'd need to add `addAdditionalSuccessPurchaseListenerIOS` to handle the successful purchase. Otherwise, you'll be in a scenario where the user paid but your application is not aware of it
 * This feature was provided because of issue in [#307](https://github.com/dooboolab/react-native-iap/issues/307).
 * This feature is provided from `react-native-iap` version `2.4.0-beta1`. Currently this feature is in test.
+
+In RNIapExample, upon receiving a purchase receipt, main page will navigate to Second.js.
 
 
 ## Consumption and Restoring Purchases
