@@ -17,18 +17,48 @@ export const PROMOTED_PRODUCT = 'iap-promoted-product';
 export const prepare = () => {
   console.warn('The `prepare` method is deprecated. Use initConnection method instead.');
   Platform.select({
-    ios: async() => RNIapIos.canMakePayments(),
-    android: async() => RNIapModule.initConnection(),
+    ios: async() => {
+      this.checkNativeiOSAvailable();
+      return RNIapIos.canMakePayments();
+    },
+    android: async() => {
+      this.checkNativeAndroidAvailable();
+      return RNIapModule.initConnection();
+    }
   })();
 };
 
+checkNativeAndroidAvailable = () => {
+  if (!RNIapModule) {
+    // throw new Error(
+    //  'RNIapModule: not  available'
+    // );
+    return Promise.reject('E_IAP_NOT_AVAILABLE', 'The payment setup is not available in this version of the app. Contact admin.');
+  }
+};
+
+checkNativeiOSAvailable = () => {
+  if (!RNIapIos) {
+    return Promise.reject('E_IAP_NOT_AVAILABLE', 'The payment setup is not available in this version of the app. Contact admin.');
+  }
+};
 /**
  * Init module for purchase flow. Required on Android. In ios it will check wheter user canMakePayment.
  * @returns {Promise<string>}
  */
 export const initConnection = () => Platform.select({
-  ios: async() => RNIapIos.canMakePayments(),
-  android: async() => RNIapModule.initConnection(),
+  ios: async() => {
+    if (!RNIapIos) {
+      return Promise.resolve();
+    }
+    return RNIapIos.canMakePayments();
+  },
+  android: async() => {
+    if (!RNIapModule) {
+      return Promise.resolve();
+    }
+    return RNIapModule.initConnection();
+  },
 })();
 
 /**
@@ -37,7 +67,12 @@ export const initConnection = () => Platform.select({
  */
 export const endConnection = () => Platform.select({
   ios: async() => Promise.resolve(),
-  android: async() => RNIapModule.endConnection(),
+  android: async() => {
+    if (!RNIapModule) {
+      return Promise.resolve();
+    }
+    return RNIapModule.endConnection(); 
+  }
 })();
 
 /**
@@ -46,7 +81,10 @@ export const endConnection = () => Platform.select({
  */
 export const consumeAllItems = () => Platform.select({
   ios: async() => Promise.resolve(),
-  android: async() => RNIapModule.refreshItems(),
+  android: async() => {
+    this.checkNativeAndroidAvailable();
+    return RNIapModule.refreshItems();
+  }
 })();
 
 /**
@@ -55,9 +93,19 @@ export const consumeAllItems = () => Platform.select({
  * @returns {Promise<Product[]>}
  */
 export const getProducts = (skus) => Platform.select({
-  ios: async() => RNIapIos.getItems(skus)
-    .then((items) => items.filter((item) => item.productId)),
-  android: async() => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_IAP, skus),
+  ios: async() => {
+    if (!RNIapIos) {
+      return [];
+    }
+    return RNIapIos.getItems(skus)
+    .then((items) => items.filter((item) => item.productId));
+  },
+  android: async() => {
+    if (!RNIapModule) {
+      return [];
+    }
+    return RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_IAP, skus);
+  }
 })();
 
 /**
@@ -66,9 +114,15 @@ export const getProducts = (skus) => Platform.select({
  * @returns {Promise<Subscription[]>}
  */
 export const getSubscriptions = (skus) => Platform.select({
-  ios: async() => RNIapIos.getItems(skus)
-    .then((items) => items.filter((item) => item.productId)),
-  android: async() => RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus),
+  ios: async() => {
+    this.checkNativeiOSAvailable();
+    return RNIapIos.getItems(skus)
+    .then((items) => items.filter((item) => item.productId));
+  },
+  android: async() => {
+    this.checkNativeAndroidAvailable();
+    return RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus);
+  }
 })();
 
 /**
@@ -76,8 +130,12 @@ export const getSubscriptions = (skus) => Platform.select({
  * @returns {Promise<Purchase[]>}
  */
 export const getPurchaseHistory = () => Platform.select({
-  ios: async() => RNIapIos.getAvailableItems(),
+  ios: async() => {
+    this.checkNativeiOSAvailable();
+    return RNIapIos.getAvailableItems();
+  },
   android: async() => {
+    this.checkNativeAndroidAvailable();
     let products = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_IAP);
     let subscriptions = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
     return products.concat(subscriptions);
@@ -89,8 +147,12 @@ export const getPurchaseHistory = () => Platform.select({
  * @returns {Promise<Purchase[]>}
  */
 export const getAvailablePurchases = () => Platform.select({
-  ios: async() => RNIapIos.getAvailableItems(),
+  ios: async() => {
+    this.checkNativeiOSAvailable();
+    return RNIapIos.getAvailableItems();
+  },
   android: async() => {
+    this.checkNativeAndroidAvailable();
     let products = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_IAP);
     let subscriptions = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
     return products.concat(subscriptions);
@@ -106,8 +168,12 @@ export const getAvailablePurchases = () => Platform.select({
  */
 export const buySubscription = (sku, oldSku, prorationMode) => {
   return Platform.select({
-    ios: async() => RNIapIos.buyProduct(sku),
+    ios: async() => {
+      this.checkNativeiOSAvailable();
+      return RNIapIos.buyProduct(sku);
+    },
     android: async() => {
+      this.checkNativeAndroidAvailable();
       if (!prorationMode) prorationMode = -1;
       return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku, prorationMode);
     },
@@ -120,8 +186,14 @@ export const buySubscription = (sku, oldSku, prorationMode) => {
  * @returns {Promise<ProductPurchase>}
  */
 export const buyProduct = (sku) => Platform.select({
-  ios: async() => RNIapIos.buyProduct(sku),
-  android: async() => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
+  ios: async() => {
+    this.checkNativeiOSAvailable();
+    return RNIapIos.buyProduct(sku);
+  },
+  android: async() => {
+    this.checkNativeAndroidAvailable();
+    return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
+  }
 })();
 
 /**
@@ -131,7 +203,10 @@ export const buyProduct = (sku) => Platform.select({
  * @returns {Promise<ProductPurchase>}
  */
 export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
-  ios: async() => RNIapIos.buyProductWithQuantityIOS(sku, quantity),
+  ios: async() => {
+    this.checkNativeiOSAvailable();
+    return RNIapIos.buyProductWithQuantityIOS(sku, quantity);
+  },
   android: async() => Promise.resolve(),
 })();
 
@@ -142,8 +217,14 @@ export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
  * @returns {Promise<ProductPurchase>}
  */
 export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
-  ios: async() => RNIapIos.buyProductWithoutAutoConfirm(sku),
-  android: async() => RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0),
+  ios: async() => {
+    this.checkNativeiOSAvailable();
+    return RNIapIos.buyProductWithoutAutoConfirm(sku);
+  },
+  android: async() => {
+    this.checkNativeAndroidAvailable();
+    return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
+  }
 })();
 
 /**
@@ -152,7 +233,10 @@ export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
  * @returns {Promise<ProductPurchase>}
  */
 export const finishTransaction = () => Platform.select({
-  ios: async() => RNIapIos.finishTransaction(),
+  ios: async() => {
+    this.checkNativeiOSAvailable();
+    return RNIapIos.finishTransaction();
+  },
   android: async() => Promise.resolve(),
 })();
 
@@ -163,7 +247,10 @@ export const finishTransaction = () => Platform.select({
  * @returns {null}
  */
 export const clearTransaction = () => Platform.select({
-  ios: async() => RNIapIos.clearTransaction(),
+  ios: async() => {
+    this.checkNativeiOSAvailable();
+    return RNIapIos.clearTransaction();
+  },
   android: async() => Promise.resolve(),
 })();
 
@@ -173,7 +260,10 @@ export const clearTransaction = () => Platform.select({
  * @returns {null}
  */
 export const clearProducts = () => Platform.select({
-  ios: async() => RNIapIos.clearProducts(),
+  ios: async() => {
+    this.checkNativeiOSAvailable();
+    return RNIapIos.clearProducts();
+  },
   android: async() => Promise.resolve,
 })();
 
@@ -184,7 +274,10 @@ export const clearProducts = () => Platform.select({
  */
 export const consumePurchase = (token) => Platform.select({
   ios: async() => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
-  android: async() => RNIapModule.consumeProduct(token),
+  android: async() => {
+    this.checkNativeAndroidAvailable();
+    return RNIapModule.consumeProduct(token);
+  }
 })();
 
 /**
@@ -193,7 +286,10 @@ export const consumePurchase = (token) => Platform.select({
  * @returns {null}
  */
 export const getPromotedProduct = () => Platform.select({
-  ios: async() => RNIapIos.promotedProduct(),
+  ios: async() => {
+    this.checkNativeiOSAvailable();
+    return RNIapIos.promotedProduct();
+  },
   android: async() => Promise.resolve(),
 })();
 
@@ -202,7 +298,10 @@ export const getPromotedProduct = () => Platform.select({
  *   Initiates the payment process for a promoted product. Should only be called in response to the `iap-promoted-product` event. * @returns {null}
  */
 export const buyPromotedProduct = () => Platform.select({
-  ios: async() => RNIapIos.buyPromotedProduct(),
+  ios: async() => {
+    this.checkNativeiOSAvailable();
+    return RNIapIos.buyPromotedProduct();
+  },
   android: async() => Promise.resolve(),
 })();
 
@@ -262,6 +361,7 @@ export const validateReceiptAndroid = async(packageName, productId, productToken
  */
 export const addAdditionalSuccessPurchaseListenerIOS = (e) => {
   if (Platform.OS === 'ios') {
+    this.checkNativeiOSAvailable();
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
     return myModuleEvt.addListener('iap-purchase-event', e);
   } else {
