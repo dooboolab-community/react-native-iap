@@ -458,7 +458,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         promise.reject(E_NETWORK_ERROR, "The service is disconnected (check your internet connection.)");
         break;
       case BillingClient.BillingResponse.USER_CANCELED:
-        promise.reject(E_USER_CANCELLED, "Cancelled.");
+        promise.reject(E_USER_CANCELLED, "Payment is Cancelled.");
         break;
       case BillingClient.BillingResponse.SERVICE_UNAVAILABLE:
         promise.reject(E_SERVICE_ERROR, "The service is unreachable. This may be your internet connection, or the Play Store may be down.");
@@ -470,7 +470,7 @@ public class RNIapModule extends ReactContextBaseJavaModule {
         promise.reject(E_ITEM_UNAVAILABLE, "That item is unavailable.");
         break;
       case BillingClient.BillingResponse.DEVELOPER_ERROR:
-        promise.reject(E_DEVELOPER_ERROR, "Google is indicating that we have an error in our code. Sorry about that.");
+        promise.reject(E_DEVELOPER_ERROR, "Google is indicating that we have some issue connecting to payment.");
         break;
       case BillingClient.BillingResponse.ERROR:
         promise.reject(E_UNKNOWN, "An unknown or unexpected error has occured. Please try again later.");
