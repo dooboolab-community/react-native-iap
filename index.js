@@ -189,7 +189,7 @@ export const consumePurchase = (token) => Platform.select({
 
 /**
  * Should Add Store Payment (iOS only)
- *   Indicates the the App Store purchase should continue from the app instead of the App Store. 
+ *   Indicates the the App Store purchase should continue from the app instead of the App Store.
  * @returns {null}
  */
 export const getPromotedProduct = () => Platform.select({
@@ -199,8 +199,7 @@ export const getPromotedProduct = () => Platform.select({
 
 /**
  * Buy the currently selected promoted product (iOS only)
- *   Initiates the payment process for a promoted product. Should only be called in response to the `iap-promoted-product` event.  
- * @returns {null}
+ *   Initiates the payment process for a promoted product. Should only be called in response to the `iap-promoted-product` event. * @returns {null}
  */
 export const buyPromotedProduct = () => Platform.select({
   ios: async() => RNIapIos.buyPromotedProduct(),
