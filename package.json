@@ -6,7 +6,8 @@
   "types": "index.d.ts",
   "postinstall": "dooboolab-welcome postinstall",
   "scripts": {
-    "test": "eslint ."
+    "test": "eslint .",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
