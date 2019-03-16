@@ -5,12 +5,12 @@ node_js:
 
 install:
   - npm install
-  - cd example
+  - cd RNIapExample
   - npm install
   - cd ..
 
 script:
   - npm run lint
-  - cd example
+  - cd RNIapExample
   - npm run lint
 - cd ..
