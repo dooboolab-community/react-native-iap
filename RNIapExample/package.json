@@ -10,15 +10,15 @@
     "android": "node node_modules/react-native/local-cli/cli.js run-android",
     "android:package": "curl http://localhost:8081/index.bundle?platform=android -o android/app/src/main/assets/index.android.bundle",
     "ios": "node node_modules/react-native/local-cli/cli.js run-ios",
+    "lint": "eslint -c .eslintrc './src/**/*.js'",
     "jest": "jest",
-    "lint": "eslint -c .eslintrc.js './src/**/*.js'",
     "build:ios": "react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
     "build:android": "react-native bundle --entry-file index.js --platform android --dev false --bundle-output android/main.jsbundle --assets-dest android"
   },
   "dependencies": {
     "apsl-react-native-button": "^3.1.1",
     "react": "16.6.3",
-    "react-native": "0.57.7",
+    "react-native": "^0.59.1",
     "react-native-gesture-handler": "^1.0.10",
     "react-native-iap": "dooboolab/react-native-iap#master",
     "react-navigation": "^3.0.5"
