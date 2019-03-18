@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "apsl-react-native-button": "^3.1.1",
-    "react": "16.6.3",
+    "react": "16.8.4",
     "react-native": "^0.59.1",
     "react-native-gesture-handler": "^1.0.10",
     "react-native-iap": "dooboolab/react-native-iap#master",
@@ -25,23 +25,23 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.2.0",
-    "@babel/core": "7.2.0",
-    "@babel/plugin-proposal-decorators": "7.2.0",
-    "@babel/plugin-transform-runtime": "7.2.0",
+    "@babel/core": "7.3.4",
+    "@babel/plugin-proposal-decorators": "7.3.0",
+    "@babel/plugin-transform-runtime": "7.3.4",
     "@babel/preset-flow": "^7.0.0",
-    "@babel/runtime": "7.2.0",
+    "@babel/runtime": "7.3.4",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^23.6.0",
+    "babel-jest": "^24.5.0",
     "eslint": "^5.9.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-promise": "^4.0.1",
-    "jest": "23.6.0",
+    "jest": "24.5.0",
     "react-native-debugger-open": "^0.3.17",
-    "react-native-extended-stylesheet": "^0.10.0",
-    "metro-react-native-babel-preset": "^0.50.0",
-    "react-test-renderer": "16.6.3"
+    "react-native-extended-stylesheet": "^0.11.1",
+    "metro-react-native-babel-preset": "^0.53.1",
+    "react-test-renderer": "16.8.4"
   },
   "jest": {
     "preset": "react-native"
