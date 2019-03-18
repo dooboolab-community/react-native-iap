@@ -12,7 +12,6 @@ matrix:
   # Runs unit tests without emulators.
   - env: JOB=PR
     os: linux
-    language: generic
     sudo: false
     language: node_js
     node_js:
