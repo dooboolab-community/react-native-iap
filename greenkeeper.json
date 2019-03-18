@@ -1,0 +1,10 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "RNIapExample/package.json",
+        "package.json"
+      ]
+    }
+  }
+}
