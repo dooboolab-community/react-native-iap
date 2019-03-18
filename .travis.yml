@@ -1,16 +1,31 @@
-sudo: false
-language: node_js
-node_js:
-  - "stable"
+matrix:
+  # This causes the build to complete immediately upon first failure or once
+  # required jobs are green.
+  fast_finish: true
 
-install:
-  - npm install
-  - cd RNIapExample
-  - npm install
-  - cd ..
+  # Building APK/IPA takes a long time; do not wait for them to finish.
+  #  allow_failures:
+  #  - env: JOB=APK
+  #  - env: JOB=IPA
 
-script:
-  - npm run lint
-  - cd RNIapExample
-  - npm run lint
-- cd ..
+  include:
+  # Runs unit tests without emulators.
+  - env: JOB=PR
+    os: linux
+    language: generic
+    sudo: false
+    language: node_js
+    node_js:
+      - "stable"
+
+    install:
+      - npm install
+      - cd RNIapExample
+      - npm install
+      - cd ..
+
+    script:
+      - npm run lint
+      - cd RNIapExample
+      - npm run lint
+    - cd ..
