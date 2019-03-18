@@ -7,7 +7,7 @@
   "postinstall": "dooboolab-welcome postinstall",
   "scripts": {
     "test": "eslint .",
-    "lint": "eslint ."
+    "lint": "eslint -c .eslintrc.js '.'"
   },
   "repository": {
     "type": "git",
