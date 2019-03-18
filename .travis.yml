@@ -11,11 +11,21 @@ matrix:
   include:
   # Runs unit tests without emulators.
   - env: JOB=PR
-    os: linux
     sudo: false
     language: node_js
     node_js:
       - "stable"
+    cache:
+      directories:
+        - node_modules
+    env:
+      - CXX=g++-4.8
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - g++-4.8
 
     install:
       - npm install
@@ -27,4 +37,4 @@ matrix:
       - npm run lint
       - cd RNIapExample
       - npm run lint
-    - cd ..
+      - cd ..
