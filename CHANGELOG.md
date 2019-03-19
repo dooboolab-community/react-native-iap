@@ -9,6 +9,7 @@
   + Fix issue with promoted product event not firing on older devices [#390](https://github.com/dooboolab/react-native-iap/pull/390).
   + Add support for iOS In-App Purchase promotions.
   + Add stable channel for pod [#404](https://github.com/dooboolab/react-native-iap/issues/404).
+  + Add flow typed [#431](https://github.com/dooboolab/react-native-iap/pull/431)
 - **[2.3.23]**
   + Resolve [#288](https://github.com/dooboolab/react-native-iap/issues/288).
 - **[2.3.21]**
