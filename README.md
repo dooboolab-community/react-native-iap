@@ -8,7 +8,7 @@
 [![Issue Opened](https://img.shields.io/github/issues/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/issues)
 [![Issue Closed](https://img.shields.io/github/issues-closed/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/issues?q=is%3Aissue+is%3Aclosed)
 [![PR Opened](https://img.shields.io/github/issues-pr/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/pulls)
-[![PR Closed](https://img.shields.io/github/issues-pr-closed/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/pulls?q=is%3Apr+is%3Aclosed)
+[![PR Closed](https://img.shields.io/github/issues-pr-closed/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/pulls?q=is%3Apr+is%3Aclosed) [![Greenkeeper badge](https://badges.greenkeeper.io/dooboolab/react-native-iap.svg)](https://greenkeeper.io/)
 
 > This is a react-native link library project for in-app purchase for both android and ios platforms. The goal of this project is to have similar experience between the two platforms for in-app-purchase. Basically, android platform has more functions for in-app-purchase and is not our specific interests for this project. We are willing to share same in-app-purchase experience for both `android` and `ios`.
 
