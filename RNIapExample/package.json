@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "apsl-react-native-button": "^3.1.1",
-    "react": "16.8.4",
+    "react": "16.8.5",
     "react-native": "^0.59.1",
     "react-native-gesture-handler": "^1.0.10",
     "react-native-iap": "dooboolab/react-native-iap#master",
