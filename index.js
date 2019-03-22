@@ -24,22 +24,19 @@ export const prepare = () => {
     android: async() => {
       checkNativeAndroidAvailable();
       return RNIapModule.initConnection();
-    }
+    },
   })();
 };
 
-checkNativeAndroidAvailable = () => {
+function checkNativeAndroidAvailable() {
   if (!RNIapModule) {
-    // throw new Error(
-    //  'RNIapModule: not  available'
-    // );
-    return Promise.reject('E_IAP_NOT_AVAILABLE', 'The payment setup is not available in this version of the app. Contact admin.');
+    return Promise.reject(new Error('E_IAP_NOT_AVAILABLE', 'The payment setup is not available in this version of the app. Contact admin.'));
   }
 };
 
-checkNativeiOSAvailable = () => {
+function checkNativeiOSAvailable() {
   if (!RNIapIos) {
-    return Promise.reject('E_IAP_NOT_AVAILABLE', 'The payment setup is not available in this version of the app. Contact admin.');
+    return Promise.reject(new Error('E_IAP_NOT_AVAILABLE', 'The payment setup is not available in this version of the app. Contact admin.'));
   }
 };
 /**
@@ -71,8 +68,8 @@ export const endConnection = () => Platform.select({
     if (!RNIapModule) {
       return Promise.resolve();
     }
-    return RNIapModule.endConnection(); 
-  }
+    return RNIapModule.endConnection();
+  },
 })();
 
 /**
@@ -84,7 +81,7 @@ export const consumeAllItems = () => Platform.select({
   android: async() => {
     checkNativeAndroidAvailable();
     return RNIapModule.refreshItems();
-  }
+  },
 })();
 
 /**
@@ -98,14 +95,14 @@ export const getProducts = (skus) => Platform.select({
       return [];
     }
     return RNIapIos.getItems(skus)
-    .then((items) => items.filter((item) => item.productId));
+      .then((items) => items.filter((item) => item.productId));
   },
   android: async() => {
     if (!RNIapModule) {
       return [];
     }
     return RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_IAP, skus);
-  }
+  },
 })();
 
 /**
@@ -117,12 +114,12 @@ export const getSubscriptions = (skus) => Platform.select({
   ios: async() => {
     checkNativeiOSAvailable();
     return RNIapIos.getItems(skus)
-    .then((items) => items.filter((item) => item.productId));
+      .then((items) => items.filter((item) => item.productId));
   },
   android: async() => {
     checkNativeAndroidAvailable();
     return RNIapModule.getItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, skus);
-  }
+  },
 })();
 
 /**
@@ -193,7 +190,7 @@ export const buyProduct = (sku) => Platform.select({
   android: async() => {
     checkNativeAndroidAvailable();
     return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
-  }
+  },
 })();
 
 /**
@@ -224,7 +221,7 @@ export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
   android: async() => {
     checkNativeAndroidAvailable();
     return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
-  }
+  },
 })();
 
 /**
@@ -277,7 +274,7 @@ export const consumePurchase = (token) => Platform.select({
   android: async() => {
     checkNativeAndroidAvailable();
     return RNIapModule.consumeProduct(token);
-  }
+  },
 })();
 
 /**
@@ -295,7 +292,8 @@ export const getPromotedProduct = () => Platform.select({
 
 /**
  * Buy the currently selected promoted product (iOS only)
- *   Initiates the payment process for a promoted product. Should only be called in response to the `iap-promoted-product` event. * @returns {null}
+ *   Initiates the payment process for a promoted product. Should only be called in response to the `iap-promoted-product` event.
+ * @returns {null}
  */
 export const buyPromotedProduct = () => Platform.select({
   ios: async() => {
