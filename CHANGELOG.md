@@ -10,6 +10,7 @@
   + Add support for iOS In-App Purchase promotions.
   + Add stable channel for pod [#404](https://github.com/dooboolab/react-native-iap/issues/404).
   + Add flow typed [#431](https://github.com/dooboolab/react-native-iap/pull/431)
+  + Prevent crashing from phones that doesn't have IAP feature [#434](https://github.com/dooboolab/react-native-iap/pull/434)
 - **[2.3.23]**
   + Resolve [#288](https://github.com/dooboolab/react-native-iap/issues/288).
 - **[2.3.21]**
