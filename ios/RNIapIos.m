@@ -311,7 +311,7 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
   NSMutableArray* items = [NSMutableArray arrayWithCapacity:queue.transactions.count];
 
   for(SKPaymentTransaction *transaction in queue.transactions) {
-    if(transaction.transactionState == SKPaymentTransactionStateRestored) {
+    if(transaction.transactionState == SKPaymentTransactionStateRestored || transaction.transactionState == SKPaymentTransactionStatePurchased) {
       NSDictionary *restored = [self getPurchaseData:transaction];
       [items addObject:restored];
       [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
