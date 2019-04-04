@@ -24,8 +24,8 @@ export interface Subscription<ID extends string> extends Common {
   introductoryPriceNumberOfPeriods?: number
   introductoryPriceSubscriptionPeriod: object
 
-  subscriptionPeriodNumberIOS?: string
-  subscriptionPeriodUnitIOS?: number
+  subscriptionPeriodNumberIOS?: number
+  subscriptionPeriodUnitIOS?: string
 
   introductoryPriceCyclesAndroid?: number
   introductoryPricePeriodAndroid?: string

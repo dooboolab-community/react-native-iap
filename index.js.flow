@@ -24,8 +24,8 @@ export type Subscription<ID> = Common & {
   introductoryPriceNumberOfPeriods?: number,
   introductoryPriceSubscriptionPeriod: {},
 
-  subscriptionPeriodNumberIOS?: string,
-  subscriptionPeriodUnitIOS?: number,
+  subscriptionPeriodNumberIOS?: number,
+  subscriptionPeriodUnitIOS?: string,
 
   introductoryPriceCyclesAndroid?: number,
   introductoryPricePeriodAndroid?: string,
