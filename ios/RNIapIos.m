@@ -164,10 +164,10 @@ RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
     }
   }
   if (product) {
-    SKPaymentDiscount *discount = [SKPaymentDiscount
+    SKPaymentDiscount *discount = [[SKPaymentDiscount alloc]
       initWithIdentifier:withOffer[@"identifier"]
       keyIdentifier:withOffer[@"keyIdentifier"]
-      nonce:[NSUUID initWithUUIDString:withOffer[@"nonce"]]
+      nonce:[[NSUUID alloc] initWithUUIDString:withOffer[@"nonce"]]
       signature:withOffer[@"signature"]
       timestamp:withOffer[@"timestamp"]
     ];
