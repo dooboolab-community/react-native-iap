@@ -305,7 +305,7 @@ export const buyPromotedProduct = () => Platform.select({
 
 /**
  * Buy products or subscriptions with offers (iOS only)
- * 
+ *
  * Runs the payment process with some infor you must fetch
  * from your server.
  * @param {string} sku The product identifier
