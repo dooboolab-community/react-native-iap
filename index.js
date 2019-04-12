@@ -304,6 +304,29 @@ export const buyPromotedProduct = () => Platform.select({
 })();
 
 /**
+ * Buy products or subscriptions with offers (iOS only)
+ * 
+ * Runs the payment process with some infor you must fetch
+ * from your server.
+ * @param {string} sku The product identifier
+ * @param {string} forUser  An user identifier on you system
+ * @param {object} withOffer The offer information
+ * @param {string} withOffer.identifier The offer identifier
+ * @param {string} withOffer.keyIdentifier Key identifier that it uses to generate the signature
+ * @param {string} withOffer.nonce An UUID returned from the server
+ * @param {string} withOffer.signature The actual signature returned from the server
+ * @param {number} withOffer.timestamp The timestamp of the signature
+ * @returns {Promise}
+ */
+export const buyProductWithOffer = (sku, forUser, withOffer) => Platform.select({
+  ios: () => {
+    checkNativeiOSAvailable();
+    return RNIapIos.buyProductWithOffer(sku, forUser, withOffer);
+  },
+  android: () => Promise.resolve(),
+})();
+
+/**
  * Validate receipt for iOS.
  * @param {object} receiptBody the receipt body to send to apple server.
  * @param {string} isTest whether this is in test environment which is sandbox.
