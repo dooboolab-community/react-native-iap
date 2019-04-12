@@ -13,6 +13,7 @@
   + Prevent crashing from phones that doesn't have IAP feature [#434](https://github.com/dooboolab/react-native-iap/pull/434)
   + Fixed types `flow` and `ts` [#441](https://github.com/dooboolab/react-native-iap/pull/441) [#449](https://github.com/dooboolab/react-native-iap/pull/441)
   + Move `jcenter` below `Google repo` [#445](https://github.com/dooboolab/react-native-iap/pull/445)
+  + Fetch correct number of periods from introductory price [#454](https://github.com/dooboolab/react-native-iap/pull/454)
 - **[2.3.23]**
   + Resolve [#288](https://github.com/dooboolab/react-native-iap/issues/288).
 - **[2.3.21]**
