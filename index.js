@@ -318,7 +318,7 @@ export const buyPromotedProduct = () => Platform.select({
  * @param {number} withOffer.timestamp The timestamp of the signature
  * @returns {Promise}
  */
-export const buyProductWithOffer = (sku, forUser, withOffer) => Platform.select({
+export const buyProductWithOfferIOS = (sku, forUser, withOffer) => Platform.select({
   ios: () => {
     checkNativeiOSAvailable();
     return RNIapIos.buyProductWithOffer(sku, forUser, withOffer);
