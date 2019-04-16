@@ -165,11 +165,11 @@ RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
   }
   if (product) {
     SKPaymentDiscount *discount = [[SKPaymentDiscount alloc]
-      initWithIdentifier:withOffer[@"identifier"]
-      keyIdentifier:withOffer[@"keyIdentifier"]
-      nonce:[[NSUUID alloc] initWithUUIDString:withOffer[@"nonce"]]
-      signature:withOffer[@"signature"]
-      timestamp:withOffer[@"timestamp"]
+      initWithIdentifier:discountOffer[@"identifier"]
+      keyIdentifier:discountOffer[@"keyIdentifier"]
+      nonce:[[NSUUID alloc] initWithUUIDString:discountOffer[@"nonce"]]
+      signature:discountOffer[@"signature"]
+      timestamp:discountOffer[@"timestamp"]
     ];
 
     SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
@@ -523,19 +523,24 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
       formatter.numberStyle = NSNumberFormatterCurrencyStyle;
       formatter.locale = discount.priceLocale;
       localizedPrice = [formatter stringFromNumber:discount.price];
+      NSString *numberOfPeriods;
       
       switch (discount.paymentMode) {
         case SKProductDiscountPaymentModeFreeTrial:
           paymendMode = @"FREETRIAL";
+          numberOfPeriods = [@(discount.subscriptionPeriod.numberOfUnits) stringValue];
           break;
         case SKProductDiscountPaymentModePayAsYouGo:
           paymendMode = @"PAYASYOUGO";
+          numberOfPeriods = [@(discount.numberOfPeriods) stringValue];
           break;
         case SKProductDiscountPaymentModePayUpFront:
           paymendMode = @"PAYUPFRONT";
+          numberOfPeriods = [@(discount.subscriptionPeriod.numberOfUnits) stringValue];
           break;
         default:
           paymendMode = @"";
+          numberOfPeriods = @"0";
           break;
       }
       
@@ -571,7 +576,7 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
       [mappedDiscounts addObject:[NSDictionary dictionaryWithObjectsAndKeys:
         discount.identifier, @"identifier",
         discountType, @"type",
-        [@(discount.numberOfPeriods) stringValue], @"numberOfPeriods",
+        numberOfPeriods, @"numberOfPeriods",
         discount.price, @"price",
         localizedPrice, @"localizedPrice",
         paymendMode, @"paymentMode",
