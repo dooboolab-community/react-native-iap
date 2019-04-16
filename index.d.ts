@@ -128,6 +128,17 @@ export function buySubscription(sku: string, oldSku?: string, prorationMode?: nu
 export function buyProduct(sku: string) : Promise<ProductPurchase>;
 
 /**
+ * Buy a product with offer
+ *
+ * @param {string} sku The product unique identifier
+ * @param {string} forUser An user identifier on your service (username or user id)
+ * @param {Apple.PaymentDiscount} withOffer The offer information
+ *
+ * @returns {Promise<void>}
+ */
+export function buyProductWithOfferIOS(sku: string, forUser: string, withOffer: Apple.PaymentDiscount) : Promise<void>;
+
+/**
  * Buy a product with a specified quantity (iOS only)
  * @param {string} sku The product's sku/ID
  * @param {number} quantity The amount of product to buy
