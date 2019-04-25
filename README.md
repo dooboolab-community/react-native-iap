@@ -66,7 +66,7 @@ Also, note that this is our last migration for renaming method names without any
 | Func  | Param  | Return | Description |
 | :------------ |:---------------:| :---------------:| :-----|
 | ~~prepare~~ |  | `Promise<void>` | Deprecated. Use `initConnection` instead. |
-| initConnection |  | `Promise<string>` | Init IAP module. On Android this can be called to preload the connection to Play Services. In iOS, it will simply call `canMakePayments` method and return value.|
+| initConnection |  | `Promise<boolean>` | Init IAP module. On Android this can be called to preload the connection to Play Services. In iOS, it will simply call `canMakePayments` method and return value.|
 | getProducts | `string[]` Product IDs/skus | `Promise<Product[]>` | Get a list of products (consumable and non-consumable items, but not subscriptions). Note: On iOS versions earlier than 11.2 this method _will_ also return subscriptions if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to 11.2. |
 | getSubscriptions | `string[]` Subscription IDs/skus | `Promise<Subscription[]>` | Get a list of subscriptions. Note: On iOS versions earlier than 11.2 this method _will_ also return products if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to 11.2. |
 | getPurchaseHistory | | `Promise<Purchase[]>` | Gets an invetory of purchases made by the user regardless of consumption status (where possible) |
