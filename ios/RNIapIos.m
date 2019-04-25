@@ -109,8 +109,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(canMakePayments:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     BOOL canMakePayments = [SKPaymentQueue canMakePayments];
-    NSString* str = canMakePayments ? @"true" : @"false";
-    resolve(str);
+    resolve(canMakePayments);
 }
 
 RCT_EXPORT_METHOD(getItems:(NSArray*)skus
