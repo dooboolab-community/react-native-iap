@@ -15,6 +15,7 @@
   + Move `jcenter` below `Google repo` [#445](https://github.com/dooboolab/react-native-iap/pull/445)
   + Fetch correct number of periods from introductory price [#454](https://github.com/dooboolab/react-native-iap/pull/454)
   + Support to iOS subscription offers [#455](https://github.com/dooboolab/react-native-iap/pull/455)
+  + `initConnection` return bool [#459](https://github.com/dooboolab/react-native-iap/pull/459)
 - **[2.3.23]**
   + Resolve [#288](https://github.com/dooboolab/react-native-iap/issues/288).
 - **[2.3.21]**
