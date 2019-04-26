@@ -197,7 +197,7 @@ componentWillUnmount() {
 Once you have called `getProducts()`, and you have a valid response, you can call `buyProduct()`. Subscribable products can be purchased just like consumable products and users can cancel subscriptions by using the iOS System Settings.
 
 ```javascript
-  try
+  try {
     // Will return a purchase object with a receipt which can be used to validate on your server.
     const purchase = await RNIap.buyProduct('com.example.coins100');
     this.setState({
