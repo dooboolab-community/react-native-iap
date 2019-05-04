@@ -347,8 +347,7 @@ We've like to update this solution as version changes in `react-native-iap`.
   * Select your app > Services & APIs > "YOUR LICENSE KEY FOR THIS APPLICATION Base64-encoded RSA public key to include in your binary". [reference](https://stackoverflow.com/questions/27132443/how-to-find-my-google-play-services-android-base64-public-key).
   
 #### How to make consumable product in android developer mode?
-- If you are facing `"You already own this item"` on developer(test) mode you might check this.
-- Related issue in [#126](https://github.com/dooboolab/react-native-iap/issues/126#issuecomment-439084872)
+- If you are facing `"You already own this item"` on developer(test) mode you might check [related issue #126](https://github.com/dooboolab/react-native-iap/issues/126#issuecomment-439084872)
 
 #### How do I use react-native-iap in expo?
 - You should detach from `expo` and get `expokit` out of it.
