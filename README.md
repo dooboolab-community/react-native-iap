@@ -19,6 +19,8 @@
   - Please refer to [Blog](https://medium.com/@dooboolab/react-native-in-app-purchase-121622d26b67).
 
 ## Migration Guide
+For `ios` under version 12, it is compatible until `react-nativep-iap` version `2.4.8`. From `2.4.9`, it will support `ios` >= 12.
+
 `2.0.0-alpha1` has released. Not much difference. There were some parameters supports and changes to distinguish the differences in platform at one sight. Please follow the readme what you get in returned variables when calling `getItems` and when purchasing through `buyProduct` or `buySubscription`.
 
 Difference between `0.3.*` and `1.0.0` has only one method renaming `refreshItems` to `consumeAllItems`.
