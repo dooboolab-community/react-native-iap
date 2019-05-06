@@ -35,6 +35,3 @@ matrix:
 
     script:
       - npm run lint
-      - cd IapExample
-      - npm run lint
-      - cd ..

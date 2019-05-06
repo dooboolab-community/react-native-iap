@@ -9,7 +9,6 @@
     "start:reset": "node node_modules/react-native/local-cli/cli.js start --reset-cache",
     "android": "node node_modules/react-native/local-cli/cli.js run-android",
     "ios": "node node_modules/react-native/local-cli/cli.js run-ios",
-    "lint": "eslint -c .eslintrc './src/**/*.js'",
     "jest": "jest",
     "build:ios": "react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
     "build:android": "react-native bundle --entry-file index.js --platform android --dev false --bundle-output android/main.jsbundle --assets-dest android"
@@ -28,15 +27,7 @@
     "babel-jest": "^24.8.0",
     "jest": "^24.8.0",
     "metro-react-native-babel-preset": "^0.54.0",
-    "react-test-renderer": "16.8.3",
-    "@babel/plugin-proposal-decorators": "7.4.0",
-    "@babel/plugin-transform-runtime": "7.4.0",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.9.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^8.0.0",
-    "eslint-plugin-promise": "^4.0.1"
+    "react-test-renderer": "16.8.3"
   },
   "jest": {
     "preset": "react-native"
