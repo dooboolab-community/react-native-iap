@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.5.+]**
+  + Fix flow type [#482](https://github.com/dooboolab/react-native-iap/pull/482)
 - **[2.4.+]**
   + Add support for iOS In-App Purchase promotions [#388](https://github.com/dooboolab/react-native-iap/pull/388).
   + Implemented `addAdditionalSuccessPurchaseListenerIOS` to handle extra successed purchase event. Related to [#307](https://github.com/dooboolab/react-native-iap/issues/307).
