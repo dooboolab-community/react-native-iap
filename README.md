@@ -189,20 +189,20 @@ componentWillUnmount() {
 Once you have called `getProducts()`, and you have a valid response, you can call `buyProduct()`. Subscribable products can be purchased just like consumable products and users can cancel subscriptions by using the iOS System Settings.
 
 ```javascript
-  try {
-    // Will return a purchase object with a receipt which can be used to validate on your server.
-    const purchase = await RNIap.buyProduct('com.example.coins100');
-    this.setState({
-      receipt: purchase.transactionReceipt, // save the receipt if you need it, whether locally, or to your server.
-    });
-  } catch(err) {
-    // standardized err.code and err.message available
-    console.warn(err.code, err.message);
-    const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async (purchase) => {
-      this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
-      subscription.remove();
-    });
-  }
+try {
+  // add additional iOS listener before purchasing
+  const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async (purchase) => {
+    this.handlePurchaseSuccess(purchase);
+    subscription.remove();
+  });
+
+  // Will return a purchase object with a receipt which can be used to validate on your server.
+  const purchase = await RNIap.buyProduct('com.example.coins100');
+  this.handlePurchaseSuccess(purchase);
+} catch(err) {
+  // standardized err.code and err.message available
+  console.warn(err.code, err.message);
+}
 ```
 
 Most likely, you'll want to handle the 'store kit flow' (detailed [here](https://forums.developer.apple.com/thread/6431#14831)), which happens when a user succesfully pays after solving a problem with his or her account - for example, when the credit card information has expired. 
