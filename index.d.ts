@@ -21,16 +21,16 @@ export interface Subscription<ID extends string> extends Common {
 
   introductoryPrice?: string
   introductoryPricePaymentModeIOS?: string
-  introductoryPriceNumberOfPeriods?: number
-  introductoryPriceSubscriptionPeriod: object
+  introductoryPriceNumberOfPeriodsIOS?: string
+  introductoryPriceSubscriptionPeriodIOS?: string
 
-  subscriptionPeriodNumberIOS?: number
+  subscriptionPeriodNumberIOS?: string
   subscriptionPeriodUnitIOS?: string
 
-  introductoryPriceCyclesAndroid?: number
+  introductoryPriceCyclesAndroid?: string
   introductoryPricePeriodAndroid?: string
   subscriptionPeriodAndroid?: string
-  freeTrialPeriodAndroid: string
+  freeTrialPeriodAndroid?: string
 }
 
 export interface ProductPurchase {
