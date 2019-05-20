@@ -3,6 +3,7 @@
   + Fix flow type [#482](https://github.com/dooboolab/react-native-iap/pull/482)
   + Ugrade gradle to `3.2.1` [#488](https://github.com/dooboolab/react-native-iap/pull/488)
   + Fix gradle api usage [#489](https://github.com/dooboolab/react-native-iap/pull/489)
+  + Fix promo code purchase not being restored [#490](https://github.com/dooboolab/react-native-iap/pull/490)
 - **[2.4.+]**
   + Add support for iOS In-App Purchase promotions [#388](https://github.com/dooboolab/react-native-iap/pull/388).
   + Implemented `addAdditionalSuccessPurchaseListenerIOS` to handle extra successed purchase event. Related to [#307](https://github.com/dooboolab/react-native-iap/issues/307).
