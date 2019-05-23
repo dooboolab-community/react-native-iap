@@ -7,11 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		070744692296C0EF00B1DC9D /* IAPPromotionObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CBF363220349F6005F51AC /* IAPPromotionObserver.m */; };
+		0707446A2296C0EF00B1DC9D /* RNIapIos.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNIapIos.m */; };
 		28CBF364220349F6005F51AC /* IAPPromotionObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CBF363220349F6005F51AC /* IAPPromotionObserver.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RNIapIos.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNIapIos.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		0707446C2296C0EF00B1DC9D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		58B511D91A9E6C8500147676 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -24,6 +35,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		070744702296C0EF00B1DC9D /* libRNIap.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNIap.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		134814201AA4EA6300B7C361 /* libRNIap.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNIap.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		28CBF362220349F6005F51AC /* IAPPromotionObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPPromotionObserver.h; sourceTree = "<group>"; };
 		28CBF363220349F6005F51AC /* IAPPromotionObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPPromotionObserver.m; sourceTree = "<group>"; };
@@ -32,6 +44,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0707446B2296C0EF00B1DC9D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		58B511D81A9E6C8500147676 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -58,12 +77,30 @@
 				28CBF362220349F6005F51AC /* IAPPromotionObserver.h */,
 				28CBF363220349F6005F51AC /* IAPPromotionObserver.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
+				070744702296C0EF00B1DC9D /* libRNIap.a */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		070744672296C0EF00B1DC9D /* RNIap-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0707446D2296C0EF00B1DC9D /* Build configuration list for PBXNativeTarget "RNIap-tvOS" */;
+			buildPhases = (
+				070744682296C0EF00B1DC9D /* Sources */,
+				0707446B2296C0EF00B1DC9D /* Frameworks */,
+				0707446C2296C0EF00B1DC9D /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RNIap-tvOS";
+			productName = RCTDataManager;
+			productReference = 070744702296C0EF00B1DC9D /* libRNIap.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		58B511DA1A9E6C8500147676 /* RNIap */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "RNIap" */;
@@ -100,6 +137,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
@@ -108,11 +146,21 @@
 			projectRoot = "";
 			targets = (
 				58B511DA1A9E6C8500147676 /* RNIap */,
+				070744672296C0EF00B1DC9D /* RNIap-tvOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		070744682296C0EF00B1DC9D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				070744692296C0EF00B1DC9D /* IAPPromotionObserver.m in Sources */,
+				0707446A2296C0EF00B1DC9D /* RNIapIos.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		58B511D71A9E6C8500147676 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -125,6 +173,42 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		0707446E2296C0EF00B1DC9D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../../../React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+					"${SRCROOT}/../../../ios/Pods/Headers/Public/**",
+				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = RNIap;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		0707446F2296C0EF00B1DC9D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../../../React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+					"${SRCROOT}/../../../ios/Pods/Headers/Public/**",
+				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = RNIap;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		58B511ED1A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -243,6 +327,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0707446D2296C0EF00B1DC9D /* Build configuration list for PBXNativeTarget "RNIap-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0707446E2296C0EF00B1DC9D /* Debug */,
+				0707446F2296C0EF00B1DC9D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "RNIap" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
