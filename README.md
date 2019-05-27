@@ -190,6 +190,9 @@ Once you have called `getProducts()`, and you have a valid response, you can cal
 
 ```javascript
   try {
+    if(this.subscription) {
+      this.subscription.remove();
+    }
     // Will return a purchase object with a receipt which can be used to validate on your server.
     const purchase = await RNIap.buyProduct('com.example.coins100');
     this.setState({
@@ -198,9 +201,9 @@ Once you have called `getProducts()`, and you have a valid response, you can cal
   } catch(err) {
     // standardized err.code and err.message available
     console.warn(err.code, err.message);
-    const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async (purchase) => {
+    this.subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async (purchase) => {
       this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
-      subscription.remove();
+      this.subscription.remove();
     });
   }
 ```
