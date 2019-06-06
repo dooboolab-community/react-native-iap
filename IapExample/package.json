@@ -8,6 +8,7 @@
     "start:packager": "node_modules/react-native/packager/packager.sh",
     "start:reset": "node node_modules/react-native/local-cli/cli.js start --reset-cache",
     "android": "node node_modules/react-native/local-cli/cli.js run-android",
+    "android:shake": "adb shell input keyevent 82",
     "ios": "node node_modules/react-native/local-cli/cli.js run-ios",
     "jest": "jest",
     "build:ios": "react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",

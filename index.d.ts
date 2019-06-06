@@ -3,34 +3,34 @@ import { EmitterSubscription } from 'react-native';
 import * as Apple from './apple'
 
 interface Common {
-  title: string
-  description: string
-  price: string
-  currency: string
-  localizedPrice: string
+  title: string;
+  description: string;
+  price: string;
+  currency: string;
+  localizedPrice: string;
 }
 
 export interface Product<ID extends string> extends Common {
-  type: 'inapp' | 'iap'
-  productId: ID
+  type: 'inapp' | 'iap';
+  productId: ID;
 }
 
 export interface Subscription<ID extends string> extends Common {
-  type: 'subs' | 'sub'
-  productId: ID
+  type: 'subs' | 'sub';
+  productId: ID;
 
-  introductoryPrice?: string
-  introductoryPricePaymentModeIOS?: string
-  introductoryPriceNumberOfPeriodsIOS?: string
-  introductoryPriceSubscriptionPeriodIOS?: string
+  introductoryPrice?: string;
+  introductoryPricePaymentModeIOS?: string;
+  introductoryPriceNumberOfPeriodsIOS?: string;
+  introductoryPriceSubscriptionPeriodIOS?: string;
 
-  subscriptionPeriodNumberIOS?: string
-  subscriptionPeriodUnitIOS?: string
+  subscriptionPeriodNumberIOS?: string;
+  subscriptionPeriodUnitIOS?: string;
 
-  introductoryPriceCyclesAndroid?: string
-  introductoryPricePeriodAndroid?: string
-  subscriptionPeriodAndroid?: string
-  freeTrialPeriodAndroid?: string
+  introductoryPriceCyclesAndroid?: string;
+  introductoryPricePeriodAndroid?: string;
+  subscriptionPeriodAndroid?: string;
+  freeTrialPeriodAndroid?: string;
 }
 
 export interface ProductPurchase {
@@ -49,7 +49,7 @@ export interface SubscriptionPurchase extends ProductPurchase {
   originalTransactionIdentifierIOS: string;
 }
 
-export type Purchase = ProductPurchase | SubscriptionPurchase
+export type Purchase = ProductPurchase | SubscriptionPurchase;
 
 /**
  * @deprecated Deprecated since 2.0.0. Prepare module for purchase flow. Required on Android. No-op on iOS.

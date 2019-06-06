@@ -208,48 +208,60 @@ export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
 })();
 
 /**
+ * @deprecated Deprecated since 2.0.0.
  * Buy a product without transaction finish (iOS only)
  *   Call finishTransaction after receipt validation process.
  * @param {string} sku The product's sku/ID
  * @returns {Promise<ProductPurchase>}
  */
-export const buyProductWithoutFinishTransaction = (sku) => Platform.select({
-  ios: async() => {
-    checkNativeiOSAvailable();
-    return RNIapIos.buyProductWithoutAutoConfirm(sku);
-  },
-  android: async() => {
-    checkNativeAndroidAvailable();
-    return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
-  },
-})();
+export const buyProductWithoutFinishTransaction = (sku) => {
+  console.warn('The `buyProductWithoutFinishTransaction` method is deprecated. Use `buyProduct` method instead.');
+  Platform.select({
+    ios: async() => {
+      checkNativeiOSAvailable();
+      return RNIapIos.buyProductWithoutAutoConfirm(sku);
+    },
+    android: async() => {
+      checkNativeAndroidAvailable();
+      return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
+    },
+  })();
+};
 
 /**
+ * @deprecated Deprecated since 2.0.0.
  * Finish Transaction (iOS only)
  *   Explicitly call transaction finish
  * @returns {Promise<ProductPurchase>}
  */
-export const finishTransaction = () => Platform.select({
-  ios: async() => {
-    checkNativeiOSAvailable();
-    return RNIapIos.finishTransaction();
-  },
-  android: async() => Promise.resolve(),
-})();
+export const finishTransaction = () => {
+  console.warn('The `finishTransaction` method is deprecated.');
+  Platform.select({
+    ios: async() => {
+      checkNativeiOSAvailable();
+      return RNIapIos.finishTransaction();
+    },
+    android: async() => Promise.resolve(),
+  })();
+};
 
 /**
+ * @deprecated Deprecated since 2.0.0.
  * Clear Transaction (iOS only)
  *   Finish remaining transactions. Related to issue #257
  *     link : https://github.com/dooboolab/react-native-iap/issues/257
  * @returns {null}
  */
-export const clearTransaction = () => Platform.select({
-  ios: async() => {
-    checkNativeiOSAvailable();
-    return RNIapIos.clearTransaction();
-  },
-  android: async() => Promise.resolve(),
-})();
+export const clearTransaction = () => {
+  console.warn('The `clearTransaction` method is deprecated.');
+  Platform.select({
+    ios: async() => {
+      checkNativeiOSAvailable();
+      return RNIapIos.clearTransaction();
+    },
+    android: async() => Promise.resolve(),
+  })();
+};
 
 /**
  * Clear valid Products (iOS only)
