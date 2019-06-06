@@ -17,7 +17,8 @@ const itemSkus = Platform.select({
     'com.cooni.point1000', 'com.cooni.point5000', // dooboolab
   ],
   android: [
-    'android.test.purchased',
+    // 'android.test.purchased',
+    'point_1000', '5000_point', // dooboolab
   ],
 });
 
@@ -52,9 +53,7 @@ class Page extends Component {
   }
 
   goToNext = () => {
-    this.props.navigation.navigate('Second', {
-      receipt: this.state.receipt,
-    });
+    Alert.alert('Receipt', this.state.receipt);
   }
 
   getItems = async() => {
