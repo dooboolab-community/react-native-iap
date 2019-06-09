@@ -106,7 +106,26 @@ export function getPurchaseHistory() : Promise<Purchase[]>;
 export function getAvailablePurchases() : Promise<Purchase[]>;
 
 /**
+ * Buy a product
+ * 
+ * @deprecated
+ * @param {string} sku The product's sku/ID
+ * @returns {Promise<Purchase>}
+ */
+export function buyProduct(sku: string) : Promise<ProductPurchase>;
+
+/**
+ * Request a purchase
+ * 
+ * @param {string} sku The product's sku/ID
+ * @returns {Promise<string>}
+ */
+export function requestPurchase(sku: string) : Promise<string>;
+
+/**
  * Create a subscription to a sku
+ * 
+ * @deprecated
  * @param {string} sku The product's sku/ID
  * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
  * @param {number} [prorationMode] Optional proration mode for upgrade/downgrade (Android only)
@@ -115,11 +134,15 @@ export function getAvailablePurchases() : Promise<Purchase[]>;
 export function buySubscription(sku: string, oldSku?: string, prorationMode?: number) : Promise<SubscriptionPurchase>;
 
 /**
- * Buy a product
+ * Request a subscription to a sku
+ * 
+ * @deprecated
  * @param {string} sku The product's sku/ID
- * @returns {Promise<Purchase>}
+ * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
+ * @param {number} [prorationMode] Optional proration mode for upgrade/downgrade (Android only)
+ * @returns {Promise<string>}
  */
-export function buyProduct(sku: string) : Promise<ProductPurchase>;
+export function requestSubscription(sku: string, oldSku?: string, prorationMode?: number) : Promise<string>;
 
 /**
  * Buy a product with offer
@@ -141,6 +164,15 @@ export function buyProductWithOfferIOS(sku: string, forUser: string, withOffer: 
 export function buyProductWithQuantityIOS(sku: string, quantity: number) : Promise<ProductPurchase>;
 
 /**
+ * Request a purchase with specified quantity (iOS only)
+ * 
+ * @param {string} sku The product's sku/ID
+ * @param {number} quantity The amount of product to buy
+ * @returns {Promise<Purchase>}
+ */
+export function requestPurchaseWithQuantityIOS(sku: string, quantity: number) : Promise<string>;
+
+/**
  * Clear Transaction (iOS only)
  *   Finish remaining transactions. Related to issue #257
  *     link : https://github.com/dooboolab/react-native-iap/issues/257
@@ -160,7 +192,7 @@ export function clearProductsIOS(): void;
  * @param {string} token The product's token (on Android)
  * @returns {Promise}
  */
-export function consumePurchaseAndroid(token: string) : Promise<void>;
+export function consumePurchaseAndroid(token: string, developerPayload?: string) : Promise<void>;
 
 /**
  * Validate receipt for iOS.
@@ -180,7 +212,14 @@ export function validateReceiptIos(receiptBody: Apple.ReceiptValidationRequest, 
 export function validateReceiptAndroid(packageName: string, productId: string, productToken: string, accessToken: string, isSub: boolean): Promise<object | false>;
 
 /**
-  * Add IAP purchase event in ios.
+ * Add IAP purchase event in ios.
+ * @deprecated
  * @returns {callback(e: Event)}
  */
 export function addAdditionalSuccessPurchaseListenerIOS(fn: Function) : EmitterSubscription;
+
+/**
+ * Subscribe a listener when purchase is updated.
+ * @returns {callback(e: Event)}
+ */
+export function purchaseUpdatedListener(purchased: ProductPurchase) : EmitterSubscription;

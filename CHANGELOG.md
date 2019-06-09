@@ -1,4 +1,6 @@
 ## Changelogs
+- **[3.0.+]**
+  + Major migration and breaking changes done in [#510](https://github.com/dooboolab/react-native-iap/pull/510)
 - **[2.5.+]**
   + Fix flow type [#482](https://github.com/dooboolab/react-native-iap/pull/482)
   + Ugrade gradle to `3.2.1` [#488](https://github.com/dooboolab/react-native-iap/pull/488)
