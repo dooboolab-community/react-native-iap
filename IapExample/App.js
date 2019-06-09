@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import NativeButton from 'apsl-react-native-button';
-import * as RNIap from 'react-native-iap';
+import RNIap, { Product, ProductPurchase } from 'react-native-iap';
 
 // App Bundle > com.dooboolab.test
 
@@ -17,8 +17,8 @@ const itemSkus = Platform.select({
     'com.cooni.point1000', 'com.cooni.point5000', // dooboolab
   ],
   android: [
-    // 'android.test.purchased',
-    'point_1000', '5000_point', // dooboolab
+    'android.test.purchased', 'android.test.canceled', 'android.test.refunded', 'android.test.item_unavailable',
+    // 'point_1000', '5000_point', // dooboolab
   ],
 });
 
@@ -45,7 +45,7 @@ class Page extends Component {
   async componentDidMount() {
     try {
       const result = await RNIap.initConnection();
-      await RNIap.consumeAllItems();
+      await RNIap.consumeAllItemsAndroid();
       console.log('result', result);
     } catch (err) {
       console.warn(err.code, err.message);
@@ -58,7 +58,7 @@ class Page extends Component {
 
   getItems = async() => {
     try {
-      const products = await RNIap.getProducts(itemSkus);
+      const products: Product[] = await RNIap.getProducts(itemSkus);
       // const products = await RNIap.getSubscriptions(itemSkus);
       console.log('Products', products);
       this.setState({ productList: products });
@@ -69,7 +69,7 @@ class Page extends Component {
 
   getSubscriptions = async() => {
     try {
-      const products = await RNIap.getSubscriptions(itemSubs);
+      const products: Product[] = await RNIap.getSubscriptions(itemSubs);
       console.log('Products', products);
       this.setState({ productList: products });
     } catch (err) {
@@ -78,12 +78,14 @@ class Page extends Component {
   }
 
   buyItem = async(sku) => {
-    console.info('buyItem: ' + sku);
+    console.info('buyItem', sku);
     // const purchase = await RNIap.buyProduct(sku);
     // const products = await RNIap.buySubscription(sku);
     // const purchase = await RNIap.buyProductWithoutFinishTransaction(sku);
     try {
-      const purchase = await RNIap.buyProduct(sku);
+      const purchase: ProductPurchase = await RNIap.buyProduct(sku);
+      console.log('purchase', purchase);
+      await RNIap.consumePurchaseAndroid(purchase.purchaseToken);
       this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
     } catch (err) {
       console.warn(err.code, err.message);
