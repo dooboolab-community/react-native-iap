@@ -1,5 +1,5 @@
 
-import { NativeModules, Platform, NativeEventEmitter } from 'react-native';
+import { NativeModules, Platform, NativeEventEmitter, DeviceEventEmitter } from 'react-native';
 
 const { RNIapIos, RNIapModule } = NativeModules;
 
@@ -139,6 +139,43 @@ export const getAvailablePurchases = () => Platform.select({
 })();
 
 /**
+ * @deprecated Deprecated since 3.0.0. This will be removed in the future. Use `requestPurchase` instead.
+ * Buy a product
+ * @param {string} sku The product's sku/ID
+ * @returns {Promise<ProductPurchase>}
+ */
+export const buyProduct = (sku) => {
+  console.warn('The `buyProduct` method is deprecated since 3.0.0. This will be removed in the future so please use `requestPurchase` instead.');
+  Platform.select({
+    ios: async() => {
+      checkNativeiOSAvailable();
+      return RNIapIos.buyProduct(sku);
+    },
+    android: async() => {
+      checkNativeAndroidAvailable();
+      return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
+    },
+  })();
+};
+
+/**
+ * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
+ * @param {string} sku The product's sku/ID
+ * @returns {Promise<string>}
+ */
+export const requestPurchase = (sku) => Platform.select({
+  ios: async() => {
+    checkNativeiOSAvailable();
+    return RNIapIos.buyProduct(sku);
+  },
+  android: async() => {
+    checkNativeAndroidAvailable();
+    return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
+  },
+})();
+
+/**
+ * @deprecated Deprecated since 3.0.0. This will be removed in the future. Use `requestSubscription` instead.
  * Create a subscription to a sku
  * @param {string} sku The product's sku/ID
  * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
@@ -146,6 +183,7 @@ export const getAvailablePurchases = () => Platform.select({
  * @returns {Promise<SubscriptionPurchase>}
  */
 export const buySubscription = (sku, oldSku, prorationMode) => {
+  console.warn('Deprecated since 3.0.0. This will be removed in the future. Use `requestSubscription` instead');
   return Platform.select({
     ios: async() => {
       checkNativeiOSAvailable();
@@ -160,28 +198,46 @@ export const buySubscription = (sku, oldSku, prorationMode) => {
 };
 
 /**
- * Buy a product
+ * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
- * @returns {Promise<ProductPurchase>}
+ * @returns {Promise<string>}
  */
-export const buyProduct = (sku) => Platform.select({
+export const requestSubscription = (sku, oldSku, prorationMode) => Platform.select({
   ios: async() => {
     checkNativeiOSAvailable();
     return RNIapIos.buyProduct(sku);
   },
   android: async() => {
     checkNativeAndroidAvailable();
-    return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
+    if (!prorationMode) prorationMode = -1;
+    return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_SUBSCRIPTION, sku, oldSku, prorationMode);
   },
 })();
 
 /**
+ * @deprecated Deprecated since 3.0.0. This will be removed in the future. Use `requestPurchaseWithQuantityIOS` instead.
  * Buy a product with a specified quantity (iOS only)
  * @param {string} sku The product's sku/ID
  * @param {number} quantity The amount of product to buy
  * @returns {Promise<ProductPurchase>}
  */
-export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
+export const buyProductWithQuantityIOS = (sku, quantity) => {
+  console.warn('Deprecated since 3.0.0. This will be removed in the future. Use `buyProductWithQuantityIOS` instead');
+  Platform.select({
+    ios: async() => {
+      checkNativeiOSAvailable();
+      return RNIapIos.buyProductWithQuantityIOS(sku, quantity);
+    },
+    android: async() => Promise.resolve(),
+  })();
+};
+
+/**
+ * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
+ * @param {string} sku The product's sku/ID
+ * @returns {Promise<string>}
+ */
+export const requestPurchaseWithQuantityIOS = (sku, quantity) => Platform.select({
   ios: async() => {
     checkNativeiOSAvailable();
     return RNIapIos.buyProductWithQuantityIOS(sku, quantity);
@@ -346,7 +402,21 @@ export const addAdditionalSuccessPurchaseListenerIOS = (e) => {
 };
 
 /**
- * deprecagted codes
+ * Add IAP purchase event in ios.
+ * @returns {callback(e: Event)}
+ */
+export const purchaseUpdatedListener = (e) => {
+  if (Platform.OS === 'ios') {
+    checkNativeiOSAvailable();
+    const myModuleEvt = new NativeEventEmitter(RNIapIos);
+    return myModuleEvt.addListener('purchase-updated', e);
+  } else {
+    return DeviceEventEmitter.addListener('purchase-updated', e);
+  }
+};
+
+/**
+ * deprecated codes
  */
 /*
 export const validateReceiptIos = async (receiptBody, isTest) => {
@@ -396,4 +466,8 @@ export default {
   validateReceiptIos,
   validateReceiptAndroid,
   addAdditionalSuccessPurchaseListenerIOS,
+  requestPurchase,
+  requestPurchaseWithQuantityIOS,
+  requestSubscription,
+  purchaseUpdatedListener,
 };

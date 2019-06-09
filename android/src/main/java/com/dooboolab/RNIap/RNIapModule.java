@@ -36,6 +36,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 public class RNIapModule extends ReactContextBaseJavaModule implements PurchasesUpdatedListener{
   final String TAG = "RNIapModule";
@@ -380,6 +381,71 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   }
 
   @ReactMethod
+  public void requestPurchase(final String type, final String sku, final String oldSku, final Integer prorationMode, final Promise promise) {
+    final Activity activity = getCurrentActivity();
+
+    if (activity == null) {
+      promise.reject(DoobooUtils.E_UNKNOWN, "getCurrentActivity returned null");
+      return;
+    }
+
+    ensureConnection(promise, new Runnable() {
+      @Override
+      public void run() {
+        final BillingFlowParams.Builder builder = BillingFlowParams.newBuilder();
+
+        if (type.equals(BillingClient.SkuType.SUBS) && oldSku != null && !oldSku.isEmpty()) {
+          // Subscription upgrade/downgrade
+          if (prorationMode != null && prorationMode != 0) {
+            builder.setOldSku(oldSku);
+            if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE) {
+              builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE);
+            } else if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION) {
+              builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
+            } else {
+              // builder.addOldSku(oldSku);
+              builder.setOldSku(oldSku);
+            }
+          } else {
+            builder.setOldSku(oldSku);
+          }
+        }
+
+        if (prorationMode != 0) {
+          builder.setReplaceSkusProrationMode(prorationMode);
+        }
+
+        SkuDetails selectedSku = null;
+        for (SkuDetails skuDetail : skus) {
+          if (skuDetail.getSku().equals(sku)) {
+            selectedSku = skuDetail;
+            break;
+          }
+        }
+        if (selectedSku == null) {
+          promise.reject(PROMISE_BUY_ITEM, "The sku was not found. Please fetch products first by calling getItems");
+          return;
+        }
+
+        BillingFlowParams flowParams = builder
+            .setSkuDetails(selectedSku)
+            .build();
+        BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
+
+        if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+          DoobooUtils
+              .getInstance()
+              .rejectPromisesWithBillingError(
+                  PROMISE_BUY_ITEM, billingResult.getResponseCode()
+              );
+        } else {
+          promise.resolve("purchase requested!");
+        }
+      }
+    });
+  }
+
+  @ReactMethod
   public void consumeProduct(final String token, final String developerPayLoad, final Promise promise) {
     final ConsumeParams params = ConsumeParams.newBuilder()
         .setPurchaseToken(token)
@@ -419,6 +485,15 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     item.putString("signatureAndroid", purchase.getSignature());
     item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
 
+    sendEvent(reactContext, "purchase-updated", item);
     DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, item);
+  }
+
+  private void sendEvent(ReactContext reactContext,
+                         String eventName,
+                         @Nullable WritableMap params) {
+    reactContext
+        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+        .emit(eventName, params);
   }
 }
