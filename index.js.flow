@@ -55,24 +55,30 @@ declare module.exports: {
   getProducts: (string[]) => Promise<Product<string>[]>,
   getSubscriptions(string[]): Promise<Subscription<string>[]>,
   initConnection(): Promise<string>,
-  buyProduct: string => Promise<ProductPurchase>,
   buydProductWithOffer: (sku: string, forUser: string, withOffer: PaymentDiscount) => Promise<void>,
   endConnectionAndroid: () => Promise<void>,
   consumeAllItemsAndroid(): Promise<void>,
   getPurchaseHistory(): Promise<Purchase[]>,
   getAvailablePurchases(): Promise<Purchase[]>,
+  buyProduct: string => Promise<ProductPurchase>,
+  requestPurchase: string => Promise<string>,
   buySubscription(
     sku: string,
     oldSku?: string,
     prorationMode?: number,
   ): Promise<SubscriptionPurchase>,
+  requestSubscription: string => Promise<string>,
   buyProductWithQuantityIOS(
     sku: string,
     quantity: number,
   ): Promise<ProductPurchase>,
+  requestPurchaseWithQuantityIOS(
+    sku: string,
+    quantity: number,
+  ): Promise<string>,
   clearTransactionIOS(): void,
   clearProductsIOS(): void,
-  consumePurchaseAndroid(token: string): Promise<void>,
+  consumePurchaseAndroid(token: string, developerPayload?: string): Promise<void>,
   validateReceiptIos(
     receiptBody: AppleReceiptValidationRequest,
     isTest: boolean,
@@ -85,6 +91,9 @@ declare module.exports: {
     isSub: boolean,
   ): Promise<{} | false>,
   addAdditionalSuccessPurchaseListenerIOS(
+    fn: (any) => any,
+  ): EmitterSubscription,
+  purchaseUpdatedListener(
     fn: (any) => any,
   ): EmitterSubscription,
 }

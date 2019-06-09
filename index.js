@@ -388,10 +388,12 @@ export const validateReceiptAndroid = async(packageName, productId, productToken
 };
 
 /**
+ * @deprecated Deprecated since 3.0.0. This will be removed in the future. Use `purchaseUpdatedLister` with `requestPurchase`.
  * Add IAP purchase event in ios.
  * @returns {callback(e: Event)}
  */
 export const addAdditionalSuccessPurchaseListenerIOS = (e) => {
+  console.warn('addAdditionalSuccessPurchaseListenerIOS is deprecated since 3.0.0 and will be removed in the future. Use `purchaseUpdatedListener` with `requestPurchase`.');
   if (Platform.OS === 'ios') {
     checkNativeiOSAvailable();
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
