@@ -145,35 +145,65 @@ componentWillUnmount() {
 ```
 
 ## Purchase
+> The flow of the `purchase` has been renewed by the founding in [issue #307](https://github.com/dooboolab/react-native-iap/issues/307). I've decided to redesign this `purchase flow` not relying on the `promises` or `callback`. There are some reasons not to approach in this way.
+1. There may be more than one reponses when requesting a payment.
+2. The purchase may be pended and hard to track what has been done ([example](https://github.com/dooboolab/react-native-iap/issues/307#issuecomment-447745027)).
+3. Billing flow is more like and `events` rather than `callback` pattern.
+
 Once you have called `getProducts()`, and you have a valid response, you can call `buyProduct()`. Subscribable products can be purchased just like consumable products and users can cancel subscriptions by using the iOS System Settings.
 
+Before you request any purchase, you should set `purchaseUpdatedListener` from `react-native-iap`.
 ```javascript
-  try {
-    if(this.subscription) {
-      this.subscription.remove();
+  import RNIap, {
+    ProductPurchase,
+    purchaseUpdatedListener,
+  } from 'react-native-iap';
+
+  let purchaseUpdateSubscription;
+  componentDidMount() {
+    purchaseUpdateSubscription = purchaseUpdatedListener((purchase: ProductPurchase) => {
+      console.log('purchaseUpdatedListener', purchase);
+      this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
+    });
+  }
+  componentWillMount() {
+    if (purchaseUpdateSubscription) {
+      purchaseUpdateSubscription.remove();
+      purchaseUpdateSubscription = null;
     }
-    // Will return a purchase object with a receipt which can be used to validate on your server.
-    const purchase = await RNIap.buyProduct('com.example.coins100');
-    this.setState({
-      receipt: purchase.transactionReceipt, // save the receipt if you need it, whether locally, or to your server.
-    });
-  } catch(err) {
-    // standardized err.code and err.message available
-    console.warn(err.code, err.message);
-    this.subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async (purchase) => {
-      this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
-      this.subscription.remove();
-    });
   }
 ```
 
+Then define the method like below and call it when user press the button.
+```javascript
+  requestPurchase = async(sku) => {
+    try {
+      RNIap.requestPurchase(sku);
+    } catch (err) {
+      console.warn(err.code, err.message);
+    }
+  }
+
+  requestSubscription = async(sku) => {
+    try {
+      RNIap.requestSubscription(sku);
+    } catch (err) {
+      Alert.alert(err.message);
+    }
+  }
+
+  render() {
+    ...
+      onPress={() => this.requestPurchase(product.productId)}
+    ...
+  }
+```
+
+##### New purchase flow
+![image](https://user-images.githubusercontent.com/27461460/59160427-d1605600-8b10-11e9-9ca9-80fd2c08fd86.png)
+
 Most likely, you'll want to handle the 'store kit flow' (detailed [here](https://forums.developer.apple.com/thread/6431#14831)), which happens when a user succesfully pays after solving a problem with his or her account - for example, when the credit card information has expired. 
-In this scenario, the initial call to `RNIap.buyProduct` would fail and you'd need to add `addAdditionalSuccessPurchaseListenerIOS` to handle the successful purchase. Otherwise, you'll be in a scenario where the user paid but your application is not aware of it
-* This feature was provided because of issue in [#307](https://github.com/dooboolab/react-native-iap/issues/307).
-* This feature is provided from `react-native-iap` version `2.4.0-beta1`. Currently this feature is in test.
-
-In RNIapExample, upon receiving a purchase receipt, main page will navigate to Second.js.
-
+In this scenario, the initial call to `RNIap.buyProduct` would fail and you'd need to add `addAdditionalSuccessPurchaseListenerIOS` to handle the successful purchase previously. We are planning to remove ~~additionalSuccessPurchaseListenerIOS~~ in future releases so avoid using it. Approach of new purchase flow will prevent such issue in [#307](https://github.com/dooboolab/react-native-iap/issues/307) which was privided in `2.4.0+`.
 
 ## Consumption and Restoring Purchases
 You can use `getAvailablePurchases()` to do what's commonly understood as "restoring" purchases. Once an item is consumed, it will no longer be available in `getAvailablePurchases()` and will only be available via `getPurchaseHistory()`. However, this method has some caveats on Android -- namely, that purchase history only exists for the single most recent purchase of each SKU -- so your best bet is to track consumption in your app yourself. By default, all items that are purchased will not be consumed unless they are automatically consumed by the store (for example, if you create a consumable item for iOS.) This means that you must manage consumption yourself.  Purchases can be consumed by calling `consumePurchaseAndroid()`. If you want to consume all items, you have to iterate over the purchases returned by `getAvailablePurchases()`.
@@ -221,7 +251,6 @@ Returned purchases is an array of each purchase transaction with the following k
 
 You need to test with one sandbox account, because the account holds previous purchase history.
 
-
 ## Receipt validation
 From `react-native-iap@0.3.16`, we support receipt validation. For Android, you need separate json file from the service account to get the `access_token` from `google-apis`, therefore it is impossible to implement serverless. You should have your own backend and get `access_token`. With `access_token` you can simply call `validateReceiptAndroid` method we implemented. Further reading is [here](https://stackoverflow.com/questions/35127086/android-inapp-purchase-receipt-validation-google-play?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa).
 
@@ -238,58 +267,17 @@ console.log(result);
 For further information, please refer to [guide](https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
 
 ### iOS Purchasing process right way.
-
-Purchasing consumable products in iOS consists of the following steps.
-
-```sh
-Step 1 : Purchasing via IAP (Apple server)
-Step 2 : Check the validation of the receipt (either on device or server)
-Step 3 : Apply the product to the Application
-```
-
-But, sometimes app doesn't make it to step 3, and user loose the product with successful payment.
-Non-consumable products can be restored via getPurchaseHistory function, but consumable products can be lost.
-In this case, use `buyProductWithoutFinishTransaction` to purchase action and use `finishTransaction` to finish payment after receipt validation and supply the products to user.
-
-```javascript
-const purchase = await RNIap.buyProductWithoutFinishTransaction(productId);
-// to something in your server
-const { transactionReceipt } = purchase;
-sendToServer(transactionReceipt, {
-  onSuccess: () => {
-    RNIap.finishTransaction();
-  },
-});
-```
-
-However, sometimes apple internally causes problem itself before `finishTransaction` where queues are not resolved that may result in failure in next purchases ([related issue #256](https://github.com/dooboolab/react-native-iap/issues/257)). Therefore, we've made another method that may resolve this kind of issues in next purchases which is to finish up the queues at the start of each purchase. To resolve this, try the code like below.
-```javascript
-await RNIap.clearTransaction(); // add this method at the start of purchase.
-const purchase = await RNIap.buyProductWithoutFinishTransaction(productId);
-// to something in your server
-const { transactionReceipt } = purchase;
-sendToServer(transactionReceipt, {
-  onSuccess: () => {
-    RNIap.finishTransaction();
-  },
-});
-```
-
-Another issue regarding `valid products`. In iOS, generally you are fetching valid products at App launching process.
-If you fetch again, or fetch valid subscription, the products are added to the array object in iOS side (objective-c NSMutableArray).
-This makes unexpected behavior when you fetch with a part of product lists.
-(For example, if you have products of [A, B, C], and you call fetch function with only [A], this module returns [A, B, C])
-This is weird, but it works.
-But, weird result is weird, so we made a new method which remove all valid products.
-If you need to clear all products, subscriptions in that array, just call `clearProducts()`, and do the fetching job again, and you will receive what you expected.
-
-We've like to update this solution as version changes in `react-native-iap`.
+Issue regarding `valid products`
+- In iOS, generally you are fetching valid products at App launching process. If you fetch again, or fetch valid subscription, the products are added to the array object in iOS side (objective-c NSMutableArray). This makes unexpected behavior when you fetch with a part of product lists.
+(For example, if you have products of [A, B, C], and you call fetch function with only [A], this module returns [A, B, C]). This is weird, but it works.
+- But, weird result is weird, so we made a new method which remove all valid products. If you need to clear all products, subscriptions in that array, just call `clearProducts()`, and do the fetching job again, and you will receive what you expected.
 
 ## Q & A
 
 #### Can I buy product right away skipping fetching products if I already know productId?
-- You can in `Android` but not in `ios`. In `ios` you should always `fetchProducts` first. You can see more info [here](https://medium.com/ios-development-tips-and-tricks/working-with-ios-in-app-purchases-e4b55491479b).
-- Related issue in [#283](https://github.com/dooboolab/react-native-iap/issues/283).
+- You could only in `Android` in `react-native-iap` below version 3. However, now you should always `fetchProducts` first in both platforms. It is because `android` billingClient has been updated `billingFlowParams` to include [SkuDetails](https://developer.android.com/reference/com/android/billingclient/api/SkuDetails) instead `sku` string which is hard to share between `react-native` and `android`. It happened in `com.android.billingclient:billing:2.0.+`. Therefore we've planned to store items to be fetched in `android` before requesting purchase from `react-native` side. Therefore, you should always fetch list of items to `purchase` before requesting purchase.
+  * Related [blog](https://medium.com/ios-development-tips-and-tricks/working-with-ios-in-app-purchases-e4b55491479b).
+  * Related issue in [#283](https://github.com/dooboolab/react-native-iap/issues/283).
 
 #### How do I validate receipt in ios?
 - Official doc is [here](https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
