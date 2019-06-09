@@ -10,24 +10,6 @@ const IOS_ITEM_TYPE_IAP = 'iap';
 
 export const PROMOTED_PRODUCT = 'iap-promoted-product';
 
-/**
- * @deprecated Deprecated since 2.0.0. Use initConnection instead.
- * @returns {Promise<void>}
- */
-export const prepare = () => {
-  console.warn('The `prepare` method is deprecated. Use initConnection method instead.');
-  Platform.select({
-    ios: async() => {
-      checkNativeiOSAvailable();
-      return RNIapIos.canMakePayments();
-    },
-    android: async() => {
-      checkNativeAndroidAvailable();
-      return RNIapModule.initConnection();
-    },
-  })();
-};
-
 function checkNativeAndroidAvailable() {
   if (!RNIapModule) {
     return Promise.reject(new Error('E_IAP_NOT_AVAILABLE', 'The payment setup is not available in this version of the app. Contact admin.'));
@@ -62,7 +44,7 @@ export const initConnection = () => Platform.select({
  * End module for purchase flow. Required on Android. No-op on iOS.
  * @returns {Promise<void>}
  */
-export const endConnection = () => Platform.select({
+export const endConnectionAndroid = () => Platform.select({
   ios: async() => Promise.resolve(),
   android: async() => {
     if (!RNIapModule) {
@@ -76,7 +58,7 @@ export const endConnection = () => Platform.select({
  * Consume all remaining tokens. Android only.
  * @returns {Promise<void>}
  */
-export const consumeAllItems = () => Platform.select({
+export const consumeAllItemsAndroid = () => Platform.select({
   ios: async() => Promise.resolve(),
   android: async() => {
     checkNativeAndroidAvailable();
@@ -208,52 +190,13 @@ export const buyProductWithQuantityIOS = (sku, quantity) => Platform.select({
 })();
 
 /**
- * @deprecated Deprecated since 2.0.0.
- * Buy a product without transaction finish (iOS only)
- *   Call finishTransaction after receipt validation process.
- * @param {string} sku The product's sku/ID
- * @returns {Promise<ProductPurchase>}
- */
-export const buyProductWithoutFinishTransaction = (sku) => {
-  console.warn('The `buyProductWithoutFinishTransaction` method is deprecated. Use `buyProduct` method instead.');
-  Platform.select({
-    ios: async() => {
-      checkNativeiOSAvailable();
-      return RNIapIos.buyProductWithoutAutoConfirm(sku);
-    },
-    android: async() => {
-      checkNativeAndroidAvailable();
-      return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
-    },
-  })();
-};
-
-/**
- * @deprecated Deprecated since 2.0.0.
- * Finish Transaction (iOS only)
- *   Explicitly call transaction finish
- * @returns {Promise<ProductPurchase>}
- */
-export const finishTransaction = () => {
-  console.warn('The `finishTransaction` method is deprecated.');
-  Platform.select({
-    ios: async() => {
-      checkNativeiOSAvailable();
-      return RNIapIos.finishTransaction();
-    },
-    android: async() => Promise.resolve(),
-  })();
-};
-
-/**
- * @deprecated Deprecated since 2.0.0.
  * Clear Transaction (iOS only)
  *   Finish remaining transactions. Related to issue #257
  *     link : https://github.com/dooboolab/react-native-iap/issues/257
  * @returns {null}
  */
-export const clearTransaction = () => {
-  console.warn('The `clearTransaction` method is deprecated.');
+export const clearTransactionIOS = () => {
+  console.warn('The `clearTransactionIOS` method is deprecated.');
   Platform.select({
     ios: async() => {
       checkNativeiOSAvailable();
@@ -268,7 +211,7 @@ export const clearTransaction = () => {
  *   Remove all products which are validated by Apple server.
  * @returns {null}
  */
-export const clearProducts = () => Platform.select({
+export const clearProductsIOS = () => Platform.select({
   ios: async() => {
     checkNativeiOSAvailable();
     return RNIapIos.clearProducts();
@@ -281,11 +224,11 @@ export const clearProducts = () => Platform.select({
  * @param {string} token The product's token (on Android)
  * @returns {Promise}
  */
-export const consumePurchase = (token) => Platform.select({
+export const consumePurchaseAndroid = (token, developerPayload) => Platform.select({
   ios: async() => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
   android: async() => {
     checkNativeAndroidAvailable();
-    return RNIapModule.consumeProduct(token);
+    return RNIapModule.consumeProduct(token, developerPayload);
   },
 })();
 
@@ -294,7 +237,7 @@ export const consumePurchase = (token) => Platform.select({
  *   Indicates the the App Store purchase should continue from the app instead of the App Store.
  * @returns {null}
  */
-export const getPromotedProduct = () => Platform.select({
+export const getPromotedProductIOS = () => Platform.select({
   ios: async() => {
     checkNativeiOSAvailable();
     return RNIapIos.promotedProduct();
@@ -307,7 +250,7 @@ export const getPromotedProduct = () => Platform.select({
  *   Initiates the payment process for a promoted product. Should only be called in response to the `iap-promoted-product` event.
  * @returns {null}
  */
-export const buyPromotedProduct = () => Platform.select({
+export const buyPromotedProductIOS = () => Platform.select({
   ios: async() => {
     checkNativeiOSAvailable();
     return RNIapIos.buyPromotedProduct();
@@ -437,21 +380,19 @@ export const validateReceiptIos = async (receiptBody, isTest) => {
 */
 
 export default {
-  prepare,
   initConnection,
-  endConnection,
+  endConnectionAndroid,
   getProducts,
   getSubscriptions,
   getPurchaseHistory,
   getAvailablePurchases,
-  consumeAllItems,
+  consumeAllItemsAndroid,
   buySubscription,
   buyProduct,
   buyProductWithQuantityIOS,
-  buyProductWithoutFinishTransaction,
-  finishTransaction,
-  clearTransaction,
-  consumePurchase,
+  clearProductsIOS,
+  clearTransactionIOS,
+  consumePurchaseAndroid,
   validateReceiptIos,
   validateReceiptAndroid,
   addAdditionalSuccessPurchaseListenerIOS,

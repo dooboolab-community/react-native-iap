@@ -52,12 +52,6 @@ export interface SubscriptionPurchase extends ProductPurchase {
 export type Purchase = ProductPurchase | SubscriptionPurchase;
 
 /**
- * @deprecated Deprecated since 2.0.0. Prepare module for purchase flow. Required on Android. No-op on iOS.
- * @returns {Promise<string>}
- */
-export function prepare() : Promise<string>;
-
-/**
  * Init module for purchase flow. Required on Android. In ios it will check wheter user canMakePayment.
  * @returns {Promise<string>}
  */
@@ -67,13 +61,13 @@ export function initConnection() : Promise<string>;
  * End billing client. Will enchance android app's performance by releasing service. No-op on iOS.
  * @returns {Promise<void>}
  */
-export function endConnection() : Promise<void>;
+export function endConnectionAndroid() : Promise<void>;
 
 /**
  * Consume all items in android. No-op in iOS.
  * @returns {Promise<void>}
  */
-export function consumeAllItems() : Promise<void>;
+export function consumeAllItemsAndroid() : Promise<void>;
 
 /**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
@@ -147,39 +141,26 @@ export function buyProductWithOfferIOS(sku: string, forUser: string, withOffer: 
 export function buyProductWithQuantityIOS(sku: string, quantity: number) : Promise<ProductPurchase>;
 
 /**
- * Buy a product without finish transanction to sync with IOS purchasing consumables. Make sure to call finishTransanction when you are done with it or the purchase may not be transferred. Also, note that this method is not changed from buyProduct in android.
- * @param {string} sku The product's sku/ID
- * @returns {Promise<Purchase>}
- */
-export function buyProductWithoutFinishTransaction(sku: string) : Promise<ProductPurchase>;
-
-/**
  * Clear Transaction (iOS only)
  *   Finish remaining transactions. Related to issue #257
  *     link : https://github.com/dooboolab/react-native-iap/issues/257
  * @returns void
  */
-export function clearTransaction(): void;
+export function clearTransactionIOS(): void;
 
 /**
  * Clear valid Products (iOS only)
  *   Remove all products which are validated by Apple server.
  * @returns {null}
  */
-export function clearProducts(): void;
-
-/**
- * Send finishTransaction call to Apple IAP server. Call this function after receipt validation process.
- * @returns void
- */
-export function finishTransaction(): void;
+export function clearProductsIOS(): void;
 
 /**
  * Consume a product (on Android.) No-op on iOS.
  * @param {string} token The product's token (on Android)
  * @returns {Promise}
  */
-export function consumePurchase(token: string) : Promise<void>;
+export function consumePurchaseAndroid(token: string) : Promise<void>;
 
 /**
  * Validate receipt for iOS.
