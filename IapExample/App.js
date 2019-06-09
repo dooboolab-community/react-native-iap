@@ -8,7 +8,11 @@ import {
   StyleSheet,
 } from 'react-native';
 import NativeButton from 'apsl-react-native-button';
-import RNIap, { Product, ProductPurchase } from 'react-native-iap';
+import RNIap, {
+  Product,
+  ProductPurchase,
+  purchaseUpdatedListener,
+} from 'react-native-iap';
 
 // App Bundle > com.dooboolab.test
 
@@ -31,6 +35,8 @@ const itemSubs = Platform.select({
   ],
 });
 
+let purchaseUpdateSubscription;
+
 class Page extends Component {
   constructor(props) {
     super(props);
@@ -50,9 +56,21 @@ class Page extends Component {
     } catch (err) {
       console.warn(err.code, err.message);
     }
+
+    purchaseUpdateSubscription = purchaseUpdatedListener((purchase: ProductPurchase) => {
+      console.log('purchaseUpdatedListener', purchase);
+      this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
+    });
   }
 
-  goToNext = () => {
+  componentWillMount() {
+    if (purchaseUpdateSubscription) {
+      purchaseUpdateSubscription.remove();
+      purchaseUpdateSubscription = null;
+    }
+  }
+
+  goNext = () => {
     Alert.alert('Receipt', this.state.receipt);
   }
 
@@ -77,37 +95,6 @@ class Page extends Component {
     }
   }
 
-  buyItem = async(sku) => {
-    console.info('buyItem', sku);
-    // const purchase = await RNIap.buyProduct(sku);
-    // const products = await RNIap.buySubscription(sku);
-    // const purchase = await RNIap.buyProductWithoutFinishTransaction(sku);
-    try {
-      const purchase: ProductPurchase = await RNIap.buyProduct(sku);
-      console.log('purchase', purchase);
-      await RNIap.consumePurchaseAndroid(purchase.purchaseToken);
-      this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
-    } catch (err) {
-      console.warn(err.code, err.message);
-      const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async(purchase) => {
-        this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
-        subscription.remove();
-      });
-    }
-  }
-
-  buySubscribeItem = async(sku) => {
-    try {
-      console.log('buySubscribeItem: ' + sku);
-      const purchase = await RNIap.buySubscription(sku);
-      console.info(purchase);
-      this.setState({ receipt: purchase.transactionReceipt }, () => this.goToNext());
-    } catch (err) {
-      console.warn(err.code, err.message);
-      Alert.alert(err.message);
-    }
-  }
-
   getAvailablePurchases = async() => {
     try {
       console.info('Get available purchases (non-consumable or unconsumed consumable)');
@@ -125,6 +112,55 @@ class Page extends Component {
     }
   }
 
+  // Version 3 apis
+  requestPurchase = async(sku) => {
+    try {
+      RNIap.requestPurchase(sku);
+    } catch (err) {
+      console.warn(err.code, err.message);
+    }
+  }
+
+  requestSubscription = async(sku) => {
+    try {
+      RNIap.requestSubscription(sku);
+    } catch (err) {
+      Alert.alert(err.message);
+    }
+  }
+
+  // Deprecated apis
+  buyItem = async(sku) => {
+    console.info('buyItem', sku);
+    // const purchase = await RNIap.buyProduct(sku);
+    // const products = await RNIap.buySubscription(sku);
+    // const purchase = await RNIap.buyProductWithoutFinishTransaction(sku);
+    try {
+      const purchase: ProductPurchase = await RNIap.buyProduct(sku);
+      // console.log('purchase', purchase);
+      // await RNIap.consumePurchaseAndroid(purchase.purchaseToken);
+      this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
+    } catch (err) {
+      console.warn(err.code, err.message);
+      const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async(purchase) => {
+        this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
+        subscription.remove();
+      });
+    }
+  }
+
+  buySubscribeItem = async(sku) => {
+    try {
+      console.log('buySubscribeItem: ' + sku);
+      const purchase = await RNIap.buySubscription(sku);
+      console.info(purchase);
+      this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
+    } catch (err) {
+      console.warn(err.code, err.message);
+      Alert.alert(err.message);
+    }
+  }
+
   render() {
     const { productList, receipt, availableItemsMessage } = this.state;
     const receipt100 = receipt.substring(0, 100);
@@ -132,7 +168,7 @@ class Page extends Component {
     return (
       <View style={ styles.container }>
         <View style={ styles.header }>
-          <Text style={ styles.headerTxt} >react-native-iap</Text>
+          <Text style={ styles.headerTxt} >react-native-iap V3</Text>
         </View>
         <View style={ styles.content }>
           <ScrollView
@@ -171,11 +207,14 @@ class Page extends Component {
                       paddingHorizontal: 20,
                     }} >{JSON.stringify(product)}</Text>
                     <NativeButton
-                      onPress={() => this.buyItem(product.productId)}
+                      onPress={() => this.requestPurchase(product.productId)}
+                      // onPress={() => this.requestSubscription(product.productId)}
+                      // onPress={() => this.buyItem(product.productId)}
+                      // onPress={() => this.buySubscribeItem(product.productId)}
                       activeOpacity={0.5}
                       style={styles.btn}
                       textStyle={styles.txt}
-                    >Buy Above Product</NativeButton>
+                    >Request purchase for above product</NativeButton>
                   </View>
                 );
               })
@@ -211,7 +250,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTxt: {
-    fontSize: 32,
+    fontSize: 26,
     color: 'green',
   },
   content: {

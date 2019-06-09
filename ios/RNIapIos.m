@@ -9,8 +9,6 @@
 ////////////////////////////////////////////////////     _//////////_  // Private Members
 @interface RNIapIos() <IAPPromotionObserverDelegate> {
   NSMutableDictionary *promisesByKey;
-  BOOL autoReceiptConform;
-  SKPaymentTransaction *currentTransaction;
   dispatch_queue_t myQueue;
   BOOL hasListeners;
 }
@@ -103,7 +101,7 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents
 {
-  return @[@"iap-purchase-event", @"iap-promoted-product"];
+  return @[@"iap-purchase-event", @"iap-promoted-product", @"purchase-updated"];
 }
 
 RCT_EXPORT_METHOD(canMakePayments:(RCTPromiseResolveBlock)resolve
@@ -132,21 +130,20 @@ RCT_EXPORT_METHOD(getAvailableItems:(RCTPromiseResolveBlock)resolve
 RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-  autoReceiptConform = true;
-  SKProduct *product;
-  for (SKProduct *p in validProducts) {
-    if([sku isEqualToString:p.productIdentifier]) {
-      product = p;
-      break;
+    SKProduct *product;
+    for (SKProduct *p in validProducts) {
+        if([sku isEqualToString:p.productIdentifier]) {
+            product = p;
+            break;
+        }
     }
-  }
-  if (product) {
-    SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
-    [[SKPaymentQueue defaultQueue] addPayment:payment];
-    [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
-  } else {
-    reject(@"E_DEVELOPER_ERROR", @"Invalid product ID.", nil);
-  }
+    if (product) {
+        SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
+        [[SKPaymentQueue defaultQueue] addPayment:payment];
+        [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
+    } else {
+        reject(@"E_DEVELOPER_ERROR", @"Invalid product ID.", nil);
+    }
 }
 
 RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
@@ -154,7 +151,6 @@ RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
                   withOffer:(NSDictionary*)discountOffer
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-  autoReceiptConform = true;
   SKProduct *product;
   for (SKProduct *p in validProducts) {
     if([sku isEqualToString:p.productIdentifier]) {
@@ -187,7 +183,6 @@ RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
   NSLog(@"\n\n\n  buyProductWithQuantityIOS  \n\n.");
-  autoReceiptConform = true;
   SKProduct *product;
   for (SKProduct *p in validProducts) {
     if([sku isEqualToString:p.productIdentifier]) {
@@ -209,7 +204,6 @@ RCT_EXPORT_METHOD(buyProductWithoutAutoConfirm:(NSString*)sku
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
   NSLog(@"\n\n\n  buyProductWithoutAutoConfirm  \n\n.");
-  autoReceiptConform = false;
   SKProduct *product;
   for (SKProduct *p in validProducts) {
     if([sku isEqualToString:p.productIdentifier]) {
@@ -224,14 +218,6 @@ RCT_EXPORT_METHOD(buyProductWithoutAutoConfirm:(NSString*)sku
   } else {
     reject(@"E_DEVELOPER_ERROR", @"Invalid product ID.", nil);
   }
-}
-
-RCT_EXPORT_METHOD(finishTransaction) {
-  NSLog(@"\n\n\n  finish Transaction  \n\n.");
-  if (currentTransaction) {
-    [[SKPaymentQueue defaultQueue] finishTransaction:currentTransaction];
-  }
-  currentTransaction = nil;
 }
 
 RCT_EXPORT_METHOD(clearTransaction) {
@@ -363,12 +349,7 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
 }
 
 -(void)purchaseProcess:(SKPaymentTransaction *)transaction {
-  if (autoReceiptConform) {
-    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-    currentTransaction = nil;
-  } else {
-    currentTransaction = transaction;
-  }
+  [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
   NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
   NSDictionary* purchase = [self getPurchaseData:transaction];
   [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:purchase];
@@ -376,6 +357,7 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
   // additionally send event
   if (hasListeners) {
     [self sendEventWithName:@"iap-purchase-event" body: purchase];
+    [self sendEventWithName:@"purchase-updated" body: purchase];
   }
 }
 
