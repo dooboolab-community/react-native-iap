@@ -222,4 +222,4 @@ export function addAdditionalSuccessPurchaseListenerIOS(fn: Function) : EmitterS
  * Subscribe a listener when purchase is updated.
  * @returns {callback(e: Event)}
  */
-export function purchaseUpdatedListener(purchased: ProductPurchase) : EmitterSubscription;
+export function purchaseUpdatedListener(fn: Function) : EmitterSubscription;
