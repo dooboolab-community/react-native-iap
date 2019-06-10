@@ -1,6 +1,9 @@
 package com.dooboolab.RNIap;
 
+import android.util.Log;
+
 import com.android.billingclient.api.BillingClient;
+import com.facebook.react.bridge.ObjectAlreadyConsumedException;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -19,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class DoobooUtils {
+  private static final String TAG = "DoobooUtils";
   public static final String E_UNKNOWN = "E_UNKNOWN";
   public static final String E_NOT_PREPARED = "E_NOT_PREPARED";
   public static final String E_NOT_ENDED = "E_NOT_ENDED";
@@ -102,45 +106,61 @@ public class DoobooUtils {
   }
 
   public void addPromiseForKey(final String key, final Promise promise) {
-    ArrayList<Promise> list;
-    if (promises.containsKey(key)) {
-      list = promises.get(key);
-    }
-    else {
-      list = new ArrayList<Promise>();
-      promises.put(key, list);
-    }
+    try {
+      ArrayList<Promise> list;
+      if (promises.containsKey(key)) {
+        list = promises.get(key);
+      }
+      else {
+        list = new ArrayList<Promise>();
+        promises.put(key, list);
+      }
 
-    list.add(promise);
+      list.add(promise);
+    } catch (ObjectAlreadyConsumedException oce) {
+      Log.e(TAG, oce.getMessage());
+    }
   }
 
   public void resolvePromisesForKey(final String key, final Object value) {
-    if (promises.containsKey(key)) {
-      ArrayList<Promise> list = promises.get(key);
-      for (Promise promise : list) {
-        promise.resolve(value);
+    try {
+      if (promises.containsKey(key)) {
+        ArrayList<Promise> list = promises.get(key);
+        for (Promise promise : list) {
+          promise.resolve(value);
+        }
+        promises.remove(key);
       }
-      promises.remove(key);
+    } catch (ObjectAlreadyConsumedException oce) {
+      Log.e(TAG, oce.getMessage());
     }
   }
 
   public void rejectPromisesForKey(final String key, final String code, final String message, final Exception err) {
-    if (promises.containsKey(key)) {
-      ArrayList<Promise> list = promises.get(key);
-      for (Promise promise : list) {
-        promise.reject(code, message, err);
+    try {
+      if (promises.containsKey(key)) {
+        ArrayList<Promise> list = promises.get(key);
+        for (Promise promise : list) {
+          promise.reject(code, message, err);
+        }
+        promises.remove(key);
       }
-      promises.remove(key);
+    } catch (ObjectAlreadyConsumedException oce) {
+      Log.e(TAG, oce.getMessage());
     }
   }
 
   public void rejectPromisesWithBillingError(final String key, final int responseCode) {
-    if (promises.containsKey(key)) {
-      ArrayList<Promise> list = promises.get(key);
-      for (Promise promise : list) {
-        rejectPromiseWithBillingError(promise, responseCode);
+    try {
+      if (promises.containsKey(key)) {
+        ArrayList<Promise> list = promises.get(key);
+        for (Promise promise : list) {
+          rejectPromiseWithBillingError(promise, responseCode);
+        }
+        promises.remove(key);
       }
-      promises.remove(key);
+    } catch (ObjectAlreadyConsumedException oce) {
+      Log.e(TAG, oce.getMessage());
     }
   }
 
