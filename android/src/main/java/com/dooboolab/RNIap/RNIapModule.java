@@ -129,12 +129,20 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       @Override
       public void onBillingSetupFinished(BillingResult billingResult) {
         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-          promise.resolve(true);
+          try {
+            promise.resolve(true);
+          } catch (ObjectAlreadyConsumedException oce) {
+            Log.e(TAG, oce.getMessage());
+          }
         }
       }
       @Override
       public void onBillingServiceDisconnected() {
-        promise.reject("initConnection", "Billing service disconnected");
+        try {
+          promise.reject("initConnection", "Billing service disconnected");
+        } catch (ObjectAlreadyConsumedException oce) {
+          Log.e(TAG, oce.getMessage());
+        }
       }
     });
   }
@@ -149,7 +157,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         return;
       }
     }
-    promise.resolve(true);
+    try {
+      promise.resolve(true);
+    } catch (ObjectAlreadyConsumedException oce) {
+      Log.e(TAG, oce.getMessage());
+    }
   }
 
   @ReactMethod
@@ -173,7 +185,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             public void onConsumeResponse(BillingResult billingResult, String outToken) {
               array.pushString(outToken);
               if (purchases.size() == array.size()) {
-                promise.resolve(array);
+                try {
+                  promise.resolve(true);
+                } catch (ObjectAlreadyConsumedException oce) {
+                  Log.e(TAG, oce.getMessage());
+                }
               }
             }
           };
@@ -230,7 +246,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               items.pushMap(item);
             }
 
-            promise.resolve(items);
+            try {
+              promise.resolve(items);
+            } catch (ObjectAlreadyConsumedException oce) {
+              Log.e(TAG, oce.getMessage());
+            }
           }
         });
       }
@@ -307,7 +327,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               items.pushMap(item);
             }
 
-            promise.resolve(items);
+            try {
+              promise.resolve(items);
+            } catch (ObjectAlreadyConsumedException oce) {
+              Log.e(TAG, oce.getMessage());
+            }
           }
         });
       }
@@ -438,7 +462,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
                   PROMISE_BUY_ITEM, billingResult.getResponseCode()
               );
         } else {
-          promise.resolve("purchase requested!");
+          try {
+            promise.resolve("purchase requested!");
+          } catch (ObjectAlreadyConsumedException oce) {
+            Log.e(TAG, oce.getMessage());
+          }
         }
       }
     });
@@ -456,7 +484,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
           DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
         }
-        promise.resolve(billingResult.toString());
+        try {
+          promise.resolve(billingResult.toString());
+        } catch (ObjectAlreadyConsumedException oce) {
+          Log.e(TAG, oce.getMessage());
+        }
       }
     });
   }
