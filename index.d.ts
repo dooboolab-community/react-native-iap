@@ -43,6 +43,11 @@ export interface ProductPurchase {
   purchaseToken?: string;
 }
 
+export interface PurchaseError {
+  responseCode?: number;
+  debugMessage?: string;
+}
+
 export interface SubscriptionPurchase extends ProductPurchase {
   autoRenewingAndroid: boolean;
   originalTransactionDateIOS: string;
@@ -220,6 +225,12 @@ export function addAdditionalSuccessPurchaseListenerIOS(fn: Function) : EmitterS
 
 /**
  * Subscribe a listener when purchase is updated.
- * @returns {callback(e: Event)}
+ * @returns {callback(e: ProductPurchase)}
+ */
+export function purchaseUpdatedListener(fn: Function) : EmitterSubscription;
+
+/**
+ * Subscribe a listener when purchase is updated.
+ * @returns {callback(e: PurchaseError)}
  */
 export function purchaseUpdatedListener(fn: Function) : EmitterSubscription;

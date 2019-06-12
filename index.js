@@ -405,7 +405,7 @@ export const addAdditionalSuccessPurchaseListenerIOS = (e) => {
 
 /**
  * Add IAP purchase event in ios.
- * @returns {callback(e: Event)}
+ * @returns {callback(e: ProductPurchase)}
  */
 export const purchaseUpdatedListener = (e) => {
   if (Platform.OS === 'ios') {
@@ -414,6 +414,20 @@ export const purchaseUpdatedListener = (e) => {
     return myModuleEvt.addListener('purchase-updated', e);
   } else {
     return DeviceEventEmitter.addListener('purchase-updated', e);
+  }
+};
+
+/**
+ * Add IAP purchase error event in ios.
+ * @returns {callback(e: ProductPurchase)}
+ */
+export const purcaseErrorListener = (e) => {
+  if (Platform.OS === 'ios') {
+    checkNativeiOSAvailable();
+    const myModuleEvt = new NativeEventEmitter(RNIapIos);
+    return myModuleEvt.addListener('purchase-error', e);
+  } else {
+    return DeviceEventEmitter.addListener('purchase-error', e);
   }
 };
 

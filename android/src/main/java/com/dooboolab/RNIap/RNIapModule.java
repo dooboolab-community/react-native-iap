@@ -95,9 +95,12 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         if (!bSetupCallbackConsumed) {
           bSetupCallbackConsumed = true;
           if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK ) {
-            Log.d(TAG, "billing client ready");
             callback.run();
           } else {
+            WritableMap error = Arguments.createMap();
+            error.putInt("responseCode", billingResult.getResponseCode());
+            error.putString("debugMessage", billingResult.getDebugMessage());
+            sendEvent(reactContext, "purchase-error", error);
             DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
           }
         }
@@ -355,7 +358,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           }
         }
         if (selectedSku == null) {
-          promise.reject(PROMISE_BUY_ITEM, "The sku was not found. Please fetch products first by calling getItems");
+          String debugMessage = "The sku was not found. Please fetch products first by calling getItems";
+          WritableMap error = Arguments.createMap();
+          error.putString("debugMessage", debugMessage);
+          sendEvent(reactContext, "purchase-error", error);
+          promise.reject(PROMISE_BUY_ITEM, debugMessage);
           return;
         }
 
@@ -368,14 +375,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             TAG,
             "buyItemByType (type: " + type + ", sku: " + sku + ", oldSku: " + oldSku + ", prorationMode: " + prorationMode + ") responseCode: " + billingResult.getResponseCode() + "(" + DoobooUtils.getInstance().getBillingResponseCodeName(billingResult.getResponseCode()) + ")"
         );
-
-        if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-          DoobooUtils
-              .getInstance()
-              .rejectPromisesWithBillingError(
-                  PROMISE_BUY_ITEM, billingResult.getResponseCode()
-              );
-        }
       }
     });
   }
@@ -469,6 +468,10 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     Log.d(TAG, "debugMessage: " + billingResult.getDebugMessage());
 
     if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+      WritableMap error = Arguments.createMap();
+      error.putInt("responseCode", billingResult.getResponseCode());
+      error.putString("debugMessage", billingResult.getDebugMessage());
+      sendEvent(reactContext, "purchase-error", error);
       DoobooUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
       return;
     }

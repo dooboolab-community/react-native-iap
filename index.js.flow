@@ -43,6 +43,11 @@ export type ProductPurchase = {|
   purchaseToken?: string,
 |}
 
+expoert type PurchaseError = {
+  responseCode: number,
+  debugMessage: string,
+}
+
 export type SubscriptionPurchase = ProductPurchase & {
   autoRenewingAndroid: boolean,
   originalTransactionDateIOS: string,
@@ -94,6 +99,9 @@ declare module.exports: {
     fn: (any) => any,
   ): EmitterSubscription,
   purchaseUpdatedListener(
+    fn: (any) => any,
+  ): EmitterSubscription,
+  purchaseErrorListener(
     fn: (any) => any,
   ): EmitterSubscription,
 }
