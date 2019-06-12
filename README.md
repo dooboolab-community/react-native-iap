@@ -21,7 +21,8 @@
 ## [Deprecated README](https://github.com/dooboolab/react-native-iap/blob/master/README_DEPRECATED.md)
   - If you are using `react-native-iap` version below `3.0.0`, please follow above readme.
 
-## Migration Guide
+## News on major releases
+  - [react-native-iap V3 note](https://medium.com/dooboolab/react-native-iap-v3-1259e0b0c017)
 
 #### Methods
 | Func  | Param  | Return | Description |
@@ -32,7 +33,7 @@
 | getPurchaseHistory | | `Promise<Purchase[]>` | Gets an inventory of purchases made by the user regardless of consumption status (where possible) |
 | getAvailablePurchases | | `Promise<Purchase[]>` | Get all purchases made by the user (either non-consumable, or haven't been consumed yet)
 | ~~buyProduct~~ | `string` Product ID/sku | `Promise<Purchase>` | Buy a product |
-| requestPurchase | `string` Product ID/sku | `Promise<string>` | Request a purchase. `purchaseUpdatedLister` will receive the result. |
+| requestPurchase | `string` Product ID/sku | `Promise<string>` | Request a purchase. `purchaseUpdatedListener` will receive the result. |
 | ~~buyProductWithQuantityIOS~~ | `string` Product ID/sku, `number` Quantity | `Promise<Purchase>` | Buy a product with a specified quantity (iOS only) |
 | requestPurchaseWithQuantityIOS | `string` Product ID/sku, `number` Quantity | `Promise<Purchase>` | Buy a product with a specified quantity (iOS only). `purchaseUpdatedListener` will receive the result |
 | ~~buySubscription~~ | `string` Subscription ID/sku, `string` Old Subscription ID/sku (on Android), `int` Proration Mode (on Android) | `Promise<Purchase>` | Create (buy) a subscription to a sku. For upgrading/downgrading subscription on Android pass the second parameter with current subscription ID, on iOS this is handled automatically by store. You can also optionally pass in a proration mode integer for upgrading/downgrading subscriptions on Android |
@@ -146,7 +147,7 @@ componentWillUnmount() {
 
 ## Purchase
 > The flow of the `purchase` has been renewed by the founding in [issue #307](https://github.com/dooboolab/react-native-iap/issues/307). I've decided to redesign this `purchase flow` not relying on the `promises` or `callback`. There are some reasons not to approach in this way.
-1. There may be more than one reponses when requesting a payment.
+1. There may be more than one responses when requesting a payment.
 2. The purchase responses are `asynchronuous` which means request that's made beforehand may not complete at first.
 3. The purchase may be pended and hard to track what has been done ([example](https://github.com/dooboolab/react-native-iap/issues/307#issuecomment-447745027)).
 4. Billing flow is more like and `events` rather than `callback` pattern.
@@ -158,6 +159,7 @@ Before you request any purchase, you should set `purchaseUpdatedListener` from `
   import RNIap, {
     ProductPurchase,
     purchaseUpdatedListener,
+    purchaseErrorListener,
   } from 'react-native-iap';
 
   let purchaseUpdateSubscription;
@@ -166,11 +168,19 @@ Before you request any purchase, you should set `purchaseUpdatedListener` from `
       console.log('purchaseUpdatedListener', purchase);
       this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
     });
+    purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
+      console.log('purchaseErrorListener', error);
+      Alert.alert('purchase error', JSON.stringify(error));
+    });
   }
   componentWillMount() {
     if (purchaseUpdateSubscription) {
       purchaseUpdateSubscription.remove();
       purchaseUpdateSubscription = null;
+    }
+   if (purchaseErrorSubscription) {
+      purchaseErrorSubscription.remove();
+      purchaseErrorSubscription = null;
     }
   }
 ```
@@ -203,7 +213,7 @@ Then define the method like below and call it when user press the button.
 ##### New purchase flow
 ![image](https://user-images.githubusercontent.com/27461460/59160427-d1605600-8b10-11e9-9ca9-80fd2c08fd86.png)
 
-Most likely, you'll want to handle the 'store kit flow' (detailed [here](https://forums.developer.apple.com/thread/6431#14831)), which happens when a user succesfully pays after solving a problem with his or her account - for example, when the credit card information has expired. 
+Most likely, you'll want to handle the 'store kit flow' (detailed [here](https://forums.developer.apple.com/thread/6431#14831)), which happens when a user successfully pays after solving a problem with his or her account - for example, when the credit card information has expired. 
 In this scenario, the initial call to `RNIap.buyProduct` would fail and you'd need to add `addAdditionalSuccessPurchaseListenerIOS` to handle the successful purchase previously. We are planning to remove ~~additionalSuccessPurchaseListenerIOS~~ in future releases so avoid using it. Approach of new purchase flow will prevent such issue in [#307](https://github.com/dooboolab/react-native-iap/issues/307) which was privided in `2.4.0+`.
 
 ## Consumption and Restoring Purchases
