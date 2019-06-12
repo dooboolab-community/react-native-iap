@@ -147,8 +147,9 @@ componentWillUnmount() {
 ## Purchase
 > The flow of the `purchase` has been renewed by the founding in [issue #307](https://github.com/dooboolab/react-native-iap/issues/307). I've decided to redesign this `purchase flow` not relying on the `promises` or `callback`. There are some reasons not to approach in this way.
 1. There may be more than one reponses when requesting a payment.
-2. The purchase may be pended and hard to track what has been done ([example](https://github.com/dooboolab/react-native-iap/issues/307#issuecomment-447745027)).
-3. Billing flow is more like and `events` rather than `callback` pattern.
+2. The purchase responses are `asynchronuous` which means request that's made beforehand may not complete at first.
+3. The purchase may be pended and hard to track what has been done ([example](https://github.com/dooboolab/react-native-iap/issues/307#issuecomment-447745027)).
+4. Billing flow is more like and `events` rather than `callback` pattern.
 
 Once you have called `getProducts()`, and you have a valid response, you can call `buyProduct()`. Subscribable products can be purchased just like consumable products and users can cancel subscriptions by using the iOS System Settings.
 
@@ -296,7 +297,6 @@ Issue regarding `valid products`
 - Releated issue in [#174](https://github.com/dooboolab/react-native-iap/issues/174).
 
 #### How do I handle promoted products in ios?
-
 - Offical doc is [here](https://developer.apple.com/app-store/promoting-in-app-purchases/)
 - Start the IAPPromotionObserver in `-[application:didFinishLaunchingWithOptions:]` your AppDelegate:
 
@@ -346,12 +346,10 @@ Delete app / Restart device / Quit "store" related processes in Activity Monitor
 - `getAvailablePurchases` is used only when you purchase a non-consumable product. This can be restored only. If you want to find out if a user subscribes the product, you should check the receipt which you should store in your own database. Apple suggests you handle this in your own backend to do things like what you are trying to achieve.
 
 #### Using Face ID & Touch to checkout on iOS
-
 - After you have completed the setup and set your deployment target to iOS 12, FaceID and Touch to purchase will be activated by default in production. Please note that in development or TestFlight, it will **NOT** use FaceID / Touch to checkout because they are using the Sandbox environment.
 
 
 ## Supporting react-native-iap
-
 `react-native` is an open source project with MIT license. We are willing to maintain this repository to support devs to monetize around the world. Since `IAP` itself is not perfect on each platform, we desperately need this project to be maintained. If you'd like to help us, please consider being with us in [Open Collective](https://opencollective.com/react-native-iap).
 
 ### Sponsors
