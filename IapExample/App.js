@@ -12,6 +12,8 @@ import RNIap, {
   Product,
   ProductPurchase,
   purchaseUpdatedListener,
+  purchaseErrorListener,
+  PurchaseError,
 } from 'react-native-iap';
 
 // App Bundle > com.dooboolab.test
@@ -36,6 +38,7 @@ const itemSubs = Platform.select({
 });
 
 let purchaseUpdateSubscription;
+let purchaseErrorSubscription;
 
 class Page extends Component {
   constructor(props) {
@@ -61,12 +64,21 @@ class Page extends Component {
       console.log('purchaseUpdatedListener', purchase);
       this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
     });
+
+    purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
+      console.log('purchaseErrorListener', error);
+      Alert.alert('purchase error', JSON.stringify(error));
+    });
   }
 
   componentWillMount() {
     if (purchaseUpdateSubscription) {
       purchaseUpdateSubscription.remove();
       purchaseUpdateSubscription = null;
+    }
+    if (purchaseErrorSubscription) {
+      purchaseErrorSubscription.remove();
+      purchaseErrorSubscription = null;
     }
   }
 
