@@ -421,7 +421,7 @@ export const purchaseUpdatedListener = (e) => {
  * Add IAP purchase error event in ios.
  * @returns {callback(e: ProductPurchase)}
  */
-export const purcaseErrorListener = (e) => {
+export const purchaseErrorListener = (e) => {
   if (Platform.OS === 'ios') {
     checkNativeiOSAvailable();
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
