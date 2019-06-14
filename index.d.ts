@@ -141,7 +141,6 @@ export function buySubscription(sku: string, oldSku?: string, prorationMode?: nu
 /**
  * Request a subscription to a sku
  * 
- * @deprecated
  * @param {string} sku The product's sku/ID
  * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
  * @param {number} [prorationMode] Optional proration mode for upgrade/downgrade (Android only)
