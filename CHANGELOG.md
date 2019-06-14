@@ -6,6 +6,7 @@
   + Add purchaseErrorListner to subscribe purchase error. `ios` warning fixed. Typings added. [#517](https://github.com/dooboolab/react-native-iap/issues/517)
   + Resolve [#315](https://github.com/dooboolab/react-native-iap/issues/315) by safely wrap promises with `ObjectAlreadyConsumedException`.
   + Fixed typo in `purchaseErrorListener`.
+  + Fixed missing import for `ObjectAlreadyConsumedException`.
 - **[2.5.+]**
   + Fix flow type [#482](https://github.com/dooboolab/react-native-iap/pull/482)
   + Ugrade gradle to `3.2.1` [#488](https://github.com/dooboolab/react-native-iap/pull/488)
