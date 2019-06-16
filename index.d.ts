@@ -229,7 +229,7 @@ export function addAdditionalSuccessPurchaseListenerIOS(fn: Function) : EmitterS
 export function purchaseUpdatedListener(fn: Function) : EmitterSubscription;
 
 /**
- * Subscribe a listener when purchase is updated.
+ * Subscribe a listener when purchase got error.
  * @returns {callback(e: PurchaseError)}
  */
-export function purchaseUpdatedListener(fn: Function) : EmitterSubscription;
+export function purchaseErrorListener(fn: Function) : EmitterSubscription;
