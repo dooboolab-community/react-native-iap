@@ -217,13 +217,13 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         billingClient.querySkuDetailsAsync(params.build(), new SkuDetailsResponseListener() {
           @Override
           public void onSkuDetailsResponse(BillingResult billingResult, List<SkuDetails> skuDetailsList) {
-            skus = skuDetailsList;
             Log.d(TAG, "responseCode: " + billingResult.getResponseCode());
             if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
               DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
               return;
             }
 
+            skus = skuDetailsList;
             WritableNativeArray items = new WritableNativeArray();
 
             for (SkuDetails skuDetails : skuDetailsList) {
@@ -400,75 +400,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             TAG,
             "buyItemByType (type: " + type + ", sku: " + sku + ", oldSku: " + oldSku + ", prorationMode: " + prorationMode + ") responseCode: " + billingResult.getResponseCode() + "(" + DoobooUtils.getInstance().getBillingResponseCodeName(billingResult.getResponseCode()) + ")"
         );
-      }
-    });
-  }
-
-  @ReactMethod
-  public void requestPurchase(final String type, final String sku, final String oldSku, final Integer prorationMode, final Promise promise) {
-    final Activity activity = getCurrentActivity();
-
-    if (activity == null) {
-      promise.reject(DoobooUtils.E_UNKNOWN, "getCurrentActivity returned null");
-      return;
-    }
-
-    ensureConnection(promise, new Runnable() {
-      @Override
-      public void run() {
-        final BillingFlowParams.Builder builder = BillingFlowParams.newBuilder();
-
-        if (type.equals(BillingClient.SkuType.SUBS) && oldSku != null && !oldSku.isEmpty()) {
-          // Subscription upgrade/downgrade
-          if (prorationMode != null && prorationMode != 0) {
-            builder.setOldSku(oldSku);
-            if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE) {
-              builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE);
-            } else if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION) {
-              builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
-            } else {
-              // builder.addOldSku(oldSku);
-              builder.setOldSku(oldSku);
-            }
-          } else {
-            builder.setOldSku(oldSku);
-          }
-        }
-
-        if (prorationMode != 0) {
-          builder.setReplaceSkusProrationMode(prorationMode);
-        }
-
-        SkuDetails selectedSku = null;
-        for (SkuDetails skuDetail : skus) {
-          if (skuDetail.getSku().equals(sku)) {
-            selectedSku = skuDetail;
-            break;
-          }
-        }
-        if (selectedSku == null) {
-          promise.reject(PROMISE_BUY_ITEM, "The sku was not found. Please fetch products first by calling getItems");
-          return;
-        }
-
-        BillingFlowParams flowParams = builder
-            .setSkuDetails(selectedSku)
-            .build();
-        BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
-
-        if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-          DoobooUtils
-              .getInstance()
-              .rejectPromisesWithBillingError(
-                  PROMISE_BUY_ITEM, billingResult.getResponseCode()
-              );
-        } else {
-          try {
-            promise.resolve("purchase requested!");
-          } catch (ObjectAlreadyConsumedException oce) {
-            Log.e(TAG, oce.getMessage());
-          }
-        }
       }
     });
   }
