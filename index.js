@@ -432,6 +432,17 @@ export const purchaseErrorListener = (e) => {
 };
 
 /**
+ * Get the current receipt base64 encoded in IOS.
+ * @returns {Promise<string>}
+ */
+export const requestReceiptIOS = () => {
+  if (Platform.OS === 'ios') {
+    checkNativeiOSAvailable();
+    return RNIapIos.requestReceipt();
+  }
+};
+
+/**
  * deprecated codes
  */
 /*
@@ -486,4 +497,6 @@ export default {
   requestPurchaseWithQuantityIOS,
   requestSubscription,
   purchaseUpdatedListener,
+  purchaseErrorListener,
+  requestReceiptIOS,
 };
