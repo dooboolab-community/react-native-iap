@@ -233,3 +233,9 @@ export function purchaseUpdatedListener(fn: Function) : EmitterSubscription;
  * @returns {callback(e: PurchaseError)}
  */
 export function purchaseErrorListener(fn: Function) : EmitterSubscription;
+
+/**
+ * Request current receipt base64 encoded (IOS only)
+ * @returns {Promise<string>}
+ */
+export function requestReceiptIOS(): Promise<string>;

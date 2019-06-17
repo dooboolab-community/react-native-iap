@@ -45,6 +45,7 @@
 | consumeAllItemsAndroid | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
 | validateReceiptIos | `object` receiptBody, `boolean` isTest | `object or boolean` result | validate receipt for ios. |
 | validateReceiptAndroid | `string` packageName, `string` productId, `string` productToken, `string` accessToken, `boolean` isSubscription | `object or boolean` result | validate receipt for android. |
+| requestReceiptIOS |  | `Promise<string>` | Get the current receipt (on iOS.) No-op on Android. |
 
 ## Npm repo
 https://www.npmjs.com/package/react-native-iap
@@ -276,6 +277,8 @@ const result = await RNIap.validateReceiptIos(receiptBody, false);
 console.log(result);
 ```
 For further information, please refer to [guide](https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
+
+Sometimes you will need to get the receipt at times other than after purchase. For example, when a user needs to ask for permission to buy a product (`Ask to buy` flow) or unstable internet connections. For these cases we have a convenience method `requestReceiptIOS` which gets the latest receipt for the app at any given time. The response is base64 encoded.
 
 ### iOS Purchasing process right way.
 Issue regarding `valid products`

@@ -7,10 +7,11 @@
 #import <StoreKit/StoreKit.h>
 
 ////////////////////////////////////////////////////     _//////////_  // Private Members
-@interface RNIapIos() <IAPPromotionObserverDelegate> {
+@interface RNIapIos() <IAPPromotionObserverDelegate, SKRequestDelegate> {
     NSMutableDictionary *promisesByKey;
     dispatch_queue_t myQueue;
     BOOL hasListeners;
+    void (^receiptBlock)(NSData*, NSError*); // Block to handle request the receipt async from delegate
 }
 @end
 
@@ -280,6 +281,18 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
     }
 }
 
+RCT_EXPORT_METHOD(requestReceipt:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [self requestReceiptDataWithBlock:^(NSData *receiptData, NSError *error) {
+        if (error == nil) {
+            resolve([receiptData base64EncodedStringWithOptions:0]);
+        }
+        else {
+            reject([self standardErrorCode:9], @"Invalid receipt", nil);
+        }
+    }];
+}
+
 #pragma mark ===== StoreKit Delegate
 
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
@@ -314,11 +327,21 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
 }
 
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error{
-    NSString* key = RCTKeyForInstance(productsRequest);
-    dispatch_sync(myQueue, ^{
-        [self rejectPromisesForKey:key code:[self standardErrorCode:(int)error.code]
-                           message:error.localizedDescription error:error];
-    });
+    if([request isKindOfClass:[SKReceiptRefreshRequest class]]) {
+        if (receiptBlock != nil) {
+            NSError *standardError = [[NSError alloc]initWithDomain:error.domain code:9 userInfo:error.userInfo];
+            receiptBlock(nil, standardError);
+            receiptBlock = nil;
+            return;
+        }
+    }
+    else {
+        NSString* key = RCTKeyForInstance(productsRequest);
+        dispatch_sync(myQueue, ^{
+            [self rejectPromisesForKey:key code:[self standardErrorCode:(int)error.code]
+                               message:error.localizedDescription error:error];
+        });
+    }
 }
 
 -(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
@@ -368,9 +391,10 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
     for(SKPaymentTransaction *transaction in queue.transactions) {
         if(transaction.transactionState == SKPaymentTransactionStateRestored
            || transaction.transactionState == SKPaymentTransactionStatePurchased) {
-            NSDictionary *restored = [self getPurchaseData:transaction];
-            [items addObject:restored];
-            [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+            [self getPurchaseData:transaction withBlock:^(NSDictionary *restored) {
+                [items addObject:restored];
+                [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+            }];
         }
     }
     
@@ -387,15 +411,15 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
 
 -(void)purchaseProcess:(SKPaymentTransaction *)transaction {
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-    NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
-    NSDictionary* purchase = [self getPurchaseData:transaction];
-    [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:purchase];
-    
-    // additionally send event
-    if (hasListeners) {
-        [self sendEventWithName:@"iap-purchase-event" body: purchase];
-        [self sendEventWithName:@"purchase-updated" body: purchase];
-    }
+    [self getPurchaseData:transaction withBlock:^(NSDictionary *purchase) {
+        [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:purchase];
+        
+        // additionally send event
+        if (hasListeners) {
+            [self sendEventWithName:@"iap-purchase-event" body: purchase];
+            [self sendEventWithName:@"purchase-updated" body: purchase];
+        }
+    }];
 }
 
 -(NSString *)standardErrorCode:(int)code {
@@ -408,7 +432,9 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
                               @"E_ITEM_UNAVAILABLE",
                               @"E_REMOTE_ERROR",
                               @"E_NETWORK_ERROR",
-                              @"E_SERVICE_ERROR"
+                              @"E_SERVICE_ERROR",
+                              @"E_RECEIPT_FAILED",
+                              @"E_RECEIPT_FINISHED_FAILED"
                               ];
     
     if (code > descriptions.count - 1) {
@@ -614,44 +640,83 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
     return mappedDiscounts;
 }
 
-- (NSDictionary *)getPurchaseData:(SKPaymentTransaction *)transaction {
-    NSData *receiptData;
-    if (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0) {
-        receiptData = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] appStoreReceiptURL]];
-    } else {
-        receiptData = [transaction transactionReceipt];
-    }
-    
-    if (receiptData == nil) return nil;
-    
-    NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                     @(transaction.transactionDate.timeIntervalSince1970 * 1000), @"transactionDate",
-                                     transaction.transactionIdentifier, @"transactionId",
-                                     transaction.payment.productIdentifier, @"productId",
-                                     [receiptData base64EncodedStringWithOptions:0], @"transactionReceipt",
-                                     nil
-                                     ];
-    
-    // NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithDictionary: @{
-    //   @"transactionDate": @(transaction.transactionDate.timeIntervalSince1970 * 1000),
-    //   @"transactionId": transaction.transactionIdentifier,
-    //   @"productId": transaction.payment.productIdentifier,
-    //   @"transactionReceipt":[receiptData base64EncodedStringWithOptions:0],
-    // }];
-    
-    // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
-    SKPaymentTransaction *originalTransaction = transaction.originalTransaction;
-    if (originalTransaction) {
-        purchase[@"originalTransactionDateIOS"] = @(originalTransaction.transactionDate.timeIntervalSince1970 * 1000);
-        purchase[@"originalTransactionIdentifierIOS"] = originalTransaction.transactionIdentifier;
-    }
-    
-    return purchase;
+- (void) getPurchaseData:(SKPaymentTransaction *)transaction withBlock:(void (^)(NSDictionary *transactionDict))block {
+    [self requestReceiptDataWithBlock:^(NSData *receiptData, NSError *error) {
+        if (receiptData == nil) {
+            block(nil);
+        }
+        else {
+            NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                             @(transaction.transactionDate.timeIntervalSince1970 * 1000), @"transactionDate",
+                                             transaction.transactionIdentifier, @"transactionId",
+                                             transaction.payment.productIdentifier, @"productId",
+                                             [receiptData base64EncodedStringWithOptions:0], @"transactionReceipt",
+                                             nil
+                                             ];
+            
+            // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
+            SKPaymentTransaction *originalTransaction = transaction.originalTransaction;
+            if (originalTransaction) {
+                purchase[@"originalTransactionDateIOS"] = @(originalTransaction.transactionDate.timeIntervalSince1970 * 1000);
+                purchase[@"originalTransactionIdentifierIOS"] = originalTransaction.transactionIdentifier;
+            }
+            
+            block(purchase);
+        }
+    }];
 }
 
 static NSString *RCTKeyForInstance(id instance)
 {
     return [NSString stringWithFormat:@"%p", instance];
+}
+
+
+#pragma mark - Receipt
+
+- (void) requestReceiptDataWithBlock:(void (^)(NSData *data, NSError *error))block {
+    if ([self isReceiptPresent] == NO) {
+        SKReceiptRefreshRequest *refreshRequest = [[SKReceiptRefreshRequest alloc]init];
+        refreshRequest.delegate = self;
+        [refreshRequest start];
+        receiptBlock = block;
+    }
+    else {
+        receiptBlock = nil;
+        block([self receiptData], nil);
+    }
+}
+
+- (BOOL) isReceiptPresent {
+    NSURL *receiptURL = [[NSBundle mainBundle]appStoreReceiptURL];
+    NSError *canReachError = nil;
+    [receiptURL checkResourceIsReachableAndReturnError:&canReachError];
+    return canReachError == nil;
+}
+
+- (NSData *) receiptData {
+    NSURL *receiptURL = [[NSBundle mainBundle]appStoreReceiptURL];
+    NSData *receiptData = [[NSData alloc]initWithContentsOfURL:receiptURL];
+    return receiptData;
+}
+
+#pragma mark - SKRequestDelegate
+
+- (void)requestDidFinish:(SKRequest *)request {
+    if([request isKindOfClass:[SKReceiptRefreshRequest class]]) {
+        if ([self isReceiptPresent] == YES) {
+            NSLog(@"Receipt refreshed success.");
+            if(receiptBlock) {
+                receiptBlock([self receiptData], nil);
+            }
+        }
+        else if(receiptBlock) {
+            NSLog(@"Finished but receipt refreshed failed!");
+            NSError *error = [[NSError alloc]initWithDomain:@"Receipt request finished but it failed!" code:10 userInfo:nil];
+            receiptBlock(nil, error);
+        }
+        receiptBlock = nil;
+    }
 }
 
 @end
