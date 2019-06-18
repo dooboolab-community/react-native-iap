@@ -374,7 +374,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
         if (type.equals(BillingClient.SkuType.SUBS) && oldSku != null && !oldSku.isEmpty()) {
           // Subscription upgrade/downgrade
-          if (prorationMode != null && prorationMode != 0) {
+          if (prorationMode != null && prorationMode != -1) {
             builder.setOldSku(oldSku);
             if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE) {
               builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE);
@@ -385,7 +385,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               builder.setOldSku(oldSku);
             }
           } else {
-            builder.setOldSku(oldSku);
+            builder.addOldSku(oldSku);
           }
         }
 

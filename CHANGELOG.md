@@ -9,6 +9,7 @@
   + Fixed missing import for `ObjectAlreadyConsumedException`.
   + Update `podspec` to match the version.
   + Improved handling of receipts [#521](https://github.com/dooboolab/react-native-iap/pull/521)
+  + Fixes for [#530](https://github.com/dooboolab/react-native-iap/issues/530)
 - **[2.5.+]**
   + Fix flow type [#482](https://github.com/dooboolab/react-native-iap/pull/482)
   + Ugrade gradle to `3.2.1` [#488](https://github.com/dooboolab/react-native-iap/pull/488)
