@@ -40,6 +40,9 @@ build/
 local.properties
 *.iml
 IapExample/android/app/bin
+IapExample/android/app/.project
+IapExample/android/.project
+android/.project
 
 # BUCK
 buck-out/
