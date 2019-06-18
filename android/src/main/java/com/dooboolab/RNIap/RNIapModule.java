@@ -174,7 +174,16 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       public void run() {
         final WritableNativeArray array = new WritableNativeArray();
         Purchase.PurchasesResult result = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
+        if (result == null) {
+          promise.reject("refreshItem", "No results for query");
+          return;
+        }
         final List<Purchase> purchases = result.getPurchasesList();
+        if (purchases == null || purchases.length == 0) {
+          promise.reject("refreshItem", "No purchases found");
+          return;
+        }
+
         for (Purchase purchase : purchases) {
           final ConsumeParams consumeParams = ConsumeParams.newBuilder()
               .setPurchaseToken(purchase.getPurchaseToken())
