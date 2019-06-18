@@ -179,7 +179,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           return;
         }
         final List<Purchase> purchases = result.getPurchasesList();
-        if (purchases == null || purchases.length == 0) {
+        if (purchases == null || purchases.size() == 0) {
           promise.reject("refreshItem", "No purchases found");
           return;
         }
