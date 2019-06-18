@@ -263,8 +263,8 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     ensureConnection(promise, new Runnable() {
       @Override
       public void run() {
-        final WritableNativeArray array = new WritableNativeArray();
-        Purchase.PurchasesResult result = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
+        final WritableNativeArray items = new WritableNativeArray();
+        Purchase.PurchasesResult result = billingClient.queryPurchases(type.equals("subs") ? BillingClient.SkuType.SUBS : BillingClient.SkuType.INAPP);
         final List<Purchase> purchases = result.getPurchasesList();
 
         for (Purchase purchase : purchases) {
@@ -280,21 +280,10 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
 
           if (type.equals(BillingClient.SkuType.SUBS)) purchase.isAutoRenewing();
-          array.pushMap(item);
+          items.pushMap(item);
         }
 
-        billingClient.queryPurchaseHistoryAsync(type.equals("subs") ? BillingClient.SkuType.SUBS : BillingClient.SkuType.INAPP,
-            new PurchaseHistoryResponseListener() {
-              @Override
-              public void onPurchaseHistoryResponse(BillingResult billingResult,
-                                                    final List<PurchaseHistoryRecord> purchaseHistoryRecordList) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK
-                    && purchaseHistoryRecordList != null) {
-
-                }
-              }
-            }
-        );
+        promise.resolve(items);
       }
     });
   }
