@@ -88,8 +88,8 @@ class Page extends Component {
 
   getItems = async() => {
     try {
-      const products: Product[] = await RNIap.getProducts(itemSkus);
-      // const products = await RNIap.getSubscriptions(itemSkus);
+      // const products: Product[] = await RNIap.getProducts(itemSkus);
+      const products = await RNIap.getSubscriptions(itemSkus);
       console.log('Products', products);
       this.setState({ productList: products });
     } catch (err) {
@@ -219,8 +219,8 @@ class Page extends Component {
                       paddingHorizontal: 20,
                     }} >{JSON.stringify(product)}</Text>
                     <NativeButton
-                      onPress={() => this.requestPurchase(product.productId)}
-                      // onPress={() => this.requestSubscription(product.productId)}
+                      // onPress={() => this.requestPurchase(product.productId)}
+                      onPress={() => this.requestSubscription(product.productId)}
                       // onPress={() => this.buyItem(product.productId)}
                       // onPress={() => this.buySubscribeItem(product.productId)}
                       activeOpacity={0.5}
