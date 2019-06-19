@@ -114,7 +114,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     };
 
     try {
-      billingClient = BillingClient.newBuilder(reactContext).setListener(this).build();
+      billingClient = BillingClient.newBuilder(reactContext).enablePendingPurchases().setListener(this).build();
       billingClient.startConnection(billingClientStateListener);
     } catch (Exception e) {
       promise.reject(DoobooUtils.E_NOT_PREPARED, e.getMessage(), e);
