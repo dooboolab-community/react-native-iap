@@ -398,7 +398,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           }
         }
 
-        if (prorationMode != 0) {
+        if (prorationMode != 0 && prorationMode != -1) {
           builder.setReplaceSkusProrationMode(prorationMode);
         }
 
