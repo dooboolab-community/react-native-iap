@@ -22,7 +22,7 @@ To migrate `0.2.*` to `0.3.*`, You can follow the below guide.
 | `getItems` | `getProducts` | `getProducts` |
 | `getSubscribeItems` | `getSubscriptions` | `getSubscriptions` |
 | `getPurchasedItemsAndroid` | `getPurchaseHistory` | `getPurchaseHistory` |
-| `` | `getAvailablePurchases` | `getAvailablePurchases` |
+| \`\` | `getAvailablePurchases` | `getAvailablePurchases` |
 | `buySubscribeItem` | `buySubscription` | `buySubscription` |
 | `buyItem` | `buyProduct` | `buyProduct` |
 | `consumeItemAndroid` | `consumePurchase` | `consumePurchase` |
@@ -159,8 +159,8 @@ async componentDidMount() {
 |`introductoryPriceNumberOfPeriodsIOS`| ✓ | | An integer that indicates the number of periods the product discount is available. |
 |`introductoryPriceSubscriptionPeriod`| ✓ | | An object that defines the period for the product discount. |
 |`introductoryPriceSubscriptionPeriodIOS`| ✓ | | An object that defines the period for the product discount. |
-|`subscriptionPeriodNumberIOS`| ✓ |  | The unit in string like DAY or WEEK or MONTH or YEAR. |
-|`subscriptionPeriodUnitIOS`| ✓ |  | The unit number of subscription period. |
+|`subscriptionPeriodNumberIOS`| ✓ |  | The unit number (in string) of subscription period. |
+|`subscriptionPeriodUnitIOS`| ✓ |  | The unit in string like `DAY` or `WEEK` or `MONTH` or `YEAR`. |
 |`subscriptionPeriodAndroid`|  | ✓ | Subscription period, specified in ISO 8601 format. For example, P1W equates to one week, P1M equates to one month, P3M equates to three months, P6M equates to six months, and P1Y equates to one year. |
 |`introductoryPriceCyclesAndroid`|  | ✓ | The number of subscription billing periods for which the user will be given the introductory price, such as 3. |
 |`introductoryPricePeriodAndroid`|  | ✓ | The billing period of the introductory price, specified in ISO 8601 format. |
@@ -197,7 +197,7 @@ Once you have called `getProducts()`, and you have a valid response, you can cal
   }
 ```
 
-Most likely, you'll want to handle the 'store kit flow' (detailed [here](https://forums.developer.apple.com/thread/6431#14831)), which happens when a user succesfully pays after solving a problem with his or her account - for example, when the credit card information has expired. 
+Most likely, you'll want to handle the 'store kit flow' (detailed [here](https://forums.developer.apple.com/thread/6431#14831)), which happens when a user succesfully pays after solving a problem with his or her account - for example, when the credit card information has expired.
 In this scenario, the initial call to `RNIap.buyProduct` would fail and you'd need to add `addAdditionalSuccessPurchaseListenerIOS` to handle the successful purchase. Otherwise, you'll be in a scenario where the user paid but your application is not aware of it
 * This feature was provided because of issue in [#307](https://github.com/dooboolab/react-native-iap/issues/307).
 * This feature is provided from `react-native-iap` version `2.4.0-beta1`. Currently this feature is in test.
@@ -329,7 +329,7 @@ We've like to update this solution as version changes in `react-native-iap`.
 - Offical doc is [here](https://developer.android.com/google/play/billing/billing_library_overview).
 - I've developed this feature for other developers to contribute easily who are aware of these things. The doc says you can also get the `accessToken` via play console without any of your backend server. You can get this by following process.
   * Select your app > Services & APIs > "YOUR LICENSE KEY FOR THIS APPLICATION Base64-encoded RSA public key to include in your binary". [reference](https://stackoverflow.com/questions/27132443/how-to-find-my-google-play-services-android-base64-public-key).
-  
+
 #### How to make consumable product in android developer mode?
 - If you are facing `"You already own this item"` on developer(test) mode you might check [related issue #126](https://github.com/dooboolab/react-native-iap/issues/126#issuecomment-439084872)
 
@@ -344,7 +344,7 @@ We've like to update this solution as version changes in `react-native-iap`.
 
     ```objc
     // Add '#import "IAPPromotionObserver.h"' to your imports
-    [IAPPromotionObserver startObserving]; 
+    [IAPPromotionObserver startObserving];
     ```
 
 - Add an event listener for the `iap-promoted-product` event somewhere early in your app's lifecycle:
