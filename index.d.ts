@@ -35,7 +35,7 @@ export interface Subscription<ID extends string> extends Common {
 
 export interface ProductPurchase {
   productId: string;
-  transactionId: string;
+  transactionId?: string;
   transactionDate: number;
   transactionReceipt: string;
   signatureAndroid?: string;
