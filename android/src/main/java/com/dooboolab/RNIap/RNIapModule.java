@@ -319,7 +319,12 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             for (PurchaseHistoryRecord purchase : purchaseHistoryRecordList) {
               WritableMap item = Arguments.createMap();
               item.putString("productId", purchase.getSku());
-              item.putString("transactionId", purchase.getOrderId());
+              
+              // item.putString("transactionId", purchase.getOrderId());
+              // PurchaseHistoryRecord doesn't have orderId, 
+              // and it seems that getOriginalJson in this case also doesn't return the orderId
+              // is there any way to obtain this?
+              
               item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
               item.putString("transactionReceipt", purchase.getOriginalJson());
               item.putString("purchaseToken", purchase.getPurchaseToken());
