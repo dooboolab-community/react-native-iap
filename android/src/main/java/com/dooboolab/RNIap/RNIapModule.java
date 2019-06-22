@@ -319,7 +319,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             for (PurchaseHistoryRecord purchase : purchaseHistoryRecordList) {
               WritableMap item = Arguments.createMap();
               item.putString("productId", purchase.getSku());
-              item.putString("transactionId", purchase.getOrderId());
               item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
               item.putString("transactionReceipt", purchase.getOriginalJson());
               item.putString("purchaseToken", purchase.getPurchaseToken());
