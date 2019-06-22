@@ -1,4 +1,7 @@
 ## Changelogs
+- **[3.1.0]**
+  + Androidx migration [#550](https://github.com/dooboolab/react-native-iap/pull/550)
+  + Upgrade example project to `react-native@0.60.0-rc.2`
 - **[3.0.1]**
   + Fixes for [#546](https://github.com/dooboolab/react-native-iap/issues/546)
 - **[3.0.0]**
