@@ -330,11 +330,11 @@ export const buyPromotedProductIOS = () => Platform.select({
  * @returns {Promise}
  */
 export const buyProductWithOfferIOS = (sku, forUser, withOffer) => Platform.select({
-  ios: () => {
+  ios: async() => {
     checkNativeiOSAvailable();
     return RNIapIos.buyProductWithOffer(sku, forUser, withOffer);
   },
-  android: () => Promise.resolve(),
+  android: async() => Promise.resolve(),
 })();
 
 /**

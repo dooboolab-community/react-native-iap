@@ -2,7 +2,7 @@
 package com.dooboolab.RNIap;
 
 import android.app.Activity;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.android.billingclient.api.BillingResult;
@@ -114,7 +114,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     };
 
     try {
-      billingClient = BillingClient.newBuilder(reactContext).setListener(this).build();
+      billingClient = BillingClient.newBuilder(reactContext).enablePendingPurchases().setListener(this).build();
       billingClient.startConnection(billingClientStateListener);
     } catch (Exception e) {
       promise.reject(DoobooUtils.E_NOT_PREPARED, e.getMessage(), e);
@@ -291,37 +291,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           if (type.equals(BillingClient.SkuType.SUBS)) purchase.isAutoRenewing();
           items.pushMap(item);
         }
-
-        billingClient.queryPurchaseHistoryAsync(type.equals("subs") ? BillingClient.SkuType.SUBS : BillingClient.SkuType.INAPP, new PurchaseHistoryResponseListener() {
-          @Override
-          public void onPurchaseHistoryResponse(BillingResult billingResult, List<PurchaseHistoryRecord> purchaseHistoryRecordList) {
-            if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-              DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
-              return;
-            }
-
-            Log.d(TAG, purchaseHistoryRecordList.toString());
-
-            for (PurchaseHistoryRecord purchase : purchaseHistoryRecordList) {
-              WritableMap item = Arguments.createMap();
-              item.putString("productId", purchase.getSku());
-              item.putString("transactionId", purchase.getPurchaseToken());
-              item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
-              item.putString("transactionReceipt", purchase.getOriginalJson());
-              item.putString("purchaseToken", purchase.getPurchaseToken());
-              item.putString("dataAndroid", purchase.getOriginalJson());
-              item.putString("signatureAndroid", purchase.getSignature());
-              item.putString("developerPayload", purchase.getDeveloperPayload());
-              items.pushMap(item);
-            }
-
-            try {
-              promise.resolve(items);
-            } catch (ObjectAlreadyConsumedException oce) {
-              Log.e(TAG, oce.getMessage());
-            }
-          }
-        });
+        try {
+          promise.resolve(items);
+        } catch (ObjectAlreadyConsumedException oce) {
+          Log.e(TAG, oce.getMessage());
+        }
       }
     });
   }
@@ -398,7 +372,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           }
         }
 
-        if (prorationMode != 0) {
+        if (prorationMode != 0 && prorationMode != -1) {
           builder.setReplaceSkusProrationMode(prorationMode);
         }
 

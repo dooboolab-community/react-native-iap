@@ -1,5 +1,10 @@
 ## Changelogs
-- **[3.0.+]**
+- **[3.1.0]**
+  + Androidx migration [#550](https://github.com/dooboolab/react-native-iap/pull/550)
+  + Upgrade example project to `react-native@0.60.0-rc.2`
+- **[3.0.1]**
+  + Fixes for [#546](https://github.com/dooboolab/react-native-iap/issues/546)
+- **[3.0.0]**
   + Major migration and breaking changes done in [#510](https://github.com/dooboolab/react-native-iap/pull/510)
   + Fixes crashing when `requestPurchase` in android [#512](https://github.com/dooboolab/react-native-iap/issues/512)
   + Fix minor typing [#514](https://github.com/dooboolab/react-native-iap/issues/514)
@@ -10,6 +15,7 @@
   + Update `podspec` to match the version.
   + Improved handling of receipts [#521](https://github.com/dooboolab/react-native-iap/pull/521)
   + Fixes for [#530](https://github.com/dooboolab/react-native-iap/issues/530)
+  + Make ensureConnection always provide a valid BillingClient [#539](https://github.com/dooboolab/react-native-iap/pull/539)
 - **[2.5.+]**
   + Fix flow type [#482](https://github.com/dooboolab/react-native-iap/pull/482)
   + Ugrade gradle to `3.2.1` [#488](https://github.com/dooboolab/react-native-iap/pull/488)
