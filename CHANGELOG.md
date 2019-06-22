@@ -1,4 +1,6 @@
 ## Changelogs
+- **[3.1.2]**
+  + Remove `getOrderId` from PurchaseHistory [#554](https://github.com/dooboolab/react-native-iap/pull/554)
 - **[3.1.1]**
   + Fix transanctionId in `onPurchaseUpdated` in `android` [#552](https://github.com/dooboolab/react-native-iap/pull/552)
 - **[3.1.0]**
