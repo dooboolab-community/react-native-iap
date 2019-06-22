@@ -15,6 +15,9 @@
 > Checkout example code<br/>
 ![wjl0ak0fgj](https://user-images.githubusercontent.com/27461460/52619625-87aa8a80-2ee5-11e9-9aee-6691c34408f3.gif)
 
+## Breaking Changes
+* Migrated to Android X in `3.1.0`. Please check the [Migration Guide](#migration-guide).
+
 ## Playstore & Itunnesconnect configuration
   - Please refer to [Blog](https://medium.com/@dooboolab/react-native-in-app-purchase-121622d26b67).
 
@@ -85,6 +88,9 @@ https://github.com/dooboolab/react-native-iap
   ```
   <uses-permission android:name="com.android.vending.BILLING" />
   ```
+
+## Migration Guide
+To migrate to `3.1.0` you must migrate your Android app to Android X by following the [Migrating to AndroidX Guide](https://developer.android.com/jetpack/androidx/migrate).
 
 ## Usage
 You can look in the RNIapExample folder to try the example. Below is basic implementation which is also provided in RNIapExample project.
