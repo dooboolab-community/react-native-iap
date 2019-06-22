@@ -1,4 +1,6 @@
 ## Changelogs
+- **[3.0.1]**
+  + Fixes for [#546](https://github.com/dooboolab/react-native-iap/issues/546)
 - **[3.0.0]**
   + Major migration and breaking changes done in [#510](https://github.com/dooboolab/react-native-iap/pull/510)
   + Fixes crashing when `requestPurchase` in android [#512](https://github.com/dooboolab/react-native-iap/issues/512)
