@@ -17,10 +17,10 @@
   },
   "dependencies": {
     "react": "16.8.6",
-    "react-native": "0.59.8",
+    "react-native": "0.60.0-rc.2",
     "apsl-react-native-button": "^3.1.1",
-    "react-native-gesture-handler": "^1.3.0",
-    "react-native-iap": "dooboolab/react-native-iap#master",
+    "react-native-gesture-handler": "git://github.com/hyochan/react-native-gesture-handler.git#package-names",
+    "react-native-iap": "file:../",
     "react-navigation": "^3.11.0"
   },
   "devDependencies": {

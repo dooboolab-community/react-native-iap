@@ -2,7 +2,7 @@
 package com.dooboolab.RNIap;
 
 import android.app.Activity;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.android.billingclient.api.BillingResult;
