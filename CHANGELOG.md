@@ -1,4 +1,6 @@
 ## Changelogs
+- **[3.1.1]**
+  + Fix transanctionId in `onPurchaseUpdated` in `android` [#552](https://github.com/dooboolab/react-native-iap/pull/552)
 - **[3.1.0]**
   + Androidx migration [#550](https://github.com/dooboolab/react-native-iap/pull/550)
   + Upgrade example project to `react-native@0.60.0-rc.2`
