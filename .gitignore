@@ -48,3 +48,6 @@ android/.project
 buck-out/
 \.buckd/
 *.keystore
+
+# CocoaPods
+IapExample/ios/Pods
