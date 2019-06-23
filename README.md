@@ -19,14 +19,14 @@
 * Recently, `react-native-iap` version 3 has been updated very prompty for migration issues. Don't get suprised too much on why it is bumping up version so quickly these days.
   1. Migrated to new `androidx` apis.
   2. Migrated to new `android` billing client which is `2.0.+`.
-    - [acknowledgePurchase](https://developer.android.com/reference/com/android/billingclient/api/BillingClient#acknowledgepurchase) has been added in `3.2.0` which is very important.
+     - [acknowledgePurchase](https://developer.android.com/reference/com/android/billingclient/api/BillingClient#acknowledgepurchase) has been added in `3.2.0` which is very important.
   3. New [purchase flow](#new-purchase-flow)
   4. More is comming in ios `13+`.
 
 ## Breaking Changes
 * Migrated to Android X in `3.1.0`. Please check the [Migration Guide](#migration-guide).
 * Recommended to use `3.2.0` or above for `react-native-iap@3.0.+` users.
-  - You know should [acknowledge purchase](#acknowledge-purchase-in-android) with non-consumable and subscription purchase from `3.0.0`. See more about [acknowledgePurchase](https://developer.android.com/reference/com/android/billingclient/api/BillingClient#acknowledgepurchase).
+  - Now, you should [acknowledge purchase](#acknowledge-purchase-in-android) with non-consumable and subscription purchase from `3.0.0`. See more about [acknowledgePurchase](https://developer.android.com/reference/com/android/billingclient/api/BillingClient#acknowledgepurchase).
   - If you are using version `3.0.0` ~ < `3.2.0`, please use `acknowledgePurchase` via [google-api-nodejs-client](https://github.com/googleapis/google-api-nodejs-client/). You can use method like `androidpublisher.purchases.subscriptions.acknowledge`.
 
 ## Playstore & Itunnesconnect configuration
