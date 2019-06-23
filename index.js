@@ -276,6 +276,19 @@ export const clearProductsIOS = () => Platform.select({
 })();
 
 /**
+ * Acknowledge a product (on Android.) No-op on iOS.
+ * @param {string} token The product's token (on Android)
+ * @returns {Promise}
+ */
+export const acknowledgePurchaseAndroid = (token, developerPayload) => Platform.select({
+  ios: async() => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
+  android: async() => {
+    checkNativeAndroidAvailable();
+    return RNIapModule.acknowledgePurchase(token, developerPayload);
+  },
+})();
+
+/**
  * Consume a product (on Android.) No-op on iOS.
  * @param {string} token The product's token (on Android)
  * @returns {Promise}
@@ -489,6 +502,7 @@ export default {
   buyProductWithQuantityIOS,
   clearProductsIOS,
   clearTransactionIOS,
+  acknowledgePurchaseAndroid,
   consumePurchaseAndroid,
   validateReceiptIos,
   validateReceiptAndroid,

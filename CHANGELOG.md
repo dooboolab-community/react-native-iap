@@ -1,4 +1,6 @@
 ## Changelogs
+- **[3.2.0]**
+  + Support `acknowledgePurchaseAndroid` for breaking changes in android billing client `2.0+`.
 - **[3.1.2]**
   + Remove `getOrderId` from PurchaseHistory [#554](https://github.com/dooboolab/react-native-iap/pull/554)
 - **[3.1.1]**
