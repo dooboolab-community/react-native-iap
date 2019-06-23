@@ -61,7 +61,7 @@ class Page extends Component {
       console.warn(err.code, err.message);
     }
 
-    purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase) => {
+    purchaseUpdateSubscription = purchaseUpdatedListener(async(purchase) => {
       console.log('purchaseUpdatedListener', purchase);
       if (purchase.purchaseStateAndroid === 1 && !purchase.acknowledged) {
         try {
