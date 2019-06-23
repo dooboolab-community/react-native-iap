@@ -60,12 +60,12 @@ class Page extends Component {
       console.warn(err.code, err.message);
     }
 
-    purchaseUpdateSubscription = purchaseUpdatedListener((purchase: ProductPurchase) => {
+    purchaseUpdateSubscription = purchaseUpdatedListener((purchase) => {
       console.log('purchaseUpdatedListener', purchase);
       this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
     });
 
-    purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
+    purchaseErrorSubscription = purchaseErrorListener((error) => {
       console.log('purchaseErrorListener', error);
       Alert.alert('purchase error', JSON.stringify(error));
     });
@@ -88,8 +88,8 @@ class Page extends Component {
 
   getItems = async() => {
     try {
-      // const products: Product[] = await RNIap.getProducts(itemSkus);
-      const products = await RNIap.getSubscriptions(itemSkus);
+      const products = await RNIap.getProducts(itemSkus);
+      // const products = await RNIap.getSubscriptions(itemSkus);
       console.log('Products', products);
       this.setState({ productList: products });
     } catch (err) {
@@ -99,7 +99,7 @@ class Page extends Component {
 
   getSubscriptions = async() => {
     try {
-      const products: Product[] = await RNIap.getSubscriptions(itemSubs);
+      const products = await RNIap.getSubscriptions(itemSubs);
       console.log('Products', products);
       this.setState({ productList: products });
     } catch (err) {
@@ -148,7 +148,7 @@ class Page extends Component {
     // const products = await RNIap.buySubscription(sku);
     // const purchase = await RNIap.buyProductWithoutFinishTransaction(sku);
     try {
-      const purchase: ProductPurchase = await RNIap.buyProduct(sku);
+      const purchase = await RNIap.buyProduct(sku);
       // console.log('purchase', purchase);
       // await RNIap.consumePurchaseAndroid(purchase.purchaseToken);
       this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());

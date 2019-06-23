@@ -114,7 +114,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.iapexample"
+        applicationId "com.dooboolab.iapexample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

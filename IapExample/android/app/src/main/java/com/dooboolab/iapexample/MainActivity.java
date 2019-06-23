@@ -1,4 +1,4 @@
-package com.iapexample;
+package com.dooboolab.iapexample;
 
 import com.facebook.react.ReactActivity;
 

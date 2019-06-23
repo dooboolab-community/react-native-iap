@@ -1,4 +1,4 @@
-package com.iapexample;
+package com.dooboolab.iapexample;
 
 import android.app.Application;
 
@@ -8,6 +8,7 @@ import com.dooboolab.RNIap.RNIapPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.dooboolab.iapexample.BuildConfig;
 
 import java.util.List;
 
