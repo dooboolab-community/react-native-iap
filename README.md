@@ -240,7 +240,7 @@ In new android billing client which is `2.0.+` currently, you should acknowledge
 ```
   purchaseUpdateSubscription = purchaseUpdatedListener(async(purchase) => {
     console.log('purchaseUpdatedListener', purchase);
-    if (purchase.purchaseStateAndroid === 1 && !purchase.acknowledged) {
+    if (purchase.purchaseStateAndroid === 1 && !purchase.isAcknowledgedAndroid) {
       try {
         const ackResult = await acknowledgePurchaseAndroid();
         console.log('ackResult', ackResult);
@@ -293,6 +293,9 @@ Returned purchases is an array of each purchase transaction with the following k
 |`autoRenewingAndroid`|  | ✓ | Indicates whether the subscription renews automatically. If true, the subscription is active, and will automatically renew on the next billing date. If false, indicates that the user has canceled the subscription. |
 |`dataAndroid`|  | ✓ | Original json for purchase data. |
 |`signatureAndroid`|  | ✓ | String containing the signature of the purchase data that was signed with the private key of the developer. The data signature uses the RSASSA-PKCS1-v1_5 scheme. |
+|`autoRenewingAndroid`|  | ✓ | `boolean` checking if subscription is `autoRenewing`. This won't get returned if this is no subscription purchase. |
+|`isAcknowledgedAndroid`|  | ✓ | `boolean` checking if purhcase has been acknowledged. |
+|`purchaseStateAndroid`|  | ✓ | `number` indicating purchase state in `android`. |
 |`originalTransactionDateIOS`| ✓ |  | For a transaction that restores a previous transaction, the date of the original transaction. |
 |`originalTransactionIdentifierIOS`| ✓ |  | For a transaction that restores a previous transaction, the transaction identifier of the original transaction. |
 

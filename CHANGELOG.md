@@ -1,6 +1,7 @@
 ## Changelogs
 - **[3.2.+]**
   + Update readme.
+  + Fixed type.
 - **[3.2.0]**
   + Support `acknowledgePurchaseAndroid` for breaking changes in android billing client `2.0+`.
 - **[3.1.2]**
