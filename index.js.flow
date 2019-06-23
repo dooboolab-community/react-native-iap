@@ -38,10 +38,18 @@ export type ProductPurchase = {|
   transactionId?: string,
   transactionDate: number,
   transactionReceipt: string,
-  signatureAndroid?: string,
-  dataAndroid?: string,
   purchaseToken?: string,
+  dataAndroid?: string,
+  signatureAndroid?: string,
+  autoRenewingAndroid?: boolean,
+  isAcknowledgedAndroid?: boolean,
+  purchaseStateAndroid?: number,
 |}
+
+expoert type PurchaseResult = {
+  responseCode: number,
+  debugMessage: string,
+}
 
 expoert type PurchaseError = {
   responseCode: number,
@@ -83,7 +91,8 @@ declare module.exports: {
   ): Promise<string>,
   clearTransactionIOS(): void,
   clearProductsIOS(): void,
-  consumePurchaseAndroid(token: string, developerPayload?: string): Promise<void>,
+  acknowledgePurchaseAndroid(token: string, developerPayload?: string): Promise<PurchaseResult>,
+  consumePurchaseAndroid(token: string, developerPayload?: string): Promise<PurchaseResult>,
   validateReceiptIos(
     receiptBody: AppleReceiptValidationRequest,
     isTest: boolean,

@@ -5,6 +5,7 @@ import android.app.Activity;
 import androidx.annotation.Nullable;
 import android.util.Log;
 
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.PurchaseHistoryRecord;
@@ -28,6 +29,7 @@ import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchaseHistoryResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
@@ -405,6 +407,31 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   }
 
   @ReactMethod
+  public void acknowledgePurchase(final String token, final String developerPayLoad, final Promise promise) {
+    AcknowledgePurchaseParams acknowledgePurchaseParams =
+            AcknowledgePurchaseParams.newBuilder()
+                    .setPurchaseToken(token)
+                    .setDeveloperPayload(developerPayLoad)
+                    .build();
+    billingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
+      @Override
+      public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
+        if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+          DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+        }
+        try {
+          WritableMap map = Arguments.createMap();
+          map.putInt("responseCode", billingResult.getResponseCode());
+          map.putString("debugMessage", billingResult.getDebugMessage());
+          promise.resolve(map);
+        } catch (ObjectAlreadyConsumedException oce) {
+          Log.e(TAG, oce.getMessage());
+        }
+      }
+    });
+  }
+
+  @ReactMethod
   public void consumeProduct(final String token, final String developerPayLoad, final Promise promise) {
     final ConsumeParams params = ConsumeParams.newBuilder()
         .setPurchaseToken(token)
@@ -417,7 +444,10 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
         }
         try {
-          promise.resolve(billingResult.toString());
+          WritableMap map = Arguments.createMap();
+          map.putInt("responseCode", billingResult.getResponseCode());
+          map.putString("debugMessage", billingResult.getDebugMessage());
+          promise.resolve(map);
         } catch (ObjectAlreadyConsumedException oce) {
           Log.e(TAG, oce.getMessage());
         }
@@ -427,10 +457,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
   @Override
   public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> purchases) {
-    Log.d(TAG, "Purchase Updated Listener");
-    Log.d(TAG, "responseCode: " + billingResult.getResponseCode());
-    Log.d(TAG, "debugMessage: " + billingResult.getDebugMessage());
-
     if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
       WritableMap error = Arguments.createMap();
       error.putInt("responseCode", billingResult.getResponseCode());
@@ -451,6 +477,8 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     item.putString("dataAndroid", purchase.getOriginalJson());
     item.putString("signatureAndroid", purchase.getSignature());
     item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
+    item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
+    item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
 
     sendEvent(reactContext, "purchase-updated", item);
     DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, item);
