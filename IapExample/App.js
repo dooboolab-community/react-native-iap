@@ -11,6 +11,7 @@ import NativeButton from 'apsl-react-native-button';
 import RNIap, {
   Product,
   ProductPurchase,
+  acknowledgePurchaseAndroid,
   purchaseUpdatedListener,
   purchaseErrorListener,
   PurchaseError,
@@ -60,8 +61,16 @@ class Page extends Component {
       console.warn(err.code, err.message);
     }
 
-    purchaseUpdateSubscription = purchaseUpdatedListener((purchase) => {
+    purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase) => {
       console.log('purchaseUpdatedListener', purchase);
+      if (purchase.purchaseStateAndroid === 1 && !purchase.acknowledged) {
+        try {
+          const ackResult = await acknowledgePurchaseAndroid();
+          console.log('ackResult', ackResult);
+        } catch (ackErr) {
+          console.warn('ackErr', ackErr);
+        }
+      }
       this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
     });
 
