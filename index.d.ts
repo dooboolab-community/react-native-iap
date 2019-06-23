@@ -44,6 +44,8 @@ export interface ProductPurchase {
   autoRenewingAndroid?: boolean;
   isAcknowledgedAndroid?: boolean;
   purchaseStateAndroid?: number;
+  originalTransactionDateIOS?: string;
+  originalTransactionIdentifierIOS?: string;
 }
 
 export interface PurchaseResult {
