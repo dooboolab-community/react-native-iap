@@ -17,6 +17,8 @@
 
 ## Breaking Changes
 * Migrated to Android X in `3.1.0`. Please check the [Migration Guide](#migration-guide).
+* Recommended to use `3.2.0` or above for `react-native-iap@3.0.+` users.
+  - You know should [acknowledge purchase](## Acknowledge purchase in android) with non-consumable and subscription purchase from `3.0.0`. See more about [acknowledgePurchase](https://developer.android.com/reference/com/android/billingclient/api/BillingClient#acknowledgepurchase).
 
 ## Playstore & Itunnesconnect configuration
   - Please refer to [Blog](https://medium.com/@dooboolab/react-native-in-app-purchase-121622d26b67).
@@ -43,7 +45,8 @@
 | requestSubscription | `string` Subscription ID/sku, `string` Old Subscription ID/sku (on Android), `int` Proration Mode (on Android) | `Promise<string>` | Create (buy) a subscription to a sku. For upgrading/downgrading subscription on Android pass the second parameter with current subscription ID, on iOS this is handled automatically by store. You can also optionally pass in a proration mode integer for upgrading/downgrading subscriptions on Android |
 | clearTransactionIOS | `void` | `void` | Clear up the unfinished transanction which sometimes causes problem. Read more in below readme. |
 | clearProductsIOS | `void` | `void` | Clear all products, subscriptions in ios. Read more in below readme. |
-| consumePurchaseAndroid | `string` purchase token, `string` developerPayload | `Promise<void>` | Consume a product (on Android.) No-op on iOS. |
+| acknowledgePurchaseAndroid | `string` purchase token, `string` developerPayload | `Promise<PurchaseResult>` | Acknowledge a product (on Android.) No-op on iOS. |
+| consumePurchaseAndroid | `string` purchase token, `string` developerPayload | `Promise<PurchaseResult>` | Consume a product (on Android.) No-op on iOS. |
 | endConnectionAndroid | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
 | consumeAllItemsAndroid | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
 | validateReceiptIos | `object` receiptBody, `boolean` isTest | `object or boolean` result | validate receipt for ios. |
@@ -222,6 +225,23 @@ Then define the method like below and call it when user press the button.
 
 Most likely, you'll want to handle the 'store kit flow' (detailed [here](https://forums.developer.apple.com/thread/6431#14831)), which happens when a user successfully pays after solving a problem with his or her account - for example, when the credit card information has expired. 
 In this scenario, the initial call to `RNIap.buyProduct` would fail and you'd need to add `addAdditionalSuccessPurchaseListenerIOS` to handle the successful purchase previously. We are planning to remove ~~additionalSuccessPurchaseListenerIOS~~ in future releases so avoid using it. Approach of new purchase flow will prevent such issue in [#307](https://github.com/dooboolab/react-native-iap/issues/307) which was privided in `2.4.0+`.
+
+## Acknowledge purchase in android
+In new android billing client which is `2.0.+` currently, you should acknowledge purchases or else they will be cancelled automatically after 3 days (or 5 minutes in license test environment). See `example` project and get idea on how to handle these.
+```
+  purchaseUpdateSubscription = purchaseUpdatedListener(async(purchase) => {
+    console.log('purchaseUpdatedListener', purchase);
+    if (purchase.purchaseStateAndroid === 1 && !purchase.acknowledged) {
+      try {
+        const ackResult = await acknowledgePurchaseAndroid();
+        console.log('ackResult', ackResult);
+      } catch (ackErr) {
+        console.warn('ackErr', ackErr);
+      }
+    }
+    this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
+  });
+```
 
 ## Consumption and Restoring Purchases
 You can use `getAvailablePurchases()` to do what's commonly understood as "restoring" purchases. Once an item is consumed, it will no longer be available in `getAvailablePurchases()` and will only be available via `getPurchaseHistory()`. However, this method has some caveats on Android -- namely, that purchase history only exists for the single most recent purchase of each SKU -- so your best bet is to track consumption in your app yourself. By default, all items that are purchased will not be consumed unless they are automatically consumed by the store (for example, if you create a consumable item for iOS.) This means that you must manage consumption yourself.  Purchases can be consumed by calling `consumePurchaseAndroid()`. If you want to consume all items, you have to iterate over the purchases returned by `getAvailablePurchases()`.
