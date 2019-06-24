@@ -65,7 +65,7 @@ class Page extends Component {
       console.log('purchaseUpdatedListener', purchase);
       if (purchase.purchaseStateAndroid === 1 && !purchase.isAcknowledgedAndroid) {
         try {
-          const ackResult = await acknowledgePurchaseAndroid();
+          const ackResult = await acknowledgePurchaseAndroid(purchase.purchaseToken);
           console.log('ackResult', ackResult);
         } catch (ackErr) {
           console.warn('ackErr', ackErr);

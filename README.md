@@ -235,14 +235,14 @@ Then define the method like below and call it when user press the button.
 Most likely, you'll want to handle the 'store kit flow' (detailed [here](https://forums.developer.apple.com/thread/6431#14831)), which happens when a user successfully pays after solving a problem with his or her account - for example, when the credit card information has expired. 
 In this scenario, the initial call to `RNIap.buyProduct` would fail and you'd need to add `addAdditionalSuccessPurchaseListenerIOS` to handle the successful purchase previously. We are planning to remove ~~additionalSuccessPurchaseListenerIOS~~ in future releases so avoid using it. Approach of new purchase flow will prevent such issue in [#307](https://github.com/dooboolab/react-native-iap/issues/307) which was privided in `2.4.0+`.
 
-## Acknowledge purchase in android
+## Acknowledge purchase in Android
 In new android billing client which is `2.0.+` currently, you should acknowledge purchases or else they will be cancelled automatically after 3 days (or 5 minutes in license test environment). See `example` project and get idea on how to handle these.
 ```
   purchaseUpdateSubscription = purchaseUpdatedListener(async(purchase) => {
     console.log('purchaseUpdatedListener', purchase);
     if (purchase.purchaseStateAndroid === 1 && !purchase.isAcknowledgedAndroid) {
       try {
-        const ackResult = await acknowledgePurchaseAndroid();
+        const ackResult = await acknowledgePurchaseAndroid(purchase.purchaseToken);
         console.log('ackResult', ackResult);
       } catch (ackErr) {
         console.warn('ackErr', ackErr);
