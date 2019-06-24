@@ -6,11 +6,15 @@
   "types": "index.d.ts",
   "postinstall": "dooboolab-welcome postinstall",
   "scripts": {
+    "eslint": "eslint",
     "flow": "flow",
     "lint": "eslint -c .eslintrc.js '.'",
-    "test": "eslint .",
+    "test": "exit 0",
+    "test:flow": "flow",
+    "test:typescript": "tsc --noEmit",
     "tsc:sync": "npx typesync",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "validate": "npm run lint && npm run test:typescript && npm run test:flow && npm run test"
   },
   "repository": {
     "type": "git",
