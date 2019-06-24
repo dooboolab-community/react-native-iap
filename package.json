@@ -6,9 +6,10 @@
   "types": "index.d.ts",
   "postinstall": "dooboolab-welcome postinstall",
   "scripts": {
-    "test": "eslint .",
-    "lint": "eslint -c .eslintrc.js '.'",
     "flow": "flow",
+    "lint": "eslint -c .eslintrc.js '.'",
+    "test": "eslint .",
+    "tsc:sync": "npx typesync",
     "tsc": "tsc"
   },
   "repository": {
@@ -31,6 +32,9 @@
     "dooboolab-welcome": "^1.1.0"
   },
   "devDependencies": {
+    "@types/eslint": "^4.16.6",
+    "@types/react": "16.8.22",
+    "@types/react-native": "0.57.63",
     "babel-eslint": "^10.0.1",
     "eslint": "^6.0.0",
     "eslint-config-standard": "^12.0.0",
