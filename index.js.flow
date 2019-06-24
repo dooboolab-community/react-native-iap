@@ -48,12 +48,12 @@ export type ProductPurchase = {|
   originalTransactionIdentifierIOS?: string,
 |}
 
-expoert type PurchaseResult = {
+export type PurchaseResult = {
   responseCode: number,
   debugMessage: string,
 }
 
-expoert type PurchaseError = {
+export type PurchaseError = {
   responseCode: number,
   debugMessage: string,
 }
