@@ -8,7 +8,8 @@
   "scripts": {
     "test": "eslint .",
     "lint": "eslint -c .eslintrc.js '.'",
-    "flow": "flow"
+    "flow": "flow",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
@@ -37,6 +38,7 @@
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
-    "flow-bin": "^0.101.1"
+    "flow-bin": "^0.101.1",
+    "typescript": "^3.5.2"
   }
 }
