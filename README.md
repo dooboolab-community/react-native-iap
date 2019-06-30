@@ -108,8 +108,8 @@ _*deprecated_<br>~~`buyProduct(sku: string)`~~<ul><li>sku: product ID/sku</li></
 `requestPurchase(sku: string)`<ul><li>sku: product ID/sku</li></ul>                    | `Promise<Purchase>`       | Request a purchase.<br>`purchaseUpdatedListener` will receive the result.
 _*deprecated_<br>~~`buyProductWithQuantityIOS(sku: string, quantity: number)`~~<ul><li>sku: product ID/sku</li><li>quantity: Quantity</li></ul> | `Promise<Purchase>` | **iOS only**<br>Buy a product with a specified quantity.
 `requestPurchaseWithQuantityIOS(sku: string, quantity: number)`<ul><li>sku: product ID/sku</li><li>quantity: Quantity</li></ul>                 | `Promise<Purchase>` | **iOS only**<br>Buy a product with a specified quantity.<br>`purchaseUpdatedListener` will receive the result
-_*deprecated_<br>~~`buySubscription(sku: string)`~~<ul><li>sku: subscription ID/sku</li></ul> | `Promise<Purchase>` | **iOS only**<br>Create (buy) a subscription to a sku.
-`requestSubscription(sku: string)`<ul><li>sku: subscription ID/sku</li></ul>                  | `Promise<string>`   | **iOS only**<br>Create (buy) a subscription to a sku.
+_*deprecated_<br>~~`buySubscription(sku: string)`~~<ul><li>sku: subscription ID/sku</li></ul> | `Promise<Purchase>` | Create (buy) a subscription to a sku.
+`requestSubscription(sku: string)`<ul><li>sku: subscription ID/sku</li></ul>                  | `Promise<string>`   | Create (buy) a subscription to a sku.
 `clearTransactionIOS()` | `void`            | **iOS only**<br>Clear up the unfinished transanction which sometimes causes problem.<br>Read more in below README.
 `clearProductsIOS()`    | `void`            | **iOS only**<br>Clear all products and subscriptions.<br>Read more in below README.
 `requestReceiptIOS()`   | `Promise<string>` | **iOS only**<br>Get the current receipt.
