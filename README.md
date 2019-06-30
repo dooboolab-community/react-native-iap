@@ -172,8 +172,8 @@ To migrate to `3.1.0` you must migrate your Android app to AndroidX by following
 
 Usage
 -----
-You can look in the `RNIapExample` folder to try the example. Below is basic
-implementation which is also provided in `RNIapExample` project.
+You can look in the [`RNIapExample/`][example] folder to try the example.
+Below is basic implementation which is also provided in `RNIapExample` project.
 
 Init IAP, In App Billing
 ------------------------
@@ -252,14 +252,14 @@ happen in iOS.
 This can be used in `componentWillUnmount`.
 
 ```javascript
-  componentWillUnmount() {
-    RNIap.endConnectionAndroid();
+  async componentWillUnmount() {
+    await RNIap.endConnectionAndroid();
   }
 ```
 
 Purchase
 --------
-> The flow of the `purchase` has been renewed by the founding in [issue #307][issue-307].
+> The flow of the `purchase` has been renewed by the founding in issue [#307][issue-307].
 > I've decided to redesign this `Purchase Flow` not relying on the `Promise` or `Callback`.
 > There are some reasons not to approach in this way.
 
@@ -435,21 +435,20 @@ Returned purchases is an array of each purchase transaction with the following k
 
 #### typeof `AvailablePurchase`
 
-Property                           | Type   | iOS | And | Comment
---------                           | ----   | :-: | :-: | -------
-`productId`                        | String | ✓   | ✓   | The product ID for the product.
-`transactionReceipt`               | String | ✓   | ✓   | `receipt` for iOS and stringified JSON of the original purchase object for android.
-`transactionId`                    | String | ✓   | ✓   | A unique order identifier for the transaction.
-`transactionDate`                  | Number | ✓   | ✓   | The time the product was purchased, in milliseconds since the epoch (Jan 1, 1970).
-`purchaseToken`                    | &nbsp; |     | ✓   | A token that uniquely identifies a purchase for a given item and user pair.
-`autoRenewingAndroid`              | &nbsp; |     | ✓   | Indicates whether the subscription renews automatically. If true, the subscription is active, and will automatically renew on the next billing date. If false, indicates that the user has canceled the subscription.
-`dataAndroid`                      | &nbsp; |     | ✓   | Original json for purchase data.
-`signatureAndroid`                 | &nbsp; |     | ✓   | String containing the signature of the purchase data that was signed with the private key of the developer. The data signature uses the RSASSA-PKCS1-v1_5 scheme.
-`autoRenewingAndroid`              | &nbsp; |     | ✓   | `boolean` checking if subscription is `autoRenewing`. This won't get returned if this is no subscription purchase.
-`isAcknowledgedAndroid`            | &nbsp; |     | ✓   | `boolean` checking if purhcase has been acknowledged.
-`purchaseStateAndroid`             | &nbsp; |     | ✓   | `number` indicating purchase state in `android`.
-`originalTransactionDateIOS`       | Number | ✓   |     | For a transaction that restores a previous transaction, the date of the original transaction.
-`originalTransactionIdentifierIOS` | String | ✓   |     | For a transaction that restores a previous transaction, the transaction identifier of the original transaction.
+Property                           | Type      | iOS | And | Comment
+--------                           | ----      | :-: | :-: | -------
+`productId`                        | `string`  | ✓   | ✓   | The product ID for the product.
+`transactionReceipt`               | `string`  | ✓   | ✓   | **iOS**: The `receipt`.<br>**Android**: Stringified JSON of the original purchase object.
+`transactionId`                    | `string`  | ✓   | ✓   | A unique order identifier for the transaction.
+`transactionDate`                  | `number`  | ✓   | ✓   | The time the product was purchased, in milliseconds since the epoch (Jan 1, 1970).
+`originalTransactionDateIOS`       | `number`  | ✓   |     | For a transaction that restores a previous transaction, the date of the original transaction.
+`originalTransactionIdentifierIOS` | `string`  | ✓   |     | For a transaction that restores a previous transaction, the transaction identifier of the original transaction.
+`purchaseToken`                    | `string`  |     | ✓   | A token that uniquely identifies a purchase for a given item and user pair.
+`autoRenewingAndroid`              | `boolean` |     | ✓   | Indicates whether the subscription renews automatically.<br>If true, the subscription is active, and will automatically renew on the next billing date. Otherwise, indicates that the user has canceled the subscription.
+`dataAndroid`                      | `string`  |     | ✓   | Original json for purchase data.
+`signatureAndroid`                 | `string`  |     | ✓   | The signature of the purchase data that was signed with the private key of the developer.<br>The data signature uses the `RSASSA-PKCS1-v1_5` scheme.
+`isAcknowledgedAndroid`            | `boolean` |     | ✓   | Checking if purhcase has been acknowledged.
+`purchaseStateAndroid`             | `number`  |     | ✓   | Indicating purchase state.
 
 You need to test with one sandbox account, because the account holds previous purchase history.
 
@@ -501,8 +500,8 @@ Issue regarding `valid products`
 
     This makes unexpected behavior when you fetch with a part of product lists.
 
-    For example, if you have products of [A, B, C], and you call fetch function
-    with only [A], this module returns [A, B, C]).
+    For example, if you have products of `[A, B, C]`, and you call fetch function
+    with only `[A]`, this module returns `[A, B, C]`).
 
     This is weird, but it works.
 
