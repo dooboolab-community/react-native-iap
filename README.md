@@ -95,31 +95,32 @@ News on Major Releases
 ----------------------
 - [react-native-iap V3 note][blog-v3-note]
 
-<details>
-<summary>Methods Changed</summary>
+#### Methods
 
-| Func  | Param  | Return | Description |
-| :------------ |:---------------:| :---------------:| :-----|
-| initConnection |  | `Promise<boolean>` | Init IAP module. On Android this can be called to preload the connection to Play Services. In iOS, it will simply call `canMakePayments` method and return value.|
-| getProducts | `string[]` Product IDs/skus | `Promise<Product[]>` | Get a list of products (consumable and non-consumable items, but not subscriptions). Note: On iOS versions earlier than 11.2 this method _will_ also return subscriptions if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to 11.2. |
-| getSubscriptions | `string[]` Subscription IDs/skus | `Promise<Subscription[]>` | Get a list of subscriptions. Note: On iOS versions earlier than 11.2 this method _will_ also return products if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to 11.2. |
-| getPurchaseHistory | | `Promise<Purchase[]>` | Gets an inventory of purchases made by the user regardless of consumption status (where possible) |
-| getAvailablePurchases | | `Promise<Purchase[]>` | Get all purchases made by the user (either non-consumable, or haven't been consumed yet)
-| ~~buyProduct~~ | `string` Product ID/sku | `Promise<Purchase>` | Buy a product |
-| requestPurchase | `string` Product ID/sku | `Promise<string>` | Request a purchase. `purchaseUpdatedListener` will receive the result. |
-| ~~buyProductWithQuantityIOS~~ | `string` Product ID/sku, `number` Quantity | `Promise<Purchase>` | Buy a product with a specified quantity (iOS only) |
-| requestPurchaseWithQuantityIOS | `string` Product ID/sku, `number` Quantity | `Promise<Purchase>` | Buy a product with a specified quantity (iOS only). `purchaseUpdatedListener` will receive the result |
-| ~~buySubscription~~ | `string` Subscription ID/sku, `string` Old Subscription ID/sku (on Android), `int` Proration Mode (on Android) | `Promise<Purchase>` | Create (buy) a subscription to a sku. For upgrading/downgrading subscription on Android pass the second parameter with current subscription ID, on iOS this is handled automatically by store. You can also optionally pass in a proration mode integer for upgrading/downgrading subscriptions on Android |
-| requestSubscription | `string` Subscription ID/sku, `string` Old Subscription ID/sku (on Android), `int` Proration Mode (on Android) | `Promise<string>` | Create (buy) a subscription to a sku. For upgrading/downgrading subscription on Android pass the second parameter with current subscription ID, on iOS this is handled automatically by store. You can also optionally pass in a proration mode integer for upgrading/downgrading subscriptions on Android |
-| clearTransactionIOS | `void` | `void` | Clear up the unfinished transanction which sometimes causes problem. Read more in below readme. |
-| clearProductsIOS | `void` | `void` | Clear all products, subscriptions in ios. Read more in below readme. |
-| acknowledgePurchaseAndroid | `string` purchase token, `string` developerPayload | `Promise<PurchaseResult>` | Acknowledge a product (on Android.) No-op on iOS. |
-| consumePurchaseAndroid | `string` purchase token, `string` developerPayload | `Promise<PurchaseResult>` | Consume a product (on Android.) No-op on iOS. |
-| endConnectionAndroid | | `Promise<void>` | End billing connection (on Android.) No-op on iOS. |
-| consumeAllItemsAndroid | | `Promise<void>` | Consume all items in android so they are able to buy again (on Android.) No-op on iOS. |
-| validateReceiptIos | `object` receiptBody, `boolean` isTest | `object or boolean` result | validate receipt for ios. |
-| validateReceiptAndroid | `string` packageName, `string` productId, `string` productToken, `string` accessToken, `boolean` isSubscription | `object or boolean` result | validate receipt for android. |
-| requestReceiptIOS |  | `Promise<string>` | Get the current receipt (on iOS.) No-op on Android. |
+Method                                                                                 | Result                    | Description
+------                                                                                 | ------                    | -----------
+`initConnection()`                                                                     | `Promise<boolean>`        | Init IAP module.<br>On Android this can be called to preload the connection to Play Services.<br>On iOS, it will simply call `canMakePayments` method and return value.
+`getProducts(skus: string[])`<ul><li>skus: array of Product ID/sku</li></ul>           | `Promise<Product[]>`      | Get a list of products (consumable and non-consumable items, but not subscriptions).<br>Note: With before `iOS 11.2`, this method _will_ also return subscriptions if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to `iOS 11.2`.
+`getSubscriptions(skus: string[])`<ul><li>skus: array of Subscription ID/sku</li></ul> | `Promise<Subscription[]>` | Get a list of subscriptions.<br>Note: With before `iOS 11.2`, this method _will_ also return products if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to `iOS 11.2`.
+`getPurchaseHistory()`                                                                 | `Promise<Purchase>`       | Gets an inventory of purchases made by the user regardless of consumption status (where possible).
+`getAvailablePurchases()`                                                              | `Promise<Purchase[]>`     | Get all purchases made by the user (either non-consumable, or haven't been consumed yet.
+_*deprecated_<br>~~`buyProduct(sku: string)`~~<ul><li>sku: product ID/sku</li></ul>    | `Promise<Purchase>`       | Buy a product.
+`requestPurchase(sku: string)`<ul><li>sku: product ID/sku</li></ul>                    | `Promise<Purchase>`       | Request a purchase.<br>`purchaseUpdatedListener` will receive the result.
+_*deprecated_<br>~~`buyProductWithQuantityIOS(sku: string, quantity: number)`~~<ul><li>sku: product ID/sku</li><li>quantity: Quantity</li></ul> | `Promise<Purchase>` | **iOS only**<br>Buy a product with a specified quantity.
+`requestPurchaseWithQuantityIOS(sku: string, quantity: number)`<ul><li>sku: product ID/sku</li><li>quantity: Quantity</li></ul>                 | `Promise<Purchase>` | **iOS only**<br>Buy a product with a specified quantity.<br>`purchaseUpdatedListener` will receive the result
+_*deprecated_<br>~~`buySubscription(sku: string)`~~<ul><li>sku: subscription ID/sku</li></ul> | `Promise<Purchase>` | **iOS only**<br>Create (buy) a subscription to a sku.
+`requestSubscription(sku: string)`<ul><li>sku: subscription ID/sku</li></ul>                  | `Promise<string>`   | **iOS only**<br>Create (buy) a subscription to a sku.
+`clearTransactionIOS()` | `void`            | **iOS only**<br>Clear up the unfinished transanction which sometimes causes problem.<br>Read more in below README.
+`clearProductsIOS()`    | `void`            | **iOS only**<br>Clear all products and subscriptions.<br>Read more in below README.
+`requestReceiptIOS()`   | `Promise<string>` | **iOS only**<br>Get the current receipt.
+`validateReceiptIos(body: Object, devMode: boolean)`<ul><li>body: receiptBody</li><li>devMode: isTest</li></ul> | `Object\|boolean` | **iOS only**<br>Validate receipt.
+`endConnectionAndroid()`   | `Promise<void>` | **Android only**<br>End billing connection.
+`consumeAllItemsAndroid()` | `Promise<void>` | **Android only**<br>Consume all items so they are able to buy again.
+`acknowledgePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul> | `Promise<PurchaseResult>` | **Android only**<br>Acknowledge a product.
+`consumePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul>     | `Promise<PurchaseResult>` | **Android only**<br>Consume a product.
+_*deprecated_<br>~~`buySubscription(sku: string, prevSku?: string, mode?: number)`~~<ul><li>sku: subscription ID/sku</li><li>prevSku: old subscription ID/sku (optional)</li><li>mode: proration mode (optional)</li></ul> | `Promise<Purchase>` | **Android only**<br>Create (buy) a subscription to a sku.<br>For upgrading/downgrading subscription on Android pass the second parameter with current subscription ID, on iOS this is handled automatically by store.<br>You can also optionally pass in a proration mode integer for upgrading/downgrading subscriptions on Android
+`requestSubscription(sku: string, prevSku?: string, mode?: number)`<ul><li>sku: subscription ID/sku</li><li>prevSku: old subscription ID/sku (optional)</li><li>mode: proration mode (optional)</li></ul>                  | `Promise<string>`   | **Android only**<br>Create (buy) a subscription to a sku.<br>For upgrading/downgrading subscription on Android pass the second parameter with current subscription ID, on iOS this is handled automatically by store.<br>You can also optionally pass in a proration mode integer for upgrading/downgrading subscriptions on Android
+`validateReceiptAndroid(bundleId: string, productId: string, productToken: string, accessToken: string)`<br><ul><li>bundleId: the packageName</li><li>productId: productId</li><li>productToken: productToken</li><li>accessToken: accessToken</li><li>isSubscription: isSubscription</li></ul> | `Object\|boolean` | **Android only**<br>Validate receipt.
 
 </details>
 
@@ -218,27 +219,28 @@ to check again when the user enters your IAP store.
 Each `product` returns from `getProducts()` contains:
 
 #### typeof `Product`
+> All the following properties are `String`
 
-|    | iOS | Android | Comment |
-|----|-----|---------|------|
-|`price`| ✓ | ✓ | Will return localizedPrice on Android (default) or a string price (eg. `1.99`) (iOS) |
-|`productId`| ✓ | ✓ | Returns a string needed to purchase the item later |
-|`currency`| ✓ | ✓ | Returns the currency code |
-|`localizedPrice`| ✓ | ✓ | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols. |
-|`title`| ✓ | ✓ | Returns the title Android and localizedTitle on iOS |
-|`description`| ✓ | ✓ | Returns the localized description on Android and iOS |
-|`introductoryPrice`| ✓ | ✓ | Formatted introductory price of a subscription, including its currency sign, such as €3.99. The price doesn't include tax. |
-|`introductoryPricePaymentModeIOS`| ✓ | | The payment mode for this product discount. |
-|`introductoryPriceNumberOfPeriods`| ✓ | | An integer that indicates the number of periods the product discount is available. |
-|`introductoryPriceNumberOfPeriodsIOS`| ✓ | | An integer that indicates the number of periods the product discount is available. |
-|`introductoryPriceSubscriptionPeriod`| ✓ | | An object that defines the period for the product discount. |
-|`introductoryPriceSubscriptionPeriodIOS`| ✓ | | An object that defines the period for the product discount. |
-|`subscriptionPeriodNumberIOS`| ✓ |  | The unit number (in string) of subscription period. |
-|`subscriptionPeriodUnitIOS`| ✓ |  | The unit in string like `DAY` or `WEEK` or `MONTH` or `YEAR`. |
-|`subscriptionPeriodAndroid`|  | ✓ | Subscription period, specified in ISO 8601 format. For example, P1W equates to one week, P1M equates to one month, P3M equates to three months, P6M equates to six months, and P1Y equates to one year. |
-|`introductoryPriceCyclesAndroid`|  | ✓ | The number of subscription billing periods for which the user will be given the introductory price, such as 3. |
-|`introductoryPricePeriodAndroid`|  | ✓ | The billing period of the introductory price, specified in ISO 8601 format. |
-|`freeTrialPeriodAndroid`|  | ✓ | Trial period configured in Google Play Console, specified in ISO 8601 format. For example, P7D equates to seven days. |
+Property                                 | iOS | And | Comment
+--------                                 | :-: | :-: | -------
+`price`                                  | ✓   | ✓   | Will return localizedPrice on Android (default) or a string price (eg. `1.99`) (iOS).
+`productId`                              | ✓   | ✓   | Returns a string needed to purchase the item later.
+`currency`                               | ✓   | ✓   | Returns the currency code.
+`localizedPrice`                         | ✓   | ✓   | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols.
+`title`                                  | ✓   | ✓   | Returns the title Android and localizedTitle on iOS.
+`description`                            | ✓   | ✓   | Returns the localized description on Android and iOS.
+`introductoryPrice`                      | ✓   | ✓   | Formatted introductory price of a subscription, including its currency sign, such as €3.99.<br>The price doesn't include tax.
+`introductoryPricePaymentModeIOS`        | ✓   |     | The payment mode for this product discount.
+`introductoryPriceNumberOfPeriods`       | ✓   |     | An integer that indicates the number of periods the product discount is available.
+`introductoryPriceNumberOfPeriodsIOS`    | ✓   |     | An integer that indicates the number of periods the product discount is available.
+`introductoryPriceSubscriptionPeriod`    | ✓   |     | An object that defines the period for the product discount.
+`introductoryPriceSubscriptionPeriodIOS` | ✓   |     | An object that defines the period for the product discount.
+`subscriptionPeriodNumberIOS`            | ✓   |     | The period number (in string) of subscription period.
+`subscriptionPeriodUnitIOS`              | ✓   |     | The period unit in `DAY`, `WEEK`, `MONTH` or `YEAR`.
+`subscriptionPeriodAndroid`              |     | ✓   | Subscription period, specified in ISO 8601 format.<br>For example, P1W equates to one week, P1M equates to one month, P3M equates to three months, P6M equates to six months, and P1Y equates to one year.
+`introductoryPriceCyclesAndroid`         |     | ✓   | The number of subscription billing periods for which the user will be given the introductory price, such as 3.
+`introductoryPricePeriodAndroid`         |     | ✓   | The billing period of the introductory price, specified in ISO 8601 format.
+`freeTrialPeriodAndroid`                 |     | ✓   | Trial period configured in Google Play Console, specified in ISO 8601 format. For example, P7D equates to seven days.
 
 End Billing Connection
 ----------------------
@@ -433,21 +435,21 @@ Returned purchases is an array of each purchase transaction with the following k
 
 #### typeof `AvailablePurchase`
 
-|    | iOS | Android | Comment |
-|----|-----|---------|------|
-|`productId`| ✓ | ✓ | The product ID for the product. |
-|`transactionReceipt`| ✓ | ✓ | `receipt` for ios and stringified JSON of the original purchase object for android. |
-|`transactionId`| ✓ | ✓ | A unique order identifier for the transaction. |
-|`transactionDate`| ✓ | ✓ | The time the product was purchased, in milliseconds since the epoch (Jan 1, 1970). |
-|`purchaseToken`| | ✓ | A token that uniquely identifies a purchase for a given item and user pair. |
-|`autoRenewingAndroid`|  | ✓ | Indicates whether the subscription renews automatically. If true, the subscription is active, and will automatically renew on the next billing date. If false, indicates that the user has canceled the subscription. |
-|`dataAndroid`|  | ✓ | Original json for purchase data. |
-|`signatureAndroid`|  | ✓ | String containing the signature of the purchase data that was signed with the private key of the developer. The data signature uses the RSASSA-PKCS1-v1_5 scheme. |
-|`autoRenewingAndroid`|  | ✓ | `boolean` checking if subscription is `autoRenewing`. This won't get returned if this is no subscription purchase. |
-|`isAcknowledgedAndroid`|  | ✓ | `boolean` checking if purhcase has been acknowledged. |
-|`purchaseStateAndroid`|  | ✓ | `number` indicating purchase state in `android`. |
-|`originalTransactionDateIOS`| ✓ |  | For a transaction that restores a previous transaction, the date of the original transaction. |
-|`originalTransactionIdentifierIOS`| ✓ |  | For a transaction that restores a previous transaction, the transaction identifier of the original transaction. |
+Property                           | Type   | iOS | And | Comment
+--------                           | ----   | :-: | :-: | -------
+`productId`                        | String | ✓   | ✓   | The product ID for the product.
+`transactionReceipt`               | String | ✓   | ✓   | `receipt` for iOS and stringified JSON of the original purchase object for android.
+`transactionId`                    | String | ✓   | ✓   | A unique order identifier for the transaction.
+`transactionDate`                  | Number | ✓   | ✓   | The time the product was purchased, in milliseconds since the epoch (Jan 1, 1970).
+`purchaseToken`                    | &nbsp; |     | ✓   | A token that uniquely identifies a purchase for a given item and user pair.
+`autoRenewingAndroid`              | &nbsp; |     | ✓   | Indicates whether the subscription renews automatically. If true, the subscription is active, and will automatically renew on the next billing date. If false, indicates that the user has canceled the subscription.
+`dataAndroid`                      | &nbsp; |     | ✓   | Original json for purchase data.
+`signatureAndroid`                 | &nbsp; |     | ✓   | String containing the signature of the purchase data that was signed with the private key of the developer. The data signature uses the RSASSA-PKCS1-v1_5 scheme.
+`autoRenewingAndroid`              | &nbsp; |     | ✓   | `boolean` checking if subscription is `autoRenewing`. This won't get returned if this is no subscription purchase.
+`isAcknowledgedAndroid`            | &nbsp; |     | ✓   | `boolean` checking if purhcase has been acknowledged.
+`purchaseStateAndroid`             | &nbsp; |     | ✓   | `number` indicating purchase state in `android`.
+`originalTransactionDateIOS`       | Number | ✓   |     | For a transaction that restores a previous transaction, the date of the original transaction.
+`originalTransactionIdentifierIOS` | String | ✓   |     | For a transaction that restores a previous transaction, the transaction identifier of the original transaction.
 
 You need to test with one sandbox account, because the account holds previous purchase history.
 
