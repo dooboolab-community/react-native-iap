@@ -123,7 +123,7 @@ RCT_EXPORT_METHOD(getItems:(NSArray*)skus
 }
 
 RCT_EXPORT_METHOD(getAvailableItems:(RCTPromiseResolveBlock)resolve
-reject:(RCTPromiseRejectBlock)reject) {
+                  reject:(RCTPromiseRejectBlock)reject) {
     [self addPromiseForKey:@"availableItems" resolve:resolve reject:reject];
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
@@ -160,6 +160,7 @@ RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     SKProduct *product;
+    SKMutablePayment *payment;
     for (SKProduct *p in validProducts) {
         if([sku isEqualToString:p.productIdentifier]) {
             product = p;
@@ -167,18 +168,18 @@ RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
         }
     }
     if (product) {
-        SKPaymentDiscount *discount = [[SKPaymentDiscount alloc]
-                                       initWithIdentifier:discountOffer[@"identifier"]
-                                       keyIdentifier:discountOffer[@"keyIdentifier"]
-                                       nonce:[[NSUUID alloc] initWithUUIDString:discountOffer[@"nonce"]]
-                                       signature:discountOffer[@"signature"]
-                                       timestamp:discountOffer[@"timestamp"]
-                                       ];
-        
-        SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
+        payment = [SKMutablePayment paymentWithProduct:product];
+        if (@available(iOS 12.2, *)) {
+            SKPaymentDiscount *discount = [[SKPaymentDiscount alloc]
+                                           initWithIdentifier:discountOffer[@"identifier"]
+                                           keyIdentifier:discountOffer[@"keyIdentifier"]
+                                           nonce:[[NSUUID alloc] initWithUUIDString:discountOffer[@"nonce"]]
+                                           signature:discountOffer[@"signature"]
+                                           timestamp:discountOffer[@"timestamp"]
+                                           ];
+            payment.paymentDiscount = discount;
+        }
         payment.applicationUsername = usernameHash;
-        payment.paymentDiscount = discount;
-        
         [[SKPaymentQueue defaultQueue] addPayment:payment];
         [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
     } else {
@@ -605,7 +606,7 @@ RCT_EXPORT_METHOD(requestReceipt:(RCTPromiseResolveBlock)resolve
                 default:
                     subscriptionPeriods = @"";
             }
-
+            
             
             NSString* discountIdentifier = @"";
             if (@available(iOS 12.2, *)) {
@@ -623,7 +624,7 @@ RCT_EXPORT_METHOD(requestReceipt:(RCTPromiseResolveBlock)resolve
                 }
                 
             }
-
+            
             [mappedDiscounts addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                                         discountIdentifier, @"identifier",
                                         discountType, @"type",
