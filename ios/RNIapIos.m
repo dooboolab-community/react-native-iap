@@ -11,6 +11,7 @@
     NSMutableDictionary *promisesByKey;
     dispatch_queue_t myQueue;
     BOOL hasListeners;
+    BOOL pendingTransactionWithAutoFinish;
     void (^receiptBlock)(NSData*, NSError*); // Block to handle request the receipt async from delegate
 }
 @end
@@ -21,6 +22,7 @@
 -(instancetype)init {
     if ((self = [super init])) {
         promisesByKey = [NSMutableDictionary dictionary];
+        pendingTransactionWithAutoFinish = false;
         [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
         [IAPPromotionObserver sharedObserver].delegate = self;
     }
@@ -129,8 +131,10 @@ RCT_EXPORT_METHOD(getAvailableItems:(RCTPromiseResolveBlock)resolve
 }
 
 RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
+                  andDangerouslyFinishTransactionAutomatically:(BOOL)finishAutomatically
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
+    pendingTransactionWithAutoFinish = finishAutomatically;
     SKProduct *product;
     for (SKProduct *p in validProducts) {
         if([sku isEqualToString:p.productIdentifier]) {
@@ -223,6 +227,7 @@ RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
     }
 }
 
+// The following buyProductWithoutAutoConfirm seems to be completely unused and identical to buyProduct. It's existance is confusing so could we remove it?
 RCT_EXPORT_METHOD(buyProductWithoutAutoConfirm:(NSString*)sku
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
@@ -292,6 +297,10 @@ RCT_EXPORT_METHOD(requestReceipt:(RCTPromiseResolveBlock)resolve
             reject([self standardErrorCode:9], @"Invalid receipt", nil);
         }
     }];
+}
+
+RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionKey) {
+    [self finishTransactionWithKey:transactionKey];
 }
 
 #pragma mark ===== StoreKit Delegate
@@ -385,6 +394,14 @@ RCT_EXPORT_METHOD(requestReceipt:(RCTPromiseResolveBlock)resolve
     }
 }
 
+-(void)finishTransactionWithKey:(NSString *)transactionKey {
+    for(SKPaymentTransaction *transaction in queue.transactions) {
+        if(RCTKeyForInstance(transaction) == transactionKey) {
+            [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+        }
+    }
+}
+
 -(void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {  ////////   RESTORE
     NSLog(@"\n\n\n  paymentQueueRestoreCompletedTransactionsFinished  \n\n.");
     NSMutableArray* items = [NSMutableArray arrayWithCapacity:queue.transactions.count];
@@ -411,7 +428,10 @@ RCT_EXPORT_METHOD(requestReceipt:(RCTPromiseResolveBlock)resolve
 }
 
 -(void)purchaseProcess:(SKPaymentTransaction *)transaction {
-    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+    if (pendingTransactionWithAutoFinish) {
+        [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+        pendingTransactionWithAutoFinish = false;
+    }
     [self getPurchaseData:transaction withBlock:^(NSDictionary *purchase) {
         [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:purchase];
         
@@ -648,6 +668,7 @@ RCT_EXPORT_METHOD(requestReceipt:(RCTPromiseResolveBlock)resolve
         }
         else {
             NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                             RCTKeyForInstance(transaction), @"transactionKey",
                                              @(transaction.transactionDate.timeIntervalSince1970 * 1000), @"transactionDate",
                                              transaction.transactionIdentifier, @"transactionId",
                                              transaction.payment.productIdentifier, @"productId",
