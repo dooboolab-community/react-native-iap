@@ -1,4 +1,7 @@
 ## Changelogs
+- **[3.3.0]**
+  + Fix [#581](https://github.com/dooboolab/react-native-iap/issues/581) by allowing the user to manually call finishTransaction on iOS. Deprecates allowing RNIap to automatically call finishTransaction.
+  + Adds finishTransactionIOS(transactionKey) which should be called after registering a successful transaction. (Similar to consumePurchaseAndroid and acknowledgePurchaseAndroid).
 - **[3.2.+]**
   + Update readme.
   + Fixed type.
