@@ -110,10 +110,10 @@ declare module.exports: {
     fn: (any) => any,
   ): EmitterSubscription,
   purchaseUpdatedListener(
-    fn: (any) => any,
+    fn: (PurchaseResult) => any,
   ): EmitterSubscription,
   purchaseErrorListener(
-    fn: (any) => any,
+    fn: (PurchaseError) => any,
   ): EmitterSubscription,
 }
 
