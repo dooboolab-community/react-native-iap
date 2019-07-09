@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "apsl-react-native-button": "^3.1.1",
-    "get-dev-paths": "^0.1.1",
     "react": "16.8.6",
     "react-native": "0.60.0-rc.2",
     "react-native-gesture-handler": "git://github.com/hyochan/react-native-gesture-handler.git#package-names",
@@ -25,8 +24,6 @@
     "react-navigation": "^3.11.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/runtime": "^7.4.5",
     "babel-jest": "^24.8.0",
     "jest": "^24.8.0",
     "metro-react-native-babel-preset": "^0.54.1",
