@@ -149,7 +149,7 @@ export const buyProduct = (sku) => {
   Platform.select({
     ios: async() => {
       checkNativeiOSAvailable();
-      return RNIapIos.buyProduct(sku);
+      return RNIapIos.buyProduct(sku, true);
     },
     android: async() => {
       checkNativeAndroidAvailable();
@@ -192,7 +192,7 @@ export const buySubscription = (sku, oldSku, prorationMode) => {
   return Platform.select({
     ios: async() => {
       checkNativeiOSAvailable();
-      return RNIapIos.buyProduct(sku);
+      return RNIapIos.buyProduct(sku, true);
     },
     android: async() => {
       checkNativeAndroidAvailable();
@@ -210,7 +210,7 @@ export const buySubscription = (sku, oldSku, prorationMode) => {
 export const requestSubscription = (sku, oldSku, prorationMode) => Platform.select({
   ios: async() => {
     checkNativeiOSAvailable();
-    return RNIapIos.buyProduct(sku);
+    return RNIapIos.buyProduct(sku, true);
   },
   android: async() => {
     checkNativeAndroidAvailable();
