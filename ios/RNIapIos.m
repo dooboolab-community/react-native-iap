@@ -304,8 +304,8 @@ RCT_EXPORT_METHOD(requestReceipt:(RCTPromiseResolveBlock)resolve
     }];
 }
 
-RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionKey) {
-    [self finishTransactionWithKey:transactionKey];
+RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionIdentifier) {
+    [self finishTransactionWithIdentifier:transactionIdentifier];
 }
 
 #pragma mark ===== StoreKit Delegate
@@ -399,10 +399,10 @@ RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionKey) {
     }
 }
 
--(void)finishTransactionWithKey:(NSString *)transactionKey {
+-(void)finishTransactionWithIdentifier:(NSString *)transactionIdentifier {
     SKPaymentQueue *queue = [SKPaymentQueue defaultQueue];
     for(SKPaymentTransaction *transaction in queue.transactions) {
-        if(RCTKeyForInstance(transaction) == transactionKey) {
+        if(transaction.transactionIdentifier == transactionIdentifier) {
             [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
         }
     }
@@ -674,7 +674,6 @@ RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionKey) {
         }
         else {
             NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                             RCTKeyForInstance(transaction), @"transactionKey",
                                              @(transaction.transactionDate.timeIntervalSince1970 * 1000), @"transactionDate",
                                              transaction.transactionIdentifier, @"transactionId",
                                              transaction.payment.productIdentifier, @"productId",

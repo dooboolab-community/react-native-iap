@@ -255,14 +255,14 @@ export const requestPurchaseWithQuantityIOS = (sku, quantity) => Platform.select
  *   Similar to `consumePurchaseAndroid`. Tells StoreKit that you have delivered the purchase to the user and StoreKit can now let go of the transaction.
  *   Call this after you have persisted the purchased state to your server or local data in your app.
  *   `react-native-iap` will continue to deliver the purchase updated events with the successful purchase until you finish the transaction. **Even after the app has relaunched.**
- * @param {string} transactionKey The transactionKey of the function that you would like to finish.
+ * @param {string} transactionId The transactionId of the function that you would like to finish.
  * @returns {null}
  */
-export const finishTransactionIOS = (transactionKey) => {
+export const finishTransactionIOS = (transactionId) => {
   Platform.select({
     ios: async() => {
       checkNativeiOSAvailable();
-      return RNIapIos.finishTransaction(transactionKey);
+      return RNIapIos.finishTransaction(transactionId);
     },
     android: async() => Promise.resolve(),
   })();
@@ -304,7 +304,7 @@ export const clearProductsIOS = () => Platform.select({
  * @returns {Promise}
  */
 export const acknowledgePurchaseAndroid = (token, developerPayload) => Platform.select({
-  ios: async() => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
+  ios: async() => Promise.resolve(),
   android: async() => {
     checkNativeAndroidAvailable();
     return RNIapModule.acknowledgePurchase(token, developerPayload);
@@ -317,7 +317,7 @@ export const acknowledgePurchaseAndroid = (token, developerPayload) => Platform.
  * @returns {Promise}
  */
 export const consumePurchaseAndroid = (token, developerPayload) => Platform.select({
-  ios: async() => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
+  ios: async() => Promise.resolve(),
   android: async() => {
     checkNativeAndroidAvailable();
     return RNIapModule.consumeProduct(token, developerPayload);
