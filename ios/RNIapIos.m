@@ -39,8 +39,13 @@
     return YES;
 }
 
+- (void)flushUnheardEvents {
+    [self paymentQueue:[SKPaymentQueue defaultQueue] updatedTransactions:[[SKPaymentQueue defaultQueue] transactions]];
+}
+
 - (void)startObserving {
     hasListeners = YES;
+    [self flushUnheardEvents];
 }
 
 - (void)stopObserving {
