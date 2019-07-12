@@ -395,6 +395,7 @@ RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionKey) {
 }
 
 -(void)finishTransactionWithKey:(NSString *)transactionKey {
+    SKPaymentQueue *queue = [SKPaymentQueue defaultQueue];
     for(SKPaymentTransaction *transaction in queue.transactions) {
         if(RCTKeyForInstance(transaction) == transactionKey) {
             [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
