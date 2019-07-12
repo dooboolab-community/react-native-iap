@@ -402,7 +402,7 @@ RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionIdentifier) {
 -(void)finishTransactionWithIdentifier:(NSString *)transactionIdentifier {
     SKPaymentQueue *queue = [SKPaymentQueue defaultQueue];
     for(SKPaymentTransaction *transaction in queue.transactions) {
-        if(transaction.transactionIdentifier == transactionIdentifier) {
+        if([transaction.transactionIdentifier isEqualToString:transactionIdentifier]) {
             [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
         }
     }
