@@ -35,15 +35,25 @@ export type Subscription<ID> = Common & {
 
 export type ProductPurchase = {|
   productId: string,
-  transactionId: string,
+  transactionId?: string,
   transactionDate: number,
   transactionReceipt: string,
-  signatureAndroid?: string,
-  dataAndroid?: string,
   purchaseToken?: string,
+  dataAndroid?: string,
+  signatureAndroid?: string,
+  autoRenewingAndroid?: boolean,
+  isAcknowledgedAndroid?: boolean,
+  purchaseStateAndroid?: number,
+  originalTransactionDateIOS?: string,
+  originalTransactionIdentifierIOS?: string,
 |}
 
-expoert type PurchaseError = {
+export type PurchaseResult = {
+  responseCode: number,
+  debugMessage: string,
+}
+
+export type PurchaseError = {
   responseCode: number,
   debugMessage: string,
 }
@@ -83,7 +93,8 @@ declare module.exports: {
   ): Promise<string>,
   clearTransactionIOS(): void,
   clearProductsIOS(): void,
-  consumePurchaseAndroid(token: string, developerPayload?: string): Promise<void>,
+  acknowledgePurchaseAndroid(token: string, developerPayload?: string): Promise<PurchaseResult>,
+  consumePurchaseAndroid(token: string, developerPayload?: string): Promise<PurchaseResult>,
   validateReceiptIos(
     receiptBody: AppleReceiptValidationRequest,
     isTest: boolean,
@@ -99,10 +110,10 @@ declare module.exports: {
     fn: (any) => any,
   ): EmitterSubscription,
   purchaseUpdatedListener(
-    fn: (any) => any,
+    fn: (PurchaseResult) => any,
   ): EmitterSubscription,
   purchaseErrorListener(
-    fn: (any) => any,
+    fn: (PurchaseError) => any,
   ): EmitterSubscription,
 }
 

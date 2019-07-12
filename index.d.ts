@@ -35,12 +35,22 @@ export interface Subscription<ID extends string> extends Common {
 
 export interface ProductPurchase {
   productId: string;
-  transactionId: string;
+  transactionId?: string;
   transactionDate: number;
   transactionReceipt: string;
-  signatureAndroid?: string;
-  dataAndroid?: string;
   purchaseToken?: string;
+  dataAndroid?: string;
+  signatureAndroid?: string;
+  autoRenewingAndroid?: boolean;
+  isAcknowledgedAndroid?: boolean;
+  purchaseStateAndroid?: number;
+  originalTransactionDateIOS?: string;
+  originalTransactionIdentifierIOS?: string;
+}
+
+export interface PurchaseResult {
+  responseCode?: number;
+  debugMessage?: string;
 }
 
 export interface PurchaseError {
@@ -192,11 +202,20 @@ export function clearTransactionIOS(): void;
 export function clearProductsIOS(): void;
 
 /**
- * Consume a product (on Android.) No-op on iOS.
+ * Acknowledge a purchase (on Android.) No-op on iOS.
+ * This is applied to non-consumable or subscriptions.
  * @param {string} token The product's token (on Android)
  * @returns {Promise}
  */
-export function consumePurchaseAndroid(token: string, developerPayload?: string) : Promise<void>;
+export function acknowledgePurchaseAndroid(token: string, developerPayload?: string) : Promise<PurchaseResult>;
+
+/**
+ * Consume a purchase (on Android.) No-op on iOS.
+ * It acknowledges consumable products. If it isn't consumable, use `acknowledgePurchaseAndroid` instead.
+ * @param {string} token The product's token (on Android)
+ * @returns {Promise}
+ */
+export function consumePurchaseAndroid(token: string, developerPayload?: string) : Promise<PurchaseResult>;
 
 /**
  * Validate receipt for iOS.

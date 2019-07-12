@@ -14,6 +14,7 @@ yarn-error.log
 # Xcode
 #
 build/
+IapExample/ios/Pods
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -43,6 +44,7 @@ IapExample/android/app/bin
 IapExample/android/app/.project
 IapExample/android/.project
 android/.project
+android/.setting
 
 # BUCK
 buck-out/
