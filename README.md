@@ -25,7 +25,7 @@ react-native-iap
 > ![demo.gif](https://user-images.githubusercontent.com/27461460/52619625-87aa8a80-2ee5-11e9-9aee-6691c34408f3.gif)
 
 <!-- Inline anchors -->
-[a-acknowledge-purchase-android]: #consumption-and-restoring-purchases
+[a-acknowledge-purchase-android]: #finishing-a-purchase
 [a-migration-guide]: #migration-guide
 [a-purchase-flow]: #new-purchase-flow
 
@@ -373,17 +373,21 @@ releases so avoid using it.
 Approach of new purchase flow will prevent such issue in [#307][issue-307] which
 was privided in `2.4.*`.
 
-Consumption and Restoring Purchases
------------------------------------
-You can use `getAvailablePurchases()` to do what's commonly understood as “restoring” purchases.
+Finishing A Purchase
+----------------------
+Purchases will keep being emitted to your `purchaseUpdatedListener` on every app relaunch until you finish the purchase.
 
-Consumable purchases should be consumed by calling `consumePurchaseAndroid` or `finishTransactionIOS`.
+Consumable purchases should be consumed by calling `consumePurchaseAndroid()` or `finishTransactionIOS()`.
 Once an item is consumed, it will be removed from `getAvailablePurchases()` so it is up to you
-to record the purchase into your database before calling `consumePurchaseAndroid` or `finishTransactionIOS`.
+to record the purchase into your database before calling `consumePurchaseAndroid()` or `finishTransactionIOS()`.
 
 Non-consumable purchases need to be acknowledged on Android, or they will be automatically refunded after 
-a few days. Acknowledge a purchase when you have delivered it to your user by calling `acknowledgePurchaseAndroid`.
-On iOS non-consumable purchases are finished automatically but this will change in the future so it is recommended that you prepare by simply calling `finishTransactionIOS` on non-consumables as well.
+a few days. Acknowledge a purchase when you have delivered it to your user by calling `acknowledgePurchaseAndroid()`.
+On iOS non-consumable purchases are finished automatically but this will change in the future so it is recommended that you prepare by simply calling `finishTransactionIOS()` on non-consumables as well.
+
+Restoring Purchases
+-----------------------------------
+You can use `getAvailablePurchases()` to do what's commonly understood as “restoring” purchases.
 
 If for debugging you want to consume all items, you have to iterate over the purchases
 returned by `getAvailablePurchases()`. Beware that if you consume an item without having 
