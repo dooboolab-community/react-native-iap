@@ -373,7 +373,7 @@ releases so avoid using it.
 Approach of new purchase flow will prevent such issue in [#307][issue-307] which
 was privided in `2.4.*`.
 
-Finishing A Purchase
+Finishing a Purchase
 ----------------------
 Purchases will keep being emitted to your `purchaseUpdatedListener` on every app relaunch until you finish the purchase.
 
