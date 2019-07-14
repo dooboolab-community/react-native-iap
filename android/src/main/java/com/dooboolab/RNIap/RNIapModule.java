@@ -466,22 +466,46 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       return;
     }
 
-    Purchase purchase = purchases.get(0);
+    if (purchases != null) {
+      for (Purchase purchase : purchases) {
 
-    WritableMap item = Arguments.createMap();
-    item.putString("productId", purchase.getSku());
-    item.putString("transactionId", purchase.getOrderId());
-    item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
-    item.putString("transactionReceipt", purchase.getOriginalJson());
-    item.putString("purchaseToken", purchase.getPurchaseToken());
-    item.putString("dataAndroid", purchase.getOriginalJson());
-    item.putString("signatureAndroid", purchase.getSignature());
-    item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
-    item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
-    item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
+        WritableMap item = Arguments.createMap();
+        item.putString("productId", purchase.getSku());
+        item.putString("transactionId", purchase.getOrderId());
+        item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
+        item.putString("transactionReceipt", purchase.getOriginalJson());
+        item.putString("purchaseToken", purchase.getPurchaseToken());
+        item.putString("dataAndroid", purchase.getOriginalJson());
+        item.putString("signatureAndroid", purchase.getSignature());
+        item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
+        item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
+        item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
 
-    sendEvent(reactContext, "purchase-updated", item);
-    DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, item);
+        sendEvent(reactContext, "purchase-updated", item);
+        DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, item);
+      }
+    }
+  }
+
+  private void sendUnconsumedPurchases(final Promise promise) {
+    ensureConnection(promise, new Runnable() {
+      @Override
+      public void run() {
+        Purchase.PurchasesResult purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
+        ArrayList<Purchase> unacknowledgedPurchases = new ArrayList<>();
+        for (Purchase purchase : purchasesResult.getPurchasesList()) {
+          if (!purchase.isAcknowledged()) {
+            unacknowledgedPurchases.add(purchase);
+          }
+        }
+        onPurchasesUpdated(purchasesResult.getBillingResult(), unacknowledgedPurchases);
+      }
+    });
+  }
+
+  @ReactMethod
+  public void startListening(final Promise promise) {
+    sendUnconsumedPurchases(promise);
   }
 
   private void sendEvent(ReactContext reactContext,

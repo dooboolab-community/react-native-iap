@@ -449,7 +449,9 @@ export const purchaseUpdatedListener = (e) => {
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
     return myModuleEvt.addListener('purchase-updated', e);
   } else {
-    return DeviceEventEmitter.addListener('purchase-updated', e);
+    const emitterSubscription = DeviceEventEmitter.addListener('purchase-updated', e);
+    RNIapModule.startListening();
+    return emitterSubscription;
   }
 };
 
