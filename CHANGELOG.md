@@ -1,4 +1,9 @@
 ## Changelogs
+- **[3.3.0]**
+  + Fix [#581](https://github.com/dooboolab/react-native-iap/issues/581) by allowing the user to manually call finishTransaction on iOS. Deprecates allowing RNIap to automatically call finishTransaction.
+  + Adds `finishTransactionIOS(transactionId)` which should be called after persisting a successful consumable transaction to disk or server. (Similar to `consumePurchaseAndroid` and `acknowledgePurchaseAndroid`).
+  + Deprecates using requestPurchase without setting `andDangerouslyFinishTransactionAutomatically` to `false` on iOS. This will default to false in a future major release.
+  + Sends any unfinished (iOS), unconsumed or unacknowledged (Android) purchases directly when the first `purchaseUpdatedListener` is added. This happens even if the app is relaunched and should be used to recover purchases that got charged through the store but were never delivered to the user. Be sure to finish, consume or acknowledge all purchases when you have delivered them.
 - **[3.2.+]**
   + Update readme.
   + Fixed type.

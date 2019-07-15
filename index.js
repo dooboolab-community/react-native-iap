@@ -149,7 +149,7 @@ export const buyProduct = (sku) => {
   Platform.select({
     ios: async() => {
       checkNativeiOSAvailable();
-      return RNIapIos.buyProduct(sku);
+      return RNIapIos.buyProduct(sku, true);
     },
     android: async() => {
       checkNativeAndroidAvailable();
@@ -161,12 +161,17 @@ export const buyProduct = (sku) => {
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
+ * @param {boolean} andDangerouslyFinishTransactionAutomatically You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @returns {Promise<string>}
  */
-export const requestPurchase = (sku) => Platform.select({
+export const requestPurchase = (sku, andDangerouslyFinishTransactionAutomatically) => Platform.select({
   ios: async() => {
+    andDangerouslyFinishTransactionAutomatically = (andDangerouslyFinishTransactionAutomatically === undefined) ? true : andDangerouslyFinishTransactionAutomatically;
+    if (andDangerouslyFinishTransactionAutomatically) {
+      console.warn('You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.');
+    }
     checkNativeiOSAvailable();
-    return RNIapIos.buyProduct(sku);
+    return RNIapIos.buyProduct(sku, andDangerouslyFinishTransactionAutomatically);
   },
   android: async() => {
     checkNativeAndroidAvailable();
@@ -187,7 +192,7 @@ export const buySubscription = (sku, oldSku, prorationMode) => {
   return Platform.select({
     ios: async() => {
       checkNativeiOSAvailable();
-      return RNIapIos.buyProduct(sku);
+      return RNIapIos.buyProduct(sku, true);
     },
     android: async() => {
       checkNativeAndroidAvailable();
@@ -205,7 +210,7 @@ export const buySubscription = (sku, oldSku, prorationMode) => {
 export const requestSubscription = (sku, oldSku, prorationMode) => Platform.select({
   ios: async() => {
     checkNativeiOSAvailable();
-    return RNIapIos.buyProduct(sku);
+    return RNIapIos.buyProduct(sku, true);
   },
   android: async() => {
     checkNativeAndroidAvailable();
@@ -246,6 +251,24 @@ export const requestPurchaseWithQuantityIOS = (sku, quantity) => Platform.select
 })();
 
 /**
+ * Finish Transaction (iOS only)
+ *   Similar to `consumePurchaseAndroid`. Tells StoreKit that you have delivered the purchase to the user and StoreKit can now let go of the transaction.
+ *   Call this after you have persisted the purchased state to your server or local data in your app.
+ *   `react-native-iap` will continue to deliver the purchase updated events with the successful purchase until you finish the transaction. **Even after the app has relaunched.**
+ * @param {string} transactionId The transactionId of the function that you would like to finish.
+ * @returns {null}
+ */
+export const finishTransactionIOS = (transactionId) => {
+  Platform.select({
+    ios: async() => {
+      checkNativeiOSAvailable();
+      return RNIapIos.finishTransaction(transactionId);
+    },
+    android: async() => Promise.resolve(),
+  })();
+};
+
+/**
  * Clear Transaction (iOS only)
  *   Finish remaining transactions. Related to issue #257
  *     link : https://github.com/dooboolab/react-native-iap/issues/257
@@ -281,7 +304,7 @@ export const clearProductsIOS = () => Platform.select({
  * @returns {Promise}
  */
 export const acknowledgePurchaseAndroid = (token, developerPayload) => Platform.select({
-  ios: async() => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
+  ios: async() => Promise.resolve(),
   android: async() => {
     checkNativeAndroidAvailable();
     return RNIapModule.acknowledgePurchase(token, developerPayload);
@@ -294,7 +317,7 @@ export const acknowledgePurchaseAndroid = (token, developerPayload) => Platform.
  * @returns {Promise}
  */
 export const consumePurchaseAndroid = (token, developerPayload) => Platform.select({
-  ios: async() => Promise.resolve(), // Consuming is a no-op on iOS, as soon as the product is purchased it is considered consumed.
+  ios: async() => Promise.resolve(),
   android: async() => {
     checkNativeAndroidAvailable();
     return RNIapModule.consumeProduct(token, developerPayload);
@@ -426,7 +449,9 @@ export const purchaseUpdatedListener = (e) => {
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
     return myModuleEvt.addListener('purchase-updated', e);
   } else {
-    return DeviceEventEmitter.addListener('purchase-updated', e);
+    const emitterSubscription = DeviceEventEmitter.addListener('purchase-updated', e);
+    RNIapModule.startListening();
+    return emitterSubscription;
   }
 };
 
