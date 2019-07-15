@@ -358,7 +358,7 @@ Then define the method like below and call it when user press the button.
 
 New Purchase Flow
 -----------------
-![purchase-flow-sequence](https://user-images.githubusercontent.com/27461460/59160427-d1605600-8b10-11e9-9ca9-80fd2c08fd86.png)
+![purchase-flow-sequence](docs/react-native-iapv3.svg)
 
 Most likely, you'll want to handle the “store kit flow”[<sup>\[2\]</sup>][apple-store-kit-flow],
 which happens when a user successfully pays after solving a problem with his
