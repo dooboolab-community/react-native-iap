@@ -1,6 +1,6 @@
 {
   "name": "react-native-iap",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "React Native In App Purchase Module.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -39,14 +39,14 @@
     "@types/eslint": "^4.16.6",
     "@types/react": "16.8.23",
     "@types/react-native": "0.60.1",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^6.0.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.17.3",
+    "babel-eslint": "^10.0.2",
+    "eslint": "^6.0.1",
+    "eslint-config-standard": "^13.0.1",
+    "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-node": "^9.1.0",
-    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
-    "flow-bin": "^0.101.1",
-    "typescript": "^3.5.2"
+    "flow-bin": "^0.102.0",
+    "typescript": "^3.5.3"
   }
 }

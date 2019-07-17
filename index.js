@@ -115,8 +115,8 @@ export const getPurchaseHistory = () => Platform.select({
   },
   android: async() => {
     checkNativeAndroidAvailable();
-    let products = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_IAP);
-    let subscriptions = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
+    const products = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_IAP);
+    const subscriptions = await RNIapModule.getPurchaseHistoryByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
     return products.concat(subscriptions);
   },
 })();
@@ -132,8 +132,8 @@ export const getAvailablePurchases = () => Platform.select({
   },
   android: async() => {
     checkNativeAndroidAvailable();
-    let products = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_IAP);
-    let subscriptions = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
+    const products = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_IAP);
+    const subscriptions = await RNIapModule.getAvailableItemsByType(ANDROID_ITEM_TYPE_SUBSCRIPTION);
     return products.concat(subscriptions);
   },
 })();
@@ -385,7 +385,7 @@ export const validateReceiptIos = async(receiptBody, isTest) => {
   const response = await fetch(url, {
     method: 'POST',
     headers: new Headers({
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json',
     }),
     body: JSON.stringify(receiptBody),
@@ -413,7 +413,7 @@ export const validateReceiptAndroid = async(packageName, productId, productToken
 
   const response = await fetch(url, {
     method: 'GET',
-    headers: new Headers({ 'Accept': 'application/json' }),
+    headers: new Headers({ Accept: 'application/json' }),
   });
 
   if (!response.ok) {
