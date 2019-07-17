@@ -28,10 +28,10 @@ matrix:
             - g++-4.8
 
       install:
-        - npm install
+        - yarn
         - cd IapExample
-        - npm install
+        - yarn
         - cd ..
 
       script:
-        - npm run validate
+        - yarn validate
