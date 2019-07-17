@@ -18,15 +18,15 @@
   "dependencies": {
     "apsl-react-native-button": "^3.1.1",
     "react": "16.8.6",
-    "react-native": "0.60.0-rc.2",
+    "react-native": "0.60.3",
     "react-native-gesture-handler": "git://github.com/hyochan/react-native-gesture-handler.git#package-names",
     "react-native-iap": "file:../",
-    "react-navigation": "^3.11.0"
+    "react-navigation": "^3.11.1"
   },
   "devDependencies": {
     "babel-jest": "^24.8.0",
     "jest": "^24.8.0",
-    "metro-react-native-babel-preset": "^0.54.1",
+    "metro-react-native-babel-preset": "^0.55.0",
     "react-test-renderer": "16.8.6"
   },
   "jest": {
