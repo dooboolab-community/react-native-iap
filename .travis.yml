@@ -28,9 +28,9 @@ matrix:
             - g++-4.8
 
       install:
-        - yarn
+        - yarn install
         - cd IapExample
-        - yarn
+        - yarn install
         - cd ..
 
       script:
