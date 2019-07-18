@@ -76,6 +76,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   public RNIapModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
+    this.skus = new ArrayList<SkuDetails>();
     reactContext.addLifecycleEventListener(lifecycleEventListener);
   }
 
@@ -234,7 +235,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               return;
             }
 
-            skus = skuDetailsList;
+            for (SkuDetails sku : skuDetailsList) {
+              if (!skus.contains(sku)) {
+                skus.add(sku);
+              }
+            }
             WritableNativeArray items = new WritableNativeArray();
 
             for (SkuDetails skuDetails : skuDetailsList) {
