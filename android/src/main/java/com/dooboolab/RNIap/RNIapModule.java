@@ -103,6 +103,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             WritableMap error = Arguments.createMap();
             error.putInt("responseCode", billingResult.getResponseCode());
             error.putString("debugMessage", billingResult.getDebugMessage());
+            String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+            error.putString("code", errorData[0]);
+            error.putString("message", errorData[1]);
             sendEvent(reactContext, "purchase-error", error);
             DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
           }
@@ -388,6 +391,8 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           String debugMessage = "The sku was not found. Please fetch products first by calling getItems";
           WritableMap error = Arguments.createMap();
           error.putString("debugMessage", debugMessage);
+          error.putString("code", PROMISE_BUY_ITEM);
+          error.putString("message", debugMessage);
           sendEvent(reactContext, "purchase-error", error);
           promise.reject(PROMISE_BUY_ITEM, debugMessage);
           return;
@@ -398,9 +403,10 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             .build();
         BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
 
+        String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
         Log.d(
             TAG,
-            "buyItemByType (type: " + type + ", sku: " + sku + ", oldSku: " + oldSku + ", prorationMode: " + prorationMode + ") responseCode: " + billingResult.getResponseCode() + "(" + DoobooUtils.getInstance().getBillingResponseCodeName(billingResult.getResponseCode()) + ")"
+            "buyItemByType (type: " + type + ", sku: " + sku + ", oldSku: " + oldSku + ", prorationMode: " + prorationMode + ") responseCode: " + billingResult.getResponseCode() + "(" + errorData[0] + ")"
         );
       }
     });
@@ -423,6 +429,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           WritableMap map = Arguments.createMap();
           map.putInt("responseCode", billingResult.getResponseCode());
           map.putString("debugMessage", billingResult.getDebugMessage());
+          String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+          map.putString("code", errorData[0]);
+          map.putString("message", errorData[1]);
           promise.resolve(map);
         } catch (ObjectAlreadyConsumedException oce) {
           Log.e(TAG, oce.getMessage());
@@ -447,6 +456,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           WritableMap map = Arguments.createMap();
           map.putInt("responseCode", billingResult.getResponseCode());
           map.putString("debugMessage", billingResult.getDebugMessage());
+          String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+          map.putString("code", errorData[0]);
+          map.putString("message", errorData[1]);
           promise.resolve(map);
         } catch (ObjectAlreadyConsumedException oce) {
           Log.e(TAG, oce.getMessage());
@@ -461,6 +473,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       WritableMap error = Arguments.createMap();
       error.putInt("responseCode", billingResult.getResponseCode());
       error.putString("debugMessage", billingResult.getDebugMessage());
+      String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+      error.putString("code", errorData[0]);
+      error.putString("message", errorData[1]);
       sendEvent(reactContext, "purchase-error", error);
       DoobooUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
       return;

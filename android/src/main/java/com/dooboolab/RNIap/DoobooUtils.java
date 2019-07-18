@@ -44,65 +44,60 @@ public class DoobooUtils {
   }
 
   public void rejectPromiseWithBillingError(final Promise promise, final int responseCode) {
-    switch (responseCode) {
-      case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
-        promise.reject(E_SERVICE_ERROR, "This feature is not available on your device.");
-        break;
-      case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED:
-        promise.reject(E_NETWORK_ERROR, "The service is disconnected (check your internet connection.)");
-        break;
-      case BillingClient.BillingResponseCode.USER_CANCELED:
-        promise.reject(E_USER_CANCELLED, "Payment is Cancelled.");
-        break;
-      case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
-        promise.reject(E_SERVICE_ERROR, "The service is unreachable. This may be your internet connection, or the Play Store may be down.");
-        break;
-      case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
-        promise.reject(E_SERVICE_ERROR, "Billing is unavailable. This may be a problem with your device, or the Play Store may be down.");
-        break;
-      case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
-        promise.reject(E_ITEM_UNAVAILABLE, "That item is unavailable.");
-        break;
-      case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
-        promise.reject(E_DEVELOPER_ERROR, "Google is indicating that we have some issue connecting to payment.");
-        break;
-      case BillingClient.BillingResponseCode.ERROR:
-        promise.reject(E_UNKNOWN, "An unknown or unexpected error has occured. Please try again later.");
-        break;
-      case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
-        promise.reject(E_ALREADY_OWNED, "You already own this item.");
-        break;
-      default:
-        promise.reject(E_UNKNOWN, "Purchase failed with code: " + responseCode + "(" + getBillingResponseCodeName(responseCode) + ")");
-        break;
-    }
+    String[] errorData = getBillingResponseData(responseCode);
+    promise.reject(errorData[0], errorData[1]);
   }
 
-  public String getBillingResponseCodeName(final int responseCode) {
+  public String[] getBillingResponseData(final int responseCode) {
+    String[] errorData = new String[2];
     switch (responseCode) {
       case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
-        return "FEATURE_NOT_SUPPORTED";
+        errorData[0] = E_SERVICE_ERROR;
+        errorData[1] = "This feature is not available on your device.";
+        break;
       case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED:
-        return "SERVICE_DISCONNECTED";
+        errorData[0] = E_NETWORK_ERROR;
+        errorData[1] = "The service is disconnected (check your internet connection.)";
+        break;
       case BillingClient.BillingResponseCode.OK:
-        return "OK";
+        errorData[0] = "OK";
+        errorData[1] = "";
+        break;
       case BillingClient.BillingResponseCode.USER_CANCELED:
-        return "USER_CANCELED";
+        errorData[0] = E_USER_CANCELLED;
+        errorData[1] = "Payment is Cancelled.";
+        break;
       case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
-        return "SERVICE_UNAVAILABLE";
+        errorData[0] = E_SERVICE_ERROR;
+        errorData[1] = "The service is unreachable. This may be your internet connection, or the Play Store may be down.";
+        break;
       case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
-        return "BILLING_UNAVAILABLE";
+        errorData[0] = E_SERVICE_ERROR;
+        errorData[1] = "Billing is unavailable. This may be a problem with your device, or the Play Store may be down.";
+        break;
       case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
-        return "ITEM_UNAVAILABLE";
+        errorData[0] = E_ITEM_UNAVAILABLE;
+        errorData[1] = "That item is unavailable.";
+        break;
       case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
-        return "DEVELOPER_ERROR";
+        errorData[0] = E_DEVELOPER_ERROR;
+        errorData[1] = "Google is indicating that we have some issue connecting to payment.";
+        break;
       case BillingClient.BillingResponseCode.ERROR:
-        return "ERROR";
+        errorData[0] = E_UNKNOWN;
+        errorData[1] = "An unknown or unexpected error has occured. Please try again later.";
+        break;
       case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
-        return "ITEM_ALREADY_OWNED";
+        errorData[0] = E_ALREADY_OWNED;
+        errorData[1] = "You already own this item.";
+        break;
+      default:
+        errorData[0] = E_UNKNOWN;
+        errorData[1] = "Purchase failed with code: " + responseCode;
+        break;
     }
-
-    return null;
+    Log.e(TAG, "Error Code : " + responseCode);
+    return errorData;
   }
 
   public void addPromiseForKey(final String key, final Promise promise) {
