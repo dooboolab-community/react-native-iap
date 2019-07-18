@@ -133,9 +133,10 @@ export function buyProduct(sku: string) : Promise<ProductPurchase>;
  * Request a purchase
  * 
  * @param {string} sku The product's sku/ID
+ * @param {boolean} andDangerouslyFinishTransactionAutomatically You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @returns {Promise<string>}
  */
-export function requestPurchase(sku: string) : Promise<string>;
+export function requestPurchase(sku: string, andDangerouslyFinishTransactionAutomatically?: boolean) : Promise<string>;
 
 /**
  * Create a subscription to a sku
@@ -185,6 +186,16 @@ export function buyProductWithQuantityIOS(sku: string, quantity: number) : Promi
  * @returns {Promise<Purchase>}
  */
 export function requestPurchaseWithQuantityIOS(sku: string, quantity: number) : Promise<string>;
+
+/**
+ * Finish Transaction (iOS only)
+ *   Similar to `consumePurchaseAndroid`. Tells StoreKit that you have delivered the purchase to the user and StoreKit can now let go of the transaction.
+ *   Call this after you have persisted the purchased state to your server or local data in your app.
+ *   `react-native-iap` will continue to deliver the purchase updated events with the successful purchase until you finish the transaction. **Even after the app has relaunched.**
+ * @param {string} transactionId The transactionId of the function that you would like to finish.
+ * @returns {null}
+ */
+export function finishTransactionIOS(transactionId: string): void;
 
 /**
  * Clear Transaction (iOS only)
