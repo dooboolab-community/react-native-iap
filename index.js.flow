@@ -76,7 +76,10 @@ declare module.exports: {
   getPurchaseHistory(): Promise<Purchase[]>,
   getAvailablePurchases(): Promise<Purchase[]>,
   buyProduct: string => Promise<ProductPurchase>,
-  requestPurchase: string => Promise<string>,
+  requestPurchase(
+    sku: string,
+    andDangerouslyFinishTransactionAutomatically: boolean,
+  ): Promise<string>,
   buySubscription(
     sku: string,
     oldSku?: string,
@@ -91,6 +94,7 @@ declare module.exports: {
     sku: string,
     quantity: number,
   ): Promise<string>,
+  finishTransactionIOS(transactionId: string): void,
   clearTransactionIOS(): void,
   clearProductsIOS(): void,
   acknowledgePurchaseAndroid(token: string, developerPayload?: string): Promise<PurchaseResult>,
