@@ -498,7 +498,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       public void run() {
         Purchase.PurchasesResult purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
         ArrayList<Purchase> unacknowledgedPurchases = new ArrayList<>();
-        if (purchasesResult == null) {
+        if (purchasesResult == null || purchasesResult.getPurchasesList() == null) {
           return;
         }
         for (Purchase purchase : purchasesResult.getPurchasesList()) {
