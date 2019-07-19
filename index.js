@@ -534,6 +534,7 @@ export default {
   addAdditionalSuccessPurchaseListenerIOS,
   requestPurchase,
   requestPurchaseWithQuantityIOS,
+  finishTransactionIOS,
   requestSubscription,
   purchaseUpdatedListener,
   purchaseErrorListener,
