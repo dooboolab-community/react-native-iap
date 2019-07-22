@@ -3,6 +3,7 @@
   + Fix flow tying [#594](https://github.com/dooboolab/react-native-iap/pull/594).
   + Handle null pointer exception [#600](https://github.com/dooboolab/react-native-iap/issues/600).
   + Keep valid SKUs in `android` when fetching products [#602](https://github.com/dooboolab/react-native-iap/pull/602)
+  + Fix possibility for  NullPointerException [#607](https://github.com/dooboolab/react-native-iap/pull/607)
 - **[3.3.0]**
   + Fix [#581](https://github.com/dooboolab/react-native-iap/issues/581) by allowing the user to manually call finishTransaction on iOS. Deprecates allowing RNIap to automatically call finishTransaction.
   + Adds `finishTransactionIOS(transactionId)` which should be called after persisting a successful consumable transaction to disk or server. (Similar to `consumePurchaseAndroid` and `acknowledgePurchaseAndroid`).
