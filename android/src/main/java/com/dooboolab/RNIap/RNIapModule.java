@@ -99,7 +99,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         if (!bSetupCallbackConsumed) {
           bSetupCallbackConsumed = true;
           if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK ) {
-            callback.run();
+            if (billingClient != null && billingClient.isReady()) {
+              callback.run();
+            }
           } else {
             WritableMap error = Arguments.createMap();
             error.putInt("responseCode", billingResult.getResponseCode());
