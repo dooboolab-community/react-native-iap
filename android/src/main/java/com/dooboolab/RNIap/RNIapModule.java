@@ -284,6 +284,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         final WritableNativeArray items = new WritableNativeArray();
         Purchase.PurchasesResult result = billingClient.queryPurchases(type.equals("subs") ? BillingClient.SkuType.SUBS : BillingClient.SkuType.INAPP);
         final List<Purchase> purchases = result.getPurchasesList();
+        if (purchases == null) {
+          return;
+        }
 
         for (Purchase purchase : purchases) {
           WritableNativeMap item = new WritableNativeMap();
