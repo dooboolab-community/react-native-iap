@@ -284,25 +284,27 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         final WritableNativeArray items = new WritableNativeArray();
         Purchase.PurchasesResult result = billingClient.queryPurchases(type.equals("subs") ? BillingClient.SkuType.SUBS : BillingClient.SkuType.INAPP);
         final List<Purchase> purchases = result.getPurchasesList();
-        if (purchases == null) {
-          return;
+
+        if (purchases != null) {
+          for (Purchase purchase : purchases) {
+            WritableNativeMap item = new WritableNativeMap();
+            item.putString("productId", purchase.getSku());
+            item.putString("transactionId", purchase.getOrderId());
+            item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
+            item.putString("transactionReceipt", purchase.getOriginalJson());
+            item.putString("orderId", purchase.getOrderId());
+            item.putString("purchaseToken", purchase.getPurchaseToken());
+            item.putString("developerPayloadAndroid", purchase.getDeveloperPayload());
+            item.putString("signatureAndroid", purchase.getSignature());
+            item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
+  
+            if (type.equals(BillingClient.SkuType.SUBS)) {
+              item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
+            }
+            items.pushMap(item);
+          }
         }
 
-        for (Purchase purchase : purchases) {
-          WritableNativeMap item = new WritableNativeMap();
-          item.putString("productId", purchase.getSku());
-          item.putString("transactionId", purchase.getOrderId());
-          item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
-          item.putString("transactionReceipt", purchase.getOriginalJson());
-          item.putString("orderId", purchase.getOrderId());
-          item.putString("purchaseToken", purchase.getPurchaseToken());
-          item.putString("developerPayloadAndroid", purchase.getDeveloperPayload());
-          item.putString("signatureAndroid", purchase.getSignature());
-          item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
-
-          if (type.equals(BillingClient.SkuType.SUBS)) purchase.isAutoRenewing();
-          items.pushMap(item);
-        }
         try {
           promise.resolve(items);
         } catch (ObjectAlreadyConsumedException oce) {
