@@ -155,6 +155,8 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
         if (hasListeners) {
             NSDictionary *err = [NSDictionary dictionaryWithObjectsAndKeys:
                                  @"Invalid product ID.", @"debugMessage",
+                                 @"E_DEVELOPER_ERROR", @"code",
+                                 @"Invalid product ID.", @"message",
                                  nil
                                  ];
             [self sendEventWithName:@"purchase-error" body:err];
@@ -195,6 +197,8 @@ RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
         if (hasListeners) {
             NSDictionary *err = [NSDictionary dictionaryWithObjectsAndKeys:
                                  @"Invalid product ID.", @"debugMessage",
+                                 @"Invalid product ID.", @"message",
+                                 @"E_DEVELOPER_ERROR", @"code",
                                  nil
                                  ];
             [self sendEventWithName:@"purchase-error" body:err];
@@ -224,6 +228,8 @@ RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
         if (hasListeners) {
             NSDictionary *err = [NSDictionary dictionaryWithObjectsAndKeys:
                                  @"Invalid product ID.", @"debugMessage",
+                                 @"Invalid product ID.", @"message",
+                                 @"E_DEVELOPER_ERROR", @"code",
                                  nil
                                  ];
             [self sendEventWithName:@"purchase-error" body:err];
@@ -252,6 +258,8 @@ RCT_EXPORT_METHOD(buyProductWithoutAutoConfirm:(NSString*)sku
         if (hasListeners) {
             NSDictionary *err = [NSDictionary dictionaryWithObjectsAndKeys:
                                  @"Invalid product ID.", @"debugMessage",
+                                 @"Invalid product ID.", @"message",
+                                 @"E_DEVELOPER_ERROR", @"code",
                                  nil
                                  ];
             [self sendEventWithName:@"purchase-error" body:err];
@@ -386,6 +394,8 @@ RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionIdentifier) {
                         NSDictionary *err = [NSDictionary dictionaryWithObjectsAndKeys:
                                              responseCode, @"responseCode",
                                              transaction.error.localizedDescription, @"debugMessage",
+                                             [self standardErrorCode:(int)transaction.error.code], @"code",
+                                             transaction.error.localizedDescription, @"message",
                                              nil
                                              ];
                         [self sendEventWithName:@"purchase-error" body:err];
