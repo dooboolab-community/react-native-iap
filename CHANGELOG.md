@@ -5,6 +5,7 @@
   + Keep valid SKUs in `android` when fetching products [#602](https://github.com/dooboolab/react-native-iap/pull/602)
   + Fix possibility for  NullPointerException [#607](https://github.com/dooboolab/react-native-iap/pull/607)
   + Resolve [#624](https://github.com/dooboolab/react-native-iap/issues/624)
+  + Support better error codes [#616](https://github.com/dooboolab/react-native-iap/pull/616)
 - **[3.3.0]**
   + Fix [#581](https://github.com/dooboolab/react-native-iap/issues/581) by allowing the user to manually call finishTransaction on iOS. Deprecates allowing RNIap to automatically call finishTransaction.
   + Adds `finishTransactionIOS(transactionId)` which should be called after persisting a successful consumable transaction to disk or server. (Similar to `consumePurchaseAndroid` and `acknowledgePurchaseAndroid`).
