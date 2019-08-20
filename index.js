@@ -96,7 +96,7 @@ export const getSubscriptions = (skus) => Platform.select({
   ios: async() => {
     checkNativeiOSAvailable();
     return RNIapIos.getItems(skus)
-      .then((items) => items.filter((item) => item.productId));
+      .then((items) => items.filter((item) => skus.includes(item.productId)));
   },
   android: async() => {
     checkNativeAndroidAvailable();
