@@ -180,6 +180,7 @@ RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
     }
     if (product) {
         payment = [SKMutablePayment paymentWithProduct:product];
+        #if __IPHONE_12_2
         if (@available(iOS 12.2, *)) {
             SKPaymentDiscount *discount = [[SKPaymentDiscount alloc]
                                            initWithIdentifier:discountOffer[@"identifier"]
@@ -190,6 +191,7 @@ RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
                                            ];
             payment.paymentDiscount = discount;
         }
+        #endif
         payment.applicationUsername = usernameHash;
         [[SKPaymentQueue defaultQueue] addPayment:payment];
         [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
@@ -567,9 +569,11 @@ RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionIdentifier) {
     }
     
     NSArray *discounts;
+    #if __IPHONE_12_2
     if (@available(iOS 12.2, *)) {
         discounts = [self getDiscountData:[product.discounts copy]];
     }
+    #endif
     
     NSDictionary *obj = [NSDictionary dictionaryWithObjectsAndKeys:
                          product.productIdentifier, @"productId",
@@ -645,6 +649,7 @@ RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionIdentifier) {
             
             
             NSString* discountIdentifier = @"";
+            #if __IPHONE_12_2
             if (@available(iOS 12.2, *)) {
                 discountIdentifier = discount.identifier;
                 switch (discount.type) {
@@ -660,6 +665,7 @@ RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionIdentifier) {
                 }
                 
             }
+            #endif
             
             [mappedDiscounts addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                                         discountIdentifier, @"identifier",
