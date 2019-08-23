@@ -481,6 +481,17 @@ export const requestReceiptIOS = () => {
 };
 
 /**
+ * Get the pending purchases in IOS.
+ * @returns {Promise<ProductPurchase[]>}
+ */
+export const requestPendingPurchasesIOS = () => {
+  if (Platform.OS === 'ios') {
+    checkNativeiOSAvailable();
+    return RNIapIos.getPendingTransactions();
+  }
+};
+
+/**
  * deprecated codes
  */
 /*
