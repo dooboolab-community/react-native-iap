@@ -318,6 +318,32 @@ RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionIdentifier) {
     [self finishTransactionWithIdentifier:transactionIdentifier];
 }
 
+RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [self requestReceiptDataWithBlock:^(NSData *receiptData, NSError *error) {
+        if (receiptData == nil) {
+            resolve(nil);
+        }
+        else {
+            NSArray<SKPaymentTransaction *> *transactions = [[SKPaymentQueue defaultQueue] transactions];
+            NSMutableArray *output = [NSMutableArray array];
+            
+            for (SKPaymentTransaction *item in transactions) {
+                NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                                 @(item.transactionDate.timeIntervalSince1970 * 1000), @"transactionDate",
+                                                 item.transactionIdentifier, @"transactionId",
+                                                 item.payment.productIdentifier, @"productId",
+                                                 [receiptData base64EncodedStringWithOptions:0], @"transactionReceipt",
+                                                 nil
+                                                 ];
+                [output addObject:purchase];
+            }
+            
+            resolve(output);
+        }
+    }];
+}
+
 #pragma mark ===== StoreKit Delegate
 
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
