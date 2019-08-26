@@ -274,5 +274,5 @@ export function requestReceiptIOS(): Promise<string>;
  * Request all the pending transactions (IOS only)
  * @returns {Promise<ProductPurchase[]>}
  */
-export function requestPendingPurchasesIOS(): Promise<ProductPurchase[]>;
+export function getPendingPurchasesIOS(): Promise<ProductPurchase[]>;
 
