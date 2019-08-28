@@ -3,6 +3,9 @@
 - **[3.4.+]**
   - Makes module possible to be built in older XCode version [#650](https://github.com/dooboolab/react-native-iap/pull/650).
   - Makes iOS `getSubscriptions` return subscriptions that only received ids [#654](https://github.com/dooboolab/react-native-iap/pull/654)
+  - **[3.4.1]**
+    - Method to retrive pending transaction [#663](https://github.com/dooboolab/react-native-iap/pull/663)
+    - Fixed missing `autoRenewingAndroid` key [#670](https://github.com/dooboolab/react-native-iap)
 - **[3.3.+]**
   - Fix flow tying [#594](https://github.com/dooboolab/react-native-iap/pull/594).
   - Handle null pointer exception [#600](https://github.com/dooboolab/react-native-iap/issues/600).
