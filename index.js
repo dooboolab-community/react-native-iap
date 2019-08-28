@@ -481,6 +481,17 @@ export const requestReceiptIOS = () => {
 };
 
 /**
+ * Get the pending purchases in IOS.
+ * @returns {Promise<ProductPurchase[]>}
+ */
+export const getPendingPurchasesIOS = () => {
+  if (Platform.OS === 'ios') {
+    checkNativeiOSAvailable();
+    return RNIapIos.getPendingTransactions();
+  }
+};
+
+/**
  * deprecated codes
  */
 /*
@@ -521,6 +532,7 @@ export default {
   getSubscriptions,
   getPurchaseHistory,
   getAvailablePurchases,
+  getPendingPurchasesIOS,
   consumeAllItemsAndroid,
   buySubscription,
   buyProduct,
