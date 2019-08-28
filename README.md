@@ -80,7 +80,7 @@ Breaking Changes
   - Now, you should [acknowledge purchase][a-acknowledge-purchase-android]
       with non-consumable and subscription purchase from `3.0.0`.
       See more about [acknowledgePurchase][android-acknowledge-purchase].
-  - If you are using version `^3.0.* ~ ^3.1.*`, please use `acknowledgePurchase` via [google-api-nodejs-client][].
+  - If you are using version `^3.0.* < ^3.1.0`, please use `acknowledgePurchase` supported in `3.0.3`.
       You can use method like `androidpublisher.purchases.subscriptions.acknowledge`.
 - `3.4.0` introduces a similar flow to consumable purchases on iOS. You should update your code according to the recommended flow and pass `false` to `andDangerouslyFinishTransactionAutomatically` when calling`requestPurchase`.
 
