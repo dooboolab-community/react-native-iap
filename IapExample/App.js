@@ -80,7 +80,7 @@ class Page extends Component {
     });
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     if (purchaseUpdateSubscription) {
       purchaseUpdateSubscription.remove();
       purchaseUpdateSubscription = null;
