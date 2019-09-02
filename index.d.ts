@@ -51,6 +51,8 @@ export interface ProductPurchase {
 export interface PurchaseResult {
   responseCode?: number;
   debugMessage?: string;
+  code?: string;
+  message?: string;
 }
 
 export interface PurchaseError {
