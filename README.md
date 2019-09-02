@@ -512,6 +512,23 @@ Issue regarding `valid products`
 
 Q & A
 -----
+#### How can a user cancel a subscription in my app?
+- For both iOS and Android your users cannot cancel subscriptions inside your app. You need to direct your users to iTunes/the App Store or Google Play.
+
+- You can do this on iOS:
+    ```javascript
+    Linking.openUrl('https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions')
+    ```
+
+- You can do this on Android:
+    ```javascript
+    Linking.openUrl('https://play.google.com/store/account/subscriptions?package=YOUR_PACKAGE_NAME&sku=YOUR_PRODUCT_ID
+    ```
+    (change `YOUR_PACKAGE_NAME` and `YOUR_PRODUCT_ID`)
+
+- More on `Linking` in React Native: https://facebook.github.io/react-native/docs/linking
+
+
 #### Can I buy product right away skipping fetching products if I already know productId?
 - You could only in Android in `react-native-iap@^2.*`.
 
