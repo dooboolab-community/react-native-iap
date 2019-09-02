@@ -36,7 +36,7 @@ export type Subscription<ID> = Common & {
 export type ProductPurchase = {|
   productId: string,
   transactionId?: string,
-  transactionDate: number,
+  transactionDate: number | string,
   transactionReceipt: string,
   purchaseToken?: string,
   dataAndroid?: string,
