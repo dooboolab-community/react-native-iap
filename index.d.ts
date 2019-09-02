@@ -63,9 +63,9 @@ export interface PurchaseError {
 }
 
 export interface SubscriptionPurchase extends ProductPurchase {
-  autoRenewingAndroid: boolean;
-  originalTransactionDateIOS: string;
-  originalTransactionIdentifierIOS: string;
+  autoRenewingAndroid?: boolean;
+  originalTransactionDateIOS?: string;
+  originalTransactionIdentifierIOS?: string;
 }
 
 export type Purchase = ProductPurchase | SubscriptionPurchase;
