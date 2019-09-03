@@ -293,14 +293,14 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             WritableNativeMap item = new WritableNativeMap();
             item.putString("productId", purchase.getSku());
             item.putString("transactionId", purchase.getOrderId());
-            item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
+            item.putDouble("transactionDate", purchase.getPurchaseTime());
             item.putString("transactionReceipt", purchase.getOriginalJson());
             item.putString("orderId", purchase.getOrderId());
             item.putString("purchaseToken", purchase.getPurchaseToken());
             item.putString("developerPayloadAndroid", purchase.getDeveloperPayload());
             item.putString("signatureAndroid", purchase.getSignature());
             item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
-  
+
             if (type.equals(BillingClient.SkuType.SUBS)) {
               item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
             }
@@ -336,7 +336,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             for (PurchaseHistoryRecord purchase : purchaseHistoryRecordList) {
               WritableMap item = Arguments.createMap();
               item.putString("productId", purchase.getSku());
-              item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
+              item.putDouble("transactionDate", purchase.getPurchaseTime());
               item.putString("transactionReceipt", purchase.getOriginalJson());
               item.putString("purchaseToken", purchase.getPurchaseToken());
               item.putString("dataAndroid", purchase.getOriginalJson());
@@ -499,7 +499,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         WritableMap item = Arguments.createMap();
         item.putString("productId", purchase.getSku());
         item.putString("transactionId", purchase.getOrderId());
-        item.putString("transactionDate", String.valueOf(purchase.getPurchaseTime()));
+        item.putDouble("transactionDate", purchase.getPurchaseTime());
         item.putString("transactionReceipt", purchase.getOriginalJson());
         item.putString("purchaseToken", purchase.getPurchaseToken());
         item.putString("dataAndroid", purchase.getOriginalJson());
