@@ -517,12 +517,12 @@ Q & A
 
 - You can do this on iOS:
     ```javascript
-    Linking.openUrl('https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions')
+    Linking.openURL('https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions')
     ```
 
 - You can do this on Android:
     ```javascript
-    Linking.openUrl('https://play.google.com/store/account/subscriptions?package=YOUR_PACKAGE_NAME&sku=YOUR_PRODUCT_ID
+    Linking.openURL('https://play.google.com/store/account/subscriptions?package=YOUR_PACKAGE_NAME&sku=YOUR_PRODUCT_ID
     ```
     (change `YOUR_PACKAGE_NAME` and `YOUR_PRODUCT_ID`)
 
