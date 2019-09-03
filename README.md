@@ -144,6 +144,8 @@ Getting Started
 
 ### Mostly automatic installation
 `$ react-native link react-native-iap`
+`$ cd ios`
+`$ pod install`
 
 ### Manual installation
 
