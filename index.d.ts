@@ -12,6 +12,16 @@ interface Common {
   localizedPrice: string;
 }
 
+export interface Discount {
+  identifier: string;
+  type: string;
+  numberOfPeriods: string;
+  price: string;
+  localizedPrice: string;
+  paymendMode: string;
+  subscriptionPeriods: string;
+}
+
 export interface Product<ID> extends Common {
   type: 'inapp' | 'iap';
   productId: ID;
@@ -20,6 +30,8 @@ export interface Product<ID> extends Common {
 export interface Subscription<ID> extends Common {
   type: 'subs' | 'sub';
   productId: ID;
+  
+  discounts?: DiscountIOS[];
 
   introductoryPrice?: string;
   introductoryPricePaymentModeIOS?: string;
