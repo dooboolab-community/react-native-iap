@@ -119,6 +119,7 @@ declare module.exports: {
   purchaseErrorListener(
     fn: (PurchaseError) => any,
   ): EmitterSubscription,
+  getPendingPurchasesIOS(): Promise<ProductPurchase[]>,
 }
 
 /**
