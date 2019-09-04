@@ -31,7 +31,7 @@ export interface Subscription<ID> extends Common {
   type: 'subs' | 'sub';
   productId: ID;
   
-  discounts?: DiscountIOS[];
+  discounts?: Discount[];
 
   introductoryPrice?: string;
   introductoryPricePaymentModeIOS?: string;
