@@ -18,8 +18,8 @@ export interface Discount {
   numberOfPeriods: string;
   price: string;
   localizedPrice: string;
-  paymendMode: string;
-  subscriptionPeriods: string;
+  paymentMode: string;
+  subscriptionPeriod: string;
 }
 
 export interface Product<ID> extends Common {
