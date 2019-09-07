@@ -5,9 +5,12 @@
   - Makes iOS `getSubscriptions` return subscriptions that only received ids [#654](https://github.com/dooboolab/react-native-iap/pull/654)
   - **[3.4.1]**
     - Method to retrive pending transaction [#663](https://github.com/dooboolab/react-native-iap/pull/663)
-    - Fixed missing `autoRenewingAndroid` key [#670](https://github.com/dooboolab/react-native-iap)
+    - Fixed missing `autoRenewingAndroid` key [#670](https://github.com/dooboolab/react-native-iap/pull/670)
   - **[3.4.2]**
     - Enhanced typings.
+  - **[3.4.5]**
+    - Enhanced more typings [#696](https://github.com/dooboolab/react-native-iap/pull/696)
+    - Support installation guide for both `RN >= 0.60` and `RN <0.60`. No need to use different version of `react-native-iap` now.
 - **[3.3.+]**
   - Fix flow tying [#594](https://github.com/dooboolab/react-native-iap/pull/594).
   - Handle null pointer exception [#600](https://github.com/dooboolab/react-native-iap/issues/600).
