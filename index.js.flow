@@ -10,6 +10,16 @@ declare type Common = {
 
 declare type ID = string
 
+declare type Discount = {
+  identifier: string,
+  type: string,
+  numberOfPeriods: string,
+  price: string,
+  localizedPrice: string,
+  paymentMode: string,
+  subscriptionPeriod: string,
+}
+
 export type Product<ID> = Common & {
   type: "inapp" | "iap",
   productId: ID,
@@ -18,6 +28,7 @@ export type Product<ID> = Common & {
 export type Subscription<ID> = Common & {
   type: "subs" | "sub",
   productId: ID,
+  discounts?: Discount[],
 
   introductoryPrice?: string,
   introductoryPricePaymentModeIOS?: string,
