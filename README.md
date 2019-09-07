@@ -142,10 +142,6 @@ Getting Started
 ---------------
 `$ npm install --save react-native-iap`
 
-## Getting started
-
-`$ npm install react-native-iap --save`
-
 ### Mostly automatic installation
 
 #### Using React Native >= 0.60
