@@ -137,12 +137,15 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     billingClient.startConnection(new BillingClientStateListener() {
       @Override
       public void onBillingSetupFinished(BillingResult billingResult) {
-        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-          try {
+        int responseCode = billingResult.getResponseCode();
+        try {
+          if (responseCode == BillingClient.BillingResponseCode.OK) {
             promise.resolve(true);
-          } catch (ObjectAlreadyConsumedException oce) {
-            Log.e(TAG, oce.getMessage());
+          } else {
+            promise.reject("initConnection", billingResult.getDebugMessage());
           }
+        } catch (ObjectAlreadyConsumedException oce) {
+          Log.e(TAG, oce.getMessage());
         }
       }
       @Override
