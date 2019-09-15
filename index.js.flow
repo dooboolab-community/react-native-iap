@@ -80,7 +80,7 @@ export type Purchase = ProductPurchase | SubscriptionPurchase
 declare module.exports: {
   getProducts: (string[]) => Promise<Product<string>[]>,
   getSubscriptions(string[]): Promise<Subscription<string>[]>,
-  initConnection(): Promise<string>,
+  initConnection(): Promise<boolean>,
   buydProductWithOffer: (sku: string, forUser: string, withOffer: PaymentDiscount) => Promise<void>,
   endConnectionAndroid: () => Promise<void>,
   consumeAllItemsAndroid(): Promise<void>,

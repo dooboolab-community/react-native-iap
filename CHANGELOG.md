@@ -13,6 +13,9 @@
     - Support installation guide for both `RN >= 0.60` and `RN <0.60`. No need to use different version of `react-native-iap` now.
   - **[3.4.6]**
     - Reject promises on `initConnection` when not resolved [#704](https://github.com/dooboolab/react-native-iap/pull/696).
+  - **[3.4.7]**
+    - Add missing variable `isAcknowledgedAndroid` when fetching `getAvailableItems`.
+    - Fix bad return type of promise of 'initConnection' in `flow` and `typescript`.
 - **[3.3.+]**
   - Fix flow tying [#594](https://github.com/dooboolab/react-native-iap/pull/594).
   - Handle null pointer exception [#600](https://github.com/dooboolab/react-native-iap/issues/600).

@@ -30,7 +30,7 @@ export interface Product<ID> extends Common {
 export interface Subscription<ID> extends Common {
   type: 'subs' | 'sub';
   productId: ID;
-  
+
   discounts?: Discount[];
 
   introductoryPrice?: string;
@@ -56,7 +56,6 @@ export interface ProductPurchase {
   dataAndroid?: string;
   signatureAndroid?: string;
   autoRenewingAndroid?: boolean;
-  isAcknowledgedAndroid?: boolean;
   purchaseStateAndroid?: number;
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;
@@ -76,19 +75,23 @@ export interface PurchaseError {
   message?: string;
 }
 
+export interface InAppPurchase extends ProductPurchase {
+  isAcknowledgedAndroid?: boolean;
+}
+
 export interface SubscriptionPurchase extends ProductPurchase {
   autoRenewingAndroid?: boolean;
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;
 }
 
-export type Purchase = ProductPurchase | SubscriptionPurchase;
+export type Purchase = InAppPurchase | SubscriptionPurchase;
 
 /**
  * Init module for purchase flow. Required on Android. In ios it will check wheter user canMakePayment.
- * @returns {Promise<string>}
+ * @returns {Promise<boolean>}
  */
-export function initConnection(): Promise<string>;
+export function initConnection(): Promise<boolean>;
 
 /**
  * End billing client. Will enchance android app's performance by releasing service. No-op on iOS.
