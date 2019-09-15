@@ -89,9 +89,9 @@ export type Purchase = InAppPurchase | SubscriptionPurchase;
 
 /**
  * Init module for purchase flow. Required on Android. In ios it will check wheter user canMakePayment.
- * @returns {Promise<string>}
+ * @returns {Promise<boolean>}
  */
-export function initConnection(): Promise<string>;
+export function initConnection(): Promise<boolean>;
 
 /**
  * End billing client. Will enchance android app's performance by releasing service. No-op on iOS.
