@@ -16,6 +16,8 @@
   - **[3.4.7]**
     - Add missing variable `isAcknowledgedAndroid` when fetching `getAvailableItems`.
     - Fix bad return type of promise of 'initConnection' in `flow` and `typescript`.
+  - **[3.4.8]**
+    - Improve initConnection errors on android [#714](<(https://github.com/dooboolab/react-native-iap/pull/714)
 - **[3.3.+]**
   - Fix flow tying [#594](https://github.com/dooboolab/react-native-iap/pull/594).
   - Handle null pointer exception [#600](https://github.com/dooboolab/react-native-iap/issues/600).
