@@ -109,7 +109,7 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents
 {
-    return @[@"iap-purchase-event", @"iap-promoted-product", @"purchase-updated", @"purchase-error"];
+    return @[@"iap-promoted-product", @"purchase-updated", @"purchase-error"];
 }
 
 RCT_EXPORT_METHOD(canMakePayments:(RCTPromiseResolveBlock)resolve
@@ -150,7 +150,6 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
     if (product) {
         SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
         [[SKPaymentQueue defaultQueue] addPayment:payment];
-        [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
     } else {
         if (hasListeners) {
             NSDictionary *err = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -194,7 +193,6 @@ RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
         #endif
         payment.applicationUsername = usernameHash;
         [[SKPaymentQueue defaultQueue] addPayment:payment];
-        [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
     } else {
         if (hasListeners) {
             NSDictionary *err = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -225,7 +223,6 @@ RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
         SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
         payment.quantity = quantity;
         [[SKPaymentQueue defaultQueue] addPayment:payment];
-        [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
     } else {
         if (hasListeners) {
             NSDictionary *err = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -266,7 +263,6 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
     if (promotedPayment) {
         NSLog(@"\n\n\n  ***  buy promoted product. \n\n.");
         [[SKPaymentQueue defaultQueue] addPayment:promotedPayment];
-        [self addPromiseForKey:RCTKeyForInstance(promotedPayment.productIdentifier) resolve:resolve reject:reject];
     } else {
         reject(@"E_DEVELOPER_ERROR", @"Invalid product ID.", nil);
     }
@@ -450,7 +446,6 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
         
         // additionally send event
         if (hasListeners) {
-            [self sendEventWithName:@"iap-purchase-event" body: purchase];
             [self sendEventWithName:@"purchase-updated" body: purchase];
         }
     }];

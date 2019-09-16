@@ -229,40 +229,16 @@ export function getPurchaseHistory(): Promise<Purchase[]>;
 export function getAvailablePurchases(): Promise<Purchase[]>;
 
 /**
- * Buy a product
- *
- * @deprecated
- * @param {string} sku The product's sku/ID
- * @returns {Promise<Purchase>}
- */
-export function buyProduct(sku: string): Promise<ProductPurchase>;
-
-/**
  * Request a purchase
  *
  * @param {string} sku The product's sku/ID
  * @param {boolean} andDangerouslyFinishTransactionAutomatically You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
- * @returns {Promise<string>}
+ * @returns {void}
  */
 export function requestPurchase(
   sku: string,
   andDangerouslyFinishTransactionAutomatically?: boolean,
-): Promise<string>;
-
-/**
- * Create a subscription to a sku
- *
- * @deprecated
- * @param {string} sku The product's sku/ID
- * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
- * @param {number} [prorationMode] Optional proration mode for upgrade/downgrade (Android only)
- * @returns {Promise<Purchase>}
- */
-export function buySubscription(
-  sku: string,
-  oldSku?: string,
-  prorationMode?: number,
-): Promise<SubscriptionPurchase>;
+): void;
 
 /**
  * Request a subscription to a sku
@@ -270,13 +246,13 @@ export function buySubscription(
  * @param {string} sku The product's sku/ID
  * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
  * @param {number} [prorationMode] Optional proration mode for upgrade/downgrade (Android only)
- * @returns {Promise<string>}
+ * @returns {void}
  */
 export function requestSubscription(
   sku: string,
   oldSku?: string,
   prorationMode?: number,
-): Promise<string>;
+): void;
 
 /**
  * Buy a product with offer
@@ -285,24 +261,13 @@ export function requestSubscription(
  * @param {string} forUser An user identifier on your service (username or user id)
  * @param {Apple.PaymentDiscount} withOffer The offer information
  *
- * @returns {Promise<void>}
+ * @returns {void}
  */
-export function buyProductWithOfferIOS(
+export function requestPurchaseWithOfferIOS(
   sku: string,
   forUser: string,
   withOffer: Apple.PaymentDiscount,
-): Promise<void>;
-
-/**
- * Buy a product with a specified quantity (iOS only)
- * @param {string} sku The product's sku/ID
- * @param {number} quantity The amount of product to buy
- * @returns {Promise<Purchase>}
- */
-export function buyProductWithQuantityIOS(
-  sku: string,
-  quantity: number,
-): Promise<ProductPurchase>;
+): void;
 
 /**
  * Request a purchase with specified quantity (iOS only)
@@ -314,7 +279,7 @@ export function buyProductWithQuantityIOS(
 export function requestPurchaseWithQuantityIOS(
   sku: string,
   quantity: number,
-): Promise<void>;
+): void;
 
 /**
  * Finish Transaction (iOS only)
@@ -377,7 +342,7 @@ export function validateReceiptIos(
  * Validate receipt for Android.
  * @param packageName package name of your app.
  * @param productId product id for your in app product.
- * @param productToken token for your purchase. Found in `transanctionReceipt` after `buyProduct` method.
+ * @param productToken token for your purchase. Found in `transanctionReceipt` after `requestPurchase` method.
  * @param accessToken accessToken from googleApis.
  * @param isSub whether this is subscription or inapp. `true` for subscription.
  */
@@ -388,15 +353,6 @@ export function validateReceiptAndroid(
   accessToken: string,
   isSub: boolean,
 ): Promise<object | false>;
-
-/**
- * Add IAP purchase event in ios.
- * @deprecated
- * @returns {callback(e: Event)}
- */
-export function addAdditionalSuccessPurchaseListenerIOS(
-  fn: Function,
-): EmitterSubscription;
 
 /**
  * Subscribe a listener when purchase is updated.
@@ -414,7 +370,7 @@ export function purchaseErrorListener(fn: Function): EmitterSubscription;
  * Request current receipt base64 encoded (IOS only)
  * @returns {Promise<string>}
  */
-export function requestReceiptIOS(): Promise<string>;
+export function getReceiptIOS(): Promise<string>;
 
 /**
  * Request all the pending transactions (IOS only)

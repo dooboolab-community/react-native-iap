@@ -1,37 +1,43 @@
-import React, { Component } from 'react';
 import {
-  View,
-  Text,
   Alert,
   Platform,
   ScrollView,
   StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import NativeButton from 'apsl-react-native-button';
 import RNIap, {
   Product,
   ProductPurchase,
-  acknowledgePurchaseAndroid,
-  purchaseUpdatedListener,
-  purchaseErrorListener,
   PurchaseError,
+  acknowledgePurchaseAndroid,
+  purchaseErrorListener,
+  purchaseUpdatedListener,
 } from 'react-native-iap';
+import React, { Component } from 'react';
+
+import NativeButton from 'apsl-react-native-button';
 
 // App Bundle > com.dooboolab.test
 
 const itemSkus = Platform.select({
   ios: [
-    'com.cooni.point1000', 'com.cooni.point5000', // dooboolab
+    'com.cooni.point1000',
+    'com.cooni.point5000', // dooboolab
   ],
   android: [
-    'android.test.purchased', 'android.test.canceled', 'android.test.refunded', 'android.test.item_unavailable',
+    'android.test.purchased',
+    'android.test.canceled',
+    'android.test.refunded',
+    'android.test.item_unavailable',
     // 'point_1000', '5000_point', // dooboolab
   ],
 });
 
 const itemSubs = Platform.select({
   ios: [
-    'com.cooni.point1000', 'com.cooni.point5000', // dooboolab
+    'com.cooni.point1000',
+    'com.cooni.point5000', // dooboolab
   ],
   android: [
     'test.sub1', // subscription
@@ -61,17 +67,24 @@ class Page extends Component {
       console.warn(err.code, err.message);
     }
 
-    purchaseUpdateSubscription = purchaseUpdatedListener(async(purchase) => {
+    purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase) => {
       console.log('purchaseUpdatedListener', purchase);
-      if (purchase.purchaseStateAndroid === 1 && !purchase.isAcknowledgedAndroid) {
+      if (
+        purchase.purchaseStateAndroid === 1 &&
+        !purchase.isAcknowledgedAndroid
+      ) {
         try {
-          const ackResult = await acknowledgePurchaseAndroid(purchase.purchaseToken);
+          const ackResult = await acknowledgePurchaseAndroid(
+            purchase.purchaseToken,
+          );
           console.log('ackResult', ackResult);
         } catch (ackErr) {
           console.warn('ackErr', ackErr);
         }
       }
-      this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
+      this.setState({ receipt: purchase.transactionReceipt }, () =>
+        this.goNext(),
+      );
     });
 
     purchaseErrorSubscription = purchaseErrorListener((error) => {
@@ -93,9 +106,9 @@ class Page extends Component {
 
   goNext = () => {
     Alert.alert('Receipt', this.state.receipt);
-  }
+  };
 
-  getItems = async() => {
+  getItems = async () => {
     try {
       const products = await RNIap.getProducts(itemSkus);
       // const products = await RNIap.getSubscriptions(itemSkus);
@@ -104,9 +117,9 @@ class Page extends Component {
     } catch (err) {
       console.warn(err.code, err.message);
     }
-  }
+  };
 
-  getSubscriptions = async() => {
+  getSubscriptions = async () => {
     try {
       const products = await RNIap.getSubscriptions(itemSubs);
       console.log('Products', products);
@@ -114,11 +127,13 @@ class Page extends Component {
     } catch (err) {
       console.warn(err.code, err.message);
     }
-  }
+  };
 
-  getAvailablePurchases = async() => {
+  getAvailablePurchases = async () => {
     try {
-      console.info('Get available purchases (non-consumable or unconsumed consumable)');
+      console.info(
+        'Get available purchases (non-consumable or unconsumed consumable)',
+      );
       const purchases = await RNIap.getAvailablePurchases();
       console.info('Available purchases :: ', purchases);
       if (purchases && purchases.length > 0) {
@@ -131,115 +146,94 @@ class Page extends Component {
       console.warn(err.code, err.message);
       Alert.alert(err.message);
     }
-  }
+  };
 
   // Version 3 apis
-  requestPurchase = async(sku) => {
+  requestPurchase = (sku) => {
     try {
       RNIap.requestPurchase(sku);
     } catch (err) {
       console.warn(err.code, err.message);
     }
-  }
+  };
 
-  requestSubscription = async(sku) => {
+  requestSubscription = async (sku) => {
     try {
       RNIap.requestSubscription(sku);
     } catch (err) {
       Alert.alert(err.message);
     }
-  }
-
-  // Deprecated apis
-  buyItem = async(sku) => {
-    console.info('buyItem', sku);
-    // const purchase = await RNIap.buyProduct(sku);
-    // const products = await RNIap.buySubscription(sku);
-    // const purchase = await RNIap.buyProductWithoutFinishTransaction(sku);
-    try {
-      const purchase = await RNIap.buyProduct(sku);
-      // console.log('purchase', purchase);
-      // await RNIap.consumePurchaseAndroid(purchase.purchaseToken);
-      this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
-    } catch (err) {
-      console.warn(err.code, err.message);
-      const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(async(purchase) => {
-        this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
-        subscription.remove();
-      });
-    }
-  }
-
-  buySubscribeItem = async(sku) => {
-    try {
-      console.log('buySubscribeItem: ' + sku);
-      const purchase = await RNIap.buySubscription(sku);
-      console.info(purchase);
-      this.setState({ receipt: purchase.transactionReceipt }, () => this.goNext());
-    } catch (err) {
-      console.warn(err.code, err.message);
-      Alert.alert(err.message);
-    }
-  }
+  };
 
   render() {
     const { productList, receipt, availableItemsMessage } = this.state;
     const receipt100 = receipt.substring(0, 100);
 
     return (
-      <View style={ styles.container }>
-        <View style={ styles.header }>
-          <Text style={ styles.headerTxt} >react-native-iap V3</Text>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerTxt}>react-native-iap V3</Text>
         </View>
-        <View style={ styles.content }>
-          <ScrollView
-            style={{ alignSelf: 'stretch' }}
-          >
+        <View style={styles.content}>
+          <ScrollView style={{ alignSelf: 'stretch' }}>
             <View style={{ height: 50 }} />
             <NativeButton
               onPress={this.getAvailablePurchases}
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
-            >Get available purchases</NativeButton>
+            >
+              Get available purchases
+            </NativeButton>
 
-            <Text style={{ margin: 5, fontSize: 15, alignSelf: 'center' }} >{availableItemsMessage}</Text>
+            <Text style={{ margin: 5, fontSize: 15, alignSelf: 'center' }}>
+              {availableItemsMessage}
+            </Text>
 
-            <Text style={{ margin: 5, fontSize: 9, alignSelf: 'center' }} >{receipt100}</Text>
+            <Text style={{ margin: 5, fontSize: 9, alignSelf: 'center' }}>
+              {receipt100}
+            </Text>
 
             <NativeButton
               onPress={() => this.getItems()}
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
-            >Get Products ({productList.length})</NativeButton>
-            {
-              productList.map((product, i) => {
-                return (
-                  <View key={i} style={{
+            >
+              Get Products ({productList.length})
+            </NativeButton>
+            {productList.map((product, i) => {
+              return (
+                <View
+                  key={i}
+                  style={{
                     flexDirection: 'column',
-                  }}>
-                    <Text style={{
+                  }}
+                >
+                  <Text
+                    style={{
                       marginTop: 20,
                       fontSize: 12,
                       color: 'black',
                       minHeight: 100,
                       alignSelf: 'center',
                       paddingHorizontal: 20,
-                    }} >{JSON.stringify(product)}</Text>
-                    <NativeButton
-                      // onPress={() => this.requestPurchase(product.productId)}
-                      onPress={() => this.requestSubscription(product.productId)}
-                      // onPress={() => this.buyItem(product.productId)}
-                      // onPress={() => this.buySubscribeItem(product.productId)}
-                      activeOpacity={0.5}
-                      style={styles.btn}
-                      textStyle={styles.txt}
-                    >Request purchase for above product</NativeButton>
-                  </View>
-                );
-              })
-            }
+                    }}
+                  >
+                    {JSON.stringify(product)}
+                  </Text>
+                  <NativeButton
+                    // onPress={() => this.requestPurchase(product.productId)}
+                    onPress={() => this.requestSubscription(product.productId)}
+                    activeOpacity={0.5}
+                    style={styles.btn}
+                    textStyle={styles.txt}
+                  >
+                    Request purchase for above product
+                  </NativeButton>
+                </View>
+              );
+            })}
           </ScrollView>
         </View>
       </View>
