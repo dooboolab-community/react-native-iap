@@ -166,7 +166,7 @@ export const buyProduct = (sku) => {
  */
 export const requestPurchase = (sku, andDangerouslyFinishTransactionAutomatically) => Platform.select({
   ios: async() => {
-    andDangerouslyFinishTransactionAutomatically = (andDangerouslyFinishTransactionAutomatically === undefined) ? true : andDangerouslyFinishTransactionAutomatically;
+    andDangerouslyFinishTransactionAutomatically = (andDangerouslyFinishTransactionAutomatically === undefined) ? false : andDangerouslyFinishTransactionAutomatically;
     if (andDangerouslyFinishTransactionAutomatically) {
       console.warn('You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.');
     }
