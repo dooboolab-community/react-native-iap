@@ -1,16 +1,23 @@
 module.exports = {
   extends: 'standard',
   env: {
-    browser: true
+    browser: true,
   },
   rules: {
     'no-unused-vars': 0,
     'comma-dangle': ['error', 'always-multiline'],
-    'semi': [2, 'always'],
+    semi: [2, 'always'],
     'arrow-parens': ['error', 'always'],
-    'space-before-function-paren': ['error', 'never'],
+    'space-before-function-paren': [
+      'error',
+      {
+        anonymous: 'never',
+        named: 'never',
+        asyncArrow: 'always',
+      },
+    ],
     'no-new-object': 'error',
-    'no-array-constructor': 'error'
+    'no-array-constructor': 'error',
   },
-  'parser': 'babel-eslint'
+  parser: 'babel-eslint',
 };
