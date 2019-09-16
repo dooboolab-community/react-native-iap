@@ -51,3 +51,4 @@ buck-out/
 
 # CocoaPods
 IapExample/ios/Pods
+react-native-iap-*.tgz
