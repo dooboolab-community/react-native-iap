@@ -121,8 +121,8 @@ declare module.exports: {
   getReceiptIOS(): Promise<string>,
   finishTransaction(
     transactionId: string,
-    isConsumable: boolean,
-    developerPayloadAndroid: string,
+    isConsumable?: boolean,
+    developerPayloadAndroid?: string,
   ): Promise<PurchaseResult>,
 }
 

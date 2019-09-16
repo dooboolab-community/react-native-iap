@@ -321,6 +321,7 @@ export function clearProductsIOS(): void;
  * Acknowledge a purchase (on Android.) No-op on iOS.
  * This is applied to non-consumable or subscriptions.
  * @param {string} token The product's token (on Android)
+ * @param {string} developerPayload Developer payload (on Android)
  * @returns {Promise}
  */
 export function acknowledgePurchaseAndroid(
@@ -332,6 +333,7 @@ export function acknowledgePurchaseAndroid(
  * Consume a purchase (on Android.) No-op on iOS.
  * It acknowledges consumable products. If it isn't consumable, use `acknowledgePurchaseAndroid` instead.
  * @param {string} token The product's token (on Android)
+ * @param {string} developerPayload Developer payload (on Android)
  * @returns {Promise}
  */
 export function consumePurchaseAndroid(
@@ -399,6 +401,6 @@ export function getPendingPurchasesIOS(): Promise<ProductPurchase[]>;
  */
 export function finishTransaction(
   transactionId: string,
-  isConsumable: boolean,
-  developerPayloadAndroid: string,
+  isConsumable?: boolean,
+  developerPayloadAndroid?: string,
 ): Promise<PurchaseResult>;
