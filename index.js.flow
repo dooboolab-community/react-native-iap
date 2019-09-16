@@ -118,6 +118,7 @@ declare module.exports: {
     fn: (PurchaseError) => any,
   ): EmitterSubscription,
   getPendingPurchasesIOS(): Promise<ProductPurchase[]>,
+  getReceiptIOS(): Promise<string>,
 }
 
 /**

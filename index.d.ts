@@ -270,6 +270,17 @@ export function requestPurchaseWithOfferIOS(
 ): void;
 
 /**
+ * Buy a product with a specified quantity (iOS only)
+ * @param {string} sku The product's sku/ID
+ * @param {number} quantity The amount of product to buy
+ * @returns {Promise<Purchase>}
+ */
+export function requestProductWithQuantityIOS(
+  sku: string,
+  quantity: number,
+): Promise<ProductPurchase>;
+
+/**
  * Request a purchase with specified quantity (iOS only)
  *
  * @param {string} sku The product's sku/ID
