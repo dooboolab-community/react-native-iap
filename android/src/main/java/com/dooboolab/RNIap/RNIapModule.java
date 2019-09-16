@@ -142,7 +142,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           if (responseCode == BillingClient.BillingResponseCode.OK) {
             promise.resolve(true);
           } else {
-            promise.reject("initConnection", billingResult.getDebugMessage());
+            DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, responseCode);
           }
         } catch (ObjectAlreadyConsumedException oce) {
           Log.e(TAG, oce.getMessage());
