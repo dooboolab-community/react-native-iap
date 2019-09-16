@@ -119,6 +119,11 @@ declare module.exports: {
   ): EmitterSubscription,
   getPendingPurchasesIOS(): Promise<ProductPurchase[]>,
   getReceiptIOS(): Promise<string>,
+  finishTransaction(
+    transactionId: string,
+    isConsumable: boolean,
+    developerPayloadAndroid: string,
+  ): Promise<PurchaseResult>,
 }
 
 /**

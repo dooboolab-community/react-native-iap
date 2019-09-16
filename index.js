@@ -253,6 +253,39 @@ export const finishTransactionIOS = (transactionId) => {
 };
 
 /**
+ * Finish Transaction (both platforms)
+ *   Abstracts `finishTransactionIOS`, `consumePurchaseAndroid`, `acknowledgePurchaseAndroid` in to one method.
+ * @param {string} transactionId The transactionId of the function that you would like to finish.
+ * @param {boolean} isConsumable Checks if purchase is consumable. Has effect on `android`.
+ * @param {string} developerPayloadAndroid Android developerPayload.
+ * @returns {Promise}
+ */
+export const finishTransaction = (
+  transactionId,
+  isConsumable,
+  developerPayloadAndroid,
+) => {
+  Platform.select({
+    ios: async () => {
+      checkNativeiOSAvailable();
+      return RNIapIos.finishTransaction(transactionId);
+    },
+    android: async () => {
+      if (isConsumable) {
+        return RNIapModule.consumePurchaseAndroid(
+          transactionId,
+          developerPayloadAndroid,
+        );
+      }
+      return RNIapModule.acknowledgePurchaseAndroid(
+        transactionId,
+        developerPayloadAndroid,
+      );
+    },
+  })();
+};
+
+/**
  * Clear Transaction (iOS only)
  *   Finish remaining transactions. Related to issue #257
  *     link : https://github.com/dooboolab/react-native-iap/issues/257
@@ -525,6 +558,7 @@ export default {
   requestPurchase,
   requestPurchaseWithQuantityIOS,
   finishTransactionIOS,
+  finishTransaction,
   requestSubscription,
   purchaseUpdatedListener,
   purchaseErrorListener,

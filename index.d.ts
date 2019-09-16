@@ -388,3 +388,17 @@ export function getReceiptIOS(): Promise<string>;
  * @returns {Promise<ProductPurchase[]>}
  */
 export function getPendingPurchasesIOS(): Promise<ProductPurchase[]>;
+
+/**
+ * Finish Transaction (both platforms)
+ *   Abstracts `finishTransactionIOS`, `consumePurchaseAndroid`, `acknowledgePurchaseAndroid` in to one method.
+ * @param {string} transactionId The transactionId of the function that you would like to finish.
+ * @param {boolean} isConsumable Checks if purchase is consumable. Has effect on `android`.
+ * @param {string} developerPayloadAndroid Android developerPayload.
+ * @returns {Promise<PurchaseResult>}
+ */
+export function finishTransaction(
+  transactionId: string,
+  isConsumable: boolean,
+  developerPayloadAndroid: string,
+): Promise<PurchaseResult>;
