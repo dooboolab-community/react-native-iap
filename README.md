@@ -341,7 +341,7 @@ class RootComponent extends Component<*> {
   purchaseErrorSubscription = null
 
   componentDidMount() {
-    this.purchaseUpdateSubscription = purchaseUpdatedListener((purchase: ProductPurchase) => {
+    this.purchaseUpdateSubscription = purchaseUpdatedListener((purchase: InAppPurchase | SubscriptionPurchase | ProductPurchase ) => {
       console.log('purchaseUpdatedListener', purchase);
       const receipt = purchase.transactionReceipt;
       if (receipt) {

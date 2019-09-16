@@ -240,36 +240,6 @@ RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
     }
 }
 
-// The following buyProductWithoutAutoConfirm seems to be completely unused and identical to buyProduct. It's existance is confusing so could we remove it?
-RCT_EXPORT_METHOD(buyProductWithoutAutoConfirm:(NSString*)sku
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
-    NSLog(@"\n\n\n  buyProductWithoutAutoConfirm  \n\n.");
-    SKProduct *product;
-    for (SKProduct *p in validProducts) {
-        if([sku isEqualToString:p.productIdentifier]) {
-            product = p;
-            break;
-        }
-    }
-    if (product) {
-        SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
-        [[SKPaymentQueue defaultQueue] addPayment:payment];
-        [self addPromiseForKey:RCTKeyForInstance(payment.productIdentifier) resolve:resolve reject:reject];
-    } else {
-        if (hasListeners) {
-            NSDictionary *err = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 @"Invalid product ID.", @"debugMessage",
-                                 @"Invalid product ID.", @"message",
-                                 @"E_DEVELOPER_ERROR", @"code",
-                                 nil
-                                 ];
-            [self sendEventWithName:@"purchase-error" body:err];
-        }
-        reject(@"E_DEVELOPER_ERROR", @"Invalid product ID.", nil);
-    }
-}
-
 RCT_EXPORT_METHOD(clearTransaction) {
     NSArray *pendingTrans = [[SKPaymentQueue defaultQueue] transactions];
     NSLog(@"\n\n\n  ***  clear remaining Transactions. Call this before make a new transaction   \n\n.");
@@ -347,7 +317,6 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
 #pragma mark ===== StoreKit Delegate
 
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
-    // validProducts = response.products; // do not set directly. use addProduct methods.
     for (SKProduct* prod in response.products) {
         [self addProduct:prod];
     }
@@ -405,7 +374,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
                 NSLog(@"\n\n\n\n\n Purchase Successful !! \n\n\n\n\n.");
                 [self purchaseProcess:transaction];
                 break;
-            case SKPaymentTransactionStateRestored: // 기존 구매한 아이템 복구..
+            case SKPaymentTransactionStateRestored:
                 NSLog(@"Restored ");
                 [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
                 break;

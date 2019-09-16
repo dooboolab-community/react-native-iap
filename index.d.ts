@@ -314,7 +314,7 @@ export function buyProductWithQuantityIOS(
 export function requestPurchaseWithQuantityIOS(
   sku: string,
   quantity: number,
-): Promise<string>;
+): Promise<void>;
 
 /**
  * Finish Transaction (iOS only)
