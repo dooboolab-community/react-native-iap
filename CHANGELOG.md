@@ -17,6 +17,8 @@
     - Abstracts verifying purchases into one method, finishTransaction
     - It abstracts finishTransactionIOS, consumePurchaseAndroid, acknowledgePurchaseAndroid in to one method.
   - rc2
+    - Do not use this.
+  - rc3
     - Add `deveoperId` and `accountId` when requesting `purchase` or `subscription` in `android`. Find out more in `requestPurchase` and `requestSubscription`.
 - **[3.4.+]**
   - Makes module possible to be built in older XCode version [#650](https://github.com/dooboolab/react-native-iap/pull/650).
