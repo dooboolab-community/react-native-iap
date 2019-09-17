@@ -431,7 +431,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
         builder.setSkuDetails(selectedSku);
         BillingFlowParams flowParams = builder.build();
-        BillingResult billingResult = billingClient.launchBillingFlow(reg.activity(), flowParams);
+        BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
         String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
       }
     });

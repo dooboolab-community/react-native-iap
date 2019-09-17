@@ -4776,8 +4776,10 @@ react-lifecycles-compat@^3.0.4:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
-"react-native-iap@file:..":
-  version "3.3.0"
+react-native-iap@^4.0.0-rc2:
+  version "4.0.0-rc2"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-4.0.0-rc2.tgz#1e5ce5f931950f6173ec8e89fbe3dae496e54a70"
+  integrity sha512-M0pQo7O2+9lHPjepW1I8LXatJuY04rNWLArPiBE8EnEck+ig23VA+MVsXTeWBF3h2try9eju7tW4sIW54kGZWw==
   dependencies:
     dooboolab-welcome "^1.1.0"
 

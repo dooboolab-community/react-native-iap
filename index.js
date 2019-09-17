@@ -244,7 +244,7 @@ export const requestSubscription = (
     },
     android: () => {
       checkNativeAndroidAvailable();
-      if (!prorationMode) prorationMode = -1;
+      if (!prorationModeAndroid) prorationModeAndroid = -1;
       RNIapModule.buyItemByType(
         ANDROID_ITEM_TYPE_SUBSCRIPTION,
         sku,
