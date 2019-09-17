@@ -522,6 +522,14 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
         sendEvent(reactContext, "purchase-updated", item);
       }
+    } else {
+      WritableMap error = Arguments.createMap();
+      error.putInt("responseCode", billingResult.getResponseCode());
+      error.putString("debugMessage", billingResult.getDebugMessage());
+      String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+      error.putString("code", "null");
+      error.putString("message", "purchases are null.");
+      sendEvent(reactContext, "purchase-error", error);
     }
   }
 

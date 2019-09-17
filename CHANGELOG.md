@@ -20,6 +20,8 @@
     - Do not use this.
   - rc3
     - Add `deveoperId` and `accountId` when requesting `purchase` or `subscription` in `android`. Find out more in `requestPurchase` and `requestSubscription`.
+  - rc4
+    - Send `purchase-error` with null purchases.
 - **[3.4.+]**
   - Makes module possible to be built in older XCode version [#650](https://github.com/dooboolab/react-native-iap/pull/650).
   - Makes iOS `getSubscriptions` return subscriptions that only received ids [#654](https://github.com/dooboolab/react-native-iap/pull/654).
