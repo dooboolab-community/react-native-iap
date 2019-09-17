@@ -232,26 +232,35 @@ export function getAvailablePurchases(): Promise<Purchase[]>;
  * Request a purchase
  *
  * @param {string} sku The product's sku/ID
- * @param {boolean} andDangerouslyFinishTransactionAutomatically You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
+ * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
+ * @param {string} [developerIdAndroid] Specify an optional obfuscated string of developer profile name.
+ * @param {string} [userIdAndroid] Specify an optional obfuscated string that is uniquely associated with the user's account in.
  * @returns {void}
  */
 export function requestPurchase(
   sku: string,
   andDangerouslyFinishTransactionAutomatically?: boolean,
+  developerIdAndroid?: string,
+  userIdAndroid?: string,
 ): void;
 
 /**
- * Request a subscription to a sku
- *
+ * Request a subscription to a sku. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
- * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
- * @param {number} [prorationMode] Optional proration mode for upgrade/downgrade (Android only)
+ * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
+ * @param {string} [oldSkuAndroid] SKU that the user is upgrading or downgrading from.
+ * @param {number} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
+ * @param {string} [developerIdAndroid] Specify an optional obfuscated string of developer profile name.
+ * @param {string} [userIdAndroid] Specify an optional obfuscated string that is uniquely associated with the user's account in.
  * @returns {void}
  */
 export function requestSubscription(
   sku: string,
-  oldSku?: string,
-  prorationMode?: number,
+  andDangerouslyFinishTransactionAutomatically?: boolean,
+  oldSkuAndroid?: string,
+  prorationModeAndroid?: number,
+  developerIdAndroid?: string,
+  userIdAndroid?: string,
 ): void;
 
 /**

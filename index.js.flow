@@ -89,8 +89,17 @@ declare module.exports: {
   requestPurchase(
     sku: string,
     andDangerouslyFinishTransactionAutomatically: boolean,
+    developerIdAndroid: string,
+    accountIdAndroid: string,
   ): void,
-  requestSubscription: string => Promise<string>,
+  requestPurchase(
+    sku: string,
+    andDangerouslyFinishTransactionAutomatically: boolean,
+    oldSkuAndroid: string,
+    prorationModeAndroid: number,
+    developerIdAndroid: string,
+    accountIdAndroid: string,
+  ): void,
   requestPurchaseWithQuantityIOS(
     sku: string,
     quantity: number,

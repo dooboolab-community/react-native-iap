@@ -362,7 +362,15 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   }
 
   @ReactMethod
-  public void buyItemByType(final String type, final String sku, final String oldSku, final Integer prorationMode, final Promise promise) {
+  public void buyItemByType(
+    final String type,
+    final String sku,
+    final String oldSku,
+    final Integer prorationMode,
+    final String developerId,
+    final String accountId,
+    final Promise promise
+  ) {
     final Activity activity = getCurrentActivity();
 
     if (activity == null) {
@@ -414,16 +422,17 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           return;
         }
 
-        BillingFlowParams flowParams = builder
-            .setSkuDetails(selectedSku)
-            .build();
-        BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
+        if (accountId != null) {
+          builder.setAccountId(accountId);
+        }
+        if (developerId != null) {
+          builder.setDeveloperId(developerId);
+        }
 
+        builder.setSkuDetails(selectedSku);
+        BillingFlowParams flowParams = builder.build();
+        BillingResult billingResult = billingClient.launchBillingFlow(reg.activity(), flowParams);
         String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
-        Log.d(
-            TAG,
-            "buyItemByType (type: " + type + ", sku: " + sku + ", oldSku: " + oldSku + ", prorationMode: " + prorationMode + ") responseCode: " + billingResult.getResponseCode() + "(" + errorData[0] + ")"
-        );
       }
     });
   }
@@ -493,7 +502,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       error.putString("code", errorData[0]);
       error.putString("message", errorData[1]);
       sendEvent(reactContext, "purchase-error", error);
-      DoobooUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
       return;
     }
 
@@ -513,7 +521,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
 
         sendEvent(reactContext, "purchase-updated", item);
-        DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, item);
       }
     }
   }

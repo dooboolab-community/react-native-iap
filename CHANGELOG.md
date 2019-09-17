@@ -1,5 +1,23 @@
 ## Changelogs
 
+- **[4.0.0]**
+  - rc1
+    - Remove unused methods and fix typings
+    - Default `andDangerouslyFinishTransactionAutomatically` to true
+    - Update eslint rules
+    - Remove all the deprecated methods
+      - Remove `buyProduct`.
+      - Remove `buySubscription`.
+      - Remove `addAdditionalSuccessPurchaseListenerIOS`.
+    - Renamed methods
+      - Rename `requestReceiptIOS` to `getReceiptIOS`.
+      - Rename `buyProductWithOfferIOS` to `requestPurcaseWithOfferIOS`.
+      - Rename `buyProductWithQuantityIOS` to `requestProductWithQuantityIOS`.
+    - Add missing types
+    - Abstracts verifying purchases into one method, finishTransaction
+    - It abstracts finishTransactionIOS, consumePurchaseAndroid, acknowledgePurchaseAndroid in to one method.
+  - rc2
+    - Add `deveoperId` and `accountId` when requesting `purchase` or `subscription` in `android`. Find out more in `requestPurchase` and `requestSubscription`.
 - **[3.4.+]**
   - Makes module possible to be built in older XCode version [#650](https://github.com/dooboolab/react-native-iap/pull/650).
   - Makes iOS `getSubscriptions` return subscriptions that only received ids [#654](https://github.com/dooboolab/react-native-iap/pull/654).
@@ -19,7 +37,11 @@
   - **[3.4.8]**
     - Don't use this version
   - **[3.4.9]**
-    - Improve initConnection errors on android [#714](<(https://github.com/dooboolab/react-native-iap/pull/714)
+    - Improve initConnection errors on android [#714](https://github.com/dooboolab/react-native-iap/pull/714)
+  - **[3.4.10]**
+    - Remove `android` deprecated apis.
+  - **[3.4.11]**
+    - Add `deveoperId` and `accountId` when requesting `purchase` or `subscription` in `android`. Find out more in `requestPurchase` and `requestSubscription`.
 - **[3.3.+]**
   - Fix flow tying [#594](https://github.com/dooboolab/react-native-iap/pull/594).
   - Handle null pointer exception [#600](https://github.com/dooboolab/react-native-iap/issues/600).

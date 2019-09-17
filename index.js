@@ -172,43 +172,75 @@ export const getAvailablePurchases = () =>
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
- * @param {boolean} andDangerouslyFinishTransactionAutomatically You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
- * @returns {Promise<string>}
+ * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
+ * @param {string} [developerIdAndroid] Specify an optional obfuscated string of developer profile name.
+ * @param {string} [userIdAndroid] Specify an optional obfuscated string that is uniquely associated with the user's account in.
+ * @returns {void}
  */
 export const requestPurchase = (
   sku,
-  andDangerouslyFinishTransactionAutomatically,
+  andDangerouslyFinishTransactionAutomaticallyIOS,
+  developerIdAndroid,
+  accountIdAndroid,
 ) =>
   Platform.select({
     ios: () => {
-      andDangerouslyFinishTransactionAutomatically =
-        andDangerouslyFinishTransactionAutomatically === undefined
+      andDangerouslyFinishTransactionAutomaticallyIOS =
+        andDangerouslyFinishTransactionAutomaticallyIOS === undefined
           ? false
-          : andDangerouslyFinishTransactionAutomatically;
-      if (andDangerouslyFinishTransactionAutomatically) {
+          : andDangerouslyFinishTransactionAutomaticallyIOS;
+      if (andDangerouslyFinishTransactionAutomaticallyIOS) {
         console.warn(
           'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
         );
       }
       checkNativeiOSAvailable();
-      RNIapIos.buyProduct(sku, andDangerouslyFinishTransactionAutomatically);
+      RNIapIos.buyProduct(sku, andDangerouslyFinishTransactionAutomaticallyIOS);
     },
     android: () => {
       checkNativeAndroidAvailable();
-      RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
+      RNIapModule.buyItemByType(
+        ANDROID_ITEM_TYPE_IAP,
+        sku,
+        null,
+        0,
+        developerIdAndroid,
+        accountIdAndroid,
+      );
     },
   })();
 
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
- * @returns {Promise<string>}
+ * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
+ * @param {string} [oldSkuAndroid] SKU that the user is upgrading or downgrading from.
+ * @param {number} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
+ * @param {string} [developerIdAndroid] Specify an optional obfuscated string of developer profile name.
+ * @param {string} [userIdAndroid] Specify an optional obfuscated string that is uniquely associated with the user's account in.
+ * @returns {void}
  */
-export const requestSubscription = (sku, oldSku, prorationMode) =>
+export const requestSubscription = (
+  sku,
+  andDangerouslyFinishTransactionAutomaticallyIOS,
+  oldSkuAndroid,
+  prorationModeAndroid,
+  developerIdAndroid,
+  userIdAndroid,
+) =>
   Platform.select({
     ios: () => {
+      andDangerouslyFinishTransactionAutomaticallyIOS =
+        andDangerouslyFinishTransactionAutomaticallyIOS === undefined
+          ? false
+          : andDangerouslyFinishTransactionAutomaticallyIOS;
+      if (andDangerouslyFinishTransactionAutomaticallyIOS) {
+        console.warn(
+          'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
+        );
+      }
       checkNativeiOSAvailable();
-      RNIapIos.buyProduct(sku, true);
+      RNIapIos.buyProduct(sku, andDangerouslyFinishTransactionAutomaticallyIOS);
     },
     android: () => {
       checkNativeAndroidAvailable();
@@ -216,8 +248,10 @@ export const requestSubscription = (sku, oldSku, prorationMode) =>
       RNIapModule.buyItemByType(
         ANDROID_ITEM_TYPE_SUBSCRIPTION,
         sku,
-        oldSku,
-        prorationMode,
+        oldSkuAndroid,
+        prorationModeAndroid,
+        developerIdAndroid,
+        userIdAndroid,
       );
     },
   })();
