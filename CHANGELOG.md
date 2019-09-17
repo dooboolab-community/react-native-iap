@@ -21,7 +21,11 @@
   - **[3.4.9]**
     - Improve initConnection errors on android [#714](<(https://github.com/dooboolab/react-native-iap/pull/714)
   - **[3.4.10]**
+    - Do not use this version.
+  - **[3.4.11]**
     - Remove deprecated android apis.
+  - **[3.4.12]**
+    - send `purchase-error` event when `purchases` returns null.
 - **[3.3.+]**
   - Fix flow tying [#594](https://github.com/dooboolab/react-native-iap/pull/594).
   - Handle null pointer exception [#600](https://github.com/dooboolab/react-native-iap/issues/600).
