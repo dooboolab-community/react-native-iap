@@ -12,13 +12,31 @@ const ANDROID_ITEM_TYPE_IAP = 'inapp';
 const IOS_ITEM_TYPE_SUBSCRIPTION = 'sub';
 const IOS_ITEM_TYPE_IAP = 'iap';
 
+export const IAPErrorCode = {
+  E_IAP_NOT_AVAILABLE: 'E_IAP_NOT_AVAILABLE',
+  E_UNKNOWN: 'E_UNKNOWN',
+  E_USER_CANCELLED: 'E_USER_CANCELLED',
+  E_USER_ERROR: 'E_USER_ERROR',
+  E_ITEM_UNAVAILABLE: 'E_ITEM_UNAVAILABLE',
+  E_REMOTE_ERROR: 'E_REMOTE_ERROR',
+  E_NETWORK_ERROR: 'E_NETWORK_ERROR',
+  E_SERVICE_ERROR: 'E_SERVICE_ERROR',
+  E_RECEIPT_FAILED: 'E_RECEIPT_FAILED',
+  E_RECEIPT_FINISHED_FAILED: 'E_RECEIPT_FINISHED_FAILED',
+  E_NOT_PREPARED: 'E_NOT_PREPARED',
+  E_NOT_ENDED: 'E_NOT_ENDED',
+  E_ALREADY_OWNED: 'E_ALREADY_OWNED',
+  E_DEVELOPER_ERROR: 'E_DEVELOPER_ERROR',
+  E_BILLING_RESPONSE_JSON_PARSE_ERROR: 'E_BILLING_RESPONSE_JSON_PARSE_ERROR',
+};
+
 export const PROMOTED_PRODUCT = 'iap-promoted-product';
 
 function checkNativeAndroidAvailable() {
   if (!RNIapModule) {
     return Promise.reject(
       new Error(
-        'E_IAP_NOT_AVAILABLE',
+        IAPErrorCode.E_IAP_NOT_AVAILABLE,
         'The payment setup is not available in this version of the app. Contact admin.',
       ),
     );
@@ -29,7 +47,7 @@ function checkNativeiOSAvailable() {
   if (!RNIapIos) {
     return Promise.reject(
       new Error(
-        'E_IAP_NOT_AVAILABLE',
+        IAPErrorCode.E_IAP_NOT_AVAILABLE,
         'The payment setup is not available in this version of the app. Contact admin.',
       ),
     );
@@ -575,6 +593,7 @@ export const validateReceiptIos = async (receiptBody, isTest) => {
 */
 
 export default {
+  IAPErrorCode,
   initConnection,
   endConnectionAndroid,
   getProducts,
