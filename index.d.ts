@@ -260,12 +260,12 @@ export function buyProduct(sku: string): Promise<ProductPurchase>;
  *
  * @param {string} sku The product's sku/ID
  * @param {boolean} andDangerouslyFinishTransactionAutomatically You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
- * @returns {Promise<string>}
+ * @returns {Promise<ProductPurchase>}
  */
 export function requestPurchase(
   sku: string,
   andDangerouslyFinishTransactionAutomatically?: boolean,
-): Promise<string>;
+): Promise<ProductPurchase>;
 
 /**
  * Create a subscription to a sku
@@ -420,13 +420,13 @@ export function addAdditionalSuccessPurchaseListenerIOS(
  * Subscribe a listener when purchase is updated.
  * @returns {callback(e: ProductPurchase)}
  */
-export function purchaseUpdatedListener(fn: Function): EmitterSubscription;
+export function purchaseUpdatedListener(callback: (purchase: ProductPurchase) => void): EmitterSubscription;
 
 /**
  * Subscribe a listener when purchase got error.
  * @returns {callback(e: PurchaseError)}
  */
-export function purchaseErrorListener(fn: Function): EmitterSubscription;
+export function purchaseErrorListener(callback: (purchase: PurchaseError) => void): EmitterSubscription;
 
 /**
  * Request current receipt base64 encoded (IOS only)
