@@ -151,6 +151,8 @@ declare module.exports: {
     isConsumable?: boolean,
     developerPayloadAndroid?: string,
   ): Promise<PurchaseResult>,
+  getPromotedProductIOS(): Promise<Product<string>>,
+  buyPromotedProductIOS(): Promise<void>,
 }
 
 /**

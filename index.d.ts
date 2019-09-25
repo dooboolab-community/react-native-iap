@@ -431,3 +431,17 @@ export function finishTransaction(
   isConsumable?: boolean,
   developerPayloadAndroid?: string,
 ): Promise<PurchaseResult>;
+
+/**
+ * Should Add Store Payment (iOS only)
+ *   Indicates the the App Store purchase should continue from the app instead of the App Store.
+ * @returns {Promise<Product<string>>}
+ */
+export function getPromotedProductIOS(): Promise<Product<string>>;
+
+/**
+ * Buy the currently selected promoted product (iOS only)
+ *   Initiates the payment process for a promoted product. Should only be called in response to the `iap-promoted-product` event.
+ * @returns {null}
+ */
+export function buyPromotedProductIOS(): Promise<void>;

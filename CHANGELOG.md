@@ -46,6 +46,11 @@
     - Remove `android` deprecated apis.
   - **[3.4.11]**
     - Add `deveoperId` and `accountId` when requesting `purchase` or `subscription` in `android`. Find out more in `requestPurchase` and `requestSubscription`.
+    - Remove deprecated android apis.
+  - **[3.4.12]**
+    - send `purchase-error` event when `purchases` returns null.
+  - **[3.4.13]**
+    - Enhance typings. Related issue [#729](https://github.com/dooboolab/react-native-iap/issues/729).
 - **[3.3.+]**
   - Fix flow tying [#594](https://github.com/dooboolab/react-native-iap/pull/594).
   - Handle null pointer exception [#600](https://github.com/dooboolab/react-native-iap/issues/600).

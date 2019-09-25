@@ -395,7 +395,7 @@ export const consumePurchaseAndroid = (token, developerPayload) =>
 /**
  * Should Add Store Payment (iOS only)
  *   Indicates the the App Store purchase should continue from the app instead of the App Store.
- * @returns {null}
+ * @returns {Promise<Product<string>>}
  */
 export const getPromotedProductIOS = () =>
   Platform.select({
@@ -616,4 +616,6 @@ export default {
   purchaseUpdatedListener,
   purchaseErrorListener,
   getReceiptIOS,
+  getPromotedProductIOS,
+  buyPromotedProductIOS,
 };
