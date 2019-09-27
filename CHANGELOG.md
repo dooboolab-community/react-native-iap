@@ -22,6 +22,8 @@
     - Add `deveoperId` and `accountId` when requesting `purchase` or `subscription` in `android`. Find out more in `requestPurchase` and `requestSubscription`.
   - rc4
     - Send `purchase-error` with null purchases.
+  - rc5
+    - Fix types that's not reliable in recent `ts` version [#731](https://github.com/dooboolab/react-native-iap/issues/731)
 - **[3.4.+]**
   - Makes module possible to be built in older XCode version [#650](https://github.com/dooboolab/react-native-iap/pull/650).
   - Makes iOS `getSubscriptions` return subscriptions that only received ids [#654](https://github.com/dooboolab/react-native-iap/pull/654).
@@ -51,6 +53,8 @@
     - send `purchase-error` event when `purchases` returns null.
   - **[3.4.13]**
     - Enhance typings. Related issue [#729](https://github.com/dooboolab/react-native-iap/issues/729).
+  - **[3.4.14]**
+    - Fix types that's not reliable in recent `ts` version [#731](https://github.com/dooboolab/react-native-iap/issues/731)
 - **[3.3.+]**
   - Fix flow tying [#594](https://github.com/dooboolab/react-native-iap/pull/594).
   - Handle null pointer exception [#600](https://github.com/dooboolab/react-native-iap/issues/600).
