@@ -1,6 +1,6 @@
 {
   "name": "react-native-iap",
-  "version": "4.0.0-rc4",
+  "version": "4.0.0-rc5",
   "description": "React Native In App Purchase Module.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -36,17 +36,17 @@
     "dooboolab-welcome": "^1.1.1"
   },
   "devDependencies": {
-    "@types/eslint": "^6.1.0",
-    "@types/react": "16.9.2",
-    "@types/react-native": "0.60.14",
-    "babel-eslint": "^10.0.2",
-    "eslint": "^6.1.0",
-    "eslint-config-standard": "^14.0.0",
+    "@types/eslint": "^6.1.1",
+    "@types/react": "16.9.3",
+    "@types/react-native": "0.60.17",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.4.0",
+    "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-standard": "^4.0.1",
     "flow-bin": "^0.104.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.6.3"
   }
 }
