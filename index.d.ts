@@ -2,7 +2,7 @@ import { EmitterSubscription } from 'react-native';
 
 import * as Apple from './apple';
 
-interface ID extends string {}
+interface ID extends String {}
 
 interface Common {
   title: string;
