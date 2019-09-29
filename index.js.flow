@@ -79,11 +79,15 @@ export type ProductPurchase = {|
 export type PurchaseResult = {
   responseCode: number,
   debugMessage: string,
+  code: number,
+  message: string,
 }
 
 export type PurchaseError = {
   responseCode: number,
   debugMessage: string,
+  code: number,
+  message: string,
 }
 
 export type SubscriptionPurchase = ProductPurchase & {
