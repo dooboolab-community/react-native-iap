@@ -105,7 +105,7 @@ declare module.exports: {
   initConnection(): Promise<boolean>,
   buydProductWithOffer: (sku: string, forUser: string, withOffer: PaymentDiscount) => Promise<void>,
   endConnectionAndroid: () => Promise<void>,
-  consumeAllItemsAndroid(): Promise<void>,
+  consumeAllItemsAndroid(): Promise<string[]>,
   getPurchaseHistory(): Promise<Purchase[]>,
   getAvailablePurchases(): Promise<Purchase[]>,
   buyProduct: string => Promise<ProductPurchase>,

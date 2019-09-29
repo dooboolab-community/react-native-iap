@@ -32,6 +32,8 @@
     - Fix types that's not reliable in recent `ts` version [#731](https://github.com/dooboolab/react-native-iap/issues/731).
   - **[3.4.15]**
     - Add missing flow type [#738](https://github.com/dooboolab/react-native-iap/pull/738).
+  - **[3.4.16]**
+    - `consumeAllItems` returns consumed tokens instead void.
 - **[3.3.+]**
   - Fix flow tying [#594](https://github.com/dooboolab/react-native-iap/pull/594).
   - Handle null pointer exception [#600](https://github.com/dooboolab/react-native-iap/issues/600).

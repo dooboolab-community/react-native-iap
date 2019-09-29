@@ -119,9 +119,9 @@ export function endConnectionAndroid(): Promise<void>;
 
 /**
  * Consume all items in android. No-op in iOS.
- * @returns {Promise<void>}
+ * @returns {Promise<String[]>}
  */
-export function consumeAllItemsAndroid(): Promise<void>;
+export function consumeAllItemsAndroid(): Promise<String[]>;
 
 /**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
