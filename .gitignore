@@ -52,4 +52,8 @@ buck-out/
 # CocoaPods
 IapExample/ios/Pods
 
+# Built files
 tsconfig.tsbuildinfo
+index.js.flow
+index.d.ts
+index.js
