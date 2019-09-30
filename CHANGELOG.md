@@ -26,6 +26,8 @@
     - Fix types that's not reliable in recent `ts` version [#731](https://github.com/dooboolab/react-native-iap/issues/731)
   - rc7
     - Fix optional parameters not specified.
+  - rc8
+    - Pu promises returns back in `android` for users who still need it.
 - **[3.5.+]**
   - Migrated to `ts` project. Now we only need to concentrate on `index.ts` file. `index.js`, `index.js.flow`, `index.d.ts` is generated during build.
   - `consumeAllItems` returns consumed tokens instead of void.
