@@ -51,3 +51,5 @@ buck-out/
 
 # CocoaPods
 IapExample/ios/Pods
+
+tsconfig.tsbuildinfo
