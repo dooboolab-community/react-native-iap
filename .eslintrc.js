@@ -1,16 +1,16 @@
 module.exports = {
-  extends: 'standard',
-  env: {
-    browser: true
-  },
+  root: true,
+  extends: '@dooboo/eslint-config',
   rules: {
-    'no-unused-vars': 0,
-    'comma-dangle': ['error', 'always-multiline'],
-    'semi': [2, 'always'],
-    'arrow-parens': ['error', 'always'],
-    'space-before-function-paren': ['error', 'never'],
-    'no-new-object': 'error',
-    'no-array-constructor': 'error'
+    'max-len': [
+      'error',
+      {
+        code: 100,
+        ignoreRegExpLiterals: true,
+        ignoreComments: true,
+        ignoreUrls: true,
+        ignoreStrings: true,
+      },
+    ],
   },
-  'parser': 'babel-eslint'
 };
