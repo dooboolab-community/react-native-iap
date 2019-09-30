@@ -279,9 +279,9 @@ export const getAvailablePurchases = (): Promise<
  */
 export const requestPurchase = (
   sku: string,
-  andDangerouslyFinishTransactionAutomaticallyIOS: boolean,
-  developerIdAndroid: string,
-  accountIdAndroid: string,
+  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean,
+  developerIdAndroid?: string,
+  accountIdAndroid?: string,
 ): Promise<void> =>
   Platform.select({
     ios: async () => {
@@ -322,11 +322,11 @@ export const requestPurchase = (
  */
 export const requestSubscription = (
   sku: string,
-  andDangerouslyFinishTransactionAutomaticallyIOS: boolean,
-  oldSkuAndroid: string,
-  prorationModeAndroid: number,
-  developerIdAndroid: string,
-  userIdAndroid: string,
+  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean,
+  oldSkuAndroid?: string,
+  prorationModeAndroid?: number,
+  developerIdAndroid?: string,
+  userIdAndroid?: string,
 ): Promise<void> =>
   Platform.select({
     ios: async () => {
@@ -397,8 +397,8 @@ export const finishTransactionIOS = (transactionId: string): Promise<void> =>
  */
 export const finishTransaction = (
   transactionId: string,
-  isConsumable: string,
-  developerPayloadAndroid: string,
+  isConsumable?: string,
+  developerPayloadAndroid?: string,
 ): Promise<string | void> => {
   return Platform.select({
     ios: async () => {
@@ -456,7 +456,7 @@ export const clearProductsIOS = (): void =>
  */
 export const acknowledgePurchaseAndroid = (
   token: string,
-  developerPayload: string,
+  developerPayload?: string,
 ): Promise<PurchaseResult | void> =>
   Platform.select({
     android: async () => {
@@ -472,7 +472,7 @@ export const acknowledgePurchaseAndroid = (
  */
 export const consumePurchaseAndroid = (
   token: string,
-  developerPayload: string,
+  developerPayload?: string,
 ): Promise<PurchaseResult> =>
   Platform.select({
     android: async () => {
@@ -542,7 +542,7 @@ export const requestPurchaseWithOfferIOS = (
  */
 export const validateReceiptIos = async (
   receiptBody: object,
-  isTest: boolean,
+  isTest?: boolean,
 ): Promise<Apple.ReceiptValidationResponse | false> => {
   const url = isTest
     ? 'https://sandbox.itunes.apple.com/verifyReceipt'
@@ -580,7 +580,7 @@ export const validateReceiptAndroid = async (
   productId: string,
   productToken: string,
   accessToken: string,
-  isSub: boolean,
+  isSub?: boolean,
 ): Promise<object | false> => {
   const type = isSub ? 'subscriptions' : 'products';
   const url = `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/${type}/${productId}/tokens/${productToken}?access_token=${accessToken}`;
@@ -603,7 +603,7 @@ export const validateReceiptAndroid = async (
  * Add IAP purchase event in ios.
  * @returns {callback(e: ProductPurchase)}
  */
-export const purchaseUpdatedListener = (e) => {
+export const purchaseUpdatedListener = (e): EmitterSubscription => {
   if (Platform.OS === 'ios') {
     checkNativeiOSAvailable();
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
@@ -622,7 +622,7 @@ export const purchaseUpdatedListener = (e) => {
  * Add IAP purchase error event in ios.
  * @returns {callback(e: ProductPurchase)}
  */
-export const purchaseErrorListener = (e) => {
+export const purchaseErrorListener = (e): EmitterSubscription => {
   if (Platform.OS === 'ios') {
     checkNativeiOSAvailable();
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
