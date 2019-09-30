@@ -303,7 +303,7 @@ export const buyProduct = (sku: string): Promise<InAppPurchase> => {
  */
 export const requestPurchase = (
   sku: string,
-  andDangerouslyFinishTransactionAutomatically: boolean,
+  andDangerouslyFinishTransactionAutomatically?: boolean,
 ): Promise<string> =>
   Platform.select({
     ios: async () => {
@@ -338,8 +338,8 @@ export const requestPurchase = (
  */
 export const buySubscription = (
   sku: string,
-  oldSku: string,
-  prorationMode: number,
+  oldSku?: string,
+  prorationMode?: number,
 ): Promise<SubscriptionPurchase> => {
   console.warn(
     'Deprecated since 3.0.0. This will be removed in the future. Use `requestSubscription` instead',
@@ -369,8 +369,8 @@ export const buySubscription = (
  */
 export const requestSubscription = (
   sku: string,
-  oldSku: string,
-  prorationMode: number,
+  oldSku?: string,
+  prorationMode?: number,
 ): Promise<string> =>
   Platform.select({
     ios: async () => {
@@ -491,7 +491,7 @@ export const clearProductsIOS = (): Promise<void> =>
  */
 export const acknowledgePurchaseAndroid = (
   token: string,
-  developerPayload: string,
+  developerPayload?: string,
 ): Promise<PurchaseResult | void> =>
   Platform.select({
     ios: async () => Promise.resolve(),
@@ -508,7 +508,7 @@ export const acknowledgePurchaseAndroid = (
  */
 export const consumePurchaseAndroid = (
   token: string,
-  developerPayload: string,
+  developerPayload?: string,
 ): Promise<PurchaseResult> =>
   Platform.select({
     ios: async () => Promise.resolve(),
@@ -583,7 +583,7 @@ export const buyProductWithOfferIOS = (
  */
 export const validateReceiptIos = async (
   receiptBody: object,
-  isTest: boolean,
+  isTest?: boolean,
 ): Promise<Apple.ReceiptValidationResponse | false> => {
   const url = isTest
     ? 'https://sandbox.itunes.apple.com/verifyReceipt'
@@ -621,7 +621,7 @@ export const validateReceiptAndroid = async (
   productId: string,
   productToken: string,
   accessToken: string,
-  isSub: boolean,
+  isSub?: boolean,
 ): Promise<object | false> => {
   const type = isSub ? 'subscriptions' : 'products';
   const url = `https://www.googleapis.com/androidpublisher/v2/applications'
