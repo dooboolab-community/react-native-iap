@@ -83,7 +83,7 @@ PODS:
     - React-fishhook (= 0.60.3)
   - RNGestureHandler (1.3.0):
     - React
-  - RNIap (3.3.2):
+  - RNIap (3.5.0):
     - React
   - yoga (0.60.3.React)
 
@@ -191,7 +191,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: 5d9ed4a968e9d42880ddcc7c29bee3417c745408
   React-RCTWebSocket: 69d8565d66043f244b4129f3d7154c5689fb7d3e
   RNGestureHandler: 5329a942fce3d41c68b84c2c2276ce06a696d8b0
-  RNIap: 5a1c92f2b675b95325ac6b1fb918e9da0aa3869b
+  RNIap: 85910ee9d1766ea7a7fcce0453877494d2906a4f
   yoga: 843fe25849b56131275bf3e5da2c468e96f68aff
 
 PODFILE CHECKSUM: 85889f1ccfea3a0f439e7d01dca7f6ee9ea6a532

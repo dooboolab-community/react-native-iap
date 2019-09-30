@@ -2,6 +2,7 @@
 
 - **[3.5.+]**
   - Migrated to `ts` project. Now we only need to concentrate on `index.ts` file. `index.js`, `index.js.flow`, `index.d.ts` is generated during build.
+  - `consumeAllItems` returns consumed tokens instead of void.
 - **[3.4.+]**
   - Makes module possible to be built in older XCode version [#650](https://github.com/dooboolab/react-native-iap/pull/650).
   - Makes iOS `getSubscriptions` return subscriptions that only received ids [#654](https://github.com/dooboolab/react-native-iap/pull/654).
