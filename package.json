@@ -6,7 +6,7 @@
   "types": "index.d.ts",
   "postinstall": "dooboolab-welcome postinstall",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && flowgen index.d.ts -o index.js.flow",
     "flow": "flow",
     "lint": "eslint -c .eslintrc.js 'index.ts'",
     "test": "exit 0",
@@ -43,6 +43,7 @@
     "babel-eslint": "^10.0.2",
     "eslint": "^6.1.0",
     "flow-bin": "^0.104.0",
+    "flowgen": "^1.10.0",
     "typescript": "^3.5.3"
   }
 }
