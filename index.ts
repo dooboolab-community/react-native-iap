@@ -1,4 +1,4 @@
-import * as Apple from './apple';
+import * as Apple from './type/apple';
 
 import {
   DeviceEventEmitter,
