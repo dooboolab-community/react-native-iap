@@ -5,6 +5,8 @@
   - `consumeAllItems` returns consumed tokens instead of void.
   - **[3.5.2]**
     - Resolve [#740](https://github.com/dooboolab/react-native-iap/issues/740).
+  - **[3.5.3]**
+    - Possibly resolve [#632](https://github.com/dooboolab/react-native-iap/issues/632).
 - **[3.4.+]**
   - Makes module possible to be built in older XCode version [#650](https://github.com/dooboolab/react-native-iap/pull/650).
   - Makes iOS `getSubscriptions` return subscriptions that only received ids [#654](https://github.com/dooboolab/react-native-iap/pull/654).
