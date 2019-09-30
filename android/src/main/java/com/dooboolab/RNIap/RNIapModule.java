@@ -201,16 +201,18 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               .setDeveloperPayload(purchase.getDeveloperPayload())
               .build();
 
-          final ConsumeResponseListener listener = new ConsumeResponseListener() {
+         final ConsumeResponseListener listener = new ConsumeResponseListener() {
             @Override
             public void onConsumeResponse(BillingResult billingResult, String outToken) {
+              if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+                DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+                return;
+              }
               array.pushString(outToken);
-              if (purchases.size() == array.size()) {
-                try {
-                  promise.resolve(true);
-                } catch (ObjectAlreadyConsumedException oce) {
-                  Log.e(TAG, oce.getMessage());
-                }
+              try {
+                promise.resolve(true);
+              } catch (ObjectAlreadyConsumedException oce) {
+                promise.reject(oce.getMessage());
               }
             }
           };
