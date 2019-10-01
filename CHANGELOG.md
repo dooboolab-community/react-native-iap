@@ -29,12 +29,21 @@
   - rc8
     - Put promises returns back in `android` for users who still need it.
     - Fixed typings for `getProducts` and `getSubscriptions`.
+  - rc9
+    - Resolve [#748](https://github.com/dooboolab/react-native-iap/issues/748)
 - **[3.5.+]**
   - Migrated to `ts` project. Now we only need to concentrate on `index.ts` file. `index.js`, `index.js.flow`, `index.d.ts` is generated during build.
   - `consumeAllItems` returns consumed tokens instead of void.
-- **[3.4.+]**
-  - Makes module possible to be built in older XCode version [#650](https://github.com/dooboolab/react-native-iap/pull/650). - Makes module possible to be built in older XCode version [#650](https://github.com/dooboolab/react-native-iap/pull/650).
-  - Makes iOS `getSubscriptions` return subscriptions that only received ids [#654](https://github.com/dooboolab/react-native-iap/pull/654). - Makes iOS `getSubscriptions` return subscriptions that only received ids [#654](https://github.com/dooboolab/react-native-iap/pull/654).
+  - **[3.5.2]**
+    - Resolve [#740](https://github.com/dooboolab/react-native-iap/issues/740).
+  - **[3.5.3]**
+    - Possibly resolve [#632](https://github.com/dooboolab/react-native-iap/issues/632).
+  - **[3.5.4]**
+    - Resolve type error [#746](https://github.com/dooboolab/react-native-iap/pull/746).
+  - **[3.5.5]**
+    - Fix more type error.
+  - **[3.5.6]**
+    - Resolve [#748](https://github.com/dooboolab/react-native-iap/issues/748)
 - **[3.4.+]**
   - Makes module possible to be built in older XCode version [#650](https://github.com/dooboolab/react-native-iap/pull/650).
   - Makes iOS `getSubscriptions` return subscriptions that only received ids [#654](https://github.com/dooboolab/react-native-iap/pull/654).
