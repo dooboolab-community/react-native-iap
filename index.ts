@@ -206,11 +206,16 @@ export const getProducts = (skus: string[]): Promise<InAppPurchase[]> =>
  */
 export const getSubscriptions = (
   skus: string[],
-): Promise<SubscriptionPurchase[]> =>
+): Promise<Subscription[]> =>
   Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();
-      return RNIapIos.getItems(skus).then((items: SubscriptionPurchase[]) =>
+      return RNIapIos.getItems(skus).then((items: 
+
+
+
+
+Purchase[]) =>
         items.filter((item: SubscriptionPurchase) =>
           skus.includes(item.productId),
         ),
