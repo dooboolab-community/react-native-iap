@@ -305,10 +305,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             item.putString("developerPayloadAndroid", purchase.getDeveloperPayload());
             item.putString("signatureAndroid", purchase.getSignature());
             item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
+            item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
 
-            if (type.equals(BillingClient.SkuType.INAPP)) {
-              item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
-            } else if (type.equals(BillingClient.SkuType.SUBS)) {
+            if (type.equals(BillingClient.SkuType.SUBS)) {
               item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
             }
             items.pushMap(item);
