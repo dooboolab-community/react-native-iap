@@ -206,7 +206,7 @@ export const getProducts = (skus: string[]): Promise<InAppPurchase[]> =>
  */
 export const getSubscriptions = (
   skus: string[],
-): Promise<SubscriptionPurchase[]> =>
+): Promise<Subscription[]> =>
   Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();
