@@ -179,16 +179,16 @@ export const consumeAllItemsAndroid = (): Promise<string[]> =>
 /**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
  * @param {string[]} skus The item skus
- * @returns {Promise<InAppPurchase[]>}
+ * @returns {Promise<Product[]>}
  */
-export const getProducts = (skus: string[]): Promise<InAppPurchase[]> =>
+export const getProducts = (skus: string[]): Promise<Product[]> =>
   Platform.select({
     ios: async () => {
       if (!RNIapIos) {
         return [];
       }
-      return RNIapIos.getItems(skus).then((items) =>
-        items.filter((item) => item.productId),
+      return RNIapIos.getItems(skus).then((items: Product[]) =>
+        items.filter((item: Product) => item.productId),
       );
     },
     android: async () => {
@@ -204,16 +204,12 @@ export const getProducts = (skus: string[]): Promise<InAppPurchase[]> =>
  * @param {string[]} skus The item skus
  * @returns {Promise<SubscriptionPurchase[]>}
  */
-export const getSubscriptions = (
-  skus: string[],
-): Promise<Subscription[]> =>
+export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
   Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();
       return RNIapIos.getItems(skus).then((items: Subscription[]) =>
-        items.filter((item: Subscription) =>
-          skus.includes(item.productId),
-        ),
+        items.filter((item: Subscription) => skus.includes(item.productId)),
       );
     },
     android: async () => {
