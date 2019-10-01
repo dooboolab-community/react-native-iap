@@ -210,8 +210,8 @@ export const getSubscriptions = (
   Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();
-      return RNIapIos.getItems(skus).then((items: SubscriptionPurchase[]) =>
-        items.filter((item: SubscriptionPurchase) =>
+      return RNIapIos.getItems(skus).then((items: Subscription[]) =>
+        items.filter((item: Subscription) =>
           skus.includes(item.productId),
         ),
       );
