@@ -42,7 +42,7 @@
     "@types/react-native": "0.60.16",
     "babel-eslint": "^10.0.2",
     "eslint": "^6.1.0",
-    "flow-bin": "^0.104.0",
+    "flow-bin": "^0.109.0",
     "flowgen": "^1.10.0",
     "typescript": "^3.5.3"
   }
