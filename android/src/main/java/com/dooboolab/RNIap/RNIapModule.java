@@ -500,7 +500,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
     if (purchases != null) {
       for (Purchase purchase : purchases) {
-
         WritableMap item = Arguments.createMap();
         item.putString("productId", purchase.getSku());
         item.putString("transactionId", purchase.getOrderId());
@@ -514,8 +513,8 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
 
         sendEvent(reactContext, "purchase-updated", item);
-        DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, item);
       }
+      DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, purchase.get(0));
     } else {
       WritableMap error = Arguments.createMap();
       error.putInt("responseCode", billingResult.getResponseCode());
