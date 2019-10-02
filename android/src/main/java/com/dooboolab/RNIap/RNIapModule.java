@@ -514,7 +514,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
         sendEvent(reactContext, "purchase-updated", item);
       }
-      DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, purchase.get(0));
+      DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, purchases.get(0));
     } else {
       WritableMap error = Arguments.createMap();
       error.putInt("responseCode", billingResult.getResponseCode());
