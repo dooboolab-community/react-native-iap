@@ -100,8 +100,7 @@ export interface PurchaseError {
   message?: string;
 }
 
-export interface InAppPurchase extends ProductPurchase {
-}
+export type InAppPurchase = ProductPurchase;
 
 export interface SubscriptionPurchase extends ProductPurchase {
   autoRenewingAndroid?: boolean;
