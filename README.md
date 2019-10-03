@@ -565,6 +565,10 @@ Issue regarding `valid products`
     `clearProducts()`, and do the fetching job again, and you will receive what
     you expected.
 
+### Example backend (Node.js)
+
+[Here](https://github.com/mifi/in-app-subscription-example) you can find an example backend for idempotent validating of receipts on both iOS/Android and storing and serving subscription state to the client.
+
 Q & A
 -----
 #### How can a user cancel a subscription in my app?
