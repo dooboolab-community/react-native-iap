@@ -83,6 +83,7 @@ export interface ProductPurchase {
   purchaseStateAndroid?: number;
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;
+  isAcknowledgedAndroid?: boolean;
 }
 
 export interface PurchaseResult {
@@ -100,7 +101,6 @@ export interface PurchaseError {
 }
 
 export interface InAppPurchase extends ProductPurchase {
-  isAcknowledgedAndroid?: boolean;
 }
 
 export interface SubscriptionPurchase extends ProductPurchase {
