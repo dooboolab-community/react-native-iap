@@ -1,7 +1,6 @@
 IapExample/
 .idea/
 gen/
-src/
 node_modules/
 android/react-native-iap.iml
 android/android.iml
