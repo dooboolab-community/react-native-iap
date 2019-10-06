@@ -580,7 +580,10 @@ export const validateReceiptAndroid = async (
   isSub?: boolean,
 ): Promise<object | false> => {
   const type = isSub ? 'subscriptions' : 'products';
-  const url = `https://www.googleapis.com/androidpublisher/v2/applications/${packageName}/purchases/${type}/${productId}/tokens/${productToken}?access_token=${accessToken}`;
+  const url =
+    'https://www.googleapis.com/androidpublisher/v2/applications' +
+    `/${packageName}/purchases/${type}/${productId}` +
+    `/tokens/${productToken}?access_token=${accessToken}`;
 
   const response = await fetch(url, {
     method: 'GET',
