@@ -13,8 +13,10 @@
     - Fix more type error.
   - **[3.5.6]**
     - Resolve [#748](https://github.com/dooboolab/react-native-iap/issues/748)
-  - **[3.5.8]**
+  - **[~~3.5.8~~]**
     - `android` runtie bugfix in `3.5.7`.
+  - **[3.5.9]**
+    - Resolve issue on `andorid` project. Do not use `3.5.8`.
 - **[3.4.+]**
   - Makes module possible to be built in older XCode version [#650](https://github.com/dooboolab/react-native-iap/pull/650).
   - Makes iOS `getSubscriptions` return subscriptions that only received ids [#654](https://github.com/dooboolab/react-native-iap/pull/654).
