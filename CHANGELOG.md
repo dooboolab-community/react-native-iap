@@ -29,9 +29,10 @@
   - rc8
     - Put promises returns back in `android` for users who still need it.
     - Fixed typings for `getProducts` and `getSubscriptions`.
-  - rc10
+  - rc11
     - Resolve [#748](https://github.com/dooboolab/react-native-iap/issues/748)
     - Resolve [#757](https://github.com/dooboolab/react-native-iap/issues/757)
+    - Resolve [#762](https://github.com/dooboolab/react-native-iap/issues/762)
 - **[3.5.+]**
   - Migrated to `ts` project. Now we only need to concentrate on `index.ts` file. `index.js`, `index.js.flow`, `index.d.ts` is generated during build.
   - `consumeAllItems` returns consumed tokens instead of void.
