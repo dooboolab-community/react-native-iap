@@ -1,5 +1,8 @@
 ## Changelogs
-
+- **[4.0.1]**
+    - Resolve [#763](https://github.com/dooboolab/react-native-iap/issues/763)
+    - Resolve [#764](https://github.com/dooboolab/react-native-iap/issues/764)
+    - Resolve [#765](https://github.com/dooboolab/react-native-iap/issues/765)
 - **[4.0.0]**
   - rc1
     - Remove unused methods and fix typings
