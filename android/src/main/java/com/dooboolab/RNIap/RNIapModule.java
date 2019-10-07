@@ -110,7 +110,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             error.putString("code", errorData[0]);
             error.putString("message", errorData[1]);
             sendEvent(reactContext, "purchase-error", error);
-            DoobooUtils.getInstance().rejectPromiseWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
+            DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
           }
         }
       }

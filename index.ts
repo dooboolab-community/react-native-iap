@@ -291,11 +291,11 @@ export const requestPurchase = (
         );
       }
       checkNativeiOSAvailable();
-      RNIapIos.buyProduct(sku, andDangerouslyFinishTransactionAutomaticallyIOS);
+      return RNIapIos.buyProduct(sku, andDangerouslyFinishTransactionAutomaticallyIOS);
     },
     android: async () => {
       checkNativeAndroidAvailable();
-      RNIapModule.buyItemByType(
+      return RNIapModule.buyItemByType(
         ANDROID_ITEM_TYPE_IAP,
         sku,
         null,
@@ -336,12 +336,12 @@ export const requestSubscription = (
         );
       }
       checkNativeiOSAvailable();
-      RNIapIos.buyProduct(sku, andDangerouslyFinishTransactionAutomaticallyIOS);
+      return RNIapIos.buyProduct(sku, andDangerouslyFinishTransactionAutomaticallyIOS);
     },
     android: async () => {
       checkNativeAndroidAvailable();
       if (!prorationModeAndroid) prorationModeAndroid = -1;
-      RNIapModule.buyItemByType(
+      return RNIapModule.buyItemByType(
         ANDROID_ITEM_TYPE_SUBSCRIPTION,
         sku,
         oldSkuAndroid,
@@ -364,7 +364,7 @@ export const requestPurchaseWithQuantityIOS = (
   Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();
-      RNIapIos.buyProductWithQuantityIOS(sku, quantity);
+      return RNIapIos.buyProductWithQuantityIOS(sku, quantity);
     },
   })();
 
