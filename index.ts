@@ -127,7 +127,6 @@ function checkNativeiOSAvailable(): Promise<void> {
     return Promise.reject(new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE));
   }
 }
-
 /**
  * Init module for purchase flow. Required on Android. In ios it will check wheter user canMakePayment.
  * @returns {Promise<string>}
@@ -188,7 +187,7 @@ export const getProducts = (skus: string[]): Promise<Product[]> =>
         return [];
       }
       return RNIapIos.getItems(skus).then((items: Product[]) =>
-        items.filter((item) => item.productId),
+        items.filter((item: Product) => item.productId),
       );
     },
     android: async () => {
@@ -209,7 +208,7 @@ export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
     ios: async () => {
       checkNativeiOSAvailable();
       return RNIapIos.getItems(skus).then((items: Subscription[]) =>
-        items.filter((item) => skus.includes(item.productId)),
+        items.filter((item: Subscription) => skus.includes(item.productId)),
       );
     },
     android: async () => {
@@ -428,8 +427,9 @@ export const clearTransactionIOS = (): Promise<void> => {
   return Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();
-      RNIapIos.clearTransaction();
+      return RNIapIos.clearTransaction();
     },
+    android: async () => Promise.resolve(),
   })();
 };
 
@@ -442,8 +442,9 @@ export const clearProductsIOS = (): void =>
   Platform.select({
     ios: () => {
       checkNativeiOSAvailable();
-      RNIapIos.clearProducts();
+      return RNIapIos.clearProducts();
     },
+    android: async () => Promise.resolve,
   })();
 
 /**
@@ -456,6 +457,7 @@ export const acknowledgePurchaseAndroid = (
   developerPayload?: string,
 ): Promise<PurchaseResult | void> =>
   Platform.select({
+    ios: async () => Promise.resolve(),
     android: async () => {
       checkNativeAndroidAvailable();
       return RNIapModule.acknowledgePurchase(token, developerPayload);
@@ -472,6 +474,7 @@ export const consumePurchaseAndroid = (
   developerPayload?: string,
 ): Promise<PurchaseResult> =>
   Platform.select({
+    ios: async () => Promise.resolve(),
     android: async () => {
       checkNativeAndroidAvailable();
       return RNIapModule.consumeProduct(token, developerPayload);
@@ -489,6 +492,7 @@ export const getPromotedProductIOS = (): Promise<Product> =>
       checkNativeiOSAvailable();
       return RNIapIos.promotedProduct();
     },
+    android: async () => Promise.resolve(),
   })();
 
 /**
@@ -502,6 +506,7 @@ export const buyPromotedProductIOS = (): Promise<void> =>
       checkNativeiOSAvailable();
       return RNIapIos.buyPromotedProduct();
     },
+    android: async () => Promise.resolve(),
   })();
 
 /**
@@ -529,12 +534,13 @@ export const requestPurchaseWithOfferIOS = (
       checkNativeiOSAvailable();
       return RNIapIos.buyProductWithOffer(sku, forUser, withOffer);
     },
+    android: async () => Promise.resolve(),
   })();
 
 /**
  * Validate receipt for iOS.
  * @param {object} receiptBody the receipt body to send to apple server.
- * @param {string} isTest whether this is in test environment which is sandbox.
+ * @param {boolean} isTest whether this is in test environment which is sandbox.
  * @returns {Promise<Apple.ReceiptValidationResponse | false>}
  */
 export const validateReceiptIos = async (
@@ -581,7 +587,7 @@ export const validateReceiptAndroid = async (
 ): Promise<object | false> => {
   const type = isSub ? 'subscriptions' : 'products';
   const url =
-    'https://www.googleapis.com/androidpublisher/v2/applications' +
+    'https://www.googleapis.com/androidpublisher/v3/applications' +
     `/${packageName}/purchases/${type}/${productId}` +
     `/tokens/${productToken}?access_token=${accessToken}`;
 

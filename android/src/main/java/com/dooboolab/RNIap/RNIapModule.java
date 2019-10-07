@@ -487,7 +487,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           map.putString("message", errorData[1]);
           promise.resolve(map);
         } catch (ObjectAlreadyConsumedException oce) {
-          Log.e(TAG, oce.getMessage());
+          promise.reject(oce.getMessage());
         }
       }
     });
@@ -509,7 +509,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
     if (purchases != null) {
       for (Purchase purchase : purchases) {
-
         WritableMap item = Arguments.createMap();
         item.putString("productId", purchase.getSku());
         item.putString("transactionId", purchase.getOrderId());
@@ -523,14 +522,13 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
 
         sendEvent(reactContext, "purchase-updated", item);
-        DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, item);
       }
     } else {
       WritableMap error = Arguments.createMap();
       error.putInt("responseCode", billingResult.getResponseCode());
       error.putString("debugMessage", billingResult.getDebugMessage());
       String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
-      error.putString("code", "null");
+      error.putString("code", errorData[0]);
       error.putString("message", "purchases are null.");
       sendEvent(reactContext, "purchase-error", error);
       DoobooUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());

@@ -1267,6 +1267,13 @@ react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.10.1.tgz#0612786bf19df406502d935494f0450b40b8294f"
   integrity sha512-BXUMf9sIOPXXZWqr7+c5SeOKJykyVr2u0UDzEf4LNGc6taGkQe1A9DFD07umCIXz45RLr9oAAwZbAJ0Pkknfaw==
 
+react-native-iap@^4.0.0-rc13:
+  version "4.0.0-rc13"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-4.0.0-rc13.tgz#746817f25b9aa1054f8cacf2fc4f9a999e5e9708"
+  integrity sha512-z9qwZRx03AEpQgW4ZyZ+qYaH1/jcFIs4yVBFu74tR/S5IUzYQ7kjP1wHSAkRPfydG/Sf3PsIRi76L+MQseHyVA==
+  dependencies:
+    dooboolab-welcome "^1.1.1"
+
 read-pkg-up@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/read-pkg-up/-/read-pkg-up-2.0.0.tgz#6b72a8048984e0c41e79510fd5e9fa99b3b549be"
