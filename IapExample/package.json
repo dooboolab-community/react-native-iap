@@ -20,7 +20,7 @@
     "react": "16.8.6",
     "react-native": "0.60.3",
     "react-native-gesture-handler": "git://github.com/hyochan/react-native-gesture-handler.git#package-names",
-    "react-native-iap": "git://github.com/dooboolab/react-native-iap.git#next",
+    "react-native-iap": "^4.0.0-rc12",
     "react-navigation": "^3.11.1"
   },
   "devDependencies": {

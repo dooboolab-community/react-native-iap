@@ -1,30 +1,38 @@
 ## Changelogs
 
 - **[4.0.0]**
-  - Remove unused methods and fix typings
-  - Default `andDangerouslyFinishTransactionAutomatically` to true
-  - Update eslint rules
-  - Remove all the deprecated methods
-    - Remove `buyProduct`.
-    - Remove `buySubscription`.
-    - Remove `addAdditionalSuccessPurchaseListenerIOS`.
-  - Renamed methods
-    - Rename `requestReceiptIOS` to `getReceiptIOS`.
-    - Rename `buyProductWithOfferIOS` to `requestPurcaseWithOfferIOS`.
-    - Rename `buyProductWithQuantityIOS` to `requestProductWithQuantityIOS`.
-  - Add missing types
-  - Abstracts verifying purchases into one method, finishTransaction
-  - It abstracts finishTransactionIOS, consumePurchaseAndroid, acknowledgePurchaseAndroid in to one method.
-  - Do not use this.
-  - Add `deveoperId` and `accountId` when requesting `purchase` or `subscription` in `android`. Find out more in `requestPurchase` and `requestSubscription`.
-  - Send `purchase-error` with null purchases.
-  - Fix types that's not reliable in recent `ts` version [#731](https://github.com/dooboolab/react-native-iap/issues/731)
-  - Fix optional parameters not specified.
-  - Put promises returns back in `android` for users who still need it.
-  - Fixed typings for `getProducts` and `getSubscriptions`.
-  - Resolve [#748](https://github.com/dooboolab/react-native-iap/issues/748)
-  - Resolve [#757](https://github.com/dooboolab/react-native-iap/issues/757)
-  - Resolve [#762](https://github.com/dooboolab/react-native-iap/issues/762)
+  - rc1
+    - Remove unused methods and fix typings
+    - Default `andDangerouslyFinishTransactionAutomatically` to true
+    - Update eslint rules
+    - Remove all the deprecated methods
+      - Remove `buyProduct`.
+      - Remove `buySubscription`.
+      - Remove `addAdditionalSuccessPurchaseListenerIOS`.
+    - Renamed methods
+      - Rename `requestReceiptIOS` to `getReceiptIOS`.
+      - Rename `buyProductWithOfferIOS` to `requestPurcaseWithOfferIOS`.
+      - Rename `buyProductWithQuantityIOS` to `requestProductWithQuantityIOS`.
+    - Add missing types
+    - Abstracts verifying purchases into one method, finishTransaction
+    - It abstracts finishTransactionIOS, consumePurchaseAndroid, acknowledgePurchaseAndroid in to one method.
+  - rc2
+    - Do not use this.
+  - rc3
+    - Add `deveoperId` and `accountId` when requesting `purchase` or `subscription` in `android`. Find out more in `requestPurchase` and `requestSubscription`.
+  - rc4
+    - Send `purchase-error` with null purchases.
+  - rc5
+    - Fix types that's not reliable in recent `ts` version [#731](https://github.com/dooboolab/react-native-iap/issues/731)
+  - rc7
+    - Fix optional parameters not specified.
+  - rc8
+    - Put promises returns back in `android` for users who still need it.
+    - Fixed typings for `getProducts` and `getSubscriptions`.
+  - rc11
+    - Resolve [#748](https://github.com/dooboolab/react-native-iap/issues/748)
+    - Resolve [#757](https://github.com/dooboolab/react-native-iap/issues/757)
+    - Resolve [#7](https://github.com/dooboolab/react-native-iap/issues/762)
 - **[3.5.+]**
   - Migrated to `ts` project. Now we only need to concentrate on `index.ts` file. `index.js`, `index.js.flow`, `index.d.ts` is generated during build.
   - `consumeAllItems` returns consumed tokens instead of void.
