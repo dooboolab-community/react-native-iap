@@ -65,7 +65,8 @@ react-native-iap
 
 Quick News
 ----------
-- `react-native-iap@4.0.0` is comming. You can see [#716](https://github.com/dooboolab/react-native-iap/pull/716) for updates. You can install pre-releases version by running `npm install --save react-native-iap@next`
+- `react-native-iap@4.0.0` has been released. You can see [#716](https://github.com/dooboolab/react-native-iap/pull/716) for updates.
+- For early stages, You can install pre-releases version by running `npm install --save reqct-native-iap@next`
 - In the past, `react-native-iap@^3.*` has been updated very prompty for migration issues.
     Don't get suprised too much on why it is bumping up version so quickly these days.
   1. Migrated to new `AndroidX` APIs.
@@ -108,15 +109,13 @@ Method                                                                          
 `getSubscriptions(skus: string[])`<ul><li>skus: array of Subscription ID/sku</li></ul> | `Promise<Subscription[]>` | Get a list of subscriptions.<br>Note: With before `iOS 11.2`, this method _will_ also return products if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to `iOS 11.2`.
 `getPurchaseHistory()`                                                                 | `Promise<Purchase>`       | Gets an inventory of purchases made by the user regardless of consumption status (where possible).
 `getAvailablePurchases()`                                                              | `Promise<Purchase[]>`     | Get all purchases made by the user (either non-consumable, or haven't been consumed yet.
-_*deprecated_<br>~~`buyProduct(sku: string)`~~<ul><li>sku: product ID/sku</li></ul>    | `Promise<Purchase>`       | Buy a product.
-`requestPurchase(sku: string, andDangerouslyFinishTransactionAutomatically: boolean)`<ul><li>sku: product ID/sku</li></ul>                    | `Promise<Purchase>`       | Request a purchase.<br>`purchaseUpdatedListener` will receive the result.<br/> `andDangerouslyFinishTransactionAutomatically` defaults to `true` for backwards compatibility but this is deprecated and you should set it to false once you're [manually finishing your transactions][a-purchase-flow].
-_*deprecated_<br>~~`buyProductWithQuantityIOS(sku: string, quantity: number)`~~<ul><li>sku: product ID/sku</li><li>quantity: Quantity</li></ul> | `Promise<Purchase>` | **iOS only**<br>Buy a product with a specified quantity.
-`requestPurchaseWithQuantityIOS(sku: string, quantity: number)`<ul><li>sku: product ID/sku</li><li>quantity: Quantity</li></ul>                 | `Promise<Purchase>` | **iOS only**<br>Buy a product with a specified quantity.<br>`purchaseUpdatedListener` will receive the result
-_*deprecated_<br>~~`buySubscription(sku: string)`~~<ul><li>sku: subscription ID/sku</li></ul> | `Promise<Purchase>` | Create (buy) a subscription to a sku.
-`requestSubscription(sku: string)`<ul><li>sku: subscription ID/sku</li></ul>                  | `Promise<string>`   | Create (buy) a subscription to a sku.
+`requestPurchase(sku: string, andDangerouslyFinishTransactionAutomatically: boolean)`<ul><li>sku: product ID/sku</li></ul>                    | `void`       | Request a purchase.<br>`purchaseUpdatedListener` will receive the result.<br/> `andDangerouslyFinishTransactionAutomatically` defaults to `true` for backwards compatibility but this is deprecated and you should set it to false once you're [manually finishing your transactions][a-purchase-flow].
+`requestPurchaseWithQuantityIOS(sku: string, quantity: number)`<ul><li>sku: product ID/sku</li><li>quantity: Quantity</li></ul>                 | `void` | **iOS only**<br>Buy a product with a specified quantity.<br>`purchaseUpdatedListener` will receive the result
+_*deprecated_<br>~~`buySubscription(sku: string)`~~<ul><li>sku: subscription ID/sku</li></ul> | `void` | Create (buy) a subscription to a sku.
+`requestSubscription(sku: string, andDangerouslyFinishTransactionAutomaticallyIOS: string, oldSkuAndroid: string, prorationModeAndroid: string, developerIdAndroid: string, userIdAndroid: string)`<ul><li>sku: subscription ID/sku</li></ul>                  | `void`   | Create (buy) a subscription to a sku.
 `clearTransactionIOS()` | `void`            | **iOS only**<br>Clear up the unfinished transanction which sometimes causes problem.<br>Read more in below README.
 `clearProductsIOS()`    | `void`            | **iOS only**<br>Clear all products and subscriptions.<br>Read more in below README.
-`requestReceiptIOS()`   | `Promise<string>` | **iOS only**<br>Get the current receipt.
+`getReceiptIOS()`   | `Promise<string>` | **iOS only**<br>Get the current receipt.
 `getPendingPurchasesIOS()` | `Promise<ProductPurchase[]>` | **IOS only**<br>Gets all the transactions which are pending to be finished.
 `validateReceiptIos(body: Object, devMode: boolean)`<ul><li>body: receiptBody</li><li>devMode: isTest</li></ul> | `Object\|boolean` | **iOS only**<br>Validate receipt.
 `endConnectionAndroid()`   | `Promise<void>` | **Android only**<br>End billing connection.
@@ -320,7 +319,7 @@ Purchase
 3. The purchase may be pending and hard to track what has been done ([example][issue-307-c1]).
 4. Thus the Billing Flow is an `event` pattern than a `callback` pattern.
 
-Once you have called `getProducts()`, and you have a valid response, you can call `buyProduct()`.
+Once you have called `getProducts()`, and you have a valid response, you can call `requestPurchase()`.
 Subscribable products can be purchased just like consumable products and users
 can cancel subscriptions by using the iOS System Settings.
 
@@ -342,7 +341,7 @@ class RootComponent extends Component<*> {
   purchaseErrorSubscription = null
 
   componentDidMount() {
-    this.purchaseUpdateSubscription = purchaseUpdatedListener((purchase: ProductPurchase) => {
+    this.purchaseUpdateSubscription = purchaseUpdatedListener((purchase: InAppPurchase | SubscriptionPurchase | ProductPurchase ) => {
       console.log('purchaseUpdatedListener', purchase);
       const receipt = purchase.transactionReceipt;
       if (receipt) {
@@ -421,14 +420,7 @@ Most likely, you'll want to handle the “store kit flow”[<sup>\[2\]</sup>][ap
 which happens when a user successfully pays after solving a problem with his
 or her account – for example, when the credit card information has expired.
 
-In this scenario, the initial call to `RNIap.buyProduct()` would fail and you'd
-need to add `addAdditionalSuccessPurchaseListenerIOS` to handle the successful
-purchase previously.
-
-We are planning to _remove_ `additionalSuccessPurchaseListenerIOS` in future
-releases so avoid using it.
-Approach of new purchase flow will prevent such issue in [#307][issue-307] which
-was privided in `2.4.*`.
+For above reason, we decided to remove ~~`buyProduct`~~ and use `requestPurchase` instead which doesn't rely on promise function. The `purchaseUpdatedListener` will receive the success purchase and `purchaseErrorListener` will receive all the failure result that occured during the purchase attempt.
 
 Finishing a Purchase
 ----------------------
@@ -541,7 +533,7 @@ Sometimes you will need to get the receipt at times other than after purchase.
 For example, when a user needs to ask for permission to buy a product (`Ask to buy`
 flow) or unstable internet connections.
 
-For these cases we have a convenience method `requestReceiptIOS()` which gets
+For these cases we have a convenience method `getReceiptIOS()` which gets
 the latest receipt for the app at any given time. The response is base64 encoded.
 
 ### iOS Purchasing process right way.

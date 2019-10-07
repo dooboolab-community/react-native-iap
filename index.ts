@@ -201,7 +201,7 @@ export const getProducts = (skus: string[]): Promise<Product[]> =>
 /**
  * Get a list of subscriptions
  * @param {string[]} skus The item skus
- * @returns {Promise<SubscriptionPurchase[]>}
+ * @returns {Promise<Subscription[]>}
  */
 export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
   Platform.select({
@@ -266,185 +266,153 @@ export const getAvailablePurchases = (): Promise<
   })();
 
 /**
- * @deprecated Deprecated since 3.0.0. This will be removed in the future. Use `requestPurchase` instead.
- * Buy a product
- * @param {string} sku The product's sku/ID
- * @returns {Promise<InAppPurchase>}
- */
-export const buyProduct = (sku: string): Promise<InAppPurchase> => {
-  console.warn(
-    'The `buyProduct` method is deprecated since 3.0.0.' +
-      'This will be removed in the future so please use `requestPurchase` instead.',
-  );
-  return Platform.select({
-    ios: async () => {
-      checkNativeiOSAvailable();
-      return RNIapIos.buyProduct(sku, true);
-    },
-    android: async () => {
-      checkNativeAndroidAvailable();
-      return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
-    },
-  })();
-};
-
-/**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
- * @param {boolean} andDangerouslyFinishTransactionAutomatically You should set this to false
- * and call finishTransaction manually when you have delivered the purchased goods to the user.
- * It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
- * @returns {Promise<string>}
+ * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
+ * @param {string} [developerIdAndroid] Specify an optional obfuscated string of developer profile name.
+ * @param {string} [userIdAndroid] Specify an optional obfuscated string that is uniquely associated with the user's account in.
+ * @returns {Promise<void>}
  */
 export const requestPurchase = (
   sku: string,
-  andDangerouslyFinishTransactionAutomatically?: boolean,
-): Promise<string> =>
+  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean,
+  developerIdAndroid?: string,
+  accountIdAndroid?: string,
+): Promise<void> =>
   Platform.select({
     ios: async () => {
-      andDangerouslyFinishTransactionAutomatically =
-        andDangerouslyFinishTransactionAutomatically === undefined
-          ? true
-          : andDangerouslyFinishTransactionAutomatically;
-      if (andDangerouslyFinishTransactionAutomatically) {
+      andDangerouslyFinishTransactionAutomaticallyIOS =
+        andDangerouslyFinishTransactionAutomaticallyIOS === undefined
+          ? false
+          : andDangerouslyFinishTransactionAutomaticallyIOS;
+      if (andDangerouslyFinishTransactionAutomaticallyIOS) {
         console.warn(
           'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
         );
       }
       checkNativeiOSAvailable();
-      return RNIapIos.buyProduct(
-        sku,
-        andDangerouslyFinishTransactionAutomatically,
-      );
+      RNIapIos.buyProduct(sku, andDangerouslyFinishTransactionAutomaticallyIOS);
     },
     android: async () => {
       checkNativeAndroidAvailable();
-      return RNIapModule.buyItemByType(ANDROID_ITEM_TYPE_IAP, sku, null, 0);
-    },
-  })();
-
-/**
- * @deprecated Deprecated since 3.0.0. This will be removed in the future. Use `requestSubscription` instead.
- * Create a subscription to a sku
- * @param {string} sku The product's sku/ID
- * @param {string} [oldSku] Optional old product's ID for upgrade/downgrade (Android only)
- * @param {number} [prorationMode] Optional proration mode for upgrade/downgrade (Android only)
- * @returns {Promise<SubscriptionPurchase>}
- */
-export const buySubscription = (
-  sku: string,
-  oldSku?: string,
-  prorationMode?: number,
-): Promise<SubscriptionPurchase> => {
-  console.warn(
-    'Deprecated since 3.0.0. This will be removed in the future. Use `requestSubscription` instead',
-  );
-  return Platform.select({
-    ios: async () => {
-      checkNativeiOSAvailable();
-      return RNIapIos.buyProduct(sku, true);
-    },
-    android: async () => {
-      checkNativeAndroidAvailable();
-      if (!prorationMode) prorationMode = -1;
-      return RNIapModule.buyItemByType(
-        ANDROID_ITEM_TYPE_SUBSCRIPTION,
+      RNIapModule.buyItemByType(
+        ANDROID_ITEM_TYPE_IAP,
         sku,
-        oldSku,
-        prorationMode,
+        null,
+        0,
+        developerIdAndroid,
+        accountIdAndroid,
       );
     },
   })();
-};
 
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
- * @returns {Promise<string>}
+ * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
+ * @param {string} [oldSkuAndroid] SKU that the user is upgrading or downgrading from.
+ * @param {number} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
+ * @param {string} [developerIdAndroid] Specify an optional obfuscated string of developer profile name.
+ * @param {string} [userIdAndroid] Specify an optional obfuscated string that is uniquely associated with the user's account in.
+ * @returns {Promise<void>}
  */
 export const requestSubscription = (
   sku: string,
-  oldSku?: string,
-  prorationMode?: number,
-): Promise<string> =>
+  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean,
+  oldSkuAndroid?: string,
+  prorationModeAndroid?: number,
+  developerIdAndroid?: string,
+  userIdAndroid?: string,
+): Promise<void> =>
   Platform.select({
     ios: async () => {
+      andDangerouslyFinishTransactionAutomaticallyIOS =
+        andDangerouslyFinishTransactionAutomaticallyIOS === undefined
+          ? false
+          : andDangerouslyFinishTransactionAutomaticallyIOS;
+      if (andDangerouslyFinishTransactionAutomaticallyIOS) {
+        console.warn(
+          'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
+        );
+      }
       checkNativeiOSAvailable();
-      return RNIapIos.buyProduct(sku, true);
+      RNIapIos.buyProduct(sku, andDangerouslyFinishTransactionAutomaticallyIOS);
     },
     android: async () => {
       checkNativeAndroidAvailable();
-      if (!prorationMode) prorationMode = -1;
-      return RNIapModule.buyItemByType(
+      if (!prorationModeAndroid) prorationModeAndroid = -1;
+      RNIapModule.buyItemByType(
         ANDROID_ITEM_TYPE_SUBSCRIPTION,
         sku,
-        oldSku,
-        prorationMode,
+        oldSkuAndroid,
+        prorationModeAndroid,
+        developerIdAndroid,
+        userIdAndroid,
       );
     },
   })();
 
 /**
- * @deprecated Deprecated since 3.0.0. This will be removed in the future. Use `requestPurchaseWithQuantityIOS` instead.
- * Buy a product with a specified quantity (iOS only)
- * @param {string} sku The product's sku/ID
- * @param {number} quantity The amount of product to buy
- * @returns {Promise<ProductPurchase>}
- */
-export const buyProductWithQuantityIOS = (
-  sku: string,
-  quantity: number,
-): Promise<ProductPurchase> => {
-  console.warn(
-    'Deprecated since 3.0.0. This will be removed in the future. Use `buyProductWithQuantityIOS` instead',
-  );
-  return Platform.select({
-    ios: async () => {
-      checkNativeiOSAvailable();
-      return RNIapIos.buyProductWithQuantityIOS(sku, quantity);
-    },
-    android: async () => Promise.resolve(),
-  })();
-};
-
-/**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
- * @returns {Promise<string>}
+ * @returns {Promise<void>}
  */
 export const requestPurchaseWithQuantityIOS = (
   sku: string,
   quantity: number,
-): Promise<string> =>
+): Promise<void> =>
   Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();
-      return RNIapIos.buyProductWithQuantityIOS(sku, quantity);
+      RNIapIos.buyProductWithQuantityIOS(sku, quantity);
     },
-    android: async () => Promise.resolve(),
   })();
 
 /**
  * Finish Transaction (iOS only)
- *  Similar to `consumePurchaseAndroid`.
- *  Tells StoreKit that you have delivered the purchase to the user
- *  and StoreKit can now let go of the transaction.
- *  Call this after you have persisted the purchased state to your server or local data in your app.
- *  `react-native-iap` will continue to deliver the purchase updated events
- *  with the successful purchase until you finish the transaction.
- * **Even after the app has relaunched.**
+ *   Similar to `consumePurchaseAndroid`. Tells StoreKit that you have delivered the purchase to the user and StoreKit can now let go of the transaction.
+ *   Call this after you have persisted the purchased state to your server or local data in your app.
+ *   `react-native-iap` will continue to deliver the purchase updated events with the successful purchase until you finish the transaction. **Even after the app has relaunched.**
  * @param {string} transactionId The transactionId of the function that you would like to finish.
- * @returns {Promise<string | void>}
+ * @returns {Promise<void>}
  */
-export const finishTransactionIOS = (
+export const finishTransactionIOS = (transactionId: string): Promise<void> =>
+  Platform.select({
+    ios: async () => {
+      checkNativeiOSAvailable();
+      return RNIapIos.finishTransaction(transactionId);
+    },
+  })();
+/**
+ * Finish Transaction (both platforms)
+ *   Abstracts `finishTransactionIOS`, `consumePurchaseAndroid`, `acknowledgePurchaseAndroid` in to one method.
+ * @param {string} transactionId The transactionId of the function that you would like to finish.
+ * @param {boolean} isConsumable Checks if purchase is consumable. Has effect on `android`.
+ * @param {string} developerPayloadAndroid Android developerPayload.
+ * @returns {Promise<string | void> }
+ */
+export const finishTransaction = (
   transactionId: string,
+  isConsumable?: string,
+  developerPayloadAndroid?: string,
 ): Promise<string | void> => {
   return Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();
       return RNIapIos.finishTransaction(transactionId);
     },
-    android: async () => Promise.resolve(),
+    android: async () => {
+      if (isConsumable) {
+        return RNIapModule.consumePurchaseAndroid(
+          transactionId,
+          developerPayloadAndroid,
+        );
+      }
+      return RNIapModule.acknowledgePurchaseAndroid(
+        transactionId,
+        developerPayloadAndroid,
+      );
+    },
   })();
 };
 
@@ -452,9 +420,9 @@ export const finishTransactionIOS = (
  * Clear Transaction (iOS only)
  *   Finish remaining transactions. Related to issue #257
  *     link : https://github.com/dooboolab/react-native-iap/issues/257
- * @returns {Promise<string | void>}
+ * @returns {Promise<void>}
  */
-export const clearTransactionIOS = (): Promise<string | void> => {
+export const clearTransactionIOS = (): Promise<void> => {
   console.warn('The `clearTransactionIOS` method is deprecated.');
   return Platform.select({
     ios: async () => {
@@ -468,11 +436,11 @@ export const clearTransactionIOS = (): Promise<string | void> => {
 /**
  * Clear valid Products (iOS only)
  *   Remove all products which are validated by Apple server.
- * @returns {Promise<void>}
+ * @returns {void}
  */
-export const clearProductsIOS = (): Promise<void> =>
+export const clearProductsIOS = (): void =>
   Platform.select({
-    ios: async () => {
+    ios: () => {
       checkNativeiOSAvailable();
       return RNIapIos.clearProducts();
     },
@@ -529,8 +497,7 @@ export const getPromotedProductIOS = (): Promise<Product> =>
 
 /**
  * Buy the currently selected promoted product (iOS only)
- *   Initiates the payment process for a promoted product.
- *   Should only be called in response to the `iap-promoted-product` event.
+ *   Initiates the payment process for a promoted product. Should only be called in response to the `iap-promoted-product` event.
  * @returns {Promise<void>}
  */
 export const buyPromotedProductIOS = (): Promise<void> =>
@@ -549,15 +516,15 @@ export const buyPromotedProductIOS = (): Promise<void> =>
  * from your server.
  * @param {string} sku The product identifier
  * @param {string} forUser  An user identifier on you system
- * @param {object} withOffer The offer information
+ * @param {Apple.PaymentDiscount} withOffer The offer information
  * @param {string} withOffer.identifier The offer identifier
  * @param {string} withOffer.keyIdentifier Key identifier that it uses to generate the signature
  * @param {string} withOffer.nonce An UUID returned from the server
  * @param {string} withOffer.signature The actual signature returned from the server
  * @param {number} withOffer.timestamp The timestamp of the signature
- * @returns {Promise}
+ * @returns {Promise<void>}
  */
-export const buyProductWithOfferIOS = (
+export const requestPurchaseWithOfferIOS = (
   sku: string,
   forUser: string,
   withOffer: Apple.PaymentDiscount,
@@ -619,7 +586,8 @@ export const validateReceiptAndroid = async (
   isSub?: boolean,
 ): Promise<object | false> => {
   const type = isSub ? 'subscriptions' : 'products';
-  const url = 'https://www.googleapis.com/androidpublisher/v2/applications' +
+  const url =
+    'https://www.googleapis.com/androidpublisher/v3/applications' +
     `/${packageName}/purchases/${type}/${productId}` +
     `/tokens/${productToken}?access_token=${accessToken}`;
 
@@ -635,28 +603,6 @@ export const validateReceiptAndroid = async (
   }
 
   return response.json();
-};
-
-/**
- * @deprecated Deprecated since 3.0.0. This will be removed in the future. Use `purchaseUpdatedLister` with `requestPurchase`.
- * Add IAP purchase event in ios.
- * @returns {callback(e: Event)}
- */
-export const addAdditionalSuccessPurchaseListenerIOS = (
-  e,
-): EmitterSubscription => {
-  console.warn(
-    'addAdditionalSuccessPurchaseListenerIOS is deprecated since 3.0.0' +
-      'and will be removed in the future.' +
-      'Use `purchaseUpdatedListener` with `requestPurchase`.',
-  );
-  if (Platform.OS === 'ios') {
-    checkNativeiOSAvailable();
-    const myModuleEvt = new NativeEventEmitter(RNIapIos);
-    return myModuleEvt.addListener('iap-purchase-event', e);
-  } else {
-    console.log('adding purchase listener is only provided in ios.');
-  }
 };
 
 /**
@@ -696,7 +642,7 @@ export const purchaseErrorListener = (e): EmitterSubscription => {
  * Get the current receipt base64 encoded in IOS.
  * @returns {Promise<string>}
  */
-export const requestReceiptIOS = (): Promise<string> => {
+export const getReceiptIOS = (): Promise<string> => {
   if (Platform.OS === 'ios') {
     checkNativeiOSAvailable();
     return RNIapIos.requestReceipt();
@@ -724,23 +670,20 @@ export default {
   getAvailablePurchases,
   getPendingPurchasesIOS,
   consumeAllItemsAndroid,
-  buySubscription,
-  buyProduct,
-  buyProductWithQuantityIOS,
   clearProductsIOS,
   clearTransactionIOS,
   acknowledgePurchaseAndroid,
   consumePurchaseAndroid,
   validateReceiptIos,
   validateReceiptAndroid,
-  addAdditionalSuccessPurchaseListenerIOS,
   requestPurchase,
   requestPurchaseWithQuantityIOS,
   finishTransactionIOS,
+  finishTransaction,
   requestSubscription,
   purchaseUpdatedListener,
   purchaseErrorListener,
-  requestReceiptIOS,
+  getReceiptIOS,
   getPromotedProductIOS,
   buyPromotedProductIOS,
 };

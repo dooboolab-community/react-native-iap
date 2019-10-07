@@ -201,7 +201,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               .setDeveloperPayload(purchase.getDeveloperPayload())
               .build();
 
-          final ConsumeResponseListener listener = new ConsumeResponseListener() {
+         final ConsumeResponseListener listener = new ConsumeResponseListener() {
             @Override
             public void onConsumeResponse(BillingResult billingResult, String outToken) {
               if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
@@ -363,7 +363,15 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   }
 
   @ReactMethod
-  public void buyItemByType(final String type, final String sku, final String oldSku, final Integer prorationMode, final Promise promise) {
+  public void buyItemByType(
+    final String type,
+    final String sku,
+    final String oldSku,
+    final Integer prorationMode,
+    final String developerId,
+    final String accountId,
+    final Promise promise
+  ) {
     final Activity activity = getCurrentActivity();
 
     if (activity == null) {
@@ -415,16 +423,17 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           return;
         }
 
-        BillingFlowParams flowParams = builder
-            .setSkuDetails(selectedSku)
-            .build();
-        BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
+        if (accountId != null) {
+          builder.setAccountId(accountId);
+        }
+        if (developerId != null) {
+          builder.setDeveloperId(developerId);
+        }
 
+        builder.setSkuDetails(selectedSku);
+        BillingFlowParams flowParams = builder.build();
+        BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
         String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
-        Log.d(
-            TAG,
-            "buyItemByType (type: " + type + ", sku: " + sku + ", oldSku: " + oldSku + ", prorationMode: " + prorationMode + ") responseCode: " + billingResult.getResponseCode() + "(" + errorData[0] + ")"
-        );
       }
     });
   }
@@ -494,7 +503,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       error.putString("code", errorData[0]);
       error.putString("message", errorData[1]);
       sendEvent(reactContext, "purchase-error", error);
-      DoobooUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
+      DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
       return;
     }
 
@@ -514,7 +523,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
         sendEvent(reactContext, "purchase-updated", item);
       }
-      DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, purchases.get(0));
     } else {
       WritableMap error = Arguments.createMap();
       error.putInt("responseCode", billingResult.getResponseCode());
