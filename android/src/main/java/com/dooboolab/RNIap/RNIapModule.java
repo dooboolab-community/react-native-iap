@@ -110,7 +110,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             error.putString("code", errorData[0]);
             error.putString("message", errorData[1]);
             sendEvent(reactContext, "purchase-error", error);
-            DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+            DoobooUtils.getInstance().rejectPromiseWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
           }
         }
       }
@@ -522,6 +522,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
 
         sendEvent(reactContext, "purchase-updated", item);
+      }
+      if (purchases.size() > 0) {
+        DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, purchases.get(0));
       }
     } else {
       WritableMap error = Arguments.createMap();
