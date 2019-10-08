@@ -403,12 +403,12 @@ export const finishTransaction = (
     },
     android: async () => {
       if (isConsumable) {
-        return RNIapModule.consumePurchaseAndroid(
+        return RNIapModule.consumeProduct(
           transactionId,
           developerPayloadAndroid,
         );
       }
-      return RNIapModule.acknowledgePurchaseAndroid(
+      return RNIapModule.acknowledgePurchase(
         transactionId,
         developerPayloadAndroid,
       );
