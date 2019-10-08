@@ -508,6 +508,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     }
 
     if (purchases != null) {
+      WritableMap promiseItem = null;
       for (Purchase purchase : purchases) {
         WritableMap item = Arguments.createMap();
         item.putString("productId", purchase.getSku());
@@ -522,9 +523,10 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
 
         sendEvent(reactContext, "purchase-updated", item);
+        promiseItem = item;
       }
-      if (purchases.size() > 0) {
-        DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, purchases.get(0));
+      if (purchases.size() > 0 && promiseItem != null) {
+        DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, promiseItem);
       }
     } else {
       WritableMap error = Arguments.createMap();
