@@ -66,7 +66,8 @@ react-native-iap
 Quick News
 ----------
 - `react-native-iap@4.0.0` has been released. You can see [#716](https://github.com/dooboolab/react-native-iap/pull/716) for updates.
-- For early stages, You can install pre-releases version by running `npm install --save reqct-native-iap@next`
+- ~~For early stages, You can install pre-releases version by running `npm install --save reqct-native-iap@next`~~
+  - `next` package isn't maintained currently. This will be re-opened when there is breaking change comming to support `iap`.
 - In the past, `react-native-iap@^3.*` has been updated very prompty for migration issues.
     Don't get suprised too much on why it is bumping up version so quickly these days.
   1. Migrated to new `AndroidX` APIs.
