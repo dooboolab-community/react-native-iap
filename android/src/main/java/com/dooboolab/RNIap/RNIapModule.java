@@ -546,7 +546,8 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       public void run() {
         Purchase.PurchasesResult purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
         ArrayList<Purchase> unacknowledgedPurchases = new ArrayList<>();
-        if (purchasesResult == null || purchasesResult.getPurchasesList() == null) {
+        if (purchasesResult == null || purchasesResult.getPurchasesList() == null || purchasesResult.getPurchasesList().size() == 0) {
+          promise.resolve(false);
           return;
         }
         for (Purchase purchase : purchasesResult.getPurchasesList()) {
@@ -554,6 +555,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             unacknowledgedPurchases.add(purchase);
           }
         }
+        promise.resolve(true);
         onPurchasesUpdated(purchasesResult.getBillingResult(), unacknowledgedPurchases);
       }
     });

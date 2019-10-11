@@ -1,4 +1,6 @@
 ## Changelogs
+- **[4.0.5]**
+  - Resolve [#788](https://github.com/dooboolab/react-native-iap/issues/788)
 - **[4.0.4]**
   - Call correct methods in finishTransaction Android [#778](https://github.com/dooboolab/react-native-iap/pull/778)
 - **[4.0.3]**
