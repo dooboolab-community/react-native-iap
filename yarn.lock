@@ -90,10 +90,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@dooboo/eslint-config@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@dooboo/eslint-config/-/eslint-config-0.1.3.tgz#3258e3a509399c360a754e434e913a9a901033f4"
-  integrity sha512-Kj8OPjE0c3Ajlavasl3UxfyvMbZ2oqA5/TGe7AUey4W4SxesYtLcUGEa+d+MT/cgihvOsrlggJWpX0vX+liWCQ==
+"@dooboo/eslint-config@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@dooboo/eslint-config/-/eslint-config-0.2.0.tgz#caa2c3a3e44ac9464e7ccd005c07a0276dde03ef"
+  integrity sha512-KCqqwaMKn7QO26lR/GiZbd+mWV7W1ypPhIWq7eFGyxB8DkAO8p2zbQbxtD8Xc7AWF9bJwbFHScO7Zm3yNM96mw==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^2.3.1"
     "@typescript-eslint/parser" "^2.3.1"
