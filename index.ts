@@ -283,7 +283,7 @@ export const requestPurchase = (
     ios: async () => {
       andDangerouslyFinishTransactionAutomaticallyIOS =
         andDangerouslyFinishTransactionAutomaticallyIOS === undefined
-          ? false
+          ? true
           : andDangerouslyFinishTransactionAutomaticallyIOS;
       if (andDangerouslyFinishTransactionAutomaticallyIOS) {
         console.warn(
@@ -291,7 +291,10 @@ export const requestPurchase = (
         );
       }
       checkNativeiOSAvailable();
-      return RNIapIos.buyProduct(sku, andDangerouslyFinishTransactionAutomaticallyIOS);
+      return RNIapIos.buyProduct(
+        sku,
+        andDangerouslyFinishTransactionAutomaticallyIOS,
+      );
     },
     android: async () => {
       checkNativeAndroidAvailable();
@@ -328,7 +331,7 @@ export const requestSubscription = (
     ios: async () => {
       andDangerouslyFinishTransactionAutomaticallyIOS =
         andDangerouslyFinishTransactionAutomaticallyIOS === undefined
-          ? false
+          ? true
           : andDangerouslyFinishTransactionAutomaticallyIOS;
       if (andDangerouslyFinishTransactionAutomaticallyIOS) {
         console.warn(
@@ -336,7 +339,10 @@ export const requestSubscription = (
         );
       }
       checkNativeiOSAvailable();
-      return RNIapIos.buyProduct(sku, andDangerouslyFinishTransactionAutomaticallyIOS);
+      return RNIapIos.buyProduct(
+        sku,
+        andDangerouslyFinishTransactionAutomaticallyIOS,
+      );
     },
     android: async () => {
       checkNativeAndroidAvailable();

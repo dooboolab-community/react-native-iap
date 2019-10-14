@@ -1,4 +1,7 @@
 ## Changelogs
+
+- **[4.0.7]**
+  - Correctly fix `andDangerouslyFinishTransactionAutomatically` default to `true`.
 - **[4.0.5]**
   - Resolve [#788](https://github.com/dooboolab/react-native-iap/issues/788)
 - **[4.0.4]**
