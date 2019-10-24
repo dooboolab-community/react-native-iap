@@ -544,19 +544,24 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     ensureConnection(promise, new Runnable() {
       @Override
       public void run() {
-        Purchase.PurchasesResult purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
-        ArrayList<Purchase> unacknowledgedPurchases = new ArrayList<>();
-        if (purchasesResult == null || purchasesResult.getPurchasesList() == null || purchasesResult.getPurchasesList().size() == 0) {
-          promise.resolve(false);
-          return;
-        }
-        for (Purchase purchase : purchasesResult.getPurchasesList()) {
-          if (!purchase.isAcknowledged()) {
-            unacknowledgedPurchases.add(purchase);
+        String[] types = { BillingClient.SkuType.INAPP, BillingClient.SkuType.SUBS };
+
+        for (String type : types) {
+          Purchase.PurchasesResult purchasesResult = billingClient.queryPurchases(type);
+          ArrayList<Purchase> unacknowledgedPurchases = new ArrayList<>();
+
+          if (purchasesResult == null || purchasesResult.getPurchasesList() == null || purchasesResult.getPurchasesList().size() == 0) {
+            continue;
           }
+          for (Purchase purchase : purchasesResult.getPurchasesList()) {
+            if (!purchase.isAcknowledged()) {
+              unacknowledgedPurchases.add(purchase);
+            }
+          }
+          onPurchasesUpdated(purchasesResult.getBillingResult(), unacknowledgedPurchases);
         }
+
         promise.resolve(true);
-        onPurchasesUpdated(purchasesResult.getBillingResult(), unacknowledgedPurchases);
       }
     });
   }
