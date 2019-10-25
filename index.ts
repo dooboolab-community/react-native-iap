@@ -399,7 +399,7 @@ export const finishTransactionIOS = (transactionId: string): Promise<void> =>
  */
 export const finishTransaction = (
   transactionId: string,
-  isConsumable?: string,
+  isConsumable?: boolean,
   developerPayloadAndroid?: string,
 ): Promise<string | void> => {
   return Platform.select({
