@@ -33,8 +33,7 @@
     "react-native": ">=0.54"
   },
   "dependencies": {
-    "dooboolab-welcome": "^1.1.1",
-    "react-native-iap": "^4.0.0-rc13"
+    "dooboolab-welcome": "^1.1.1"
   },
   "devDependencies": {
     "@dooboo/eslint-config": "^0.2.0",
