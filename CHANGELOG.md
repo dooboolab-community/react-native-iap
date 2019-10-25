@@ -1,5 +1,9 @@
 ## Changelogs
 
+- **[4.0.8]**
+  - Added subs to the list of unconsumed purchases [#807](https://github.com/dooboolab/react-native-iap/pull/807)
+  - Fixed promise never returned from requestSubscription() [#806](https://github.com/dooboolab/react-native-iap/pull/806)
+  - Fixed promise acceptation/rejection not propagated to JS [#809](https://github.com/dooboolab/react-native-iap/pull/809)
 - **[4.0.7]**
   - Correctly fix `andDangerouslyFinishTransactionAutomatically` default to `true`.
 - **[4.0.5]**
