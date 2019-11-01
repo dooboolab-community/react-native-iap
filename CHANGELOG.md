@@ -1,5 +1,7 @@
 ## Changelogs
 
+- **[4.1.1]**
+  - Fix Android compile error for React Native v0.60.x due to missing method #835
 - **[4.1.0]**
   - `finishTransaction` has been renewed by the request in [#797](https://github.com/dooboolab/react-native-iap/issues/797)
 - **[4.0.8]**

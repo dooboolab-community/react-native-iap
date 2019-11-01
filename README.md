@@ -65,6 +65,7 @@ react-native-iap
 
 Quick News
 ----------
+- `react-native-iap@4.0.8` ~ `react-native-iap@4.1.0` is incompatible with `react-native <0.61`. This is fixed in `react-native-iap@4.1.1` and above.
 - `react-native-iap@4.0.0` has been released. You can see [#716](https://github.com/dooboolab/react-native-iap/pull/716) for updates.
 - ~~For early stages, You can install pre-releases version by running `npm install --save reqct-native-iap@next`~~
   - `next` package isn't maintained currently. This will be re-opened when there is breaking change comming to support `iap`.
