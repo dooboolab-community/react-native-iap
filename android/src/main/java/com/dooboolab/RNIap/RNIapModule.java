@@ -522,7 +522,8 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
         item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
 
-        promiseItem = item.copy();
+        promiseItem = new WritableNativeMap();
+        promiseItem.merge(item);
         sendEvent(reactContext, "purchase-updated", item);
       }
       if (purchases.size() > 0 && promiseItem != null) {
