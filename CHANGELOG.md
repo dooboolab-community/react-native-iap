@@ -1,5 +1,7 @@
 ## Changelogs
 
+- **[4.1.0]**
+  - `finishTransaction` has been renewed by the request in [#797](https://github.com/dooboolab/react-native-iap/issues/797)
 - **[4.0.8]**
   - Added subs to the list of unconsumed purchases [#807](https://github.com/dooboolab/react-native-iap/pull/807)
   - Fixed promise never returned from requestSubscription() [#806](https://github.com/dooboolab/react-native-iap/pull/806)

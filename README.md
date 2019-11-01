@@ -362,6 +362,9 @@ class RootComponent extends Component<*> {
               // If not consumable
               RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken);
             }
+
+            // From react-native-iap@4.1.0 you can simplify above `method`. Try to wrap the statement with `try` and `catch` to also grab the `error` message.
+            RNIap.finishTransaction(purchase);
           } else {
             // Retry / conclude the purchase is fraudulent, etc...
           }
