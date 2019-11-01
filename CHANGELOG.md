@@ -1,5 +1,7 @@
 ## Changelogs
 
+- **[4.2.0]**
+  - Bump up the version due to npm bug.
 - **[4.1.1]**
   - Fix Android compile error for React Native v0.60.x due to missing method #835
 - **[4.1.0]**
