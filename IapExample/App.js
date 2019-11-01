@@ -7,10 +7,13 @@ import {
   View,
 } from 'react-native';
 import RNIap, {
-  Product,
-  ProductPurchase,
+  InAppPurchase,
   PurchaseError,
+  SubscriptionPurchase,
   acknowledgePurchaseAndroid,
+  consumePurchaseAndroid,
+  finishTransaction,
+  finishTransactionIOS,
   purchaseErrorListener,
   purchaseUpdatedListener,
 } from 'react-native-iap';
@@ -120,24 +123,25 @@ class Page extends Component {
     }
 
     purchaseUpdateSubscription = purchaseUpdatedListener(
-      async (purchase: ProductPurchase) => {
-        console.log('purchaseUpdatedListener', purchase);
-        if (
-          purchase.purchaseStateAndroid === 1 &&
-          !purchase.isAcknowledgedAndroid
-        ) {
+      async (purchase: InAppPurchase | SubscriptionPurchase) => {
+        const receipt = purchase.transactionReceipt;
+        if (receipt) {
           try {
-            const ackResult = await acknowledgePurchaseAndroid(
-              purchase.purchaseToken,
-            );
-            console.log('ackResult', ackResult);
+            // if (Platform.OS === 'ios') {
+            //   finishTransactionIOS(purchase.transactionId);
+            // } else if (Platform.OS === 'android') {
+            //   // If consumable (can be purchased again)
+            //   consumePurchaseAndroid(purchase.purchaseToken);
+            //   // If not consumable
+            //   acknowledgePurchaseAndroid(purchase.purchaseToken);
+            // }
+            const ackResult = await finishTransaction(purchase);
           } catch (ackErr) {
             console.warn('ackErr', ackErr);
           }
+
+          this.setState({ receipt }, () => this.goNext());
         }
-        this.setState({ receipt: purchase.transactionReceipt }, () =>
-          this.goNext(),
-        );
       },
     );
 

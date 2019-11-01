@@ -71,7 +71,13 @@ export interface Subscription extends Common {
   freeTrialPeriodAndroid?: string;
 }
 
-export interface ProductPurchase {
+export enum PurchaseStateAndroid {
+  Purchased = 0,
+  Canceled = 1,
+  Pending = 2,
+}
+
+interface ProductPurchase {
   productId: string;
   transactionId?: string;
   transactionDate: number;
@@ -80,7 +86,7 @@ export interface ProductPurchase {
   dataAndroid?: string;
   signatureAndroid?: string;
   autoRenewingAndroid?: boolean;
-  purchaseStateAndroid?: number;
+  purchaseStateAndroid?: PurchaseStateAndroid;
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;
   isAcknowledgedAndroid?: boolean;
@@ -398,26 +404,36 @@ export const finishTransactionIOS = (transactionId: string): Promise<void> =>
  * @returns {Promise<string | void> }
  */
 export const finishTransaction = (
-  transactionId: string,
+  purchase: InAppPurchase | ProductPurchase,
   isConsumable?: boolean,
   developerPayloadAndroid?: string,
 ): Promise<string | void> => {
   return Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();
-      return RNIapIos.finishTransaction(transactionId);
+      return RNIapIos.finishTransaction(purchase.transactionId);
     },
     android: async () => {
-      if (isConsumable) {
-        return RNIapModule.consumeProduct(
-          transactionId,
-          developerPayloadAndroid,
-        );
+      if (purchase) {
+        if (isConsumable) {
+          return RNIapModule.consumeProduct(
+            purchase.purchaseToken,
+            developerPayloadAndroid,
+          );
+        } else if (
+          !purchase.isAcknowledgedAndroid &&
+          purchase.purchaseStateAndroid === PurchaseStateAndroid.Purchased
+        ) {
+          return RNIapModule.acknowledgePurchase(
+            purchase.purchaseToken,
+            developerPayloadAndroid,
+          );
+        } else {
+          throw new Error('purchase is not suitable to be purchased');
+        }
+      } else {
+        throw new Error('purchase is not assigned');
       }
-      return RNIapModule.acknowledgePurchase(
-        transactionId,
-        developerPayloadAndroid,
-      );
     },
   })();
 };
@@ -613,9 +629,11 @@ export const validateReceiptAndroid = async (
 
 /**
  * Add IAP purchase event in ios.
- * @returns {callback(e: ProductPurchase)}
+ * @returns {callback(e: InAppPurchase | ProductPurchase)}
  */
-export const purchaseUpdatedListener = (e): EmitterSubscription => {
+export const purchaseUpdatedListener = (
+  e: InAppPurchase | ProductPurchase | any,
+): EmitterSubscription => {
   if (Platform.OS === 'ios') {
     checkNativeiOSAvailable();
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
@@ -632,9 +650,11 @@ export const purchaseUpdatedListener = (e): EmitterSubscription => {
 
 /**
  * Add IAP purchase error event in ios.
- * @returns {callback(e: ProductPurchase)}
+ * @returns {callback(e: PurchaseError)}
  */
-export const purchaseErrorListener = (e): EmitterSubscription => {
+export const purchaseErrorListener = (
+  e: PurchaseError | any,
+): EmitterSubscription => {
   if (Platform.OS === 'ios') {
     checkNativeiOSAvailable();
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
