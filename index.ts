@@ -72,9 +72,9 @@ export interface Subscription extends Common {
 }
 
 export enum PurchaseStateAndroid {
-  Purchased = 0,
-  Canceled = 1,
-  Pending = 2,
+  PENDING = 0,
+  PURCHASED = 1,
+  UNSPECIFIED_STATE = 2,
 }
 
 interface ProductPurchase {
@@ -118,8 +118,6 @@ export type Purchase = InAppPurchase | SubscriptionPurchase;
 
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
-const IOS_ITEM_TYPE_SUBSCRIPTION = 'sub';
-const IOS_ITEM_TYPE_IAP = 'iap';
 export const PROMOTED_PRODUCT = 'iap-promoted-product';
 
 function checkNativeAndroidAvailable(): Promise<void> {
@@ -277,14 +275,14 @@ export const getAvailablePurchases = (): Promise<
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [developerIdAndroid] Specify an optional obfuscated string of developer profile name.
  * @param {string} [userIdAndroid] Specify an optional obfuscated string that is uniquely associated with the user's account in.
- * @returns {Promise<void>}
+ * @returns {Promise<InAppPurchase>}
  */
 export const requestPurchase = (
   sku: string,
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean,
   developerIdAndroid?: string,
   accountIdAndroid?: string,
-): Promise<void> =>
+): Promise<InAppPurchase> =>
   Platform.select({
     ios: async () => {
       andDangerouslyFinishTransactionAutomaticallyIOS =
@@ -332,7 +330,7 @@ export const requestSubscription = (
   prorationModeAndroid?: number,
   developerIdAndroid?: string,
   userIdAndroid?: string,
-): Promise<void> =>
+): Promise<SubscriptionPurchase> =>
   Platform.select({
     ios: async () => {
       andDangerouslyFinishTransactionAutomaticallyIOS =
@@ -372,7 +370,7 @@ export const requestSubscription = (
 export const requestPurchaseWithQuantityIOS = (
   sku: string,
   quantity: number,
-): Promise<void> =>
+): Promise<InAppPurchase> =>
   Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();
@@ -422,7 +420,7 @@ export const finishTransaction = (
           );
         } else if (
           !purchase.isAcknowledgedAndroid &&
-          purchase.purchaseStateAndroid === PurchaseStateAndroid.Purchased
+          purchase.purchaseStateAndroid === PurchaseStateAndroid.PURCHASED
         ) {
           return RNIapModule.acknowledgePurchase(
             purchase.purchaseToken,
@@ -632,7 +630,7 @@ export const validateReceiptAndroid = async (
  * @returns {callback(e: InAppPurchase | ProductPurchase)}
  */
 export const purchaseUpdatedListener = (
-  e: InAppPurchase | ProductPurchase | any,
+  e: InAppPurchase | SubscriptionPurchase | any,
 ): EmitterSubscription => {
   if (Platform.OS === 'ios') {
     checkNativeiOSAvailable();
