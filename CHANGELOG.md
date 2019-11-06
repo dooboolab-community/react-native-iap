@@ -1,5 +1,7 @@
 ## Changelogs
 
+- **[4.2.2]**
+  - Fixes [#845](https://github.com/dooboolab/react-native-iap/issues/845).
 - **[4.2.1]**
   - Fixes [#839](https://github.com/dooboolab/react-native-iap/issues/839) and [#841](https://github.com/dooboolab/react-native-iap/issues/841).
 - **[4.2.0]**
