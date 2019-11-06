@@ -218,7 +218,7 @@ export interface ReceiptValidationResponse {
    *
    * In the JSON file, the value of this key is an array where each element contains the pending renewal information for each auto-renewable subscription identified by the [Product Identifier](https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW11). A pending renewal may refer to a renewal that is scheduled in the future or a renewal that failed in the past for some reason.
    */
-  pending_renewal_info?: string[];
+  pending_renewal_info?: object[];
 }
 
 export interface AppReceipt {
