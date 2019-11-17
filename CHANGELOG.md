@@ -1,5 +1,7 @@
 ## Changelogs
 
+- **[4.3.0]**
+  - Bug fixes and remove tsconfig [#854](https://github.com/dooboolab/react-native-iap/pull/854).
 - **[4.2.2]**
   - Fixes [#845](https://github.com/dooboolab/react-native-iap/issues/845).
 - **[4.2.1]**
