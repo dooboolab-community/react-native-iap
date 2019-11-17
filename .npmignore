@@ -6,3 +6,5 @@ android/react-native-iap.iml
 android/android.iml
 tsconfig.tsbuildinfo
 index.ts
+tsconfig.json
+
