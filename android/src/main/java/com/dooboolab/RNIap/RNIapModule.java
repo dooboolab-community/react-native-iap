@@ -306,6 +306,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             item.putString("signatureAndroid", purchase.getSignature());
             item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
             item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
+            item.putString("type", type);
 
             if (type.equals(BillingClient.SkuType.SUBS)) {
               item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
@@ -348,6 +349,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               item.putString("dataAndroid", purchase.getOriginalJson());
               item.putString("signatureAndroid", purchase.getSignature());
               item.putString("developerPayload", purchase.getDeveloperPayload());
+              item.putString("type", type);
               items.pushMap(item);
             }
 
