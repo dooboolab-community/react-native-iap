@@ -38,7 +38,7 @@
   "devDependencies": {
     "@dooboo/eslint-config": "^0.2.0",
     "@types/eslint": "^6.1.1",
-    "@types/react": "16.9.14",
+    "@types/react": "16.9.15",
     "@types/react-native": "0.60.23",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.4.0",
