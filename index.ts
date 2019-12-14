@@ -72,9 +72,9 @@ export interface Subscription extends Common {
 }
 
 export enum PurchaseStateAndroid {
-  PENDING = 0,
+  UNSPECIFIED_STATE = 0,
   PURCHASED = 1,
-  UNSPECIFIED_STATE = 2,
+  PENDING = 2,
 }
 
 interface ProductPurchase {

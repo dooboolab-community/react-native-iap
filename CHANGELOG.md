@@ -1,5 +1,7 @@
 ## Changelogs
 
+- **[4.3.3]**
+  - Fix `purchaseStateAndroid`. Resolve [#839](https://github.com/dooboolab/react-native-iap/issues/839).
 - **[4.3.1]**
   - Pod file support for tvos.
 - **[4.3.0]**
