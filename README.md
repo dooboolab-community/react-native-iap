@@ -290,10 +290,10 @@ Each `product` returns from `getProducts()` contains:
 
 Property                                 | iOS | And | Comment
 --------                                 | :-: | :-: | -------
-`price`                                  | ✓   | ✓   | Will return localizedPrice on Android (default) or a string price (eg. `1.99`) (iOS).
+`price`                                  | ✓   | ✓   | Localized price string, with only number (eg. `1.99`).
 `productId`                              | ✓   | ✓   | Returns a string needed to purchase the item later.
 `currency`                               | ✓   | ✓   | Returns the currency code.
-`localizedPrice`                         | ✓   | ✓   | Use localizedPrice if you want to display the price to the user so you don't need to worry about currency symbols.
+`localizedPrice`                         | ✓   | ✓   | Localized price string, with number and currency symbol (eg. `$1.99`).
 `title`                                  | ✓   | ✓   | Returns the title Android and localizedTitle on iOS.
 `description`                            | ✓   | ✓   | Returns the localized description on Android and iOS.
 `introductoryPrice`                      | ✓   | ✓   | Formatted introductory price of a subscription, including its currency sign, such as €3.99.<br>The price doesn't include tax.

@@ -18,6 +18,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ObjectAlreadyConsumedException;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -255,7 +256,13 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             for (SkuDetails skuDetails : skuDetailsList) {
               WritableMap item = Arguments.createMap();
               item.putString("productId", skuDetails.getSku());
-              item.putDouble("price", skuDetails.getPriceAmountMicros() / 1000000f);
+              long priceAmountMicros = skuDetails.getPriceAmountMicros();
+              // Use valueOf instead of constructors.
+              // See: https://www.javaworld.com/article/2073176/caution--double-to-bigdecimal-in-java.html
+              BigDecimal priceAmount = BigDecimal.valueOf(priceAmountMicros);
+              BigDecimal microUnitsDivisor = BigDecimal.valueOf(1000000);
+              String price = priceAmount.divide(microUnitsDivisor).toString();
+              item.putString("price", price);
               item.putString("currency", skuDetails.getPriceCurrencyCode());
               item.putString("type", skuDetails.getType());
               item.putString("localizedPrice", skuDetails.getPrice());
@@ -269,7 +276,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               // new
               item.putString("iconUrl", skuDetails.getIconUrl());
               item.putString("originalJson", skuDetails.getOriginalJson());
-              item.putDouble("originalPrice", skuDetails.getOriginalPriceAmountMicros() / 1000000f);
+              BigDecimal originalPriceAmountMicros = BigDecimal.valueOf(skuDetails.getOriginalPriceAmountMicros());
+              String originalPrice = originalPriceAmountMicros.divide(microUnitsDivisor).toString();
+              item.putString("originalPrice", originalPrice);
               items.pushMap(item);
             }
 
