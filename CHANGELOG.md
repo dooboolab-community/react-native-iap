@@ -1,5 +1,7 @@
 ## Changelogs
 
+- **[4.3.4]**
+  - Fix `double precision` issue in java [885](https://github.com/dooboolab/react-native-iap/pull/885).
 - **[4.3.3]**
   - Fix `purchaseStateAndroid`. Resolve [#839](https://github.com/dooboolab/react-native-iap/issues/839).
 - **[4.3.1]**
