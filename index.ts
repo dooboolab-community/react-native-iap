@@ -438,12 +438,12 @@ export const finishTransaction = (
 
 /**
  * Clear Transaction (iOS only)
- *   Finish remaining transactions. Related to issue #257
+ *   Finish remaining transactions. Related to issue #257 and #801
  *     link : https://github.com/dooboolab/react-native-iap/issues/257
+ *            https://github.com/dooboolab/react-native-iap/issues/801
  * @returns {Promise<void>}
  */
 export const clearTransactionIOS = (): Promise<void> => {
-  console.warn('The `clearTransactionIOS` method is deprecated.');
   return Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();

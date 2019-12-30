@@ -115,7 +115,7 @@ Method                                                                          
 `requestPurchaseWithQuantityIOS(sku: string, quantity: number)`<ul><li>sku: product ID/sku</li><li>quantity: Quantity</li></ul>                 | `void` | **iOS only**<br>Buy a product with a specified quantity.<br>`purchaseUpdatedListener` will receive the result
 _*deprecated_<br>~~`buySubscription(sku: string)`~~<ul><li>sku: subscription ID/sku</li></ul> | `void` | Create (buy) a subscription to a sku.
 `requestSubscription(sku: string, andDangerouslyFinishTransactionAutomaticallyIOS: boolean, oldSkuAndroid: string, prorationModeAndroid: string, developerIdAndroid: string, userIdAndroid: string)`<ul><li>sku: subscription ID/sku</li></ul>                  | `void`   | Create (buy) a subscription to a sku.
-`clearTransactionIOS()` | `void`            | **iOS only**<br>Clear up the unfinished transanction which sometimes causes problem.<br>Read more in below README.
+`clearTransactionIOS()` | `void`            | **iOS only**<br>Clear up unfinished transanctions which sometimes cause problems. Read more in [#257](https://github.com/dooboolab/react-native-iap/issues/257), [#801](https://github.com/dooboolab/react-native-iap/issues/801).
 `clearProductsIOS()`    | `void`            | **iOS only**<br>Clear all products and subscriptions.<br>Read more in below README.
 `getReceiptIOS()`   | `Promise<string>` | **iOS only**<br>Get the current receipt.
 `getPendingPurchasesIOS()` | `Promise<ProductPurchase[]>` | **IOS only**<br>Gets all the transactions which are pending to be finished.
