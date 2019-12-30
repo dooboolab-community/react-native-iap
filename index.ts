@@ -396,7 +396,7 @@ export const finishTransactionIOS = (transactionId: string): Promise<void> =>
 /**
  * Finish Transaction (both platforms)
  *   Abstracts `finishTransactionIOS`, `consumePurchaseAndroid`, `acknowledgePurchaseAndroid` in to one method.
- * @param {string} transactionId The transactionId of the function that you would like to finish.
+ * @param {object} purchase The purchase that you would like to finish.
  * @param {boolean} isConsumable Checks if purchase is consumable. Has effect on `android`.
  * @param {string} developerPayloadAndroid Android developerPayload.
  * @returns {Promise<string | void> }

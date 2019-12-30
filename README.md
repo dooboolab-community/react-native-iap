@@ -123,9 +123,10 @@ _*deprecated_<br>~~`buySubscription(sku: string)`~~<ul><li>sku: subscription ID/
 `endConnectionAndroid()`   | `Promise<void>` | **Android only**<br>End billing connection. There is no longer any need to call endConnectionAndroid as this is done automatically since v3 ([ref](https://github.com/dooboolab/react-native-iap/commit/7db528e2b716cde8ebafb9f15013a6887fdb12e3#diff-b21dbc2d57e14bf6f1b5f81c3a3c3ba5R66)).
 `consumeAllItemsAndroid()` | `Promise<void>` | **Android only**<br>Consume all items so they are able to buy again.
 `consumePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul>     | `void` | **Android only**<br>Finish a purchase. All purchases should be finished once you have delivered the purchased items. E.g. by recording the purchase in your database or on your server.
-`acknowledgePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul> | `Promise<PurchaseResult>` | **Android only**<br>Acknowledge a product. Like above for non-consumables. Will be called automatically called by `finishTransaction` for version `>= 4.1.0`
-`consumePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul>     | `Promise<PurchaseResult>` | **Android only**<br>Consume a product. Like above for consumables.
-`finishTransaction(purchase: InAppPurchase/ProductPurchase, isConsumable?: boolean, developerPayloadAndroid?: string)` | `Promise<void>` | <ul><li>purchase: purchase object</li><li>isConsumable?: specify whether the product is a consumable</li?<li>developerPayloadAndroid: developerPayload</li></ul> | **Android only**<br>This method will also call `acknowledgePurchaseAndroid`
+`acknowledgePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul> | `Promise<PurchaseResult>` | **Android only**<br>Acknowledge a product. Like above for non-consumables. Use `finishTransaction` instead for both platforms since version 4.1.0 or later.
+`consumePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul>     | `Promise<PurchaseResult>` | **Android only**<br>Consume a product. Like above for consumables. Use `finishTransaction` instead for both platforms since version 4.1.0 or later.
+`finishTransactionIOS(transactionId: string)`<ul><li>transactionId: the transactionId that you would like to finish.</li></ul> | `Promise<void>` | **iOS only**<br>Finish a transaction. Use `finishTransaction` instead for both platforms since version 4.1.0 or later.
+`finishTransaction(purchase: InAppPurchase/ProductPurchase, isConsumable?: boolean, developerPayloadAndroid?: string)`<ul><li>purchase: purchase object</li><li>isConsumable?: specify whether the product is a consumable</li><li>developerPayloadAndroid: developerPayload</li></ul> | `Promise<void>` | This method works for both platforms and is recommended since version 4.1.0 or later. Equal to `finishTransactionIOS` + `consumePurchaseAndroid` and `acknowledgePurchaseAndroid`.
 _*deprecated_<br>~~`buySubscription(sku: string, prevSku?: string, mode?: number)`~~<ul><li>sku: subscription ID/sku</li><li>prevSku: old subscription ID/sku (optional)</li><li>mode: proration mode (optional)</li></ul> | `Promise<Purchase>` | **Android only**<br>Create (buy) a subscription to a sku.<br>For upgrading/downgrading subscription on Android pass the second parameter with current subscription ID, on iOS this is handled automatically by store.<br>You can also optionally pass in a proration mode integer for upgrading/downgrading subscriptions on Android
 `validateReceiptAndroid(bundleId: string, productId: string, productToken: string, accessToken: string)`<br><ul><li>bundleId: the packageName</li><li>productId: productId</li><li>productToken: productToken</li><li>accessToken: accessToken</li><li>isSubscription: isSubscription</li></ul> | `Object\|boolean` | **Android only**<br>Validate receipt.
 
@@ -365,7 +366,10 @@ class RootComponent extends Component<*> {
             }
 
             // From react-native-iap@4.1.0 you can simplify above `method`. Try to wrap the statement with `try` and `catch` to also grab the `error` message.
-            RNIap.finishTransaction(purchase);
+            // If consumable (can be purchased again)
+            RNIap.finishTransaction(purchase, true);
+            // If not consumable
+            RNIap.finishTransaction(purchase, false);
           } else {
             // Retry / conclude the purchase is fraudulent, etc...
           }
