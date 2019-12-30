@@ -120,7 +120,7 @@ _*deprecated_<br>~~`buySubscription(sku: string)`~~<ul><li>sku: subscription ID/
 `getReceiptIOS()`   | `Promise<string>` | **iOS only**<br>Get the current receipt.
 `getPendingPurchasesIOS()` | `Promise<ProductPurchase[]>` | **IOS only**<br>Gets all the transactions which are pending to be finished.
 `validateReceiptIos(body: Object, devMode: boolean)`<ul><li>body: receiptBody</li><li>devMode: isTest</li></ul> | `Object\|boolean` | **iOS only**<br>Validate receipt.
-`endConnectionAndroid()`   | `Promise<void>` | **Android only**<br>End billing connection.
+`endConnectionAndroid()`   | `Promise<void>` | **Android only**<br>End billing connection. There is no longer any need to call endConnectionAndroid as this is done automatically since v3 ([ref](https://github.com/dooboolab/react-native-iap/commit/7db528e2b716cde8ebafb9f15013a6887fdb12e3#diff-b21dbc2d57e14bf6f1b5f81c3a3c3ba5R66)).
 `consumeAllItemsAndroid()` | `Promise<void>` | **Android only**<br>Consume all items so they are able to buy again.
 `consumePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul>     | `void` | **Android only**<br>Finish a purchase. All purchases should be finished once you have delivered the purchased items. E.g. by recording the purchase in your database or on your server.
 `acknowledgePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul> | `Promise<PurchaseResult>` | **Android only**<br>Acknowledge a product. Like above for non-consumables. Will be called automatically called by `finishTransaction` for version `>= 4.1.0`
