@@ -415,7 +415,25 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         builder.setSkuDetails(selectedSku);
 
         if (type.equals(BillingClient.SkuType.SUBS) && oldSku != null && !oldSku.isEmpty()) {
-          builder.setOldSku(oldSku);
+          SkuDetails selectedOldSku = null;
+          for (SkuDetails skuDetail : skus) {
+            if (skuDetail.getSku().equals(oldSku)) {
+              selectedOldSku = skuDetail;
+              break;
+            }
+          }
+
+          if (selectedOldSku == null) {
+            String debugMessage = "The old sku was not found. Please fetch products first by calling getItems";
+            WritableMap error = Arguments.createMap();
+            error.putString("debugMessage", debugMessage);
+            error.putString("code", PROMISE_BUY_ITEM);
+            error.putString("message", debugMessage);
+            sendEvent(reactContext, "purchase-error", error);
+            promise.reject(PROMISE_BUY_ITEM, debugMessage);
+            return;
+          }
+          builder.setOldSku(selectedOldSku);
         }
 
         if (prorationMode != null && prorationMode != -1) {
