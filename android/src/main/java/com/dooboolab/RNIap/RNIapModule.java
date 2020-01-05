@@ -414,7 +414,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         }
         builder.setSkuDetails(selectedSku);
 
-        if (type.equals(BillingClient.SkuType.SUBS) && oldSku != null && !oldSku.isEmpty()) {
+        if (type.equals(oldSku != null) {
           builder.setOldSku(oldSku);
         }
 
