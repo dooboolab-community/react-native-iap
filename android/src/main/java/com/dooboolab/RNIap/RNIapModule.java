@@ -394,26 +394,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         DoobooUtils.getInstance().addPromiseForKey(PROMISE_BUY_ITEM, promise);
         final BillingFlowParams.Builder builder = BillingFlowParams.newBuilder();
 
-        if (type.equals(BillingClient.SkuType.SUBS) && oldSku != null && !oldSku.isEmpty()) {
-          // Subscription upgrade/downgrade
-          if (prorationMode != null && prorationMode != -1) {
-            builder.setOldSku(oldSku);
-            if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE) {
-              builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE);
-            } else if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION) {
-              builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
-            } else {
-              builder.setOldSku(oldSku);
-            }
-          } else {
-            builder.setOldSku(oldSku);
-          }
-        }
-
-        if (prorationMode != 0 && prorationMode != -1) {
-          builder.setReplaceSkusProrationMode(prorationMode);
-        }
-
         SkuDetails selectedSku = null;
         for (SkuDetails skuDetail : skus) {
           if (skuDetail.getSku().equals(sku)) {
@@ -421,6 +401,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             break;
           }
         }
+
         if (selectedSku == null) {
           String debugMessage = "The sku was not found. Please fetch products first by calling getItems";
           WritableMap error = Arguments.createMap();
@@ -431,6 +412,35 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           promise.reject(PROMISE_BUY_ITEM, debugMessage);
           return;
         }
+        builder.setSkuDetails(selectedSku);
+
+        if (type.equals(oldSku != null) {
+          builder.setOldSku(oldSku);
+        }
+
+        if (prorationMode != null && prorationMode != -1) {
+          if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE) {
+            builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE);
+            if (type.equals(BillingClient.SkuType.SUBS) == false) {
+              String debugMessage = "IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in subscription purchase.";
+              WritableMap error = Arguments.createMap();
+              error.putString("debugMessage", debugMessage);
+              error.putString("code", PROMISE_BUY_ITEM);
+              error.putString("message", debugMessage);
+              sendEvent(reactContext, "purchase-error", error);
+              promise.reject(PROMISE_BUY_ITEM, debugMessage);
+              return;
+            }
+          } else if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION) {
+            builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
+          } else if (prorationMode == BillingFlowParams.ProrationMode.DEFERRED) {
+            builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.DEFERRED);
+          } else if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_WITH_TIME_PRORATION) {
+            builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_WITH_TIME_PRORATION);
+          } else {
+            builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY);
+          }
+        }
 
         if (accountId != null) {
           builder.setAccountId(accountId);
@@ -439,7 +449,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           builder.setDeveloperId(developerId);
         }
 
-        builder.setSkuDetails(selectedSku);
         BillingFlowParams flowParams = builder.build();
         BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
         String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());

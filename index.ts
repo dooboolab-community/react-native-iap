@@ -36,6 +36,14 @@ export enum IAPErrorCode {
   E_BILLING_RESPONSE_JSON_PARSE_ERROR = 'E_BILLING_RESPONSE_JSON_PARSE_ERROR',
 }
 
+export enum ProrationModesAndroid {
+  IMMEDIATE_WITH_TIME_PRORATION = 1,
+  IMMEDIATE_AND_CHARGE_PRORATED_PRICE = 2,
+  IMMEDIATE_WITHOUT_PRORATION = 3,
+  DEFERRED = 4,
+  UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY = 0,
+}
+
 export interface Discount {
   identifier: string;
   type: string;
@@ -225,9 +233,10 @@ export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
  * Gets an invetory of purchases made by the user regardless of consumption status
  * @returns {Promise<(InAppPurchase | SubscriptionPurchase)[]>}
  */
-export const getPurchaseHistory = (): Promise<
-  (InAppPurchase | SubscriptionPurchase)[]
-> =>
+export const getPurchaseHistory = (): Promise<(
+  | InAppPurchase
+  | SubscriptionPurchase
+)[]> =>
   Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();
@@ -249,9 +258,10 @@ export const getPurchaseHistory = (): Promise<
  * Get all purchases made by the user (either non-consumable, or haven't been consumed yet)
  * @returns {Promise<(InAppPurchase | SubscriptionPurchase)[]>}
  */
-export const getAvailablePurchases = (): Promise<
-  (InAppPurchase | SubscriptionPurchase)[]
-> =>
+export const getAvailablePurchases = (): Promise<(
+  | InAppPurchase
+  | SubscriptionPurchase
+)[]> =>
   Platform.select({
     ios: async () => {
       checkNativeiOSAvailable();
@@ -318,7 +328,7 @@ export const requestPurchase = (
  * @param {string} sku The product's sku/ID
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [oldSkuAndroid] SKU that the user is upgrading or downgrading from.
- * @param {number} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
+ * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
  * @param {string} [developerIdAndroid] Specify an optional obfuscated string of developer profile name.
  * @param {string} [userIdAndroid] Specify an optional obfuscated string that is uniquely associated with the user's account in.
  * @returns {Promise<void>}
@@ -327,7 +337,7 @@ export const requestSubscription = (
   sku: string,
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean,
   oldSkuAndroid?: string,
-  prorationModeAndroid?: number,
+  prorationModeAndroid?: ProrationModesAndroid,
   developerIdAndroid?: string,
   userIdAndroid?: string,
 ): Promise<SubscriptionPurchase> =>
