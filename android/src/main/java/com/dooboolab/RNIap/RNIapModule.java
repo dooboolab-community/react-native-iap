@@ -449,28 +449,34 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
   @ReactMethod
   public void acknowledgePurchase(final String token, final String developerPayLoad, final Promise promise) {
-    AcknowledgePurchaseParams acknowledgePurchaseParams =
-            AcknowledgePurchaseParams.newBuilder()
-                    .setPurchaseToken(token)
-                    .setDeveloperPayload(developerPayLoad)
-                    .build();
-    billingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
+    ensureConnection(promise, new Runnable(){
       @Override
-      public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
-        if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-          DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
-        }
-        try {
-          WritableMap map = Arguments.createMap();
-          map.putInt("responseCode", billingResult.getResponseCode());
-          map.putString("debugMessage", billingResult.getDebugMessage());
-          String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
-          map.putString("code", errorData[0]);
-          map.putString("message", errorData[1]);
-          promise.resolve(map);
-        } catch (ObjectAlreadyConsumedException oce) {
-          Log.e(TAG, oce.getMessage());
-        }
+      public void run() {
+        AcknowledgePurchaseParams acknowledgePurchaseParams =
+                AcknowledgePurchaseParams.newBuilder()
+                        .setPurchaseToken(token)
+                        .setDeveloperPayload(developerPayLoad)
+                        .build();
+                        
+        billingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
+          @Override
+          public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
+            if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+              DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+            }
+            try {
+              WritableMap map = Arguments.createMap();
+              map.putInt("responseCode", billingResult.getResponseCode());
+              map.putString("debugMessage", billingResult.getDebugMessage());
+              String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+              map.putString("code", errorData[0]);
+              map.putString("message", errorData[1]);
+              promise.resolve(map);
+            } catch (ObjectAlreadyConsumedException oce) {
+              Log.e(TAG, oce.getMessage());
+            }
+          }
+        });
       }
     });
   }
