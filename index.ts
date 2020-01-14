@@ -141,9 +141,9 @@ function checkNativeiOSAvailable(): Promise<void> {
 }
 /**
  * Init module for purchase flow. Required on Android. In ios it will check wheter user canMakePayment.
- * @returns {Promise<string>}
+ * @returns {Promise<boolean>}
  */
-export const initConnection = (): Promise<string> =>
+export const initConnection = (): Promise<boolean> =>
   Platform.select({
     ios: async () => {
       if (!RNIapIos) {
