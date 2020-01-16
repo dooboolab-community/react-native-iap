@@ -577,7 +577,7 @@ Q & A
 
 - You can do this on iOS:
     ```javascript
-    Linking.openURL('https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions')
+    Linking.openURL('https://apps.apple.com/account/subscriptions')
     ```
 
 - You can do this on Android:
