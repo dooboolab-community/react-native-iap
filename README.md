@@ -62,6 +62,7 @@ react-native-iap
 [google-api-nodejs-client]: https://github.com/googleapis/google-api-nodejs-client/
 [google-play-console]: https://play.google.com/apps/publish/
 [stackoverflow-android-iap-validation]: https://stackoverflow.com/questions/35127086
+[android-access-token-example-repo]: https://github.com/Bang9/android-get-access-token-example
 
 Quick News
 ----------
@@ -518,7 +519,7 @@ For Android, you need separate json file from the service account to get the
 
 You should have your own backend and get `access_token`.
 With `access_token` you can simply call `validateReceiptAndroid()` we implemented.
-Further reading is [here][stackoverflow-android-iap-validation].
+Further reading is [here][stackoverflow-android-iap-validation] or refer to [example repo][android-access-token-example-repo].
 
 ### With App Store
 
