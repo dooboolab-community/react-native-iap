@@ -575,7 +575,7 @@ Q & A
 #### How can a user cancel a subscription in my app?
 - For both iOS and Android your users cannot cancel subscriptions inside your app. You need to direct your users to iTunes/the App Store or Google Play.
 
-- You can do this on iOS:
+- You can do this on iOS 12 or later (for earlier iOS versions, use [this URL](https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions)):
     ```javascript
     Linking.openURL('https://apps.apple.com/account/subscriptions')
     ```
