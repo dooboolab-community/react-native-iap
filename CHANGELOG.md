@@ -1,5 +1,18 @@
 ## Changelogs
 
+- **[4.4.1]**
+  - Upgrade packages.
+
+- **[4.4.0]**
+  - Update `requestionSubscription` on android side.
+  - The flow of the code were not clean and correct.
+    * Support ProrationModesAndroid enum type for handling better proration mode
+  - Fixes [#888](https://github.com/dooboolab/react-native-iap/issues/888)
+  - PR [#893](https://github.com/dooboolab/react-native-iap/pull/893)
+
+Fixes #888 
+- **[4.3.4]**
+  - Fix `double precision` issue in java [885](https://github.com/dooboolab/react-native-iap/pull/885).
 - **[4.3.4]**
   - Fix `double precision` issue in java [885](https://github.com/dooboolab/react-native-iap/pull/885).
 - **[4.3.3]**

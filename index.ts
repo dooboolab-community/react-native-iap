@@ -234,8 +234,7 @@ export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
  * @returns {Promise<(InAppPurchase | SubscriptionPurchase)[]>}
  */
 export const getPurchaseHistory = (): Promise<(
-  | InAppPurchase
-  | SubscriptionPurchase
+InAppPurchase | SubscriptionPurchase
 )[]> =>
   Platform.select({
     ios: async () => {
@@ -259,8 +258,7 @@ export const getPurchaseHistory = (): Promise<(
  * @returns {Promise<(InAppPurchase | SubscriptionPurchase)[]>}
  */
 export const getAvailablePurchases = (): Promise<(
-  | InAppPurchase
-  | SubscriptionPurchase
+InAppPurchase | SubscriptionPurchase
 )[]> =>
   Platform.select({
     ios: async () => {
@@ -694,7 +692,7 @@ export const getPendingPurchasesIOS = (): Promise<ProductPurchase[]> => {
   }
 };
 
-export default {
+const iapUtils = {
   IAPErrorCode,
   initConnection,
   endConnectionAndroid,
@@ -721,3 +719,5 @@ export default {
   getPromotedProductIOS,
   buyPromotedProductIOS,
 };
+
+export default iapUtils;
