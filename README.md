@@ -564,7 +564,7 @@ Issue regarding `valid products`
 - But, weird result is weird, so we made a new method which remove all valid products.
 
     If you need to clear all products, subscriptions in that array, just call
-    `clearProducts()`, and do the fetching job again, and you will receive what
+    `clearProductsIOS()`, and do the fetching job again, and you will receive what
     you expected.
 
 ### Example backend (Node.js)
