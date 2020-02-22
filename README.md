@@ -1,4 +1,4 @@
-react-native-iap
+![image](https://user-images.githubusercontent.com/27461460/75094417-20321b00-55ce-11ea-8de7-a1df42a4b7df.png)
 ================
 [![Version](http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
 [![Download](http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
@@ -11,15 +11,14 @@ react-native-iap
 [![PR Opened](https://img.shields.io/github/issues-pr/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/pulls)
 [![PR Closed](https://img.shields.io/github/issues-pr-closed/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/pulls?q=is%3Apr+is%3Aclosed) [![Greenkeeper badge](https://badges.greenkeeper.io/dooboolab/react-native-iap.svg)](https://greenkeeper.io/)
 
-![image](https://user-images.githubusercontent.com/27461460/75094417-20321b00-55ce-11ea-8de7-a1df42a4b7df.png)
 
-> This is a react-native link library project for in-app purchase for both
-> Android and iOS platforms.
->
-> The goal for this project is to have similar experience between the two
-> platforms for in-app-purchase. Basically, android platform has more functions
-> for in-app-purchase and is not our specific interests for this project.
->
+This is a react-native native module library project for in-app purchase for both
+Android and iOS platforms.
+
+The goal for this project is to have similar experience between the two
+platforms for in-app-purchase. Basically, android platform has more functions
+for in-app-purchase and is not our specific interests for this project.
+
 > We are willing to share same in-app-purchase experience for both `Android` and `iOS`.
 
 > Checkout demo:
