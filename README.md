@@ -505,7 +505,7 @@ Property                           | Type      | iOS | And | Comment
 `autoRenewingAndroid`              | `boolean` |     | ✓   | Indicates whether the subscription renews automatically.<br>If true, the subscription is active, and will automatically renew on the next billing date. Otherwise, indicates that the user has canceled the subscription.
 `dataAndroid`                      | `string`  |     | ✓   | Original json for purchase data.
 `signatureAndroid`                 | `string`  |     | ✓   | The signature of the purchase data that was signed with the private key of the developer.<br>The data signature uses the `RSASSA-PKCS1-v1_5` scheme.
-`isAcknowledgedAndroid`            | `boolean` |     | ✓   | Checking if purhcase has been acknowledged.
+`isAcknowledgedAndroid`            | `boolean` |     | ✓   | Checking if purchase has been acknowledged.
 `purchaseStateAndroid`             | `number`  |     | ✓   | Indicating purchase state.
 
 You need to test with one sandbox account, because the account holds previous purchase history.
