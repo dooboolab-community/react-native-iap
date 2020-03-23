@@ -1,5 +1,8 @@
 ## Changelogs
 
+- **[4.4.3]**
+  - Bugfixes for [#849](https://github.com/dooboolab/react-native-iap/issues/849).
+
 - **[4.4.2]**
   - Attempt to fix [#934](https://github.com/dooboolab/react-native-iap/issues/934).
 
