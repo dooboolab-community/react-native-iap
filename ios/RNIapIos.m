@@ -141,10 +141,12 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
                   reject:(RCTPromiseRejectBlock)reject) {
     pendingTransactionWithAutoFinish = finishAutomatically;
     SKProduct *product;
-    for (SKProduct *p in validProducts) {
-        if([sku isEqualToString:p.productIdentifier]) {
-            product = p;
-            break;
+    @synchronized (validProducts) {
+        for (SKProduct *p in validProducts) {
+            if([sku isEqualToString:p.productIdentifier]) {
+                product = p;
+                break;
+            }
         }
     }
     if (product) {
@@ -174,10 +176,12 @@ RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
                   reject:(RCTPromiseRejectBlock)reject) {
     SKProduct *product;
     SKMutablePayment *payment;
-    for (SKProduct *p in validProducts) {
-        if([sku isEqualToString:p.productIdentifier]) {
-            product = p;
-            break;
+    @synchronized (validProducts) {
+        for (SKProduct *p in validProducts) {
+            if([sku isEqualToString:p.productIdentifier]) {
+                product = p;
+                break;
+            }
         }
     }
     if (product) {
@@ -219,10 +223,12 @@ RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
                   reject:(RCTPromiseRejectBlock)reject) {
     NSLog(@"\n\n\n  buyProductWithQuantityIOS  \n\n.");
     SKProduct *product;
-    for (SKProduct *p in validProducts) {
-        if([sku isEqualToString:p.productIdentifier]) {
-            product = p;
-            break;
+    @synchronized (validProducts) {
+        for (SKProduct *p in validProducts) {
+            if([sku isEqualToString:p.productIdentifier]) {
+                product = p;
+                break;
+            }
         }
     }
     if (product) {
@@ -253,7 +259,9 @@ RCT_EXPORT_METHOD(clearTransaction) {
 
 RCT_EXPORT_METHOD(clearProducts) {
     NSLog(@"\n\n\n  ***  clear valid products. \n\n.");
-    [validProducts removeAllObjects];
+    @synchronized (validProducts) {
+        [validProducts removeAllObjects];
+    }
 }
 
 RCT_EXPORT_METHOD(promotedProduct:(RCTPromiseResolveBlock)resolve
@@ -324,8 +332,11 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
     }
     NSMutableArray* items = [NSMutableArray array];
 
-    for (SKProduct* product in validProducts) {
-        [items addObject:[self getProductObject:product]];
+    
+    @synchronized (validProducts) {
+        for (SKProduct* product in validProducts) {
+            [items addObject:[self getProductObject:product]];
+        }
     }
 
     [self resolvePromisesForKey:RCTKeyForInstance(request) value:items];
@@ -334,18 +345,20 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
 // Add to valid products from Apple server response. Allowing getProducts, getSubscriptions call several times.
 // Doesn't allow duplication. Replace new product.
 -(void)addProduct:(SKProduct *)aProd {
-    NSLog(@"\n  Add new object : %@", aProd.productIdentifier);
-    int delTar = -1;
-    for (int k = 0; k < validProducts.count; k++) {
-        SKProduct *cur = validProducts[k];
-        if ([cur.productIdentifier isEqualToString:aProd.productIdentifier]) {
-            delTar = k;
+    @synchronized (validProducts) {
+        NSLog(@"\n  Add new object : %@", aProd.productIdentifier);
+        int delTar = -1;
+        for (int k = 0; k < validProducts.count; k++) {
+            SKProduct *cur = validProducts[k];
+            if ([cur.productIdentifier isEqualToString:aProd.productIdentifier]) {
+                delTar = k;
+            }
         }
+        if (delTar >= 0) {
+            [validProducts removeObjectAtIndex:delTar];
+        }
+        [validProducts addObject:aProd];
     }
-    if (delTar >= 0) {
-        [validProducts removeObjectAtIndex:delTar];
-    }
-    [validProducts addObject:aProd];
 }
 
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error{
