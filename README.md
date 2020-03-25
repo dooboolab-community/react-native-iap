@@ -518,7 +518,7 @@ Since `react-native-iap@0.3.16`, we support receipt validation.
 
 IAPHUB is a service that takes care of the ios/android receipt validation for you, you can set up [webhooks](https://dashboard.iaphub.com/documentation/webhook) in order to get notifications delivered automatically to your server on events such as a purchase, a subscription renewal...
 
-You can use it by calling the API manually to [process your receipt](https://dashboard.iaphub.com/documentation/api/post-receipt) or use the [react-native-iaphub](https://github.com/iaphub/react-native-iaphub) plugin that is just a wrapper of react-native-iap with IAPHUB built-in.
+You can use it by calling the API manually to [process your receipt](https://dashboard.iaphub.com/documentation/api/post-receipt) or use the [react-native-iaphub](https://github.com/iaphub/react-native-iaphub) module that is just a wrapper of react-native-iap with IAPHUB built-in.
 
 ### With Google Play
 
