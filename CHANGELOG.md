@@ -1,5 +1,10 @@
 ## Changelogs
 
+- **[4.4.4]**
+  Add guide add `IAPPromotionObserver` in ios
+  - Resolve [#950](https://github.com/dooboolab/react-native-iap/issues/950)
+  - Resolve [#971](https://github.com/dooboolab/react-native-iap/issues/971)
+
 - **[4.4.3]**
   - Bugfixes for [#849](https://github.com/dooboolab/react-native-iap/issues/849).
 

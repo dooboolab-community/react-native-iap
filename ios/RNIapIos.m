@@ -23,7 +23,6 @@
     if ((self = [super init])) {
         promisesByKey = [NSMutableDictionary dictionary];
         pendingTransactionWithAutoFinish = false;
-        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
         [IAPPromotionObserver sharedObserver].delegate = self;
     }
     myQueue = dispatch_queue_create("reject", DISPATCH_QUEUE_SERIAL);
