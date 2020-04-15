@@ -650,11 +650,6 @@ Q & A
   [IAPPromotionObserver startObserving];
   ```
 
-  * Also don't forget to remove it
-  ```
-  [IAPPromotionObserver dealloc];
-  ```
-
 - Add an EventListener for the `iap-promoted-product` event somewhere early in your app's lifecycle:
 
   ```javascript
