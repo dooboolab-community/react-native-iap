@@ -1,5 +1,14 @@
 ## Changelogs
 
+- **[4.4.6]**
+  `andDangerouslyFinishTransactionAutomaticallyIOS` was set to true for default. I should be false.
+
+- **[4.4.5]**
+  - Implement `endConnection` method to declaratively finish observer in iOS.
+  - Remove `addTransactionObserver` in IAPPromotionObserver.m for dup observer problems.
+  - Automatically startPromotionObserver in `initConnection` for iOS.
+  - Deprecate `endConnectionAndroid`.
+
 - **[4.4.4]**
   Add guide add `IAPPromotionObserver` in ios
   - Resolve [#950](https://github.com/dooboolab/react-native-iap/issues/950)
