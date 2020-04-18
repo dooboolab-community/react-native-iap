@@ -1,8 +1,7 @@
 #import "RNIapIos.h"
-#import "IAPPromotionObserver.h"
-
 #import <React/RCTLog.h>
 #import <React/RCTConvert.h>
+#import <IAPPromotionObserver.h>
 
 #import <StoreKit/StoreKit.h>
 
@@ -113,8 +112,16 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(canMakePayments:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
     BOOL canMakePayments = [SKPaymentQueue canMakePayments];
+    [IAPPromotionObserver startObserving];
     resolve(@(canMakePayments));
+}
+
+RCT_EXPORT_METHOD(endConnection:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+    resolve(nil);
 }
 
 RCT_EXPORT_METHOD(getItems:(NSArray*)skus

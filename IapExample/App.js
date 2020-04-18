@@ -162,6 +162,7 @@ class Page extends Component {
       purchaseErrorSubscription.remove();
       purchaseErrorSubscription = null;
     }
+    RNIap.endConnection();
   }
 
   goNext = (): void => {

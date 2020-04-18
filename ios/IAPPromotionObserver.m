@@ -24,17 +24,17 @@
   [IAPPromotionObserver sharedObserver];
 }
 
-- (instancetype)init {
-  if ((self = [super init])) {
-    [SKPaymentQueue.defaultQueue addTransactionObserver:self];
-  }
+// - (instancetype)init {
+//   if ((self = [super init])) {
+//     [SKPaymentQueue.defaultQueue addTransactionObserver:self];
+//   }
 
-  return self;
-}
+//   return self;
+// }
 
--(void) dealloc {
-  [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
-}
+// -(void) dealloc {
+//   [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+// }
 
 - (SKPayment *)payment {
   return _promotedPayment;
@@ -44,8 +44,8 @@
   return _promotedProduct;
 }
 
-- (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
-}
+// - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
+// }
 
 - (BOOL)paymentQueue:(SKPaymentQueue *)queue shouldAddStorePayment:(SKPayment *)payment forProduct:(SKProduct *)product {
   _promotedProduct = product;
