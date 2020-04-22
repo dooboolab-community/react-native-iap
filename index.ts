@@ -368,7 +368,7 @@ export const requestSubscription = (
     ios: async () => {
       andDangerouslyFinishTransactionAutomaticallyIOS =
         andDangerouslyFinishTransactionAutomaticallyIOS === undefined
-          ? true
+          ? false
           : andDangerouslyFinishTransactionAutomaticallyIOS;
       if (andDangerouslyFinishTransactionAutomaticallyIOS) {
         console.warn(

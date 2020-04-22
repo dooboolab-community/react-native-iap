@@ -1,5 +1,8 @@
 ## Changelogs
 
+- **[4.4.7]**
+  Fix regression. Revert `andDangerouslyFinishTransactionAutomaticallyIOS` to false. This should actually be false in default.
+
 - **[4.4.6]**
   `andDangerouslyFinishTransactionAutomaticallyIOS` was set to true for default. I should be false.
 
