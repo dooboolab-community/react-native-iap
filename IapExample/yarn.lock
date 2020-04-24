@@ -5309,10 +5309,10 @@ react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6, react-is
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
-react-native-iap@^4.4.5:
-  version "4.4.5"
-  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-4.4.5.tgz#a5c657fc590bc17eff4f2c63eac5e4d06a50c4dd"
-  integrity sha512-M/ccAH0GcBSTZaBhzX2hiF4qpNBDENDh2A5tv2UxdB2Zba+J8bvsaIX5kIkboUZCCLnO1LLl7/UZ4PrBs6p1Xw==
+react-native-iap@^4.4.7:
+  version "4.4.7"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-4.4.7.tgz#9872803b5a2e50bc8e86161191f8ca2c59485324"
+  integrity sha512-7d1cYDqWIHS1IKIomV3dU5nq2lyGLJMq+afebZe5F3okPpY8LBLukMGnnBBiB4tdgEGUS0z4aQ9pgttfcAB3Ug==
   dependencies:
     dooboolab-welcome "^1.1.1"
 
