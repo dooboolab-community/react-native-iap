@@ -1,5 +1,8 @@
 ## Changelogs
 
+- **[4.4.8]**
+  Fixes [#989](https://github.com/dooboolab/react-native-iap/issues/989).
+
 - **[4.4.7]**
   Fix regression. Revert `andDangerouslyFinishTransactionAutomaticallyIOS` to false. This should actually be false in default.
 

@@ -1,7 +1,8 @@
 #import "RNIapIos.h"
+#import "IAPPromotionObserver.h"
+
 #import <React/RCTLog.h>
 #import <React/RCTConvert.h>
-#import <IAPPromotionObserver.h>
 
 #import <StoreKit/StoreKit.h>
 
