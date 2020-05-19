@@ -85,7 +85,7 @@ export enum PurchaseStateAndroid {
   PENDING = 2,
 }
 
-interface ProductPurchase {
+export interface ProductPurchase {
   productId: string;
   transactionId?: string;
   transactionDate: number;
