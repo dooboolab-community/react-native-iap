@@ -446,6 +446,8 @@ Non-consumable purchases need to be acknowledged on Android, or they will be aut
 a few days. Acknowledge a purchase when you have delivered it to your user by calling `acknowledgePurchaseAndroid()`.
 On iOS non-consumable purchases are finished automatically but this will change in the future so it is recommended that you prepare by simply calling `finishTransactionIOS()` on non-consumables as well.
 
+`finishTransaction()` works for both platforms and is recommended since version 4.1.0 or later. Equal to finishTransactionIOS + consumePurchaseAndroid and acknowledgePurchaseAndroid.
+
 Restoring Purchases
 -----------------------------------
 You can use `getAvailablePurchases()` to do what's commonly understood as “restoring” purchases.
