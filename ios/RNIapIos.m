@@ -38,6 +38,17 @@
     return YES;
 }
 
+- (NSDictionary *)constantsToExport
+{
+    BOOL isSandbox = false;
+    #if DEBUG
+        isSandbox = true;
+    #else
+        isSandbox = ([receiptURLString rangeOfString:@"sandboxReceipt"].location != NSNotFound);
+    #endif
+    return @{ @"isSandbox": isSandbox };
+}
+
 - (void)flushUnheardEvents {
     [self paymentQueue:[SKPaymentQueue defaultQueue] updatedTransactions:[[SKPaymentQueue defaultQueue] transactions]];
 }
