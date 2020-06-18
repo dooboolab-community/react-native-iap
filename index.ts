@@ -597,7 +597,7 @@ export const requestPurchaseWithOfferIOS = (
  * @returns {Promise<Apple.ReceiptValidationResponse | false>}
  */
 export const validateReceiptIos = async (
-  receiptBody: object,
+  receiptBody: Record<string, unknown>,
   isTest?: boolean,
 ): Promise<Apple.ReceiptValidationResponse | false> => {
   const url = isTest
@@ -637,7 +637,7 @@ export const validateReceiptAndroid = async (
   productToken: string,
   accessToken: string,
   isSub?: boolean,
-): Promise<object | false> => {
+): Promise<Record<string, unknown> | false> => {
   const type = isSub ? 'subscriptions' : 'products';
   const url =
     'https://www.googleapis.com/androidpublisher/v3/applications' +

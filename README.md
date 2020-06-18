@@ -122,7 +122,7 @@ _*deprecated_<br>~~`buySubscription(sku: string)`~~<ul><li>sku: subscription ID/
 `clearProductsIOS()`    | `void`            | **iOS only**<br>Clear all products and subscriptions.<br>Read more in below README.
 `getReceiptIOS()`   | `Promise<string>` | **iOS only**<br>Get the current receipt.
 `getPendingPurchasesIOS()` | `Promise<ProductPurchase[]>` | **IOS only**<br>Gets all the transactions which are pending to be finished.
-`validateReceiptIos(body: Object, devMode: boolean)`<ul><li>body: receiptBody</li><li>devMode: isTest</li></ul> | `Object\|boolean` | **iOS only**<br>Validate receipt.
+`validateReceiptIos(body: Record<string, unknown>, devMode: boolean)`<ul><li>body: receiptBody</li><li>devMode: isTest</li></ul> | `Object\|boolean` | **iOS only**<br>Validate receipt.
 `endConnection()` | `Promise<void>` | End billing connection.
 `consumeAllItemsAndroid()` | `Promise<void>` | **Android only**<br>Consume all items so they are able to buy again.
 `consumePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul>     | `void` | **Android only**<br>Finish a purchase. All purchases should be finished once you have delivered the purchased items. E.g. by recording the purchase in your database or on your server.
