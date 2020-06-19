@@ -352,7 +352,7 @@ class RootComponent extends Component<*> {
       const receipt = purchase.transactionReceipt;
       if (receipt) {
         yourAPI.deliverOrDownloadFancyInAppPurchase(purchase.transactionReceipt)
-        .then((deliveryResult) => {
+        .then( async (deliveryResult) => {
           if (isSuccess(deliveryResult)) {
             // Tell the store that you have delivered what has been paid for.
             // Failure to do this will result in the purchase being refunded on Android and
@@ -360,19 +360,19 @@ class RootComponent extends Component<*> {
             // in doing the below. It will also be impossible for the user to purchase consumables
             // again untill you do this.
             if (Platform.OS === 'ios') {
-              RNIap.finishTransactionIOS(purchase.transactionId);
+              await RNIap.finishTransactionIOS(purchase.transactionId);
             } else if (Platform.OS === 'android') {
               // If consumable (can be purchased again)
-              RNIap.consumePurchaseAndroid(purchase.purchaseToken);
+              await RNIap.consumePurchaseAndroid(purchase.purchaseToken);
               // If not consumable
-              RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken);
+              await RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken);
             }
 
             // From react-native-iap@4.1.0 you can simplify above `method`. Try to wrap the statement with `try` and `catch` to also grab the `error` message.
             // If consumable (can be purchased again)
-            RNIap.finishTransaction(purchase, true);
+            await RNIap.finishTransaction(purchase, true);
             // If not consumable
-            RNIap.finishTransaction(purchase, false);
+            await RNIap.finishTransaction(purchase, false);
           } else {
             // Retry / conclude the purchase is fraudulent, etc...
           }
