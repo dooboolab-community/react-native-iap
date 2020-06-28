@@ -159,6 +159,10 @@ Linking the package manually is not required anymore with [Autolinking](https://
 
 - **Android Platform with Android Support:**
 
+  Add the following dependency in `app/build.gradle`
+  
+  `implementation "com.android.billingclient:billing:2.0.3"`
+
   Using [Jetifier tool](https://github.com/mikehardy/jetifier) for backward-compatibility.
 
   Modify your **android/build.gradle** configuration:
