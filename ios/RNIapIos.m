@@ -687,7 +687,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
                                         discountIdentifier, @"identifier",
                                         discountType, @"type",
                                         numberOfPeriods, @"numberOfPeriods",
-                                        discount.price, @"price",
+                                        [discount.price stringValue], @"price",
                                         localizedPrice, @"localizedPrice",
                                         paymendMode, @"paymentMode",
                                         subscriptionPeriods, @"subscriptionPeriod",
