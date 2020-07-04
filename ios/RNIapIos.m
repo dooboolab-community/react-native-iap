@@ -587,7 +587,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
     NSArray *discounts;
     #if __IPHONE_12_2
     if (@available(iOS 12.2, *)) {
-        discounts = [self getDiscountData:[product.discounts copy]];
+        discounts = [self getDiscountData:product];
     }
     #endif
 
@@ -612,7 +612,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
     return obj;
 }
 
-- (NSMutableArray *)getDiscountData:(NSArray *)discounts {
+- (NSMutableArray *)getDiscountData:(SKProduct *)product {
     NSMutableArray *mappedDiscounts = [NSMutableArray arrayWithCapacity:[discounts count]];
     NSString *localizedPrice;
     NSString *paymendMode;
@@ -620,10 +620,10 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
     NSString *discountType;
 
     if (@available(iOS 11.2, *)) {
-        for(SKProductDiscount *discount in discounts) {
+        for(SKProductDiscount *discount in product.discounts) {
             NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
             formatter.numberStyle = NSNumberFormatterCurrencyStyle;
-            formatter.locale = discount.priceLocale;
+            formatter.locale = discount.priceLocale ?: product.priceLocale;
             localizedPrice = [formatter stringFromNumber:discount.price];
             NSString *numberOfPeriods;
 
@@ -687,7 +687,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
                                         discountIdentifier, @"identifier",
                                         discountType, @"type",
                                         numberOfPeriods, @"numberOfPeriods",
-                                        discount.price, @"price",
+                                        [discount.price stringValue], @"price",
                                         localizedPrice, @"localizedPrice",
                                         paymendMode, @"paymentMode",
                                         subscriptionPeriods, @"subscriptionPeriod",
