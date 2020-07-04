@@ -1,5 +1,8 @@
 ## Changelogs
 
+- **[4.4.11]**
+  - Fix regresion in `4.4.10`
+
 - **[4.4.10]**
   - Fix iOS discount issue [#1038](https://github.com/dooboolab/react-native-iap/pull/1038)
   - Fix return type of `getPromotedProductIOS` [#1037](https://github.com/dooboolab/react-native-iap/pull/1037)

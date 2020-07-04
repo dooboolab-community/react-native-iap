@@ -613,7 +613,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
 }
 
 - (NSMutableArray *)getDiscountData:(SKProduct *)product {
-    NSMutableArray *mappedDiscounts = [NSMutableArray arrayWithCapacity:[discounts count]];
+    NSMutableArray *mappedDiscounts = [NSMutableArray arrayWithCapacity:[product.discounts count]];
     NSString *localizedPrice;
     NSString *paymendMode;
     NSString *subscriptionPeriods;
