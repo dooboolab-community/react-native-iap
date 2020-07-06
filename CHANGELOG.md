@@ -1,5 +1,8 @@
 ## Changelogs
 
+- **[4.5.0]**
+  - Fix iap-promoted-product listener [#1039](https://github.com/dooboolab/react-native-iap/pull/1039)
+
 - **[4.4.11]**
   - Fix regresion in `4.4.10`
 
