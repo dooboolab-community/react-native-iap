@@ -6,6 +6,8 @@
 {
   SKProductsRequest *productsRequest;
   NSMutableArray *validProducts;
+  SKPayment *promotedPayment;
+  SKProduct *promotedProduct;
 }
 @end
   
