@@ -155,8 +155,7 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
         }
     }
     if (product) {
-        NSString *key = RCTKeyForInstance(product.productIdentifier);
-        [self addPromiseForKey:key resolve:resolve reject:reject];
+        [self addPromiseForKey:product.productIdentifier resolve:resolve reject:reject];
             
         SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
         [[SKPaymentQueue defaultQueue] addPayment:payment];
@@ -190,8 +189,7 @@ RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
         }
     }
     if (product) {
-        NSString *key = RCTKeyForInstance(product.productIdentifier);
-        [self addPromiseForKey:key resolve:resolve reject:reject];
+        [self addPromiseForKey:product.productIdentifier resolve:resolve reject:reject];
 
         payment = [SKMutablePayment paymentWithProduct:product];
         #if __IPHONE_12_2
@@ -402,7 +400,6 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
             case SKPaymentTransactionStateFailed:
                 NSLog(@"\n\n\n\n\n\n Purchase Failed  !! \n\n\n\n\n");
                 [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-                NSString *key = RCTKeyForInstance(transaction.payment.productIdentifier);
                 dispatch_sync(myQueue, ^{
                     if (hasListeners) {
                         NSString *responseCode = [@(transaction.error.code) stringValue];
@@ -415,7 +412,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
                                              ];
                         [self sendEventWithName:@"purchase-error" body:err];
                     }
-                    [self rejectPromisesForKey:key code:[self standardErrorCode:(int)transaction.error.code]
+                    [self rejectPromisesForKey:transaction.payment.productIdentifier code:[self standardErrorCode:(int)transaction.error.code]
                                        message:transaction.error.localizedDescription
                                          error:transaction.error];
                 });
@@ -464,7 +461,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
         pendingTransactionWithAutoFinish = false;
     }
     [self getPurchaseData:transaction withBlock:^(NSDictionary *purchase) {
-        [self resolvePromisesForKey:RCTKeyForInstance(transaction.payment.productIdentifier) value:purchase];
+        [self resolvePromisesForKey:transaction.payment.productIdentifier value:purchase];
 
         // additionally send event
         if (self->hasListeners) {
