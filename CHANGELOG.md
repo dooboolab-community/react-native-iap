@@ -1,5 +1,8 @@
 ## Changelogs
 
+- **[4.5.2]**
+  - Fix promise not resolving on `ios14` [#1064](https://github.com/dooboolab/react-native-iap/pull/1064).
+
 - **[4.5.0]**
   - Fix iap-promoted-product listener [#1039](https://github.com/dooboolab/react-native-iap/pull/1039)
 
