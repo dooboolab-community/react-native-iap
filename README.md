@@ -323,7 +323,7 @@ Purchase
 2. Purchases are inter-session `asynchronuous` meaning requests that are made may take several hours
    to complete and continue to exist even after the app has been closed or crashed.
 3. The purchase may be pending and hard to track what has been done ([example][issue-307-c1]).
-4. Thus the Billing Flow is an `event` pattern than a `callback` pattern.
+4. Thus the Billing Flow is an `event` pattern rather than a `callback` pattern.
 
 Once you have called `getProducts()`, and you have a valid response, you can call `requestPurchase()`.
 Subscribable products can be purchased just like consumable products and users
@@ -358,7 +358,7 @@ class RootComponent extends Component<*> {
             // Failure to do this will result in the purchase being refunded on Android and
             // the purchase event will reappear on every relaunch of the app until you succeed
             // in doing the below. It will also be impossible for the user to purchase consumables
-            // again untill you do this.
+            // again until you do this.
             if (Platform.OS === 'ios') {
               await RNIap.finishTransactionIOS(purchase.transactionId);
             } else if (Platform.OS === 'android') {
