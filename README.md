@@ -671,7 +671,7 @@ Q & A
 
     1. Completed an effective "Agreements, Tax, and Banking."
     2. Setup sandbox testing account in "Users and Roles."
-    3. Signed into iOS device with sandbox account.
+    3. Signed into iOS device with sandbox account in "Settings / iTunes & App Stores".
     3. Set up three In-App Purchases with the following status:
         - Ready to Submit
         - Missing Metadata
