@@ -383,21 +383,40 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
 -(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
     for (SKPaymentTransaction *transaction in transactions) {
         switch (transaction.transactionState) {
-            case SKPaymentTransactionStatePurchasing:
+            case SKPaymentTransactionStatePurchasing: {
                 NSLog(@"\n\n Purchase Started !! \n\n");
                 break;
-            case SKPaymentTransactionStatePurchased:
+            }
+            case SKPaymentTransactionStatePurchased: {
                 NSLog(@"\n\n\n\n\n Purchase Successful !! \n\n\n\n\n.");
                 [self purchaseProcess:transaction];
                 break;
-            case SKPaymentTransactionStateRestored:
+            }
+            case SKPaymentTransactionStateRestored: {
                 NSLog(@"Restored ");
                 [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
                 break;
-            case SKPaymentTransactionStateDeferred:
+            }
+            case SKPaymentTransactionStateDeferred: {
                 NSLog(@"Deferred (awaiting approval via parental controls, etc.)");
+                dispatch_sync(myQueue, ^{
+                    if (hasListeners) {
+                        NSDictionary *err = [NSDictionary dictionaryWithObjectsAndKeys:
+                                             @"The payment was deferred (awaiting approval via parental controls for instance)", @"debugMessage",
+                                             @"E_DEFERRED_PAYMENT", @"code",
+                                             @"The payment was deferred (awaiting approval via parental controls for instance)", @"message",
+                                             nil
+                                             ];
+                        [self sendEventWithName:@"purchase-error" body:err];
+                    }
+                    [self rejectPromisesForKey:transaction.payment.productIdentifier
+                                          code:@"E_DEFERRED_PAYMENT"
+                                       message:@"The payment was deferred (awaiting approval via parental controls for instance)"
+                                         error:nil];
+                });
                 break;
-            case SKPaymentTransactionStateFailed:
+            }
+            case SKPaymentTransactionStateFailed: {
                 NSLog(@"\n\n\n\n\n\n Purchase Failed  !! \n\n\n\n\n");
                 [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
                 dispatch_sync(myQueue, ^{
@@ -417,6 +436,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
                                          error:transaction.error];
                 });
                 break;
+            }
         }
     }
 }
