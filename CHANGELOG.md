@@ -1,5 +1,8 @@
 ## Changelogs
 
+- **[4.5.3]**
+  - Ability to know when a SKPaymentTransactionStateDeferred purchase update occurs [#1080](https://github.com/dooboolab/react-native-iap/issues/1080).
+
 - **[4.5.2]**
   - Fix promise not resolving on `ios14` [#1064](https://github.com/dooboolab/react-native-iap/pull/1064).
 
