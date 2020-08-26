@@ -208,14 +208,16 @@ export const endConnectionAndroid = (): Promise<void> => {
  * @deprecated
  * @returns {Promise<string[]>}
  */
-export const consumeAllItemsAndroid = (): Promise<string[]> =>
-  Platform.select({
+export const consumeAllItemsAndroid = (): Promise<string[]> => {
+  console.warn('consumeAllItemsAndroid is deprecated and will be removed in the future. Please use flushFailedPurchasesCachedAsPendingAndroid instead');
+  return Platform.select({
     ios: async () => Promise.resolve(),
     android: async () => {
       await checkNativeAndroidAvailable();
       return RNIapModule.refreshItems();
     },
   })();
+};
 
 /**
  * Consume all 'ghost' purchases (that is, pending payment that already failed but is still marked as pending in Play Store cache). Android only.
