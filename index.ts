@@ -202,6 +202,10 @@ export const endConnectionAndroid = (): Promise<void> => {
 
 /**
  * Consume all remaining tokens. Android only.
+ * This is considered dangerous as you should deliver the purchased feature BEFORE consuming it.
+ * If you used this method to refresh Play Store cache (of failed pending payment still marked as failed),
+ *  prefer using flushFailedPurchasesCachedAsPendingAndroid
+ * @deprecated
  * @returns {Promise<string[]>}
  */
 export const consumeAllItemsAndroid = (): Promise<string[]> =>
@@ -210,6 +214,19 @@ export const consumeAllItemsAndroid = (): Promise<string[]> =>
     android: async () => {
       await checkNativeAndroidAvailable();
       return RNIapModule.refreshItems();
+    },
+  })();
+
+/**
+ * Consume all 'ghost' purchases (that is, pending payment that already failed but is still marked as pending in Play Store cache). Android only.
+ * @returns {Promise<boolean>}
+ */
+export const flushFailedPurchasesCachedAsPendingAndroid = (): Promise<string[]> =>
+  Platform.select({
+    ios: async () => Promise.resolve(),
+    android: async () => {
+      await checkNativeAndroidAvailable();
+      return RNIapModule.flushFailedPurchasesCachedAsPending();
     },
   })();
 
@@ -729,6 +746,7 @@ const iapUtils = {
   getAvailablePurchases,
   getPendingPurchasesIOS,
   consumeAllItemsAndroid,
+  flushFailedPurchasesCachedAsPendingAndroid,
   clearProductsIOS,
   clearTransactionIOS,
   acknowledgePurchaseAndroid,
