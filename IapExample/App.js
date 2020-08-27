@@ -116,7 +116,7 @@ class Page extends Component {
   async componentDidMount(): void {
     try {
       const result = await RNIap.initConnection();
-      await RNIap.consumeAllItemsAndroid();
+      await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
       console.log('result', result);
     } catch (err) {
       console.warn(err.code, err.message);
