@@ -124,7 +124,8 @@ _*deprecated_<br>~~`buySubscription(sku: string)`~~<ul><li>sku: subscription ID/
 `getPendingPurchasesIOS()` | `Promise<ProductPurchase[]>` | **IOS only**<br>Gets all the transactions which are pending to be finished.
 `validateReceiptIos(body: Record<string, unknown>, devMode: boolean)`<ul><li>body: receiptBody</li><li>devMode: isTest</li></ul> | `Object\|boolean` | **iOS only**<br>Validate receipt.
 `endConnection()` | `Promise<void>` | End billing connection.
-`consumeAllItemsAndroid()` | `Promise<void>` | **Android only**<br>Consume all items so they are able to buy again.
+`consumeAllItemsAndroid()` | `Promise<void>` | **Android only**<br>Consume all items so they are able to buy again. ⚠️ Use in dev only (as you should deliver the purchased feature BEFORE consuming it)
+`flushFailedPurchasesCachedAsPendingAndroid()` | `Promise<void>` | **Android only**<br>Consume all 'ghost' purchases (that is, pending payment that already failed but is still marked as pending in Play Store cache)
 `consumePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul>     | `void` | **Android only**<br>Finish a purchase. All purchases should be finished once you have delivered the purchased items. E.g. by recording the purchase in your database or on your server.
 `acknowledgePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul> | `Promise<PurchaseResult>` | **Android only**<br>Acknowledge a product. Like above for non-consumables. Use `finishTransaction` instead for both platforms since version 4.1.0 or later.
 `consumePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul>     | `Promise<PurchaseResult>` | **Android only**<br>Consume a product. Like above for consumables. Use `finishTransaction` instead for both platforms since version 4.1.0 or later.
