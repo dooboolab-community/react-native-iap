@@ -347,6 +347,7 @@ class RootComponent extends Component<*> {
   purchaseErrorSubscription = null
 
   componentDidMount() {
+    await RNIap.initConnection();
     this.purchaseUpdateSubscription = purchaseUpdatedListener((purchase: InAppPurchase | SubscriptionPurchase | ProductPurchase ) => {
       console.log('purchaseUpdatedListener', purchase);
       const receipt = purchase.transactionReceipt;
