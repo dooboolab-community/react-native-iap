@@ -1,5 +1,12 @@
 ## Changelogs
 
+- **[4.5.4]**
+  - Fix & avoid blindly consuming success purchases [#1085](https://github.com/dooboolab/react-native-iap/pull/1085)
+  - Allow specyfing string subtype for product ids [#1089](https://github.com/dooboolab/react-native-iap/pull/1089)
+  - Let user know which productId was the error about [#1100](https://github.com/dooboolab/react-native-iap/pull/1100)
+  - Be more specific in purchaseErrorListener param typing [#1101](https://github.com/dooboolab/react-native-iap/pull/1101)
+
+
 - **[4.5.3]**
   - Ability to know when a SKPaymentTransactionStateDeferred purchase update occurs [#1080](https://github.com/dooboolab/react-native-iap/issues/1080).
 
