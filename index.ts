@@ -686,16 +686,16 @@ export const validateReceiptAndroid = async (
  * @returns {callback(e: InAppPurchase | ProductPurchase)}
  */
 export const purchaseUpdatedListener = (
-  e: InAppPurchase | SubscriptionPurchase | any,
+  listener: (event: InAppPurchase | SubscriptionPurchase) => void,
 ): EmitterSubscription => {
   if (Platform.OS === 'ios') {
     checkNativeiOSAvailable();
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
-    return myModuleEvt.addListener('purchase-updated', e);
+    return myModuleEvt.addListener('purchase-updated', listener);
   } else {
     const emitterSubscription = DeviceEventEmitter.addListener(
       'purchase-updated',
-      e,
+      listener,
     );
     RNIapModule.startListening();
     return emitterSubscription;
@@ -707,14 +707,14 @@ export const purchaseUpdatedListener = (
  * @returns {callback(e: PurchaseError)}
  */
 export const purchaseErrorListener = (
-  e: PurchaseError | any,
+  listener: (errorEvent: PurchaseError) => void,
 ): EmitterSubscription => {
   if (Platform.OS === 'ios') {
     checkNativeiOSAvailable();
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
-    return myModuleEvt.addListener('purchase-error', e);
+    return myModuleEvt.addListener('purchase-error', listener);
   } else {
-    return DeviceEventEmitter.addListener('purchase-error', e);
+    return DeviceEventEmitter.addListener('purchase-error', listener);
   }
 };
 
