@@ -20,6 +20,7 @@ import com.facebook.react.bridge.ObjectAlreadyConsumedException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -177,6 +178,35 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     }
   }
 
+  private void consumeItems(final List<Purchase> purchases, final Promise promise) {
+    consumeItems(purchases, promise, BillingClient.BillingResponseCode.OK);
+  }
+
+  private void consumeItems(final List<Purchase> purchases, final Promise promise, final int expectedResponseCode) {
+    for (Purchase purchase : purchases) {
+      final ConsumeParams consumeParams = ConsumeParams.newBuilder()
+          .setPurchaseToken(purchase.getPurchaseToken())
+          .setDeveloperPayload(purchase.getDeveloperPayload())
+          .build();
+
+      final ConsumeResponseListener listener = new ConsumeResponseListener() {
+        @Override
+        public void onConsumeResponse(BillingResult billingResult, String outToken) {
+          if (billingResult.getResponseCode() != expectedResponseCode) {
+            DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+            return;
+          }
+          try {
+            promise.resolve(true);
+          } catch (ObjectAlreadyConsumedException oce) {
+            promise.reject(oce.getMessage());
+          }
+        }
+      };
+      billingClient.consumeAsync(consumeParams, listener);
+    }
+  }
+
   @ReactMethod
   public void refreshItems(final Promise promise) {
 //    Purchase.PurchasesResult purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
@@ -196,29 +226,42 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           return;
         }
 
-        for (Purchase purchase : purchases) {
-          final ConsumeParams consumeParams = ConsumeParams.newBuilder()
-              .setPurchaseToken(purchase.getPurchaseToken())
-              .setDeveloperPayload(purchase.getDeveloperPayload())
-              .build();
+        consumeItems(purchases, promise);
+      }
+    });
+  }
 
-         final ConsumeResponseListener listener = new ConsumeResponseListener() {
-            @Override
-            public void onConsumeResponse(BillingResult billingResult, String outToken) {
-              if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-                DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
-                return;
-              }
-              array.pushString(outToken);
-              try {
-                promise.resolve(true);
-              } catch (ObjectAlreadyConsumedException oce) {
-                promise.reject(oce.getMessage());
-              }
-            }
-          };
-          billingClient.consumeAsync(consumeParams, listener);
+  @ReactMethod
+  public void flushFailedPurchasesCachedAsPending(final Promise promise) {
+    ensureConnection(promise, new Runnable() {
+      @Override
+      public void run() {
+        final WritableNativeArray array = new WritableNativeArray();
+        Purchase.PurchasesResult result = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
+        if (result == null) {
+          // No results for query
+          promise.resolve(false);
+          return;
         }
+        final List<Purchase> purchases = result.getPurchasesList();
+        if (purchases == null) {
+          // No purchases found
+          promise.resolve(false);
+          return;
+        }
+        final List<Purchase> pendingPurchases = Collections.EMPTY_LIST;
+        for (Purchase purchase : purchases) {
+          // we only want to try to consume PENDING items, in order to force cache-refresh for them
+          if (purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
+            pendingPurchases.add(purchase);
+          }
+        }
+        if (pendingPurchases.size() == 0) {
+          promise.resolve(false);
+          return;
+        }
+
+        consumeItems(pendingPurchases, promise, BillingClient.BillingResponseCode.ITEM_NOT_OWNED);
       }
     });
   }
