@@ -55,9 +55,9 @@ export interface Discount {
   subscriptionPeriod: string;
 }
 
-export interface Product extends Common {
+export interface Product<ProductId extends string = string> extends Common {
   type: 'inapp' | 'iap';
-  productId: string;
+  productId: ProductId;
 }
 
 export interface Subscription extends Common {
@@ -237,14 +237,16 @@ export const flushFailedPurchasesCachedAsPendingAndroid = (): Promise<string[]> 
  * @param {string[]} skus The item skus
  * @returns {Promise<Product[]>}
  */
-export const getProducts = (skus: string[]): Promise<Product[]> =>
+export const getProducts = <SkuType extends string>(
+  skus: SkuType[],
+): Promise<Array<Product<SkuType>>> =>
   Platform.select({
     ios: async () => {
       if (!RNIapIos) {
         return [];
       }
-      return RNIapIos.getItems(skus).then((items: Product[]) =>
-        items.filter((item: Product) => item.productId),
+      return RNIapIos.getItems(skus).then((items: Product<SkuType>[]) =>
+        items.filter((item: Product<SkuType>) => item.productId),
       );
     },
     android: async () => {
