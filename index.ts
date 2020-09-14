@@ -113,6 +113,7 @@ export interface PurchaseError {
   debugMessage?: string;
   code?: string;
   message?: string;
+  productId?: string;
 }
 
 export type InAppPurchase = ProductPurchase;

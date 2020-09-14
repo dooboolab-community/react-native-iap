@@ -165,6 +165,7 @@ RCT_EXPORT_METHOD(buyProduct:(NSString*)sku
                                  @"Invalid product ID.", @"debugMessage",
                                  @"E_DEVELOPER_ERROR", @"code",
                                  @"Invalid product ID.", @"message",
+                                 sku, @"productId",
                                  nil
                                  ];
             [self sendEventWithName:@"purchase-error" body:err];
@@ -212,6 +213,7 @@ RCT_EXPORT_METHOD(buyProductWithOffer:(NSString*)sku
                                  @"Invalid product ID.", @"debugMessage",
                                  @"Invalid product ID.", @"message",
                                  @"E_DEVELOPER_ERROR", @"code",
+                                 sku, @"productId",
                                  nil
                                  ];
             [self sendEventWithName:@"purchase-error" body:err];
@@ -244,6 +246,7 @@ RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
                                  @"Invalid product ID.", @"debugMessage",
                                  @"Invalid product ID.", @"message",
                                  @"E_DEVELOPER_ERROR", @"code",
+                                 sku, @"productId",
                                  nil
                                  ];
             [self sendEventWithName:@"purchase-error" body:err];
@@ -405,6 +408,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
                                              @"The payment was deferred (awaiting approval via parental controls for instance)", @"debugMessage",
                                              @"E_DEFERRED_PAYMENT", @"code",
                                              @"The payment was deferred (awaiting approval via parental controls for instance)", @"message",
+                                             transaction.payment.productIdentifier, @"productId",
                                              nil
                                              ];
                         [self sendEventWithName:@"purchase-error" body:err];
@@ -427,6 +431,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
                                              transaction.error.localizedDescription, @"debugMessage",
                                              [self standardErrorCode:(int)transaction.error.code], @"code",
                                              transaction.error.localizedDescription, @"message",
+                                             transaction.payment.productIdentifier, @"productId",
                                              nil
                                              ];
                         [self sendEventWithName:@"purchase-error" body:err];

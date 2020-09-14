@@ -451,6 +451,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           error.putString("debugMessage", debugMessage);
           error.putString("code", PROMISE_BUY_ITEM);
           error.putString("message", debugMessage);
+          error.putString("productId", sku);
           sendEvent(reactContext, "purchase-error", error);
           promise.reject(PROMISE_BUY_ITEM, debugMessage);
           return;
@@ -470,6 +471,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               error.putString("debugMessage", debugMessage);
               error.putString("code", PROMISE_BUY_ITEM);
               error.putString("message", debugMessage);
+              error.putString("productId", sku);
               sendEvent(reactContext, "purchase-error", error);
               promise.reject(PROMISE_BUY_ITEM, debugMessage);
               return;
