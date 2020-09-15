@@ -50,7 +50,7 @@ repositories {
 
 dependencies {
   implementation 'com.facebook.react:react-native:+'
-  implementation 'com.android.billingclient:billing:2.0.3'
+  implementation 'com.android.billingclient:billing:3.0.0'
   def supportLibVersion = safeExtGet('supportLibVersion', safeExtGet('supportVersion', null))
   def androidXVersion = safeExtGet('androidXVersion', null)
   if (supportLibVersion && androidXVersion == null) {
