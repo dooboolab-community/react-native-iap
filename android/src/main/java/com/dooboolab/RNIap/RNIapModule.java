@@ -20,7 +20,6 @@ import com.facebook.react.bridge.ObjectAlreadyConsumedException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -248,7 +247,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           promise.resolve(false);
           return;
         }
-        final List<Purchase> pendingPurchases = Collections.EMPTY_LIST;
+        final List<Purchase> pendingPurchases = new ArrayList<>();
         for (Purchase purchase : purchases) {
           // we only want to try to consume PENDING items, in order to force cache-refresh for them
           if (purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
