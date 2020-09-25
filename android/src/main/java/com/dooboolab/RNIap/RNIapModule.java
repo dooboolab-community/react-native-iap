@@ -417,6 +417,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     final String type,
     final String sku,
     final String oldSku,
+    final String purchaseToken,
     final Integer prorationMode,
     final Promise promise
   ) {
@@ -454,8 +455,8 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         }
         builder.setSkuDetails(selectedSku);
 
-        if (oldSku != null) {
-          builder.setOldSku(oldSku);
+        if (oldSku != null && purchaseToken != null) {
+          builder.setOldSku(oldSku, purchaseToken);
         }
 
         if (prorationMode != null && prorationMode != -1) {
