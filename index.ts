@@ -359,6 +359,7 @@ export const requestPurchase = (
         ANDROID_ITEM_TYPE_IAP,
         sku,
         null,
+        null,
         0,
       );
     },
