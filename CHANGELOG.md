@@ -1,5 +1,9 @@
 ## Changelogs
 
+- **[4.6.2]**
+  - Fix compatibility issue in android with detox [#1124](https://github.com/dooboolab/react-native-iap/pull/1124)
+  - Fix changing subscription on android [#1129](https://github.com/dooboolab/react-native-iap/pull/1129)
+
 - **[4.6.1]**
   - Fix xcode 12 compatibility [#1115](https://github.com/dooboolab/react-native-iap/pull/1115)
   - Prevent unsupported ops crashing in android [#1116](https://github.com/dooboolab/react-native-iap/pull/1116)
