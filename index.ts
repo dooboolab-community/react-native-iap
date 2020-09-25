@@ -369,6 +369,7 @@ export const requestPurchase = (
  * @param {string} sku The product's sku/ID
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [oldSkuAndroid] SKU that the user is upgrading or downgrading from.
+ * @param {string} [purchaseToken] purchaseToken that the user is upgrading or downgrading from (Android).
  * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
  * @returns {Promise<void>}
  */
@@ -376,6 +377,7 @@ export const requestSubscription = (
   sku: string,
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean,
   oldSkuAndroid?: string,
+  purchaseToken?: string,
   prorationModeAndroid?: ProrationModesAndroid,
 ): Promise<SubscriptionPurchase> =>
   Platform.select({
@@ -402,6 +404,7 @@ export const requestSubscription = (
         ANDROID_ITEM_TYPE_SUBSCRIPTION,
         sku,
         oldSkuAndroid,
+        purchaseToken,
         prorationModeAndroid,
       );
     },
