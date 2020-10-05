@@ -418,6 +418,8 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     final String sku,
     final String oldSku,
     final String purchaseToken,
+    final String obfuscatedAccountId,
+    final String obfuscatedProfileId,
     final Integer prorationMode,
     final Promise promise
   ) {
@@ -457,6 +459,14 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
         if (oldSku != null && purchaseToken != null) {
           builder.setOldSku(oldSku, purchaseToken);
+        }
+
+        if (obfuscatedAccountId != null) {
+          builder.setObfuscatedAccountId(obfuscatedAccountId);
+        }
+
+        if (obfuscatedProfileId != null) {
+          builder.setObfuscatedProfileId(obfuscatedProfileId);
         }
 
         if (prorationMode != null && prorationMode != -1) {
