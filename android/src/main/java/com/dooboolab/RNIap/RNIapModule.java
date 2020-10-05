@@ -418,9 +418,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     final String sku,
     final String oldSku,
     final String purchaseToken,
+    final Integer prorationMode,
     final String obfuscatedAccountId,
     final String obfuscatedProfileId,
-    final Integer prorationMode,
     final Promise promise
   ) {
     final Activity activity = getCurrentActivity();

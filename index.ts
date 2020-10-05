@@ -381,9 +381,9 @@ export const requestSubscription = (
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean,
   oldSkuAndroid?: string,
   purchaseTokenAndroid?: string,
+  prorationModeAndroid?: ProrationModesAndroid,
   obfuscatedAccountIdAndroid?: string,
   obfuscatedProfileIdAndroid?: string,
-  prorationModeAndroid?: ProrationModesAndroid,
 ): Promise<SubscriptionPurchase> =>
   Platform.select({
     ios: async () => {
@@ -410,9 +410,9 @@ export const requestSubscription = (
         sku,
         oldSkuAndroid,
         purchaseTokenAndroid,
+        prorationModeAndroid,
         obfuscatedAccountIdAndroid,
         obfuscatedProfileIdAndroid,
-        prorationModeAndroid,
       );
     },
   })();
