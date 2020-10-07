@@ -431,12 +431,15 @@ InAppPurchase | SubscriptionPurchase
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
- * @param {string} [userIdAndroid] Specify an optional obfuscated string that is uniquely associated with the user's account in.
+ * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
+ * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
  * @returns {Promise<InAppPurchase>}
  */
 export const requestPurchase = (
   sku: string,
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean,
+  obfuscatedAccountIdAndroid?: string,
+  obfuscatedProfileIdAndroid?: string,
 ): Promise<InAppPurchase> =>
   Platform.select({
     ios: async () => {
@@ -464,6 +467,8 @@ export const requestPurchase = (
         null,
         null,
         0,
+        obfuscatedAccountIdAndroid,
+        obfuscatedProfileIdAndroid,
       );
     },
   })();
@@ -474,6 +479,8 @@ export const requestPurchase = (
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [oldSkuAndroid] SKU that the user is upgrading or downgrading from.
  * @param {string} [purchaseTokenAndroid] purchaseToken that the user is upgrading or downgrading from (Android).
+ * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
+ * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
  * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
  * @returns {Promise<void>}
  */
@@ -483,6 +490,8 @@ export const requestSubscription = (
   oldSkuAndroid?: string,
   purchaseTokenAndroid?: string,
   prorationModeAndroid?: ProrationModesAndroid,
+  obfuscatedAccountIdAndroid?: string,
+  obfuscatedProfileIdAndroid?: string,
 ): Promise<SubscriptionPurchase> =>
   Platform.select({
     ios: async () => {
@@ -511,6 +520,8 @@ export const requestSubscription = (
         oldSkuAndroid,
         purchaseTokenAndroid,
         prorationModeAndroid,
+        obfuscatedAccountIdAndroid,
+        obfuscatedProfileIdAndroid,
       );
     },
   })();
