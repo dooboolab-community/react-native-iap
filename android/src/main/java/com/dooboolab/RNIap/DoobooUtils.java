@@ -3,6 +3,8 @@ package com.dooboolab.RNIap;
 import android.util.Log;
 
 import com.android.billingclient.api.BillingClient;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import com.facebook.react.bridge.ObjectAlreadyConsumedException;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
@@ -35,6 +37,10 @@ public class DoobooUtils {
   public static final String E_USER_ERROR = "E_USER_ERROR";
   public static final String E_DEVELOPER_ERROR = "E_DEVELOPER_ERROR";
   public static final String E_BILLING_RESPONSE_JSON_PARSE_ERROR = "E_BILLING_RESPONSE_JSON_PARSE_ERROR";
+
+  public static final String APPSTORE_UNKNOWN = "UNKNOWN";
+  public static final String APPSTORE_GOOGLE = "GOOGLE_PLAY";
+  public static final String APPSTORE_AMAZON = "AMAZON";
 
   private HashMap<String, ArrayList<Promise>> promises = new HashMap<>();
   private static DoobooUtils instance = new DoobooUtils();
@@ -262,5 +268,22 @@ public class DoobooUtils {
       }
     }
     return array;
+  }
+
+  public final String getInstallSource(Context context) {
+    Context appContext = context.getApplicationContext();
+    PackageManager pkgManager = appContext.getPackageManager();
+    String installerPackageName = pkgManager.getInstallerPackageName(appContext.getPackageName());
+
+    if (installerPackageName == null) {
+      return APPSTORE_UNKNOWN;
+    } else if ("com.android.vending".equals(installerPackageName)) {
+      return APPSTORE_GOOGLE;
+    } else if (installerPackageName.startsWith("com.amazon.")) {
+      return APPSTORE_AMAZON;
+    } else {
+      Log.d(TAG, "Unknown installer source: " + installerPackageName);
+    }
+    return APPSTORE_UNKNOWN;
   }
 }
