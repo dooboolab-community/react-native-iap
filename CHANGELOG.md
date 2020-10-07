@@ -1,57 +1,75 @@
 ## Changelogs
 
+- **[5.0.0]**
+
+  - Support Amazon IAP feature[#1134](https://github.com/dooboolab/react-native-iap/pull/1134)
+  - Fixes on missing [userId] and [profileId] on android [#1141](https://github.com/dooboolab/react-native-iap/pull/1141)
+
 - **[4.6.3]**
+
   - Renamed param to `purchaseTokenAndroid` in `requestSubscription` since this is android only [#1130](https://github.com/dooboolab/react-native-iap/pull/1130)
   - Fix for 'RNIapModule.buyItemByType got 6 arguments, expected 7' [#1132](https://github.com/dooboolab/react-native-iap/pull/1132)
 
 - **[4.6.2]**
+
   - Fix compatibility issue in android with detox [#1124](https://github.com/dooboolab/react-native-iap/pull/1124)
   - Fix changing subscription on android [#1129](https://github.com/dooboolab/react-native-iap/pull/1129)
 
 - **[4.6.1]**
+
   - Fix xcode 12 compatibility [#1115](https://github.com/dooboolab/react-native-iap/pull/1115)
   - Prevent unsupported ops crashing in android [#1116](https://github.com/dooboolab/react-native-iap/pull/1116)
 
 - **[4.6.0]**
+
   - Upgrade android billing sdk to 3 [#1112](https://github.com/dooboolab/react-native-iap/pull/1112)
-    * `developerIdAndroid` and `accountIdAndroid` params are removed.
+    - `developerIdAndroid` and `accountIdAndroid` params are removed.
 
 - **[4.5.4]**
+
   - Fix & avoid blindly consuming success purchases [#1085](https://github.com/dooboolab/react-native-iap/pull/1085)
   - Allow specyfing string subtype for product ids [#1089](https://github.com/dooboolab/react-native-iap/pull/1089)
   - Let user know which productId was the error about [#1100](https://github.com/dooboolab/react-native-iap/pull/1100)
   - Be more specific in purchaseErrorListener param typing [#1101](https://github.com/dooboolab/react-native-iap/pull/1101)
 
-
 - **[4.5.3]**
+
   - Ability to know when a SKPaymentTransactionStateDeferred purchase update occurs [#1080](https://github.com/dooboolab/react-native-iap/issues/1080).
 
 - **[4.5.2]**
+
   - Fix promise not resolving on `ios14` [#1064](https://github.com/dooboolab/react-native-iap/pull/1064).
 
 - **[4.5.0]**
+
   - Fix iap-promoted-product listener [#1039](https://github.com/dooboolab/react-native-iap/pull/1039)
 
 - **[4.4.11]**
+
   - Fix regresion in `4.4.10`
 
 - **[4.4.10]**
+
   - Fix iOS discount issue [#1038](https://github.com/dooboolab/react-native-iap/pull/1038)
   - Fix return type of `getPromotedProductIOS` [#1037](https://github.com/dooboolab/react-native-iap/pull/1037)
 
 - **[4.4.9]**
+
   - Upgrade packages and expose `ProductPurchase` type.
 
 - **[4.4.8]**
+
   - Fixes [#989](https://github.com/dooboolab/react-native-iap/issues/989).
 
 - **[4.4.7]**
+
   - Fix regression. Revert `andDangerouslyFinishTransactionAutomaticallyIOS` to false. This should actually be false in default.
 
 - **[4.4.6]**
   `andDangerouslyFinishTransactionAutomaticallyIOS` was set to true for default. I should be false.
 
 - **[4.4.5]**
+
   - Implement `endConnection` method to declaratively finish observer in iOS.
   - Remove `addTransactionObserver` in IAPPromotionObserver.m for dup observer problems.
   - Automatically startPromotionObserver in `initConnection` for iOS.
@@ -59,22 +77,27 @@
 
 - **[4.4.4]**
   Add guide add `IAPPromotionObserver` in ios
+
   - Resolve [#950](https://github.com/dooboolab/react-native-iap/issues/950)
   - Resolve [#971](https://github.com/dooboolab/react-native-iap/issues/971)
 
 - **[4.4.3]**
+
   - Bugfixes for [#849](https://github.com/dooboolab/react-native-iap/issues/849).
 
 - **[4.4.2]**
+
   - Attempt to fix [#934](https://github.com/dooboolab/react-native-iap/issues/934).
 
 - **[4.4.1]**
+
   - Upgrade packages.
 
 - **[4.4.0]**
+
   - Update `requestionSubscription` on android side.
   - The flow of the code were not clean and correct.
-    * Support ProrationModesAndroid enum type for handling better proration mode
+    - Support ProrationModesAndroid enum type for handling better proration mode
   - Fixes [#888](https://github.com/dooboolab/react-native-iap/issues/888)
   - PR [#893](https://github.com/dooboolab/react-native-iap/pull/893)
 
