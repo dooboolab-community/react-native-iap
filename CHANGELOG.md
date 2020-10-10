@@ -1,5 +1,8 @@
 ## Changelogs
 
+- **[5.0.1]**
+  - Fix amazon buyItemByType missing parameters dooboolab/react-native-iap/pull/1149
+
 - **[5.0.0]**
 
   - Support Amazon IAP feature[#1134](https://github.com/dooboolab/react-native-iap/pull/1134)
