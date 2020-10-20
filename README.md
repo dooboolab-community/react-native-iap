@@ -352,10 +352,10 @@ class RootComponent extends Component<*> {
   purchaseErrorSubscription = null
 
   componentDidMount() {
-    Iap.initConnection().then(() => {
+    RNIap.initConnection().then(() => {
       // we make sure that "ghost" pending payment are removed
       // (ghost = failed pending payment that are still marked as pending in Google's native Vending module cache)
-      Iap.flushFailedPurchasesCachedAsPendingAndroid().catch(() => {
+      RNIap.flushFailedPurchasesCachedAsPendingAndroid().catch(() => {
         // exception can happen here if:
         // - there are pending purchases that are still pending (we can't consume a pending purchase)
         // in any case, you might not want to do anything special with the error
