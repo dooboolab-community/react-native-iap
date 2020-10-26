@@ -524,6 +524,10 @@ Property                           | Type      | iOS | And | Comment
 `signatureAndroid`                 | `string`  |     | ✓   | The signature of the purchase data that was signed with the private key of the developer.<br>The data signature uses the `RSASSA-PKCS1-v1_5` scheme.
 `isAcknowledgedAndroid`            | `boolean` |     | ✓   | Checking if purchase has been acknowledged.
 `purchaseStateAndroid`             | `number`  |     | ✓   | Indicating purchase state.
+`packageNameAndroid`               | `string`  |     | ✓   | Get package name.
+`developerPayloadAndroid`          | `string`  |     | ✓   | https://developer.android.com/google/play/billing/developer-payload
+`obfuscatedAccountIdAndroid`       | `string`  |     | ✓   | https://developer.android.com/reference/com/android/billingclient/api/BillingFlowParams.Builder#setobfuscatedaccountidBuilder#setobfuscatedaccountId
+`obfuscatedProfileIdAndroid`       | `string`  |     | ✓   | https://developer.android.com/reference/com/android/billingclient/api/BillingFlowParams.Builder#setobfuscatedprofileid
 
 You need to test with one sandbox account, because the account holds previous purchase history.
 
