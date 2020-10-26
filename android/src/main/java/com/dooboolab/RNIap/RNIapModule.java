@@ -310,11 +310,13 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               item.putString("title", skuDetails.getTitle());
               item.putString("description", skuDetails.getDescription());
               item.putString("introductoryPrice", skuDetails.getIntroductoryPrice());
+              item.putString("typeAndroid", skuDetails.getType());
+              item.putString("packageNameAndroid", skuDetails.zza());
+              item.putString("originalPriceAndroid", skuDetails.getOriginalPrice());
               item.putString("subscriptionPeriodAndroid", skuDetails.getSubscriptionPeriod());
               item.putString("freeTrialPeriodAndroid", skuDetails.getFreeTrialPeriod());
               item.putString("introductoryPriceCyclesAndroid", String.valueOf(skuDetails.getIntroductoryPriceCycles()));
               item.putString("introductoryPricePeriodAndroid", skuDetails.getIntroductoryPricePeriod());
-              // new
               item.putString("iconUrl", skuDetails.getIconUrl());
               item.putString("originalJson", skuDetails.getOriginalJson());
               BigDecimal originalPriceAmountMicros = BigDecimal.valueOf(skuDetails.getOriginalPriceAmountMicros());
@@ -356,6 +358,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             item.putString("signatureAndroid", purchase.getSignature());
             item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
             item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
+            item.putString("packageNameAndroid", purchase.getPackageName());
+            item.putString("obfuscatedAccountIdAndroid", purchase.getAccountIdentifiers().getObfuscatedAccountId());
+            item.putString("obfuscatedProfileIdAndroid", purchase.getAccountIdentifiers().getObfuscatedProfileId());
 
             if (type.equals(BillingClient.SkuType.SUBS)) {
               item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
@@ -510,7 +515,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
                 AcknowledgePurchaseParams.newBuilder()
                         .setPurchaseToken(token)
                         .build();
-                        
+
         billingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
           @Override
           public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
@@ -588,6 +593,10 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
         item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
         item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
+        item.putString("packageNameAndroid", purchase.getPackageName());
+        item.putString("developerPayloadAndroid", purchase.getDeveloperPayload());
+        item.putString("obfuscatedAccountIdAndroid", purchase.getAccountIdentifiers().getObfuscatedAccountId());
+        item.putString("obfuscatedProfileIdAndroid", purchase.getAccountIdentifiers().getObfuscatedProfileId());
 
         promiseItem = new WritableNativeMap();
         promiseItem.merge(item);

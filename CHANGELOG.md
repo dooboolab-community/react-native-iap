@@ -1,5 +1,8 @@
 ## Changelogs
 
+- **[5.1.0]**
+  - Expose more variables in `android`.
+
 - **[5.0.1]**
   - Fix amazon buyItemByType missing parameters dooboolab/react-native-iap/pull/1149
 
