@@ -20,7 +20,7 @@ If you're looking for a module going further than react-native-iap, we recommend
 
 ⚠️ Most of users experiencing issues are caused by:
   - A device simulator, use a real device for testing!
-  - The sandbox environment of the project not being configured properly ([Configure android sandbox](https://www.iaphub.com/docs/set-up-ios/configure-sandbox-testing/), [Configure ios sandbox](https://www.iaphub.com/docs/set-up-ios/configure-sandbox-testing/))
+  - The sandbox environment of the project not being configured properly ([Configure android sandbox](https://www.iaphub.com/docs/set-up-android/configure-sandbox-testing), [Configure ios sandbox](https://www.iaphub.com/docs/set-up-ios/configure-sandbox-testing/))
   - An incorrect usage of the library
 
 
