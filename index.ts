@@ -16,6 +16,8 @@ interface Common {
   price: string;
   currency: string;
   localizedPrice: string;
+
+  countryCodeIOS?: string;
 }
 
 export enum IAPErrorCode {

@@ -529,6 +529,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
     NSString* introductoryPriceSubscriptionPeriod = @"";
 
     NSString* currencyCode = @"";
+    NSString* countryCode = @"";
     NSString* periodNumberIOS = @"0";
     NSString* periodUnitIOS = @"";
 
@@ -602,6 +603,12 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
         currencyCode = product.priceLocale.currencyCode;
     }
 
+    if (@available(iOS 13.0, *)) {
+        countryCode = [[SKPaymentQueue defaultQueue] countryCode];
+    } else {
+        countryCode = product.priceLocale.countryCode;
+    }
+
     NSArray *discounts;
     #if __IPHONE_12_2
     if (@available(iOS 12.2, *)) {
@@ -613,6 +620,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
                          product.productIdentifier, @"productId",
                          [product.price stringValue], @"price",
                          currencyCode, @"currency",
+                         countryCode, @"countryCode",
                          itemType, @"type",
                          product.localizedTitle ? product.localizedTitle : @"", @"title",
                          product.localizedDescription ? product.localizedDescription : @"", @"description",
