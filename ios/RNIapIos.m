@@ -604,8 +604,8 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
     }
 
     if (@available(iOS 13.0, *)) {
-        countryCode = [[SKPaymentQueue defaultQueue] countryCode];
-    } else {
+        countryCode = [[SKPaymentQueue defaultQueue].storefront countryCode];
+    } else if (@available(iOS 10.0, *)) {
         countryCode = product.priceLocale.countryCode;
     }
 
