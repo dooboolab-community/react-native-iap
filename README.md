@@ -306,6 +306,7 @@ Property                                 | iOS | And | Comment
 `title`                                  | ✓   | ✓   | Returns the title Android and localizedTitle on iOS.
 `description`                            | ✓   | ✓   | Returns the localized description on Android and iOS.
 `introductoryPrice`                      | ✓   | ✓   | Formatted introductory price of a subscription, including its currency sign, such as €3.99.<br>The price doesn't include tax.
+`introductoryPriceAsAmountIOS`           | ✓   |     | Localized introductory price string, with only number (eg. `0.99`).
 `introductoryPricePaymentModeIOS`        | ✓   |     | The payment mode for this product discount.
 `introductoryPriceNumberOfPeriods`       | ✓   |     | An integer that indicates the number of periods the product discount is available.
 `introductoryPriceNumberOfPeriodsIOS`    | ✓   |     | An integer that indicates the number of periods the product discount is available.

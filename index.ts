@@ -67,6 +67,7 @@ export interface Subscription extends Common {
   discounts?: Discount[];
 
   introductoryPrice?: string;
+  introductoryPriceAsAmountIOS?: string;
   introductoryPricePaymentModeIOS?: string;
   introductoryPriceNumberOfPeriodsIOS?: string;
   introductoryPriceSubscriptionPeriodIOS?: string;
