@@ -1,5 +1,9 @@
 ## Changelogs
 
+- **[5.1.2]**
+  - Add introductory price as string without formating and currency [#1182](https://github.com/dooboolab/react-native-iap/pull/1182)
+  - Add iOS store country code [#1186](https://github.com/dooboolab/react-native-iap/pull/1186)
+
 - **[5.1.1]**
   - Add type definition on `ProductPurchase`.
 
