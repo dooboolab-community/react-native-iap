@@ -55,10 +55,8 @@ When fetching subscriptions from Amazon, make sure to use children SKUs (so SKUs
 Caveats
 ----------------------
 Amazon does not return decimal price & currency. Only localized price as a string (ex. 11.22$). 
-(Ya, I know, wtf?) Please refer to https://forums.developer.amazon.com/answers/234257/view.html
+Please refer to https://forums.developer.amazon.com/answers/234257/view.html
 
-The package will try its best to parse this string into decimal price and currency.
-However, due to lack of information it will assume all $ prices are USD (so Canadian & Brazilian dollars are recognised as USD).
-If the package cannot parse the price, it will be 0 and currency will be returned as USD. 
-
-The best is to simply use `localizedPrice` in your code, otherwise you are not guaranteed proper prices with currencies.
+The package will try its best to parse this string into decimal price.
+If the package cannot parse the price, it will be 0. 
+Currency is detected based on users Amazon marketplace.

@@ -108,26 +108,10 @@ public class RNIapAmazonListener implements PurchasingListener {
               product.getSku()
             );
           }
-          String currency = "USD";
-          // Assumption is that if we cannot distinguish the price, it is USD
-          if(priceString.indexOf('$') != -1) {
-            // This incorrectly parses Brazilian or Canadian $$ as USD, but there is no way to distinguish those
-            currency = "USD";
-          } else if(priceString.indexOf('€') != -1) {
-            currency = "EUR";
-          } else if(priceString.indexOf('₹') != -1) {
-            currency = "INR";
-          } else if(priceString.indexOf('¥') != -1) {
-            currency = "JPY";
-          } else if(priceString.indexOf('£') != -1) {
-            currency = "GBP";
-          }
-
           WritableMap item = Arguments.createMap();
           CoinsReward coinsReward = product.getCoinsReward();
           item.putString("productId", product.getSku());
           item.putString("price", priceNumber.toString());
-          item.putString("currency", currency);
           item.putString("type", productTypeString);
           item.putString("localizedPrice", priceString);
           item.putString("title", product.getTitle());
