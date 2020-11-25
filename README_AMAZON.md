@@ -45,3 +45,18 @@ Amazon offers the `App Tester` tool to make in-app purchases testing easier. Mor
 Server Validation
 -----------------
 Amazon IAP API supports validation of in-app purchases on a remote server side. More information is available at https://developer.amazon.com/docs/in-app-purchasing/iap-rvs-for-android-apps.html
+
+
+Subscriptions
+----------------------
+When fetching subscriptions from Amazon, make sure to use children SKUs (so SKUs for specific period ex. monthly or annualy), do not use parent subscription SKUs! 
+
+
+Caveats
+----------------------
+Amazon does not return decimal price & currency. Only localized price as a string (ex. 11.22$). 
+Please refer to https://forums.developer.amazon.com/answers/234257/view.html
+
+The package will try its best to parse this string into decimal price.
+If the package cannot parse the price, it will be 0. 
+Currency is detected based on users Amazon marketplace.

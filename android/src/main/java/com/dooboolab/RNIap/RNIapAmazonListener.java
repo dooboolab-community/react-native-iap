@@ -5,29 +5,21 @@ import androidx.annotation.Nullable;
 import com.amazon.device.iap.PurchasingListener;
 import com.amazon.device.iap.PurchasingService;
 import com.amazon.device.iap.model.CoinsReward;
-import com.amazon.device.iap.model.FulfillmentResult;
 import com.amazon.device.iap.model.Product;
 import com.amazon.device.iap.model.ProductDataResponse;
 import com.amazon.device.iap.model.ProductType;
 import com.amazon.device.iap.model.PurchaseResponse;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.Receipt;
-import com.amazon.device.iap.model.RequestId;
 import com.amazon.device.iap.model.UserData;
 import com.amazon.device.iap.model.UserDataResponse;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,7 +81,6 @@ public class RNIapAmazonListener implements PurchasingListener {
 
         WritableNativeArray items = new WritableNativeArray();
 
-        NumberFormat format = NumberFormat.getCurrencyInstance();
         for (Map.Entry<String, Product> skuDetails : productData.entrySet()) {
           Product product = skuDetails.getValue();
 
@@ -105,30 +96,29 @@ public class RNIapAmazonListener implements PurchasingListener {
             ? "inapp"
             : "subs";
           Number priceNumber = 0.00;
+          String priceString = product.getPrice();
           try {
-            String priceString = product.getPrice();
             if (priceString != null && !priceString.isEmpty()) {
-              priceNumber = format.parse(priceString);
+              priceNumber = Double.parseDouble(priceString.replaceAll("[^\\d.,]+", ""));
             }
-          } catch (ParseException e) {
+          } catch (NumberFormatException e) {
             Log.w(
               TAG,
               "onProductDataResponse: Failed to parse price for product: " +
               product.getSku()
             );
           }
-
           WritableMap item = Arguments.createMap();
           CoinsReward coinsReward = product.getCoinsReward();
           item.putString("productId", product.getSku());
           item.putString("price", priceNumber.toString());
           item.putString("type", productTypeString);
-          item.putString("localizedPrice", product.getPrice());
+          item.putString("localizedPrice", priceString);
           item.putString("title", product.getTitle());
           item.putString("description", product.getDescription());
           item.putString("iconUrl", product.getSmallIconUrl());
           item.putString("originalJson", product.toString());
-          item.putString("originalPrice", product.getPrice());
+          item.putString("originalPrice", priceString);
           //item.putString("userMarketplaceAmazon", marketplace);
           if (coinsReward != null) {
             item.putInt("coinsRewardAmountAmazon", coinsReward.getAmount());
