@@ -305,12 +305,9 @@ RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionIdentifier) {
 RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     [self requestReceiptDataWithBlock:^(NSData *receiptData, NSError *error) {
-        if (receiptData == nil) {
-            resolve(nil);
-        }
-        else {
+        NSMutableArray *output = [NSMutableArray array];
+        if (receiptData != nil) {
             NSArray<SKPaymentTransaction *> *transactions = [[SKPaymentQueue defaultQueue] transactions];
-            NSMutableArray *output = [NSMutableArray array];
 
             for (SKPaymentTransaction *item in transactions) {
                 NSMutableDictionary *purchase = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -322,9 +319,8 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
                                                  ];
                 [output addObject:purchase];
             }
-
-            resolve(output);
         }
+        resolve(output);
     }];
 }
 
