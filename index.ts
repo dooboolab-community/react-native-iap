@@ -935,6 +935,18 @@ export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> => {
   }
 };
 
+/**
+ * Launches a modal to register the redeem offer code in IOS.
+ * @returns {Promise<null>}
+ */
+export const presentCodeRedemptionSheetIOS = async (): Promise<null> => {
+  if (Platform.OS === 'ios') {
+    await checkNativeiOSAvailable();
+
+    return RNIapIos.presentCodeRedemptionSheet();
+  }
+};
+
 const iapUtils = {
   IAPErrorCode,
   initConnection,
@@ -963,6 +975,7 @@ const iapUtils = {
   getReceiptIOS,
   getPromotedProductIOS,
   buyPromotedProductIOS,
+  presentCodeRedemptionSheetIOS,
 };
 
 export default iapUtils;
