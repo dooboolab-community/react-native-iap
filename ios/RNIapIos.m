@@ -328,6 +328,16 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
     }];
 }
 
+RCT_EXPORT_METHOD(presentCodeRedemptionSheet:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (@available(iOS 14.0, *)) {
+        [[SKPaymentQueue defaultQueue] presentCodeRedemptionSheet];
+        resolve(nil);
+    } else {
+        reject([self standardErrorCode:2], @"This method only available above iOS 14", nil);
+    }
+}
+
 #pragma mark ===== StoreKit Delegate
 
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
