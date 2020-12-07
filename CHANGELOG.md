@@ -1,5 +1,11 @@
 ## Changelogs
 
+- **[5.2.0]**
+  - Added presentCodeRedemptionSheetIOS [#1201](https://github.com/dooboolab/react-native-iap/pull/1201)
+    * By [@Bang9](https://github.com/Bang9)
+  - Fix that getPendingPurchasesIOS() may returns undefined [#1199](https://github.com/dooboolab/react-native-iap/pull/1199)
+    * By [@gki](https://github.com/gki)
+
 - **[5.1.3]**
   - Fixed Amazon products prices parsing [#1191](https://github.com/dooboolab/react-native-iap/pull/1191)
 
