@@ -8,6 +8,7 @@
   NSMutableArray *validProducts;
   SKPayment *promotedPayment;
   SKProduct *promotedProduct;
+  NSInteger countPendingTransaction;
 }
 @end
   
