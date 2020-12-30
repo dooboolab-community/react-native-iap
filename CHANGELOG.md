@@ -1,5 +1,8 @@
 ## Changelogs
 
+- **[5.2.1]**
+  - Patch clear transaction [#1215](https://github.com/dooboolab/react-native-iap/pull/1215)
+
 - **[5.2.0]**
   - Added presentCodeRedemptionSheetIOS [#1201](https://github.com/dooboolab/react-native-iap/pull/1201)
     * By [@Bang9](https://github.com/Bang9)
