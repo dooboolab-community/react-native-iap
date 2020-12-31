@@ -53,7 +53,7 @@ export interface Discount {
   numberOfPeriods: string;
   price: string;
   localizedPrice: string;
-  paymentMode: string;
+  paymentMode: '' | 'FREETRIAL' | 'PAYASYOUGO' | 'PAYUPFRONT';
   subscriptionPeriod: string;
 }
 
@@ -70,12 +70,12 @@ export interface Subscription extends Common {
 
   introductoryPrice?: string;
   introductoryPriceAsAmountIOS?: string;
-  introductoryPricePaymentModeIOS?: string;
+  introductoryPricePaymentModeIOS?: '' | 'FREETRIAL' | 'PAYASYOUGO' | 'PAYUPFRONT';
   introductoryPriceNumberOfPeriodsIOS?: string;
-  introductoryPriceSubscriptionPeriodIOS?: string;
+  introductoryPriceSubscriptionPeriodIOS?: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | '';
 
   subscriptionPeriodNumberIOS?: string;
-  subscriptionPeriodUnitIOS?: string;
+  subscriptionPeriodUnitIOS?: '' | 'YEAR' | 'MONTH' | 'WEEK' | 'DAY';
 
   introductoryPriceCyclesAndroid?: string;
   introductoryPricePeriodAndroid?: string;
