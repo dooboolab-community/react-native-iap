@@ -835,7 +835,7 @@ static NSString *RCTKeyForInstance(id instance)
 -(void)paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions {
     NSLog(@"removedTransactions");
     if (countPendingTransaction != nil && countPendingTransaction > 0) {
-        countPendingTransaction--;
+        countPendingTransaction -= [transactions count];
         if (countPendingTransaction == 0) {
             [self resolvePromisesForKey:@"cleaningTransactions" value:nil];
             countPendingTransaction = nil;
