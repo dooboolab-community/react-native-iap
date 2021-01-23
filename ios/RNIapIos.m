@@ -339,7 +339,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
 
 RCT_EXPORT_METHOD(presentCodeRedemptionSheet:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-#ifdef __IPHONE_14_0
+#if defined(__IPHONE_14_0) && !TARGET_OS_TV
     if (@available(iOS 14.0, *)) {
         [[SKPaymentQueue defaultQueue] presentCodeRedemptionSheet];
         resolve(nil);
