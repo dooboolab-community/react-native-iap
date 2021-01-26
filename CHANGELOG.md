@@ -1,462 +1,138 @@
 ## Changelogs
 
-- **[5.2.3]**
-  Fix posible problem clearTransactionsIOS [#1227](https://github.com/dooboolab/react-native-iap/pull/1227)
+## 5.2.4
+- Add sandbox agnostic receipt verification [#1228](https://github.com/dooboolab/react-native-iap/pull/1228)
+- Fix tvos presentCodeRedemptionSheet not available [#1237](https://github.com/dooboolab/react-native-iap/pull/1237)
 
-- **[5.2.2]**
-  - Improving typescript types for iOS subscription [#1219](https://github.com/dooboolab/react-native-iap/pull/1219)
-  - Fix(presentCodeRedemptionSheet): Xcode 11 compatibility [#1218](https://github.com/dooboolab/react-native-iap/pull/1218)
+## 5.2.3
+- Fixed posible problem clearTransactionsIOS [#1227](https://github.com/dooboolab/react-native-iap/pull/1227)
 
-- **[5.2.1]**
-  - Patch clear transaction [#1215](https://github.com/dooboolab/react-native-iap/pull/1215)
+## 5.2.2
+- Improving typescript types for iOS subscription [#1219](https://github.com/dooboolab/react-native-iap/pull/1219)
+- Fix(presentCodeRedemptionSheet): Xcode 11 compatibility [#1218](https://github.com/dooboolab/react-native-iap/pull/1218)
 
-- **[5.2.0]**
-  - Added presentCodeRedemptionSheetIOS [#1201](https://github.com/dooboolab/react-native-iap/pull/1201)
-    * By [@Bang9](https://github.com/Bang9)
-  - Fix that getPendingPurchasesIOS() may returns undefined [#1199](https://github.com/dooboolab/react-native-iap/pull/1199)
-    * By [@gki](https://github.com/gki)
+## 5.2.1
+- Patch clear transaction [#1215](https://github.com/dooboolab/react-native-iap/pull/1215)
 
-- **[5.1.3]**
-  - Fixed Amazon products prices parsing [#1191](https://github.com/dooboolab/react-native-iap/pull/1191)
+## 5.2.0
+- Added presentCodeRedemptionSheetIOS [#1201](https://github.com/dooboolab/react-native-iap/pull/1201)
+  * By [@Bang9](https://github.com/Bang9)
+- Fix that getPendingPurchasesIOS() may returns undefined [#1199](https://github.com/dooboolab/react-native-iap/pull/1199)
+  * By [@gki](https://github.com/gki)
 
-- **[5.1.2]**
-  - Add introductory price as string without formating and currency [#1182](https://github.com/dooboolab/react-native-iap/pull/1182)
-  - Add iOS store country code [#1186](https://github.com/dooboolab/react-native-iap/pull/1186)
+## 5.1.3
+- Fixed Amazon products prices parsing [#1191](https://github.com/dooboolab/react-native-iap/pull/1191)
 
-- **[5.1.1]**
-  - Add type definition on `ProductPurchase`.
+## 5.1.2
+- Add introductory price as string without formating and currency [#1182](https://github.com/dooboolab/react-native-iap/pull/1182)
+- Add iOS store country code [#1186](https://github.com/dooboolab/react-native-iap/pull/1186)
 
-- **[5.1.0]**
-  - Expose more variables in `android` [#1171](https://github.com/dooboolab/react-native-iap/pull/1171).
+## 5.1.1
+- Add type definition on `ProductPurchase`.
 
-- **[5.0.1]**
-  - Fix amazon buyItemByType missing parameters dooboolab/react-native-iap/pull/1149
+## 5.1.0
+- Expose more variables in `android` [#1171](https://github.com/dooboolab/react-native-iap/pull/1171).
 
-- **[5.0.0]**
+## 5.0.1
+- Fix amazon buyItemByType missing parameters dooboolab/react-native-iap/pull/1149
 
-  - Support Amazon IAP feature[#1134](https://github.com/dooboolab/react-native-iap/pull/1134)
-  - Fixes on missing [userId] and [profileId] on android [#1141](https://github.com/dooboolab/react-native-iap/pull/1141)
+## 5.0.0
 
-- **[4.6.3]**
+- Support Amazon IAP feature[#1134](https://github.com/dooboolab/react-native-iap/pull/1134)
+- Fixes on missing [userId] and [profileId] on android [#1141](https://github.com/dooboolab/react-native-iap/pull/1141)
 
-  - Renamed param to `purchaseTokenAndroid` in `requestSubscription` since this is android only [#1130](https://github.com/dooboolab/react-native-iap/pull/1130)
-  - Fix for 'RNIapModule.buyItemByType got 6 arguments, expected 7' [#1132](https://github.com/dooboolab/react-native-iap/pull/1132)
+## 4.6.3
 
-- **[4.6.2]**
+- Renamed param to `purchaseTokenAndroid` in `requestSubscription` since this is android only [#1130](https://github.com/dooboolab/react-native-iap/pull/1130)
+- Fix for 'RNIapModule.buyItemByType got 6 arguments, expected 7' [#1132](https://github.com/dooboolab/react-native-iap/pull/1132)
 
-  - Fix compatibility issue in android with detox [#1124](https://github.com/dooboolab/react-native-iap/pull/1124)
-  - Fix changing subscription on android [#1129](https://github.com/dooboolab/react-native-iap/pull/1129)
+## 4.6.2
 
-- **[4.6.1]**
+- Fix compatibility issue in android with detox [#1124](https://github.com/dooboolab/react-native-iap/pull/1124)
+- Fix changing subscription on android [#1129](https://github.com/dooboolab/react-native-iap/pull/1129)
 
-  - Fix xcode 12 compatibility [#1115](https://github.com/dooboolab/react-native-iap/pull/1115)
-  - Prevent unsupported ops crashing in android [#1116](https://github.com/dooboolab/react-native-iap/pull/1116)
+## 4.6.1
 
-- **[4.6.0]**
+- Fix xcode 12 compatibility [#1115](https://github.com/dooboolab/react-native-iap/pull/1115)
+- Prevent unsupported ops crashing in android [#1116](https://github.com/dooboolab/react-native-iap/pull/1116)
 
-  - Upgrade android billing sdk to 3 [#1112](https://github.com/dooboolab/react-native-iap/pull/1112)
-    - `developerIdAndroid` and `accountIdAndroid` params are removed.
+## 4.6.0
+- Upgrade android billing sdk to 3 [#1112](https://github.com/dooboolab/react-native-iap/pull/1112)
+  - `developerIdAndroid` and `accountIdAndroid` params are removed.
 
-- **[4.5.4]**
+## 4.5.4
 
-  - Fix & avoid blindly consuming success purchases [#1085](https://github.com/dooboolab/react-native-iap/pull/1085)
-  - Allow specyfing string subtype for product ids [#1089](https://github.com/dooboolab/react-native-iap/pull/1089)
-  - Let user know which productId was the error about [#1100](https://github.com/dooboolab/react-native-iap/pull/1100)
-  - Be more specific in purchaseErrorListener param typing [#1101](https://github.com/dooboolab/react-native-iap/pull/1101)
+- Fix & avoid blindly consuming success purchases [#1085](https://github.com/dooboolab/react-native-iap/pull/1085)
+- Allow specyfing string subtype for product ids [#1089](https://github.com/dooboolab/react-native-iap/pull/1089)
+- Let user know which productId was the error about [#1100](https://github.com/dooboolab/react-native-iap/pull/1100)
+- Be more specific in purchaseErrorListener param typing [#1101](https://github.com/dooboolab/react-native-iap/pull/1101)
 
-- **[4.5.3]**
+## 4.5.3
 
-  - Ability to know when a SKPaymentTransactionStateDeferred purchase update occurs [#1080](https://github.com/dooboolab/react-native-iap/issues/1080).
+- Ability to know when a SKPaymentTransactionStateDeferred purchase update occurs [#1080](https://github.com/dooboolab/react-native-iap/issues/1080).
 
-- **[4.5.2]**
+## 4.5.2
 
-  - Fix promise not resolving on `ios14` [#1064](https://github.com/dooboolab/react-native-iap/pull/1064).
+- Fix promise not resolving on `ios14` [#1064](https://github.com/dooboolab/react-native-iap/pull/1064).
 
-- **[4.5.0]**
+## 4.5.0
 
-  - Fix iap-promoted-product listener [#1039](https://github.com/dooboolab/react-native-iap/pull/1039)
+- Fix iap-promoted-product listener [#1039](https://github.com/dooboolab/react-native-iap/pull/1039)
 
-- **[4.4.11]**
+## 4.4.11
 
-  - Fix regresion in `4.4.10`
+- Fix regresion in `4.4.10`
 
-- **[4.4.10]**
+## 4.4.10
 
-  - Fix iOS discount issue [#1038](https://github.com/dooboolab/react-native-iap/pull/1038)
-  - Fix return type of `getPromotedProductIOS` [#1037](https://github.com/dooboolab/react-native-iap/pull/1037)
+- Fix iOS discount issue [#1038](https://github.com/dooboolab/react-native-iap/pull/1038)
+- Fix return type of `getPromotedProductIOS` [#1037](https://github.com/dooboolab/react-native-iap/pull/1037)
 
-- **[4.4.9]**
+## 4.4.9
 
-  - Upgrade packages and expose `ProductPurchase` type.
+- Upgrade packages and expose `ProductPurchase` type.
 
-- **[4.4.8]**
+## 4.4.8
 
-  - Fixes [#989](https://github.com/dooboolab/react-native-iap/issues/989).
+- Fixes [#989](https://github.com/dooboolab/react-native-iap/issues/989).
 
-- **[4.4.7]**
+## 4.4.7
+- Fix regression. Revert `andDangerouslyFinishTransactionAutomaticallyIOS` to false. This should actually be false in default.
 
-  - Fix regression. Revert `andDangerouslyFinishTransactionAutomaticallyIOS` to false. This should actually be false in default.
+## 4.4.6
+- `andDangerouslyFinishTransactionAutomaticallyIOS` was set to true for default. I should be false.
 
-- **[4.4.6]**
-  `andDangerouslyFinishTransactionAutomaticallyIOS` was set to true for default. I should be false.
+## 4.4.5
 
-- **[4.4.5]**
+- Implement `endConnection` method to declaratively finish observer in iOS.
+- Remove `addTransactionObserver` in IAPPromotionObserver.m for dup observer problems.
+- Automatically startPromotionObserver in `initConnection` for iOS.
+- Deprecate `endConnectionAndroid`.
 
-  - Implement `endConnection` method to declaratively finish observer in iOS.
-  - Remove `addTransactionObserver` in IAPPromotionObserver.m for dup observer problems.
-  - Automatically startPromotionObserver in `initConnection` for iOS.
-  - Deprecate `endConnectionAndroid`.
+## 4.4.4
+Add guide add `IAPPromotionObserver` in ios
 
-- **[4.4.4]**
-  Add guide add `IAPPromotionObserver` in ios
+- Resolve [#950](https://github.com/dooboolab/react-native-iap/issues/950)
+- Resolve [#971](https://github.com/dooboolab/react-native-iap/issues/971)
 
-  - Resolve [#950](https://github.com/dooboolab/react-native-iap/issues/950)
-  - Resolve [#971](https://github.com/dooboolab/react-native-iap/issues/971)
+## 4.4.3
 
-- **[4.4.3]**
+- Bugfixes for [#849](https://github.com/dooboolab/react-native-iap/issues/849).
 
-  - Bugfixes for [#849](https://github.com/dooboolab/react-native-iap/issues/849).
+## 4.4.2
 
-- **[4.4.2]**
+- Attempt to fix [#934](https://github.com/dooboolab/react-native-iap/issues/934).
 
-  - Attempt to fix [#934](https://github.com/dooboolab/react-native-iap/issues/934).
+## 4.4.1
 
-- **[4.4.1]**
+- Upgrade packages.
 
-  - Upgrade packages.
+## 4.4.0
 
-- **[4.4.0]**
+- Update `requestionSubscription` on android side.
+- The flow of the code were not clean and correct.
+  - Support ProrationModesAndroid enum type for handling better proration mode
+- Fixes [#888](https://github.com/dooboolab/react-native-iap/issues/888)
+- PR [#893](https://github.com/dooboolab/react-native-iap/pull/893)
 
-  - Update `requestionSubscription` on android side.
-  - The flow of the code were not clean and correct.
-    - Support ProrationModesAndroid enum type for handling better proration mode
-  - Fixes [#888](https://github.com/dooboolab/react-native-iap/issues/888)
-  - PR [#893](https://github.com/dooboolab/react-native-iap/pull/893)
-
-- **[4.3.4]**
-  - Fix `double precision` issue in java [885](https://github.com/dooboolab/react-native-iap/pull/885).
-- **[4.3.3]**
-  - Fix `purchaseStateAndroid`. Resolve [#839](https://github.com/dooboolab/react-native-iap/issues/839).
-- **[4.3.1]**
-  - Pod file support for tvos.
-- **[4.3.0]**
-  - Bug fixes and remove tsconfig [#854](https://github.com/dooboolab/react-native-iap/pull/854).
-- **[4.2.2]**
-  - Fixes [#845](https://github.com/dooboolab/react-native-iap/issues/845).
-- **[4.2.1]**
-  - Fixes [#839](https://github.com/dooboolab/react-native-iap/issues/839) and [#841](https://github.com/dooboolab/react-native-iap/issues/841).
-- **[4.2.0]**
-  - Bump up the version due to npm bug.
-- **[4.1.1]**
-  - Fix Android compile error for React Native v0.60.x due to missing method #835
-- **[4.1.0]**
-  - `finishTransaction` has been renewed by the request in [#797](https://github.com/dooboolab/react-native-iap/issues/797)
-- **[4.0.8]**
-  - Added subs to the list of unconsumed purchases [#807](https://github.com/dooboolab/react-native-iap/pull/807)
-  - Fixed promise never returned from requestSubscription() [#806](https://github.com/dooboolab/react-native-iap/pull/806)
-  - Fixed promise acceptation/rejection not propagated to JS [#809](https://github.com/dooboolab/react-native-iap/pull/809)
-- **[4.0.7]**
-  - Correctly fix `andDangerouslyFinishTransactionAutomatically` default to `true`.
-- **[4.0.5]**
-  - Resolve [#788](https://github.com/dooboolab/react-native-iap/issues/788)
-- **[4.0.4]**
-  - Call correct methods in finishTransaction Android [#778](https://github.com/dooboolab/react-native-iap/pull/778)
-- **[4.0.3]**
-  - Bugfix in [#771](https://github.com/dooboolab/react-native-iap/issues/771)
-- **[4.0.2]**
-  - Bugfix in [#769](https://github.com/dooboolab/react-native-iap/issues/769)
-- **[4.0.1]**
-  - Resolve [#763](https://github.com/dooboolab/react-native-iap/issues/763)
-  - Resolve [#764](https://github.com/dooboolab/react-native-iap/issues/764)
-  - Resolve [#765](https://github.com/dooboolab/react-native-iap/issues/765)
-- **[4.0.0]**
-  - rc1
-    - Remove unused methods and fix typings
-    - Default `andDangerouslyFinishTransactionAutomatically` to true
-    - Update eslint rules
-    - Remove all the deprecated methods
-      - Remove `buyProduct`.
-      - Remove `buySubscription`.
-      - Remove `addAdditionalSuccessPurchaseListenerIOS`.
-    - Renamed methods
-      - Rename `requestReceiptIOS` to `getReceiptIOS`.
-      - Rename `buyProductWithOfferIOS` to `requestPurcaseWithOfferIOS`.
-      - Rename `buyProductWithQuantityIOS` to `requestProductWithQuantityIOS`.
-    - Add missing types
-    - Abstracts verifying purchases into one method, finishTransaction
-    - It abstracts finishTransactionIOS, consumePurchaseAndroid, acknowledgePurchaseAndroid in to one method.
-  - rc2
-    - Do not use this.
-  - rc3
-    - Add `deveoperId` and `accountId` when requesting `purchase` or `subscription` in `android`. Find out more in `requestPurchase` and `requestSubscription`.
-  - rc4
-    - Send `purchase-error` with null purchases.
-  - rc5
-    - Fix types that's not reliable in recent `ts` version [#731](https://github.com/dooboolab/react-native-iap/issues/731)
-  - rc7
-    - Fix optional parameters not specified.
-  - rc8
-    - Put promises returns back in `android` for users who still need it.
-    - Fixed typings for `getProducts` and `getSubscriptions`.
-  - rc11
-    - Resolve [#748](https://github.com/dooboolab/react-native-iap/issues/748)
-    - Resolve [#757](https://github.com/dooboolab/react-native-iap/issues/757)
-    - Resolve [#7](https://github.com/dooboolab/react-native-iap/issues/762)
-- **[3.5.+]**
-  - Migrated to `ts` project. Now we only need to concentrate on `index.ts` file. `index.js`, `index.js.flow`, `index.d.ts` is generated during build.
-  - `consumeAllItems` returns consumed tokens instead of void.
-  - **[3.5.2]**
-    - Resolve [#740](https://github.com/dooboolab/react-native-iap/issues/740).
-  - **[3.5.3]**
-    - Possibly resolve [#632](https://github.com/dooboolab/react-native-iap/issues/632).
-  - **[3.5.4]**
-    - Resolve type error [#746](https://github.com/dooboolab/react-native-iap/pull/746).
-  - **[3.5.5]**
-    - Fix more type error.
-  - **[3.5.6]**
-    - Resolve [#748](https://github.com/dooboolab/react-native-iap/issues/748)
-  - **[~~3.5.8~~]**
-    - `android` runtie bugfix in `3.5.7`.
-  - **[3.5.9]**
-    - Resolve issue on `andorid` project. Do not use `3.5.8`.
-- **[3.4.+]**
-  - Makes module possible to be built in older XCode version [#650](https://github.com/dooboolab/react-native-iap/pull/650).
-  - Makes iOS `getSubscriptions` return subscriptions that only received ids [#654](https://github.com/dooboolab/react-native-iap/pull/654).
-  - **[3.4.1]**
-    - Method to retrive pending transaction [#663](https://github.com/dooboolab/react-native-iap/pull/663).
-    - Fixed missing `autoRenewingAndroid` key [#670](https://github.com/dooboolab/react-native-iap/pull/670).
-  - **[3.4.2]**
-    - Enhanced typings.
-  - **[3.4.5]**
-    - Enhanced more typings [#696](https://github.com/dooboolab/react-native-iap/pull/696).
-    - Support installation guide for both `RN >= 0.60` and `RN <0.60`. No need to use different version of `react-native-iap` now.
-  - **[3.4.6]**
-    - Reject promises on `initConnection` when not resolved [#704](https://github.com/dooboolab/react-native-iap/pull/696).
-  - **[3.4.7]**
-    - Add missing variable `isAcknowledgedAndroid` when fetching `getAvailableItems`.
-    - Fix bad return type of promise of 'initConnection' in `flow` and `typescript`.
-  - **[3.4.8]**
-    - Don't use this version
-  - **[3.4.9]**
-    - Improve initConnection errors on android [#714](https://github.com/dooboolab/react-native-iap/pull/714)
-  - **[3.4.10]**
-    - Remove `android` deprecated apis.
-  - **[3.4.11]**
-    - Add `deveoperId` and `accountId` when requesting `purchase` or `subscription` in `android`. Find out more in `requestPurchase` and `requestSubscription`.
-    - Remove deprecated android apis.
-  - **[3.4.12]**
-    - send `purchase-error` event when `purchases` returns null.
-  - **[3.4.13]**
-    - Enhance typings. Related issue [#729](https://github.com/dooboolab/react-native-iap/issues/729).
-  - **[3.4.14]**
-    - Fix types that's not reliable in recent `ts` version [#731](https://github.com/dooboolab/react-native-iap/issues/731)
-  - **[3.4.15]**
-    - Add missing flow type [#738](https://github.com/dooboolab/react-native-iap/pull/738). - Add missing flow type [#738](https://github.com/dooboolab/react-native-iap/pull/738).
-  - **[3.4.16]**
-    - `consumeAllItems` returns consumed tokens instead void.
-- **[3.3.+]**
-  - Fix flow tying [#594](https://github.com/dooboolab/react-native-iap/pull/594).
-  - Handle null pointer exception [#600](https://github.com/dooboolab/react-native-iap/issues/600).
-  - Keep valid SKUs in `android` when fetching products [#602](https://github.com/dooboolab/react-native-iap/pull/602)
-  - Fix possibility for NullPointerException [#607](https://github.com/dooboolab/react-native-iap/pull/607)
-  - Resolve [#624](https://github.com/dooboolab/react-native-iap/issues/624)
-  - Support better error codes [#616](https://github.com/dooboolab/react-native-iap/pull/616)
-- **[3.3.0]**
-  - Fix [#581](https://github.com/dooboolab/react-native-iap/issues/581) by allowing the user to manually call finishTransaction on iOS. Deprecates allowing RNIap to automatically call finishTransaction.
-  - Adds `finishTransactionIOS(transactionId)` which should be called after persisting a successful consumable transaction to disk or server. (Similar to `consumePurchaseAndroid` and `acknowledgePurchaseAndroid`).
-  - Deprecates using requestPurchase without setting `andDangerouslyFinishTransactionAutomatically` to `false` on iOS. This will default to false in a future major release.
-  - Sends any unfinished (iOS), unconsumed or unacknowledged (Android) purchases directly when the first `purchaseUpdatedListener` is added. This happens even if the app is relaunched and should be used to recover purchases that got charged through the store but were never delivered to the user. Be sure to finish, consume or acknowledge all purchases when you have delivered them.
-- **[3.2.+]**
-  - Update readme.
-  - Fixed type.
-  - Fixes build for `ios` under target `12.2`.
-- **[3.2.0]**
-  - Support `acknowledgePurchaseAndroid` for breaking changes in android billing client `2.0+`.
-- **[3.1.2]**
-  - Remove `getOrderId` from PurchaseHistory [#554](https://github.com/dooboolab/react-native-iap/pull/554)
-- **[3.1.1]**
-  - Fix transanctionId in `onPurchaseUpdated` in `android` [#552](https://github.com/dooboolab/react-native-iap/pull/552)
-- **[3.1.0]**
-  - Androidx migration [#550](https://github.com/dooboolab/react-native-iap/pull/550)
-  - Upgrade example project to `react-native@0.60.0-rc.2`
-- **[3.0.1]**
-  - Fixes for [#546](https://github.com/dooboolab/react-native-iap/issues/546)
-- **[3.0.0]**
-  - Major migration and breaking changes done in [#510](https://github.com/dooboolab/react-native-iap/pull/510)
-  - Fixes crashing when `requestPurchase` in android [#512](https://github.com/dooboolab/react-native-iap/issues/512)
-  - Fix minor typing [#514](https://github.com/dooboolab/react-native-iap/issues/514)
-  - Add purchaseErrorListner to subscribe purchase error. `ios` warning fixed. Typings added. [#517](https://github.com/dooboolab/react-native-iap/issues/517)
-  - Resolve [#315](https://github.com/dooboolab/react-native-iap/issues/315) by safely wrap promises with `ObjectAlreadyConsumedException`.
-  - Fixed typo in `purchaseErrorListener`.
-  - Fixed missing import for `ObjectAlreadyConsumedException`.
-  - Update `podspec` to match the version.
-  - Improved handling of receipts [#521](https://github.com/dooboolab/react-native-iap/pull/521)
-  - Fixes for [#530](https://github.com/dooboolab/react-native-iap/issues/530)
-  - Make ensureConnection always provide a valid BillingClient [#539](https://github.com/dooboolab/react-native-iap/pull/539)
-- **[2.5.+]**
-  - Fix flow type [#482](https://github.com/dooboolab/react-native-iap/pull/482)
-  - Ugrade gradle to `3.2.1` [#488](https://github.com/dooboolab/react-native-iap/pull/488)
-  - Fix gradle api usage [#489](https://github.com/dooboolab/react-native-iap/pull/489)
-  - Fix promo code purchase not being restored [#490](https://github.com/dooboolab/react-native-iap/pull/490)
-  - Fix Platform Specific Type Definitions [#493](https://github.com/dooboolab/react-native-iap/pull/493)
-  - Add `ios` target for `tvOS` [#500](https://github.com/dooboolab/react-native-iap/pull/500)
-  - Fix getAvailablePurchase issue [#518](https://github.com/dooboolab/react-native-iap/issues/518#issuecomment-503137160)
-- **[2.4.+]**
-  - Add support for iOS In-App Purchase promotions [#388](https://github.com/dooboolab/react-native-iap/pull/388).
-  - Implemented `addAdditionalSuccessPurchaseListenerIOS` to handle extra successed purchase event. Related to [#307](https://github.com/dooboolab/react-native-iap/issues/307).
-  - Attempt to fix crashing in `ensureConnection` for android. Related [#315](https://github.com/dooboolab/react-native-iap/issues/315).
-  - Fixed promise not resolving putting back `async` wrapper.
-  - Fixed types for `addAdditionalSuccessPurchaseListenerIOS`.
-  - Update `build.gradle` to match version in react-native `0.58`.
-  - Fix issue with promoted product event not firing on older devices [#390](https://github.com/dooboolab/react-native-iap/pull/390).
-  - Add support for iOS In-App Purchase promotions.
-  - Add stable channel for pod [#404](https://github.com/dooboolab/react-native-iap/issues/404).
-  - Add flow typed [#431](https://github.com/dooboolab/react-native-iap/pull/431)
-  - Prevent crashing from phones that doesn't have IAP feature [#434](https://github.com/dooboolab/react-native-iap/pull/434)
-  - Fixed types `flow` and `ts` [#441](https://github.com/dooboolab/react-native-iap/pull/441) [#449](https://github.com/dooboolab/react-native-iap/pull/441)
-  - Move `jcenter` below `Google repo` [#445](https://github.com/dooboolab/react-native-iap/pull/445)
-  - Fetch correct number of periods from introductory price [#454](https://github.com/dooboolab/react-native-iap/pull/454)
-  - Support to iOS subscription offers [#455](https://github.com/dooboolab/react-native-iap/pull/455)
-  - `initConnection` return bool [#459](https://github.com/dooboolab/react-native-iap/pull/459)
-- **[2.3.23]**
-  - Resolve [#288](https://github.com/dooboolab/react-native-iap/issues/288).
-- **[2.3.21]**
-  - Fixed npe when `getAvailablePurcase` in android.
-- **[2.3.19]**
-  - Additional catch for npe.
-- **[2.3.18]**
-  - Resolve `true` rather than `null` in android with successful interaction.
-- **[2.3.17]**
-  - Avoid iml file to be uploaded to npm repo that may fail from build in android.
-- **[2.3.16]**
-  - Fixes not responding to successful purchase.
-- **[2.3.9]**
-  - Fixes for unsafe getting originalJson when restoring item and Android.
-- **[2.3.6]**
-  - Fixed `types` for `buySubscription`.
-- **[2.3.5]**
-  - Fixed `transactionReceipt` field in `android`.
-- **[2.3.4]**
-  - Get originalJson in Android as a transanctionReceipt for validation #277.
-- **[2.3.3]**
-  - Fixed regression in adding proration mode. #279.
-- **[2.3.2]**
-  - Replace deprecated 'compile' gradle configuration with 'implementation' #282
-- **[2.3.1]**
-  - Fixed breakings.
-- **[2.3.0]**
-  - Add prorationMode.
-- **[2.2.2]**
-  - Automatically handle connection initialization.
-- **[2.2.1]**
-  - Added types for `clearTransaction`.
-- **[2.2.0]**
-  - Added `clearTransaction` method which resolve #257.
-- **[2.1.3]**
-  - Use mutable array in ios not to clear up the array each time products are fetched.
-- **[2.0.3]**
-  - Properly setup new method `initConnection` and deprecate `prepare`.
-- **[2.0.0]**
-  - Renamed the variables returned from the action getting item and purchasing item.
-  - Fixed some crashing.
-  - Typescript improvement.
-  - Dropped version < 54 for React Native (This only affects `validateReceiptIos` and `validateReceiptAndroid`).
-  - Improve receipt validation.
-  - nil check in `Introductory Price` in ios.
-- **[1.3.6]**
-  - Upgraded android billing client to 1.1.
-- **[1.3.0]**
-  - Better android build.gradle from [PR](https://github.com/dooboolab/react-native-iap/pull/213).
-- **[1.2.6]**
-  - Fixed invalid source in pod spec from [PR](https://github.com/dooboolab/react-native-iap/pull/212).
-- **[1.2.5]**
-  - Set android build version to that of `rootProject`'s to prevent from build failing cause of mismatched version.
-- **[1.2.4]**
-  - Implemented `canMakePayments` method in ios which is called in `prepare` method in the module. Related [issue](https://github.com/dooboolab/react-native-iap/pull/121).
-- **[1.2.2]**
-  - Return an err when it failse to parse json in android related to [issue](https://github.com/dooboolab/react-native-iap/pull/196).
-- **[1.2.0]**
-  - Fixed example project to work again.
-- **[1.1.6]**
-  - Fixed validate receiptIos bug from [issue](https://github.com/dooboolab/react-native-iap/issues/190) and the break in [issue](https://github.com/dooboolab/react-native-iap/pull/188).
-- **[1.1.3]**
-  - Android reject when preparing not-ended billing client from [PR](https://github.com/dooboolab/react-native-iap/pull/189).
-- **[1.1.2]**
-  - Handle network error related to [PR](https://github.com/dooboolab/react-native-iap/pull/186).
-- **[1.1.0]**
-  - Rebased rejection code when purchase failed in android related to [issue](https://github.com/dooboolab/react-native-iap/issues/183).
-- **[1.0.8]**
-  - Put another conditional statement when buying product which crashes when purchase is null related to [issue](https://github.com/dooboolab/react-native-iap/issues/177).
-- **[1.0.6]**
-  - Add signature and original purchase data to transaction from [PR](https://github.com/dooboolab/react-native-iap/pull/173)
-- **[1.0.5]**
-  - Prevent starting billing client in android when already called once related to [issue](https://github.com/dooboolab/react-native-iap/issues/152).
-- **[1.0.4]**
-  - Purchase is now tread-safe in ios related to [issue](https://github.com/dooboolab/react-native-iap/issues/106).
-  - PurchaseData could be nil in ios. Fixed this related to [issue](https://github.com/dooboolab/react-native-iap/issues/158)
-- **[1.0.0]**
-  - Renamed `refreshItems` to `consumeAllItems` for clear understanding.
-  - Fixed critical bug in ios which products are recognized as `subs` only.
-- **[0.3.24]**
-  - [existing iOS bug] `itemType` of `Product` information always returns `sub`. It is unnecessary in iOS and will be deprecated.
-- **[0.3.21]**
-  - Able to manage consumption in ios with `buyProductWithoutFinishTransaction` and `finishTransaction`.
-- **[0.3.19]**
-  - Updated `validateReceiptIos` and `validateReceiptAndroid` methods to support all RN version.
-- **[0.3.17]**
-  - Implemented receipt validation. See the `Receipt validation` section in the readme. For `android`, you should have your own backend to get `access_token` from `googleapis`.
-- **[0.3.13]**
-  - Implemented `refreshItems` in android. This is to consume all products in anroid to rebuy the item. Becareful to use this method because if will affect your history of playstore. Only use this when you don't care about the history in playstore. Use this method after `prepare` method.
-- **[0.3.10]**
-  - Implemented `endConnection` in android.
-- **[0.3.9]**
-  - stable version that fixes bug in `0.3.4` ~ `0.3.8`.
-  - fix crash when localizedDescription is nil from [PR](https://github.com/dooboolab/react-native-iap/pull/112).
-  - fix crash on launchBillingFlow failure in Android from [PR](https://github.com/dooboolab/react-native-iap/pull/107).
-  - Fixed typings.
-- **[0.3.1]**
-  - Fixed linking manual dependency in ios from [PR](https://github.com/dooboolab/react-native-iap/pull/94).
-  - Fixed returning localizedPrice when need actual price in Android from [ISSUE](https://github.com/dooboolab/react-native-iap/issues/86).
-  - Fixed other minor bugs relied on ios.
-  - Some purchasing senarios have been tested throughly.
-- **[0.3.0-alpha1]**
-  - Methods names are fully renamed to avoid the confusion. Current methods are `prepare`, `getProducts`, `getSubscriptions`, `getPurchaseHistory`, `getAvailablePurchases`, `buySubscription`, `buyProduct`, `consumeProduct`. Please compare these methods with your previous methods used in `0.2.*` if you want to upgrade to `0.3.0`.
-- **[0.2.17]**
-  - `refreshAllItems` has changed name to `fetchHistory` since android and ios had different functionality and fixed to fetching history of purchases.
-- **[0.2.16]**
-  - Changed android package name `com.reactlibrary.RNIapPackage` to `com.dooboolab.RNIap.RNIapPackage`;.
-- **[0.2.15]**
-  - Removed react dependency in pod(deprecated). Handle android `buySubscribeItem` callback.
-- **[0.2.14]**
-  - Improve typings with [JSDoc](https://github.com/dooboolab/react-native-iap/commit/5c91392136837a10c85c6c073cc254f4c2f98249).
-- **[0.2.13]**
-  - buyItem will now return object instead string. The receipt string will be result.data and signature is added in result.signature. Currently ios signature will be always empty string.
-- **[0.2.12]**
-  - Added signiture to android purchase. From this version, the verification string for json string after purchasing will be receipt.data instead of receipt itself because of changes in [here](https://github.com/dooboolab/react-native-iap/issues/31). We will apply this changes to ios too so you do not have to handle these two differently.
-- **[0.2.11]**
-  - [Move podspec to where "react-native link" expects it to be](https://github.com/dooboolab/react-native-iap/commit/6c2389719663f90de1862cf14dfd4d3e3d670d1b).
-- **[0.2.9]**
-  - Android catch error message when IAP service not prepared during refreshAllItems.
-- **[0.2.8]**
-  - `homepage` now is mandatory attribute in cocoapods from [pull request](https://github.com/dooboolab/react-native-iap/pull/21).
-- **[0.2.7]**
-  - Android `buyItem` cancel callback.
-- **[0.2.6]**
-  - Android buyItem method do not consume item right away from 0.2.6.
-- **[0.2.5]**
-  - types support.
-    ![alt text](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/typing%20screen%20shot.png?alt=media&token=ea2ef1f3-50af-4d9c-8388-7fd22ddc8aa0)
-  - call new Method for android inside refreshItems(). This will now return object values like ios.
-- **[0.2.3]**
-  - Support annotations to hint while using our module.
-- **[0.2.0]**
-  - Implemented senario for consumable and non-consumable item.
-  - Seperated methods that only exists in IOS and Android.
-    - prepareAndroid()
-    - refreshPurchaseItemsAndroid(type: string)
-    - getPurchasedItemsAndroid(type: string)
-    - consumeItemAndroid(token: string)
-  - Able to call prepareAndroid() function without any conditional statement like if (Platform.OS === 'android'). Just use it.
-  - Updated Readme.
-- **[0.1.10]**
-  - Fixed potential bug relied on preparing IAP module in Android. Updated readme to see how to use it.
+<!-- Changes under 4.4.0 are removed. Please see older commits. -->
