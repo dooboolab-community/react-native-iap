@@ -649,7 +649,7 @@ export const finishTransaction = (
         } else if (
           purchase.userIdAmazon ||
           (!purchase.isAcknowledgedAndroid &&
-          purchase.purchaseStateAndroid === PurchaseStateAndroid.PURCHASED)
+            purchase.purchaseStateAndroid === PurchaseStateAndroid.PURCHASED)
         ) {
           return myRNIapModule.acknowledgePurchase(
             purchase.purchaseToken,
@@ -768,6 +768,47 @@ export const buyPromotedProductIOS = (): Promise<void> =>
     android: async () => Promise.resolve(),
   })();
 
+const fetchJsonOrThrow = async (url: string, receiptBody: Record<string, unknown>,
+): Promise<Apple.ReceiptValidationResponse | false> => {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: new Headers({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    }),
+    body: JSON.stringify(receiptBody),
+  });
+
+  if (!response.ok) {
+    throw Object.assign(new Error(response.statusText), {
+      statusCode: response.status,
+    });
+  }
+
+  return response.json();
+};
+
+const requestAgnosticReceiptValidationIos = async (receiptBody: Record<string, unknown>,
+): Promise<Apple.ReceiptValidationResponse | false> => {
+  const response = await fetchJsonOrThrow(
+    'https://buy.itunes.apple.com/verifyReceipt',
+    receiptBody,
+  );
+
+  // Best practice is to check for test receipt and check sandbox instead
+  // https://developer.apple.com/documentation/appstorereceipts/verifyreceipt
+  if (response && response.status === Apple.ReceiptValidationStatus.TEST_RECEIPT) {
+    const response = await fetchJsonOrThrow(
+      'https://sandbox.itunes.apple.com/verifyReceipt',
+      receiptBody,
+    );
+
+    return response;
+  }
+
+  return response;
+};
+
 /**
  * Buy products or subscriptions with offers (iOS only)
  *
@@ -807,26 +848,20 @@ export const validateReceiptIos = async (
   receiptBody: Record<string, unknown>,
   isTest?: boolean,
 ): Promise<Apple.ReceiptValidationResponse | false> => {
+  if (isTest == null) {
+    return await requestAgnosticReceiptValidationIos(receiptBody);
+  }
+
   const url = isTest
     ? 'https://sandbox.itunes.apple.com/verifyReceipt'
     : 'https://buy.itunes.apple.com/verifyReceipt';
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: new Headers({
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    }),
-    body: JSON.stringify(receiptBody),
-  });
+  const response = await fetchJsonOrThrow(
+    url,
+    receiptBody,
+  );
 
-  if (!response.ok) {
-    throw Object.assign(new Error(response.statusText), {
-      statusCode: response.status,
-    });
-  }
-
-  return response.json();
+  return response;
 };
 
 /**
