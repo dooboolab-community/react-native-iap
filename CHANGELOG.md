@@ -1,5 +1,8 @@
 ## Changelogs
 
+## 5.2.5
+- Fixes build issue [#1238](https://github.com/dooboolab/react-native-iap/issues/1238)
+
 ## 5.2.4
 - Add sandbox agnostic receipt verification [#1228](https://github.com/dooboolab/react-native-iap/pull/1228)
 - Fix tvos presentCodeRedemptionSheet not available [#1237](https://github.com/dooboolab/react-native-iap/pull/1237)

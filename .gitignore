@@ -58,3 +58,6 @@ tsconfig.tsbuildinfo
 index.js.flow
 index.d.ts
 index.js
+
+apple.d.ts
+apple.js
