@@ -254,12 +254,12 @@ Below is basic implementation which is also provided in `RNIapExample` project.
 
 Init IAP, In App Billing
 ------------------------
-First thing you should do is to define your items for iOS and Android
+First thing you should do is to define your product IDs for iOS and Android
 separately like defined below.
 ```javascript
 import * as RNIap from 'react-native-iap';
 
-const itemSkus = Platform.select({
+const productIds = Platform.select({
   ios: [
     'com.example.coins100'
   ],
@@ -285,7 +285,7 @@ to check again when the user enters your IAP store.
 ```javascript
   async componentDidMount() {
     try {
-      const products: Product[] = await RNIap.getProducts(itemSkus);
+      const products: Product[] = await RNIap.getProducts(productIds);
       this.setState({ products });
     } catch(err) {
       console.warn(err); // standardized err.code and err.message available
