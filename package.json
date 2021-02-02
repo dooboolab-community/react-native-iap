@@ -36,14 +36,15 @@
     "dooboolab-welcome": "^1.2.0"
   },
   "devDependencies": {
-    "@dooboo/eslint-config": "^0.5.5",
+    "@dooboo/eslint-config": "^0.6.21",
     "@types/eslint": "^7.2.5",
     "@types/react": "17.0.0",
-    "@types/react-native": "0.63.36",
+    "@types/react-native": "0.63.46",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.14.0",
-    "flow-bin": "^0.138.0",
-    "flowgen": "^1.12.1",
-    "typescript": "^4.1.2"
+    "eslint": "^7.19.0",
+    "flow-bin": "^0.143.1",
+    "flowgen": "^1.13.0",
+    "prettier": "^2.2.1",
+    "typescript": "^4.1.3"
   }
 }
