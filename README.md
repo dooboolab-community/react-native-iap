@@ -309,7 +309,6 @@ Property                                 | iOS | And | Comment
 `price`                                  | ✓   | ✓   | Localized price string, with only number (eg. `1.99`).
 `productId`                              | ✓   | ✓   | Returns a string needed to purchase the item later.
 `currency`                               | ✓   | ✓   | Returns the currency code.
-`countryCode`                            | ✓   |     | Returns the store country code.
 `localizedPrice`                         | ✓   | ✓   | Localized price string, with number and currency symbol (eg. `$1.99`).
 `title`                                  | ✓   | ✓   | Returns the title Android and localizedTitle on iOS.
 `description`                            | ✓   | ✓   | Returns the localized description on Android and iOS.
