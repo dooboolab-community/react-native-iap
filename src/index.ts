@@ -256,8 +256,10 @@ export const getProducts = <SkuType extends string>(
     ios: async () => {
       if (!RNIapIos) return [];
 
-      return RNIapIos.getItems(skus).then((items: Product<SkuType>[]) =>
-        items.filter((item: Product<SkuType>) => item.productId),
+      return RNIapIos.getItems(skus).then((items: Product[]) =>
+        items.filter((item: Product) =>
+          skus.includes(item.productId as SkuType),
+        ),
       );
     },
     android: async () => {
