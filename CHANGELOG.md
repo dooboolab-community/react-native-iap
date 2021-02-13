@@ -1,8 +1,17 @@
 ## Changelogs
 
+## 6.0.0
+
+- React Naitve IAP hook is out. [Follow the medium post](https://medium.com/dooboolab/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it.
+
+## 5.2.7
+
+- HotFix - `getProducts` returns fetched products only. Previously it returned both.
+
 ## 5.2.6
 
 - Fixes regression issue in iOS not getting all params [#1245](https://github.com/dooboolab/react-native-iap/pull/1245). Related [#1203](https://github.com/dooboolab/react-native-iap/pull/1245).
+
 ## 5.2.5
 - Fixes build issue [#1238](https://github.com/dooboolab/react-native-iap/issues/1238)
 

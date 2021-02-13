@@ -5,6 +5,8 @@ node_modules/
 android/react-native-iap.iml
 android/android.iml
 tsconfig.tsbuildinfo
-index.ts
+*.ts
+!*.d.ts
 tsconfig.json
 greenkeeper.json
+react-native-iap-*.tgz

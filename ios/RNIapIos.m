@@ -256,7 +256,7 @@ RCT_EXPORT_METHOD(buyProductWithQuantityIOS:(NSString*)sku
 }
 
 RCT_EXPORT_METHOD(clearTransaction:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {  
+                  reject:(RCTPromiseRejectBlock)reject) {
     
     NSLog(@"\n\n\n  ***  clear remaining Transactions. Call this before make a new transaction   \n\n.");
 
@@ -558,10 +558,9 @@ RCT_EXPORT_METHOD(presentCodeRedemptionSheet:(RCTPromiseResolveBlock)resolve
     NSString* periodNumberIOS = @"0";
     NSString* periodUnitIOS = @"";
 
-    NSString* itemType = @"Do not use this. It returned sub only before";
+    NSString* itemType = @"iap";
 
     if (@available(iOS 11.2, *)) {
-        // itemType = product.subscriptionPeriod ? @"sub" : @"iap";
         unsigned long numOfUnits = (unsigned long) product.subscriptionPeriod.numberOfUnits;
         SKProductPeriodUnit unit = product.subscriptionPeriod.unit;
 
@@ -576,6 +575,7 @@ RCT_EXPORT_METHOD(presentCodeRedemptionSheet:(RCTPromiseResolveBlock)resolve
         }
 
         periodNumberIOS = [NSString stringWithFormat:@"%lu", numOfUnits];
+        if (numOfUnits != 0) itemType = @"subs";
 
         // subscriptionPeriod = product.subscriptionPeriod ? [product.subscriptionPeriod stringValue] : @"";
         //introductoryPrice = product.introductoryPrice != nil ? [NSString stringWithFormat:@"%@", product.introductoryPrice] : @"";
@@ -667,13 +667,14 @@ RCT_EXPORT_METHOD(presentCodeRedemptionSheet:(RCTPromiseResolveBlock)resolve
 }
 
 - (NSMutableArray *)getDiscountData:(SKProduct *)product {
-    NSMutableArray *mappedDiscounts = [NSMutableArray arrayWithCapacity:[product.discounts count]];
-    NSString *localizedPrice;
-    NSString *paymendMode;
-    NSString *subscriptionPeriods;
-    NSString *discountType;
+    if (@available(iOS 12.2, *)) {
+        NSMutableArray *mappedDiscounts = [NSMutableArray arrayWithCapacity:[product.discounts count]];
+        NSString *localizedPrice;
+        NSString *paymendMode;
+        NSString *subscriptionPeriods;
+        NSString *discountType;
 
-    if (@available(iOS 11.2, *)) {
+
         for(SKProductDiscount *discount in product.discounts) {
             NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
             formatter.numberStyle = NSNumberFormatterCurrencyStyle;
@@ -748,9 +749,9 @@ RCT_EXPORT_METHOD(presentCodeRedemptionSheet:(RCTPromiseResolveBlock)resolve
                                         nil
                                         ]];
         }
+        return mappedDiscounts;
     }
-
-    return mappedDiscounts;
+    return nil;
 }
 
 - (void) getPurchaseData:(SKPaymentTransaction *)transaction withBlock:(void (^)(NSDictionary *transactionDict))block {
