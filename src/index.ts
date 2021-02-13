@@ -22,8 +22,6 @@ import {
   SubscriptionPurchase,
 } from './types';
 
-import useIAP from './hooks/useIAP';
-
 const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
 
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
@@ -894,9 +892,9 @@ const iapUtils = {
   getPromotedProductIOS,
   buyPromotedProductIOS,
   presentCodeRedemptionSheetIOS,
-  useIAP,
 };
 
 export * from './types';
+export {useIAP} from './hooks/useIAP';
 
 export default iapUtils;

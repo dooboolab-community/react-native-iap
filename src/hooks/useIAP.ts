@@ -29,8 +29,8 @@ type IAP_STATUS = {
   subscriptions: Subscription[];
   purchaseHistories: Purchase[];
   availablePurchases: Purchase[];
-  currentPurchase: Purchase;
-  currentPurchaseError: PurchaseError;
+  currentPurchase?: Purchase;
+  currentPurchaseError?: PurchaseError;
   finishTransaction: (purchase: Purchase) => Promise<string | void>;
   getAvailablePurchases: () => Promise<void>;
   getPurchaseHistories: () => Promise<void>;
@@ -40,8 +40,9 @@ type IAP_STATUS = {
 
 let purchaseUpdateSubscription: EmitterSubscription;
 let purchaseErrorSubscription: EmitterSubscription;
+let promotedProductsSubscription: EmitterSubscription;
 
-export default function useIAP(): IAP_STATUS {
+export function useIAP(): IAP_STATUS {
   const [connected, setConnected] = useState<boolean>(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [promotedProductsIOS, setPromotedProductsIOS] = useState<Product[]>([]);
@@ -84,14 +85,14 @@ export default function useIAP(): IAP_STATUS {
       } catch (err) {
         throw new Error(err);
       } finally {
-        if (purchase.productId === currentPurchase.productId)
+        if (purchase.productId === currentPurchase?.productId)
           setCurrentPurchase(undefined);
 
-        if (purchase.productId === currentPurchaseError.productId)
+        if (purchase.productId === currentPurchaseError?.productId)
           setCurrentPurchaseError(undefined);
       }
     },
-    [currentPurchase.productId, currentPurchaseError.productId],
+    [currentPurchase?.productId, currentPurchaseError?.productId],
   );
 
   const initIapWithSubscriptions = useCallback(async (): Promise<void> => {
@@ -112,11 +113,17 @@ export default function useIAP(): IAP_STATUS {
         },
       );
 
-      IAPEmitter.addListener('iap-promoted-product', async () => {
-        const productId = await RNIap.getPromotedProductIOS();
+      promotedProductsSubscription = IAPEmitter.addListener(
+        'iap-promoted-product',
+        async () => {
+          const productId = await RNIap.getPromotedProductIOS();
 
-        setPromotedProductsIOS((prevProducts) => [...prevProducts, productId]);
-      });
+          setPromotedProductsIOS((prevProducts) => [
+            ...prevProducts,
+            productId,
+          ]);
+        },
+      );
     }
   }, []);
 
@@ -128,10 +135,12 @@ export default function useIAP(): IAP_STATUS {
 
       if (purchaseErrorSubscription) purchaseErrorSubscription.remove();
 
+      if (promotedProductsSubscription) promotedProductsSubscription.remove();
+
       endConnection();
       setConnected(false);
     };
-  });
+  }, [initIapWithSubscriptions]);
 
   return {
     connected,
