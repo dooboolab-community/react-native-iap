@@ -51,9 +51,7 @@ export default function useIAP(): IAP_STATUS {
   const [purchaseHistories, setPurchaseHistories] = useState<Purchase[]>([]);
   const [availablePurchases, setAvailablePurchases] = useState<Purchase[]>([]);
 
-  const [currentPurchase, setCurrentPurchase] = useState<
-    InAppPurchase | SubscriptionPurchase
-  >();
+  const [currentPurchase, setCurrentPurchase] = useState<Purchase>();
 
   const [
     currentPurchaseError,
