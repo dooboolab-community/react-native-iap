@@ -1,5 +1,9 @@
 ## Changelogs
 
+## 6.0.0
+
+- React Naitve IAP hook is out. [Follow the medium post](https://medium.com/dooboolab/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it.
+
 ## 5.2.7
 
 - HotFix - `getProducts` returns fetched products only. Previously it returned both.
