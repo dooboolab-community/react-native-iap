@@ -103,12 +103,14 @@ export function useIAP(): IAP_STATUS {
     if (result) {
       purchaseUpdateSubscription = purchaseUpdatedListener(
         async (purchase: InAppPurchase | SubscriptionPurchase) => {
+          setCurrentPurchaseError(undefined);
           setCurrentPurchase(purchase);
         },
       );
 
       purchaseErrorSubscription = purchaseErrorListener(
         (error: PurchaseError) => {
+          setCurrentPurchase(undefined);
           setCurrentPurchaseError(error);
         },
       );
