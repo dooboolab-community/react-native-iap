@@ -79,9 +79,17 @@ export function useIAP(): IAP_STATUS {
   }, []);
 
   const finishTransaction = useCallback(
-    async (purchase: Purchase): Promise<string | void> => {
+    async (
+      purchase: Purchase,
+      isConsumable?: boolean,
+      developerPayloadAndroid?: string,
+    ): Promise<string | void> => {
       try {
-        return await RNIap.finishTransaction(purchase);
+        return await RNIap.finishTransaction(
+          purchase,
+          isConsumable,
+          developerPayloadAndroid,
+        );
       } catch (err) {
         throw new Error(err);
       } finally {
