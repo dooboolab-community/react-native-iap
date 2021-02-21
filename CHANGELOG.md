@@ -1,5 +1,9 @@
 ## Changelogs
 
+## 5.2.10
+
+- Added more fields to android receipt type.
+
 ## 5.2.9
 
 - Reduce size of import by removing prev packs.
