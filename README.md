@@ -613,6 +613,13 @@ Issue regarding `valid products`
 
 Q & A
 -----
+
+#### getProducts returns empty array
+- Please double check if you've called `initConnection`.
+- Please wait for max 24 hours to fetch your iap products if you've just uploaded them. [Related to issue](https://github.com/dooboolab/react-native-iap/issues/1065).
+- For `iOS`, from ios version `>=13`, we seem to use `StoreKit` to fix this issue as [mentioned in stackoverflow](https://stackoverflow.com/questions/58020258/requesting-an-in-app-purchase-in-ios-13-fails/58065711#58065711).
+- For `android`, please double check [issue comment here](https://github.com/dooboolab/react-native-iap/issues/124#issuecomment-386593185) and see if you've missed something.
+
 #### How can a user cancel a subscription in my app?
 - For both iOS and Android your users cannot cancel subscriptions inside your app. You need to direct your users to iTunes/the App Store or Google Play.
 
@@ -664,9 +671,6 @@ Q & A
       &gt; Services & APIs
       &gt; Find in “Your license key for this application”.
       [reference](https://stackoverflow.com/questions/27132443).
-
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap?ref=badge_large)
 
 #### How to make consumable product in Android developer mode?
 - If you are facing `"You already own this item"` on developer(test) mode,
@@ -762,3 +766,5 @@ Thank you to all the people who helped to maintain and upgrade this project!
 
 <a href="graphs/contributors"><img src="https://opencollective.com/react-native-iap/contributors.svg?width=890" /></a>
 <hr>
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap?ref=badge_large)
