@@ -1,5 +1,9 @@
 ## Changelogs
 
+## 5.2.8
+
+- Support android receipt type `AndroidReceiptType` instead of only json.
+
 ## 5.2.7
 
 - HotFix - `getProducts` returns fetched products only. Previously it returned both.

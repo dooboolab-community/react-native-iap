@@ -8,6 +8,8 @@ import {
   Platform,
 } from 'react-native';
 
+import {AndroidReceiptType} from './type/android';
+
 const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
 
 interface Common {
@@ -893,7 +895,7 @@ export const validateReceiptAndroid = async (
   productToken: string,
   accessToken: string,
   isSub?: boolean,
-): Promise<Record<string, unknown> | false> => {
+): Promise<AndroidReceiptType> => {
   const type = isSub ? 'subscriptions' : 'products';
 
   const url =
