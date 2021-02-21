@@ -1,18 +1,23 @@
 export enum AndroidPurchaseState {
-  Purchased = 0,
-  Canceled = 1,
-  Pending = 2,
+  purchased = 0,
+  canceled = 1,
+  pending = 2,
 }
 
 export enum AndroidPurchaseType {
-  Test = 0,
-  Promo = 1,
-  Rewarded = 2,
+  test = 0,
+  promo = 1,
+  rewarded = 2,
+}
+
+export enum AndroidConsumptionState {
+  yet = 0,
+  consumed = 1,
 }
 
 export enum AndroidAcknowledgementState {
-  Yet = 0,
-  Acknowledged = 1,
+  yet = 0,
+  acknowledged = 1,
 }
 
 /**
@@ -38,6 +43,8 @@ export type AndroidReceiptType = {
   countryCode: string;
   developerPayload: string;
   orderId: string;
+  consumptionState?: AndroidConsumptionState;
+  purchaseState: AndroidPurchaseState;
   purchaseType: AndroidPurchaseType;
   acknowledgementState: AndroidAcknowledgementState;
   kind: string;
