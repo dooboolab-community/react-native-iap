@@ -14,7 +14,7 @@
 
 ## Announcement
 
-React Native IAP hook is out. You can see [medium post](https://medium.com/dooboolab/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it. This is currently available in `next` package => `react-native-iap@next`. The `master` branch is currently heading to `next` package and previous version is in `stable` branch.
+React Native IAP hook is out. You can see [medium post](https://medium.com/dooboolab/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it. This is currently available in recent package. The `master` branch is currently heading to recent package and previous version is in `stable` branch which can be installed via `react-native-iap@stable`.
 
 The `react-native-iap` module hasn't been maintained well recently. We are thinking of participating again and make the module healthier. Please refer to [2021 Maintenance plan](https://github.com/dooboolab/react-native-iap/issues/1241) and share with us how you or your organization is using it. Happy new year 🎉
 

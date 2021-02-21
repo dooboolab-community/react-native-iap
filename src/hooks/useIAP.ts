@@ -3,7 +3,7 @@ import {
   NativeEventEmitter,
   NativeModules,
 } from 'react-native';
-import {
+import type {
   InAppPurchase,
   Product,
   Purchase,
@@ -11,8 +11,14 @@ import {
   Subscription,
   SubscriptionPurchase,
 } from '../types';
-import RNIap, {
+import {
   endConnection,
+  getPromotedProductIOS,
+  getPurchaseHistory,
+  finishTransaction as iapFinishTransaction,
+  getAvailablePurchases as iapGetAvailablePurchases,
+  getProducts as iapGetProducts,
+  getSubscriptions as iapGetSubscriptions,
   initConnection,
   purchaseErrorListener,
   purchaseUpdatedListener,
@@ -60,22 +66,26 @@ export function useIAP(): IAP_STATUS {
   ] = useState<PurchaseError>();
 
   const getProducts = useCallback(async (skus: string[]): Promise<void> => {
-    setProducts(await RNIap.getProducts(skus));
+    const iaps = await iapGetProducts(skus);
+
+    setProducts(iaps);
   }, []);
 
   const getSubscriptions = useCallback(
     async (skus: string[]): Promise<void> => {
-      setSubscriptions(await RNIap.getSubscriptions(skus));
+      const subs = await iapGetSubscriptions(skus);
+
+      setSubscriptions(subs);
     },
     [],
   );
 
   const getAvailablePurchases = useCallback(async (): Promise<void> => {
-    setAvailablePurchases(await RNIap.getAvailablePurchases());
+    setAvailablePurchases(await iapGetAvailablePurchases());
   }, []);
 
   const getPurchaseHistories = useCallback(async (): Promise<void> => {
-    setPurchaseHistories(await RNIap.getPurchaseHistory());
+    setPurchaseHistories(await getPurchaseHistory());
   }, []);
 
   const finishTransaction = useCallback(
@@ -85,7 +95,7 @@ export function useIAP(): IAP_STATUS {
       developerPayloadAndroid?: string,
     ): Promise<string | void> => {
       try {
-        return await RNIap.finishTransaction(
+        return await iapFinishTransaction(
           purchase,
           isConsumable,
           developerPayloadAndroid,
@@ -126,7 +136,7 @@ export function useIAP(): IAP_STATUS {
       promotedProductsSubscription = IAPEmitter.addListener(
         'iap-promoted-product',
         async () => {
-          const productId = await RNIap.getPromotedProductIOS();
+          const productId = await getPromotedProductIOS();
 
           setPromotedProductsIOS((prevProducts) => [
             ...prevProducts,
