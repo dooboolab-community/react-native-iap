@@ -1,7 +1,7 @@
 ![image](https://user-images.githubusercontent.com/27461460/75094417-20321b00-55ce-11ea-8de7-a1df42a4b7df.png)
 ================
 [![Version](http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
-[![Version](https://img.shields.io/npm/v/react-native-iap/next.svg?style=flat-square)](https://www.npmjs.com/package/react-native-iap/v/next)
+[![Version](https://img.shields.io/npm/v/react-native-iap/stable.svg?style=flat-square)](https://www.npmjs.com/package/react-native-iap/v/stable)
 [![Download](http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
 [![License](https://img.shields.io/npm/l/react-native-iap.svg)](https://npmjs.org/package/react-native-iap)
 [![Build Status](https://travis-ci.com/dooboolab/react-native-iap.svg?branch=master)](https://travis-ci.com/dooboolab/react-native-iap)

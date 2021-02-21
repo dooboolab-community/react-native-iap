@@ -1,3 +1,4 @@
+import * as Android from './types/android';
 import * as Apple from './types/apple';
 
 import {
@@ -765,7 +766,7 @@ export const validateReceiptAndroid = async (
   productToken: string,
   accessToken: string,
   isSub?: boolean,
-): Promise<Record<string, unknown> | false> => {
+): Promise<Android.ReceiptType> => {
   const type = isSub ? 'subscriptions' : 'products';
 
   const url =
