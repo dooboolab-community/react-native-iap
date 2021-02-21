@@ -1,7 +1,8 @@
 ## Changelogs
 
-# 5.2.9
-- Reduced size of imports.
+## 5.2.9
+
+- Reduce size of import by removing prev packs.
 
 ## 5.2.8
 
