@@ -1,5 +1,9 @@
 ## Changelogs
 
+## 5.2.9
+
+- Reduce size of import by removing prev packs.
+
 ## 5.2.8
 
 - Support android receipt type `AndroidReceiptType` instead of only json.
