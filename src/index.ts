@@ -660,10 +660,10 @@ const fetchJsonOrThrow = async (
 ): Promise<Apple.ReceiptValidationResponse | false> => {
   const response = await fetch(url, {
     method: 'POST',
-    headers: new Headers({
+    headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-    }),
+    },
     body: JSON.stringify(receiptBody),
   });
 
@@ -776,7 +776,9 @@ export const validateReceiptAndroid = async (
 
   const response = await fetch(url, {
     method: 'GET',
-    headers: new Headers({Accept: 'application/json'}),
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 
   if (!response.ok)
