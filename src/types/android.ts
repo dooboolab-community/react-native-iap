@@ -34,7 +34,7 @@ export enum AndroidAcknowledgementState {
  * @param {AndroidAcknowledgementState} acknowledgementState Check if product is acknowledged.
  * @param {string} kind
  */
-export type AndroidReceiptType = {
+export type ReceiptType = {
   startTimeMillis: number;
   expiryTimeMillis: number;
   autoRenewing: boolean;
