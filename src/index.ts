@@ -899,7 +899,6 @@ const iapUtils = {
   presentCodeRedemptionSheetIOS,
 };
 
-export * as useIAP from './hooks/useIAP';
 export * from './types';
 export {useIAP} from './hooks/useIAP';
 
