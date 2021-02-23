@@ -1,7 +1,7 @@
 ![image](https://user-images.githubusercontent.com/27461460/75094417-20321b00-55ce-11ea-8de7-a1df42a4b7df.png)
 ================
 [![Version](http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
-[![Version](https://img.shields.io/npm/v/react-native-iap/stable.svg?style=flat-square)](https://www.npmjs.com/package/react-native-iap/v/stable)
+[![Version](https://img.shields.io/npm/v/react-native-iap/next.svg?style=flat-square)](https://www.npmjs.com/package/react-native-iap/v/next)
 [![Download](http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
 [![License](https://img.shields.io/npm/l/react-native-iap.svg)](https://npmjs.org/package/react-native-iap)
 [![Build Status](https://travis-ci.com/dooboolab/react-native-iap.svg?branch=master)](https://travis-ci.com/dooboolab/react-native-iap)
@@ -15,7 +15,7 @@
 
 ## Announcement
 
-React Native IAP hook is out. You can see [medium post](https://medium.com/dooboolab/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it. This is currently available in recent package. The `master` branch is currently heading to recent package and previous version is in `stable` branch which can be installed via `react-native-iap@stable`.
+React Native IAP hook is out. You can see [medium post](https://medium.com/dooboolab/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it. This is currently available in `next` package from `react-native-iap@next`. The `master` branch is currently heading to `stable` package and `next` version is in `next` branch.
 
 The `react-native-iap` module hasn't been maintained well recently. We are thinking of participating again and make the module healthier. Please refer to [2021 Maintenance plan](https://github.com/dooboolab/react-native-iap/issues/1241) and share with us how you or your organization is using it. Happy new year 🎉
 

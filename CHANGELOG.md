@@ -1,11 +1,16 @@
 ## Changelogs
 
-## 6.0.0
+## 5.2.11
 
-- React Naitve IAP hook is out. [Follow the medium post](https://medium.com/dooboolab/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it.
+- Fixed fetch requestheader [#1258](https://github.com/dooboolab/react-native-iap/issues/1258).
+
+## 5.2.10
+
+- Added more fields to android receipt type.
 
 ## 5.2.9
-- Reduced size of imports.
+
+- Reduce size of import by removing prev packs.
 
 ## 5.2.8
 
