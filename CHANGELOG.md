@@ -1,5 +1,9 @@
 ## Changelogs
 
+## 5.2.12
+
+- Rebuild again incase of missing pre-build.
+
 ## 5.2.11
 
 - Fixed fetch requestheader [#1258](https://github.com/dooboolab/react-native-iap/issues/1258).
