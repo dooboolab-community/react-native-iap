@@ -29,6 +29,10 @@
 
 - React Naitve IAP hook is out. [Follow the medium post](https://medium.com/dooboolab/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it.
 
+## 5.2.13
+
+- Fixed android receipt validation url [#1262](https://github.com/dooboolab/react-native-iap/issues/1262).
+
 ## 5.2.11
 
 - Fixed fetch requestheader [#1258](https://github.com/dooboolab/react-native-iap/issues/1258).
