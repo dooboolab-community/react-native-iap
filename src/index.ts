@@ -770,7 +770,7 @@ export const validateReceiptAndroid = async (
   const type = isSub ? 'subscriptions' : 'products';
 
   const url =
-    'https://www.googleapis.com/androidpublisher/v3/applications' +
+    'https://androidpublisher.googleapis.com/androidpublisher/v3/applications' +
     `/${packageName}/purchases/${type}/${productId}` +
     `/tokens/${productToken}?access_token=${accessToken}`;
 

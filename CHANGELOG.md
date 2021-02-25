@@ -2,6 +2,10 @@
 
 ## 5.2.12
 
+- Fixed android receipt validation url.
+
+## 5.2.12
+
 - Rebuild again incase of missing pre-build.
 
 ## 5.2.11
