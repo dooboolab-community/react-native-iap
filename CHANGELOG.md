@@ -20,6 +20,10 @@
 - Fixed android receipt validation url [#1262](https://github.com/dooboolab/react-native-iap/issues/1262).
 ## 5.2.12
 
+- Fixed android receipt validation url.
+
+## 5.2.12
+
 - Rebuild again incase of missing pre-build.
 
 ## 5.2.11
