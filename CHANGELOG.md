@@ -1,8 +1,12 @@
 ## Changelogs
 
-## 5.2.12
+## 5.2.14
 
-- Fixed android receipt validation url.
+- Remove IAPPromotionObserver for manual installation process [#1267](https://github.com/dooboolab/react-native-iap/pull/1267).
+
+## 5.2.13
+
+- Fixed android receipt validation url [#1262](https://github.com/dooboolab/react-native-iap/issues/1262).
 
 ## 5.2.12
 
