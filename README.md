@@ -18,6 +18,7 @@
 React Native IAP hook is out. You can see [medium post](https://medium.com/dooboolab/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it.
 
 The `react-native-iap` module hasn't been maintained well recently. We are thinking of participating again and make the module healthier. Please refer to [2021 Maintenance plan](https://github.com/dooboolab/react-native-iap/issues/1241) and share with us how you or your organization is using it. Happy new year 🎉
+- The sample code is out in [Sponsor page](https://github.com/hyochan/dooboolab.com/blob/master/src/components/pages/Sponsor.tsx) in [dooboolab.com](https://github.com/hyochan/dooboolab.com) repository which sadly is rejected by Apple because of lacking product features. I will work on another example project to support this module.
 
 ## Introduction
 
