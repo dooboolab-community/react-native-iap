@@ -900,5 +900,6 @@ const iapUtils = {
 };
 
 export * from './types';
+export {useIAP} from './hooks/useIAP';
 
 export default iapUtils;
