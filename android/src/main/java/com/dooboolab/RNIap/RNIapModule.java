@@ -297,6 +297,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             for (SkuDetails skuDetails : skuDetailsList) {
               WritableMap item = Arguments.createMap();
               item.putString("productId", skuDetails.getSku());
+              long introductoryPriceMicros = skuDetails.getIntroductoryPriceAmountMicros();
               long priceAmountMicros = skuDetails.getPriceAmountMicros();
               // Use valueOf instead of constructors.
               // See: https://www.javaworld.com/article/2073176/caution--double-to-bigdecimal-in-java.html
@@ -317,6 +318,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               item.putString("freeTrialPeriodAndroid", skuDetails.getFreeTrialPeriod());
               item.putString("introductoryPriceCyclesAndroid", String.valueOf(skuDetails.getIntroductoryPriceCycles()));
               item.putString("introductoryPricePeriodAndroid", skuDetails.getIntroductoryPricePeriod());
+              item.putString("introductoryPriceAsAmountAndroid", String.valueOf(introductoryPriceMicros / 1000000d));
               item.putString("iconUrl", skuDetails.getIconUrl());
               item.putString("originalJson", skuDetails.getOriginalJson());
               BigDecimal originalPriceAmountMicros = BigDecimal.valueOf(skuDetails.getOriginalPriceAmountMicros());
