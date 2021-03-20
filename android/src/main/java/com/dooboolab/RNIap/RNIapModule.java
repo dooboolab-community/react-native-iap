@@ -297,12 +297,15 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             for (SkuDetails skuDetails : skuDetailsList) {
               WritableMap item = Arguments.createMap();
               item.putString("productId", skuDetails.getSku());
+              long introductoryPriceMicros = skuDetails.getIntroductoryPriceAmountMicros();
               long priceAmountMicros = skuDetails.getPriceAmountMicros();
               // Use valueOf instead of constructors.
               // See: https://www.javaworld.com/article/2073176/caution--double-to-bigdecimal-in-java.html
               BigDecimal priceAmount = BigDecimal.valueOf(priceAmountMicros);
+              BigDecimal introductoryPriceAmount = BigDecimal.valueOf(introductoryPriceMicros);
               BigDecimal microUnitsDivisor = BigDecimal.valueOf(1000000);
               String price = priceAmount.divide(microUnitsDivisor).toString();
+              String introductoryPriceAsAmountAndroid = introductoryPriceAmount.divide(microUnitsDivisor).toString();
               item.putString("price", price);
               item.putString("currency", skuDetails.getPriceCurrencyCode());
               item.putString("type", skuDetails.getType());
@@ -317,6 +320,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               item.putString("freeTrialPeriodAndroid", skuDetails.getFreeTrialPeriod());
               item.putString("introductoryPriceCyclesAndroid", String.valueOf(skuDetails.getIntroductoryPriceCycles()));
               item.putString("introductoryPricePeriodAndroid", skuDetails.getIntroductoryPricePeriod());
+              item.putString("introductoryPriceAsAmountAndroid", introductoryPriceAsAmountAndroid);
               item.putString("iconUrl", skuDetails.getIconUrl());
               item.putString("originalJson", skuDetails.getOriginalJson());
               BigDecimal originalPriceAmountMicros = BigDecimal.valueOf(skuDetails.getOriginalPriceAmountMicros());
