@@ -469,7 +469,7 @@ Consumable purchases should be consumed by calling `consumePurchaseAndroid()` or
 Once an item is consumed, it will be removed from `getAvailablePurchases()` so it is up to you
 to record the purchase into your database before calling `consumePurchaseAndroid()` or `finishTransactionIOS()`.
 
-Non-consumable purchases need to be acknowledged on Android, or they will be automatically refunded after 
+Non-consumable purchases need to be acknowledged on Android, or they will be automatically refunded after
 a few days. Acknowledge a purchase when you have delivered it to your user by calling `acknowledgePurchaseAndroid()`.
 On iOS non-consumable purchases are finished automatically but this will change in the future so it is recommended that you prepare by simply calling `finishTransactionIOS()` on non-consumables as well.
 
@@ -480,9 +480,9 @@ Restoring Purchases
 You can use `getAvailablePurchases()` to do what's commonly understood as “restoring” purchases.
 
 If for debugging you want to consume all items, you have to iterate over the purchases
-returned by `getAvailablePurchases()`. Beware that if you consume an item without having 
+returned by `getAvailablePurchases()`. Beware that if you consume an item without having
 recorded the purchase in your database the user may have paid for something without getting
-it delivered and you will have no way to recover the receipt to validate and restore their 
+it delivered and you will have no way to recover the receipt to validate and restore their
 purchase.
 
 ```javascript
@@ -684,7 +684,10 @@ Q & A
 #### How do I handle promoted products in iOS?
 - Offical doc is [here][apple-iap-promoting].
 - No initial setup needed from `4.4.5`.
-- Add an EventListener for the `iap-promoted-product` event somewhere early in your app's lifecycle:
+
+Somewhere early in your app's lifecycle,
+call `initConnection` first (see above), then
+add a listener for the `iap-promoted-product` event:
 
   ```javascript
   import { NativeModules, NativeEventEmitter } from 'react-native'
