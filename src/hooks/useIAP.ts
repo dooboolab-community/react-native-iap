@@ -22,7 +22,7 @@ import {
   initConnection,
   purchaseErrorListener,
   purchaseUpdatedListener,
-} from '../index';
+} from '../iap';
 import {useCallback, useEffect, useState} from 'react';
 
 const {RNIapIos} = NativeModules;
