@@ -1,5 +1,8 @@
 ## Changelogs
 
+## 6.0.2
+- Fix require cycle warning [#1271](https://github.com/dooboolab/react-native-iap/issues/1271) in [#1294](https://github.com/dooboolab/react-native-iap/pull/1294)
+
 ## 6.0.1
 
 - Add `introductoryPriceAsAmountAndroid` [#1277](https://github.com/dooboolab/react-native-iap/pull/1277)
