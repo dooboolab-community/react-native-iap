@@ -43,6 +43,7 @@ import org.json.JSONArray;
 public class RNIapAmazonModule extends ReactContextBaseJavaModule {
   final String TAG = "RNIapAmazonModule";
 
+  public static final String PROMISE_BUY_ITEM = "PROMISE_BUY_ITEM";
   public static final String PROMISE_GET_PRODUCT_DATA =
     "PROMISE_GET_PRODUCT_DATA";
   public static final String PROMISE_QUERY_PURCHASES =
@@ -169,8 +170,8 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
     final String obfuscatedProfileId,
     final Promise promise
   ) {
+    DoobooUtils.getInstance().addPromiseForKey(PROMISE_BUY_ITEM, promise);
     RequestId requestId = PurchasingService.purchase(sku);
-    promise.resolve(true);
   }
 
   @ReactMethod
