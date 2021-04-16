@@ -29,7 +29,7 @@
   "author": "dooboolab",
   "license": "MIT",
   "peerDependencies": {
-    "react": ">16.13.1",
+    "react": ">=16.13.1",
     "react-native": ">=0.54"
   },
   "dependencies": {
