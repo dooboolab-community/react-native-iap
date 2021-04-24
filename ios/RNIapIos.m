@@ -298,9 +298,10 @@ RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
     }
 }
 
-RCT_EXPORT_METHOD(requestReceipt:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(requestReceipt:(BOOL)refresh
+                  resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    [self requestReceiptDataWithBlock:^(NSData *receiptData, NSError *error) {
+    [self requestReceiptDataWithBlock:refresh withBlock:^(NSData *receiptData, NSError *error) {
         if (error == nil) {
             resolve([receiptData base64EncodedStringWithOptions:0]);
         }
@@ -316,7 +317,7 @@ RCT_EXPORT_METHOD(finishTransaction:(NSString*)transactionIdentifier) {
 
 RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    [self requestReceiptDataWithBlock:^(NSData *receiptData, NSError *error) {
+    [self requestReceiptDataWithBlock:false withBlock:^(NSData *receiptData, NSError *error) {
         NSMutableArray *output = [NSMutableArray array];
         if (receiptData != nil) {
             NSArray<SKPaymentTransaction *> *transactions = [[SKPaymentQueue defaultQueue] transactions];
@@ -755,7 +756,7 @@ RCT_EXPORT_METHOD(presentCodeRedemptionSheet:(RCTPromiseResolveBlock)resolve
 }
 
 - (void) getPurchaseData:(SKPaymentTransaction *)transaction withBlock:(void (^)(NSDictionary *transactionDict))block {
-    [self requestReceiptDataWithBlock:^(NSData *receiptData, NSError *error) {
+    [self requestReceiptDataWithBlock:false withBlock:^(NSData *receiptData, NSError *error) {
         if (receiptData == nil) {
             block(nil);
         }
@@ -788,8 +789,9 @@ static NSString *RCTKeyForInstance(id instance)
 
 #pragma mark - Receipt
 
-- (void) requestReceiptDataWithBlock:(void (^)(NSData *data, NSError *error))block {
-    if ([self isReceiptPresent] == NO) {
+- (void) requestReceiptDataWithBlock:(BOOL) forceRefresh withBlock:(void (^)(NSData *data, NSError *error))block {
+    NSLog(@"\n\n\n requestReceiptDataWithBlock with force refresh: %@ \n\n.",forceRefresh?@"YES":@"NO");
+    if (forceRefresh || [self isReceiptPresent] == NO) {
         SKReceiptRefreshRequest *refreshRequest = [[SKReceiptRefreshRequest alloc]init];
         refreshRequest.delegate = self;
         [refreshRequest start];

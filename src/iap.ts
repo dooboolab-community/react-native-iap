@@ -834,13 +834,14 @@ export const purchaseErrorListener = (
 
 /**
  * Get the current receipt base64 encoded in IOS.
+ * @param {forceRefresh?:boolean}
  * @returns {Promise<string>}
  */
-export const getReceiptIOS = async (): Promise<string> => {
+export const getReceiptIOS = async (forceRefresh?:boolean): Promise<string> => {
   if (Platform.OS === 'ios') {
     await checkNativeiOSAvailable();
 
-    return RNIapIos.requestReceipt();
+    return RNIapIos.requestReceipt(forceRefresh??false);
   }
 };
 
