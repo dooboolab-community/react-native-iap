@@ -33,18 +33,18 @@
     "react-native": ">=0.54"
   },
   "dependencies": {
-    "dooboolab-welcome": "^1.2.0"
+    "dooboolab-welcome": "^1.3.0"
   },
   "devDependencies": {
-    "@dooboo/eslint-config": "^0.6.23",
-    "@types/eslint": "^7.2.8",
-    "@types/react": "17.0.3",
-    "@types/react-native": "0.64.2",
+    "@dooboo/eslint-config": "^0.7.2",
+    "@types/eslint": "^7.2.10",
+    "@types/react": "17.0.5",
+    "@types/react-native": "0.64.5",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.23.0",
-    "flow-bin": "^0.148.0",
-    "flowgen": "^1.13.0",
+    "eslint": "^7.26.0",
+    "flow-bin": "^0.150.1",
+    "flowgen": "^1.14.1",
     "prettier": "^2.2.1",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.4"
   }
 }
