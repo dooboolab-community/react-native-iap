@@ -1,5 +1,9 @@
 ## Changelogs
 
+## 6.0.4
+- [Android] Update deps, fix permissions on graddle wrapper [#1323](https://github.com/dooboolab/react-native-iap/pull/1323)
+- [Amazon] Add promise handling for Amazon purchases instead of resolving immediately [1302](https://github.com/dooboolab/react-native-iap/pull/1302)
+
 ## 6.0.3
 - Add force refresh receipt for ios [#1303](https://github.com/dooboolab/react-native-iap/pull/1303)
 
