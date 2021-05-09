@@ -199,6 +199,14 @@ public class RNIapAmazonListener implements PurchasingListener {
         if (response.hasMore()) {
           PurchasingService.getPurchaseUpdates(false);
         } else {
+          if (purchases.size() > 0 && promiseItem != null) {
+            DoobooUtils
+              .getInstance()
+              .resolvePromisesForKey(
+                RNIapAmazonModule.PROMISE_BUY_ITEM,
+                promiseItem
+              );
+          }
           DoobooUtils
             .getInstance()
             .resolvePromisesForKey(
@@ -301,7 +309,18 @@ public class RNIapAmazonListener implements PurchasingListener {
         item.putString("userIdAmazon", userData.getUserId());
         item.putString("userMarketplaceAmazon", userData.getMarketplace());
         item.putString("userJsonAmazon", userData.toJSON().toString());
+
+        WritableMap promiseItem = new WritableNativeMap();
+        promiseItem.merge(item);
+
         sendEvent(reactContext, "purchase-updated", item);
+
+        DoobooUtils
+          .getInstance()
+          .resolvePromisesForKey(
+            RNIapAmazonModule.PROMISE_BUY_ITEM,
+            promiseItem
+          );
         break;
       case ALREADY_PURCHASED:
         debugMessage = "You already own this item.";
@@ -311,6 +330,15 @@ public class RNIapAmazonListener implements PurchasingListener {
         error.putString("code", errorCode);
         error.putString("message", debugMessage);
         sendEvent(reactContext, "purchase-error", error);
+
+        DoobooUtils
+          .getInstance()
+          .rejectPromisesForKey(
+            RNIapAmazonModule.PROMISE_BUY_ITEM,
+            errorCode,
+            debugMessage,
+            null
+          );
         break;
       case FAILED:
         debugMessage =
@@ -321,6 +349,15 @@ public class RNIapAmazonListener implements PurchasingListener {
         error.putString("code", errorCode);
         error.putString("message", debugMessage);
         sendEvent(reactContext, "purchase-error", error);
+
+        DoobooUtils
+          .getInstance()
+          .rejectPromisesForKey(
+            RNIapAmazonModule.PROMISE_BUY_ITEM,
+            errorCode,
+            debugMessage,
+            null
+          );
         break;
       case INVALID_SKU:
         debugMessage = "That item is unavailable.";
@@ -330,6 +367,15 @@ public class RNIapAmazonListener implements PurchasingListener {
         error.putString("code", errorCode);
         error.putString("message", debugMessage);
         sendEvent(reactContext, "purchase-error", error);
+
+        DoobooUtils
+          .getInstance()
+          .rejectPromisesForKey(
+            RNIapAmazonModule.PROMISE_BUY_ITEM,
+            errorCode,
+            debugMessage,
+            null
+          );
         break;
       case NOT_SUPPORTED:
         debugMessage = "This feature is not available on your device.";
@@ -339,6 +385,15 @@ public class RNIapAmazonListener implements PurchasingListener {
         error.putString("code", errorCode);
         error.putString("message", debugMessage);
         sendEvent(reactContext, "purchase-error", error);
+
+        DoobooUtils
+          .getInstance()
+          .rejectPromisesForKey(
+            RNIapAmazonModule.PROMISE_BUY_ITEM,
+            errorCode,
+            debugMessage,
+            null
+          );
         break;
     }
   }
