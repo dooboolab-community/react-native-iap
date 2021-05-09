@@ -95,7 +95,6 @@ Quick News
 
 Breaking Changes
 ----------------
-- From `6.0.4`, you need to [install Kotlin in your RN project](#install-kotlin-to-your-rn-project). Due to android updates in [android billing client 3.0.3](https://developer.android.com/google/play/billing/release-notes#3-0-3).
 - Migrated to AndroidX in `3.1.0`. Please check the [Migration Guide][a-migration-guide].
 - Recommended to use `3.2.0` or above for `react-native-iap@^3.0.0` users.
   - Now, you should [acknowledge purchase][a-acknowledge-purchase-android]
@@ -165,31 +164,6 @@ Getting Started
 `$ npm install --save react-native-iap`
 
 ### Mostly automatic installation
-
-For __Android__ your project is required to support Kotlin because from [android billing client 3.0.3](https://developer.android.com/google/play/billing/release-notes), it is written in Kotlin. This should be done in `>= react-native-iap@6.0.4`.
-
-#### Install Kotlin to your RN project
-```diff
-buildscript {
-  ext {
-      buildToolsVersion = "30.0.3"
-      minSdkVersion = 21
-      compileSdkVersion = 30
-      targetSdkVersion = 30
-+     kotlinVersion = '1.5.0'
-
-      ndkVersion = "20.1.5948944"
-  }
-  repositories {
-      google()
-      jcenter()
-  }
-  dependencies {
-      classpath("com.android.tools.build:gradle:4.1.0")
-+     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-  }
-...
-```
 
 #### Using React Native >= 0.60
 Linking the package manually is not required anymore with [Autolinking](https://github.com/react-native-community/cli/blob/master/docs/autolinking.md).
