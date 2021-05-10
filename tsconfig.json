@@ -11,9 +11,10 @@
     "target": "es5",
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
-    "declaration": true
+    "declaration": true,
+    "strict": true
   },
   "compileOnSave": true,
   "exclude": ["node_modules"],
-  "include": ["./index.ts"]
+  "include": ["./index.ts", "src/**/*.ts"]
 }
