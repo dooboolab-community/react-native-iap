@@ -1,5 +1,11 @@
 ## Changelogs
 
+## 6.0.6
+- Strict type error [Enhance] Strict type error [#1324](https://github.com/dooboolab/react-native-iap/pull/1324)
+
+## 6.0.5
+- HotFix - Android build [#1328](https://github.com/dooboolab/react-native-iap/pull/1328)
+
 ## 6.0.4
 - [Android] Update deps, fix permissions on graddle wrapper [#1323](https://github.com/dooboolab/react-native-iap/pull/1323)
 - [Amazon] Add promise handling for Amazon purchases instead of resolving immediately [1302](https://github.com/dooboolab/react-native-iap/pull/1302)
