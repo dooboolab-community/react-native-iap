@@ -42,8 +42,8 @@ public class DoobooUtils {
   public static final String APPSTORE_GOOGLE = "GOOGLE_PLAY";
   public static final String APPSTORE_AMAZON = "AMAZON";
 
-  private HashMap<String, ArrayList<Promise>> promises = new HashMap<>();
-  private static DoobooUtils instance = new DoobooUtils();
+  private final HashMap<String, ArrayList<Promise>> promises = new HashMap<>();
+  private static final DoobooUtils instance = new DoobooUtils();
 
   public static DoobooUtils getInstance() {
     return instance;
@@ -113,7 +113,7 @@ public class DoobooUtils {
         list = promises.get(key);
       }
       else {
-        list = new ArrayList<Promise>();
+        list = new ArrayList<>();
         promises.put(key, list);
       }
 
@@ -270,6 +270,11 @@ public class DoobooUtils {
     return array;
   }
 
+
+  /**
+   * Suppressing deprecation since the alternative requires API level 30
+   */
+  @SuppressWarnings("deprecation")
   public final String getInstallSource(Context context) {
     Context appContext = context.getApplicationContext();
     PackageManager pkgManager = appContext.getPackageManager();
