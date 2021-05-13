@@ -107,11 +107,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             WritableMap error = Arguments.createMap();
             error.putInt("responseCode", billingResult.getResponseCode());
             error.putString("debugMessage", billingResult.getDebugMessage());
-            String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+            String[] errorData = PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
             error.putString("code", errorData[0]);
             error.putString("message", errorData[1]);
             sendEvent(reactContext, "purchase-error", error);
-            DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+            PlayUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
           }
         }
       }
@@ -143,7 +143,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           if (responseCode == BillingClient.BillingResponseCode.OK) {
             promise.resolve(true);
           } else {
-            DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, responseCode);
+            PlayUtils.getInstance().rejectPromiseWithBillingError(promise, responseCode);
           }
         } catch (ObjectAlreadyConsumedException oce) {
           Log.e(TAG, oce.getMessage());
@@ -191,7 +191,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         @Override
         public void onConsumeResponse(BillingResult billingResult, String outToken) {
           if (billingResult.getResponseCode() != expectedResponseCode) {
-            DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+            PlayUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
             return;
           }
           try {
@@ -283,7 +283,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           public void onSkuDetailsResponse(BillingResult billingResult, List<SkuDetails> skuDetailsList) {
             Log.d(TAG, "responseCode: " + billingResult.getResponseCode());
             if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-              DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+              PlayUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
               return;
             }
 
@@ -391,7 +391,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           @Override
           public void onPurchaseHistoryResponse(BillingResult billingResult, List<PurchaseHistoryRecord> purchaseHistoryRecordList) {
             if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-              DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+              PlayUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
               return;
             }
 
@@ -505,7 +505,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
         BillingFlowParams flowParams = builder.build();
         BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
-        String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+        String[] errorData = PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
       }
     });
   }
@@ -524,13 +524,13 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           @Override
           public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
             if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-              DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+              PlayUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
             }
             try {
               WritableMap map = Arguments.createMap();
               map.putInt("responseCode", billingResult.getResponseCode());
               map.putString("debugMessage", billingResult.getDebugMessage());
-              String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+              String[] errorData = PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
               map.putString("code", errorData[0]);
               map.putString("message", errorData[1]);
               promise.resolve(map);
@@ -552,13 +552,13 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       @Override
       public void onConsumeResponse(BillingResult billingResult, String purchaseToken) {
         if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-          DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+          PlayUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
         }
         try {
           WritableMap map = Arguments.createMap();
           map.putInt("responseCode", billingResult.getResponseCode());
           map.putString("debugMessage", billingResult.getDebugMessage());
-          String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+          String[] errorData = PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
           map.putString("code", errorData[0]);
           map.putString("message", errorData[1]);
           promise.resolve(map);
@@ -575,11 +575,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       WritableMap error = Arguments.createMap();
       error.putInt("responseCode", billingResult.getResponseCode());
       error.putString("debugMessage", billingResult.getDebugMessage());
-      String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+      String[] errorData = PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
       error.putString("code", errorData[0]);
       error.putString("message", errorData[1]);
       sendEvent(reactContext, "purchase-error", error);
-      DoobooUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
+      PlayUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
       return;
     }
 
@@ -613,11 +613,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       WritableMap error = Arguments.createMap();
       error.putInt("responseCode", billingResult.getResponseCode());
       error.putString("debugMessage", billingResult.getDebugMessage());
-      String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+      String[] errorData = PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
       error.putString("code", errorData[0]);
       error.putString("message", "purchases are null.");
       sendEvent(reactContext, "purchase-error", error);
-      DoobooUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
+      PlayUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
     }
   }
 

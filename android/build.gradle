@@ -38,6 +38,15 @@ android {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
+  flavorDimensions "store"
+  productFlavors {
+    amazon{
+      dimension "store"
+    }
+    play{
+      dimension "store"
+    }
+  }
 }
 
 repositories {
@@ -47,8 +56,8 @@ repositories {
 
 dependencies {
   implementation 'com.facebook.react:react-native:+'
-  implementation 'com.android.billingclient:billing:3.0.3'
-  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  playImplementation 'com.android.billingclient:billing:3.0.3'
+  amazonImplementation fileTree(dir: 'libs', include: ['*.jar'])
 
   def supportLibVersion = safeExtGet('supportLibVersion', safeExtGet('supportVersion', null))
   def androidXVersion = safeExtGet('androidXVersion', null)
