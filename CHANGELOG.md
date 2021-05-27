@@ -1,5 +1,8 @@
 ## Changelogs
 
+## 6.0.8
+- [Android] Handle deffered proration in `purchaseUpdated` listener [#1357](https://github.com/dooboolab/react-native-iap/pull/1357)
+
 ## 6.0.7
 - [Amazon] Fire tv detection [#1356](https://github.com/dooboolab/react-native-iap/pull/1356)
 
