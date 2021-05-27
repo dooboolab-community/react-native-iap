@@ -1,5 +1,6 @@
 package com.dooboolab.RNIap;
 
+import android.os.Build;
 import android.util.Log;
 
 import com.android.billingclient.api.BillingClient;
@@ -271,6 +272,9 @@ public class DoobooUtils {
   }
 
 
+  private static final String AMAZON_FEATURE_FIRE_TV = "amazon.hardware.fire_tv";
+  private static final String AMAZON_FIRE_TV_MODEL_PREFIX = "AFT";
+
   /**
    * Detects Stores:
    * Amazon tablets and Fire TV are considered as APPSTORE_AMAZON
@@ -298,4 +302,4 @@ public class DoobooUtils {
       Log.d(TAG, "Unknown installer source: " + installerPackageName);
       return APPSTORE_UNKNOWN;
     }
-}
+  }
