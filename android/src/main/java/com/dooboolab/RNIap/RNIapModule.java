@@ -601,14 +601,12 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, promiseItem);
       }
     } else {
-      WritableMap error = Arguments.createMap();
-      error.putInt("responseCode", billingResult.getResponseCode());
-      error.putString("debugMessage", billingResult.getDebugMessage());
-      String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
-      error.putString("code", errorData[0]);
-      error.putString("message", "purchases are null.");
-      sendEvent(reactContext, "purchase-error", error);
-      DoobooUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
+      WritableMap result = Arguments.createMap();
+      result.putInt("responseCode", billingResult.getResponseCode());
+      result.putString("debugMessage", billingResult.getDebugMessage());
+      result.putString("extraMessage", "The purchases are null. This is a normal behavior if you have requested DEFERRED proration. If not please report an issue.");
+      sendEvent(reactContext, "purchase-updated", result);
+      DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, null);
     }
   }
 
