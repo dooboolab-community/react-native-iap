@@ -272,6 +272,13 @@ public class DoobooUtils {
 
 
   /**
+   * Detects Stores:
+   * Amazon tablets and Fire TV are considered as APPSTORE_AMAZON
+   * using recommended detection logic from:
+   * https://developer.amazon.com/docs/fire-tv/identify-amazon-fire-tv-devices.html
+   * @param context Application context
+   * @return One of APPSTORE_AMAZON,APPSTORE_GOOGLE,APPSTORE_UNKNOWN
+   *
    * Suppressing deprecation since the alternative requires API level 30
    */
   @SuppressWarnings("deprecation")
@@ -280,15 +287,15 @@ public class DoobooUtils {
     PackageManager pkgManager = appContext.getPackageManager();
     String installerPackageName = pkgManager.getInstallerPackageName(appContext.getPackageName());
 
-    if (installerPackageName == null) {
-      return APPSTORE_UNKNOWN;
+    if (pkgManager.hasSystemFeature(AMAZON_FEATURE_FIRE_TV) ||
+            (installerPackageName!=null && installerPackageName.startsWith("com.amazon.")) ||
+            Build.MODEL.startsWith(AMAZON_FIRE_TV_MODEL_PREFIX)) {
+      Log.d(TAG, "Yes, this is a Fire TV device.");
+      return APPSTORE_AMAZON;
     } else if ("com.android.vending".equals(installerPackageName)) {
       return APPSTORE_GOOGLE;
-    } else if (installerPackageName.startsWith("com.amazon.")) {
-      return APPSTORE_AMAZON;
-    } else {
+    }  else {
       Log.d(TAG, "Unknown installer source: " + installerPackageName);
+      return APPSTORE_UNKNOWN;
     }
-    return APPSTORE_UNKNOWN;
-  }
 }
