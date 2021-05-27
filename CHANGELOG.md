@@ -1,5 +1,8 @@
 ## Changelogs
 
+## 6.0.7
+- [Amazon] Fire tv detection [#1356](https://github.com/dooboolab/react-native-iap/pull/1356)
+
 ## 6.0.6
 - Strict type error [Enhance] Strict type error [#1324](https://github.com/dooboolab/react-native-iap/pull/1324)
 
