@@ -271,8 +271,7 @@ public class DoobooUtils {
     return array;
   }
 
-
-  private static final String AMAZON_FEATURE_FIRE_TV = "amazon.hardware.fire_tv";
+    private static final String AMAZON_FEATURE_FIRE_TV = "amazon.hardware.fire_tv";
   private static final String AMAZON_FIRE_TV_MODEL_PREFIX = "AFT";
 
   /**
@@ -303,3 +302,4 @@ public class DoobooUtils {
       return APPSTORE_UNKNOWN;
     }
   }
+}
