@@ -51,15 +51,15 @@ public class RNIapAmazonListener implements PurchasingListener {
   private static final String E_USER_DATA_RESPONSE_NOT_SUPPORTED =
     "E_USER_DATA_RESPONSE_NOT_SUPPORTED";
 
-  private ReactContext reactContext;
-  private List<Product> skus;
+  private final ReactContext reactContext;
+  private final List<Product> skus;
   private WritableNativeArray availableItems;
   private String availableItemsType;
 
   public RNIapAmazonListener(final ReactContext reactContext) {
     super();
     this.reactContext = reactContext;
-    this.skus = new ArrayList<Product>();
+    this.skus = new ArrayList<>();
     this.availableItems = new WritableNativeArray();
     this.availableItemsType = null;
   }
@@ -342,7 +342,7 @@ public class RNIapAmazonListener implements PurchasingListener {
         break;
       case FAILED:
         debugMessage =
-          "An unknown or unexpected error has occured. Please try again later.";
+          "An unknown or unexpected error has occurred. Please try again later.";
         errorCode = DoobooUtils.E_UNKNOWN;
         error.putInt("responseCode", 0);
         error.putString("debugMessage", debugMessage);

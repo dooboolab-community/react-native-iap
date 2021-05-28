@@ -25,6 +25,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
@@ -68,10 +69,12 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
         public void onHostResume() {
           if (purchasingListener == null) {
             purchasingListener = new RNIapAmazonListener(reactContext);
-            PurchasingService.registerListener(
-              reactContext,
-              purchasingListener
-            );
+            UiThreadUtil.runOnUiThread(() -> {
+              PurchasingService.registerListener(
+                reactContext,
+                purchasingListener
+              );
+            });
           }
           //PurchasingService.getPurchaseUpdates(false);
         }
