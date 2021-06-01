@@ -760,6 +760,7 @@ with us in [Open Collective][open-collective].
 ### Sponsors
 Support this project by becoming a sponsor. Your logo will show up here with
 a link to your website. \[[Become a sponsor][open-collective-sponsor]\]
+<a href="https://opencollective.com/react-native-iap#sponsors" target="_blank"><img src="https://opencollective.com/react-native-iap/sponsors.svg?width=890"></a>
 
 ### Backers
 Please be our [Backers][open-collective-backer].
