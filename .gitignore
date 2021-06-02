@@ -55,6 +55,13 @@ react-native-iap-*.tgz
 # Built files
 tsconfig.tsbuildinfo
 
+# Generated files
 *.js.flow
 *.d.ts
-*.js
+index.js
+src/hooks/useIAP.js
+src/iap.js
+src/index.js
+src/types/android.js
+src/types/apple.js
+src/types/index.js

@@ -186,7 +186,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
       final ConsumeResponseListener listener = (billingResult, outToken) -> {
         if (billingResult.getResponseCode() != expectedResponseCode) {
-          DoobooUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+          PlayUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
           return;
         }
         try {
@@ -497,7 +497,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
       BillingFlowParams flowParams = builder.build();
       BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
-      String[] errorData = DoobooUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+      String[] errorData = PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
     });
   }
 

@@ -15,19 +15,6 @@ Here are the additional steps to add Amazon IAP support.
   -keepattributes *Annotation*
   ```
 
-  2. Update AndroidManifest.xml to add the following:
-  ```
-  <application>
-  ...
-    <receiver android:name = "com.amazon.device.iap.ResponseReceiver"
-        android:permission = "com.amazon.inapp.purchasing.Permission.NOTIFY" >
-      <intent-filter>
-        <action android:name = "com.amazon.inapp.purchasing.NOTIFY" />
-      </intent-filter>
-    </receiver>
-  ...
-  </application>
-  ```
 
 Testing in development
 ----------------------

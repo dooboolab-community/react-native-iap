@@ -53,41 +53,31 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
     "PROMISE_QUERY_AVAILABLE_ITEMS";
   public static final String PROMISE_GET_USER_DATA = "PROMISE_GET_USER_DATA";
 
-  private final ReactContext reactContext;
 
-  private LifecycleEventListener lifecycleEventListener;
-  private PurchasingListener purchasingListener = null;
 
   public RNIapAmazonModule(final ReactApplicationContext reactContext) {
     super(reactContext);
-    this.reactContext = reactContext;
 
-    lifecycleEventListener =
+    UiThreadUtil.runOnUiThread(() -> {
+              PurchasingService.registerListener(
+                      reactContext,
+                      new RNIapAmazonListener(reactContext)
+              );
+            });
+      LifecycleEventListener lifecycleEventListener =
       new LifecycleEventListener() {
 
         @Override
         public void onHostResume() {
-          if (purchasingListener == null) {
-            purchasingListener = new RNIapAmazonListener(reactContext);
-            UiThreadUtil.runOnUiThread(() -> {
-              PurchasingService.registerListener(
-                reactContext,
-                purchasingListener
-              );
-            });
-          }
-          //PurchasingService.getPurchaseUpdates(false);
+          PurchasingService.getUserData();
+          PurchasingService.getPurchaseUpdates(false);
         }
 
         @Override
         public void onHostPause() {}
 
         @Override
-        public void onHostDestroy() {
-          if (purchasingListener != null) {
-            purchasingListener = null;
-          }
-        }
+        public void onHostDestroy() {}
       };
 
     reactContext.addLifecycleEventListener(lifecycleEventListener);
@@ -135,10 +125,11 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
     for (int ii = 0, skuSize = skuArr.size(); ii < skuSize; ii++) {
       productSkus.add(skuArr.getString(ii));
     }
-    RequestId requestId = PurchasingService.getProductData(productSkus);
     DoobooUtils
-      .getInstance()
-      .addPromiseForKey(PROMISE_GET_PRODUCT_DATA, promise);
+            .getInstance()
+            .addPromiseForKey(PROMISE_GET_PRODUCT_DATA, promise);
+    RequestId requestId = PurchasingService.getProductData(productSkus);
+
   }
 
   @ReactMethod
@@ -149,7 +140,7 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
     DoobooUtils
       .getInstance()
       .addPromiseForKey(PROMISE_QUERY_AVAILABLE_ITEMS, promise);
-    ((RNIapAmazonListener) purchasingListener).getPurchaseUpdatesByType(type);
+    PurchasingService.getPurchaseUpdates(true);
   }
 
   @ReactMethod

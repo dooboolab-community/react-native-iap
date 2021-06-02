@@ -233,11 +233,25 @@ Linking the package manually is not required anymore with [Autolinking](https://
     include ':react-native-iap'
     project(':react-native-iap').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-iap/android')
     ```
-3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
+3. Insert the following lines inside the android block in `android/app/build.gradle`:
+    ```gradle
+    flavorDimensions "appstore"
+    productFlavors{
+        googlePlay{
+            dimension "appstore"
+            missingDimensionStrategy "store", "play"
+        }
+        amazon{
+            dimension "appstore"
+            missingDimensionStrategy "store", "amazon"
+        }
+    }
+    ```
+4. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
     ```gradle
     compile project(':react-native-iap')
     ```
-4. Update ProGuard config (Optional)
+5. Update ProGuard config (Optional)
   - Append the following lines to your ProGuard config (`proguard-rules.pro`)
     ```
     -keepattributes *Annotation*
@@ -246,7 +260,7 @@ Linking the package manually is not required anymore with [Autolinking](https://
     }
     -keep enum org.greenrobot.eventbus.ThreadMode { *; }
     ```
-5. Add the following to the `<permission>` block in `android/app/src/main/AndroidManifest.xml`:
+6. Add the following to the `<permission>` block in `android/app/src/main/AndroidManifest.xml`:
   ```xml
   <uses-permission android:name="com.android.vending.BILLING" />
   ```
