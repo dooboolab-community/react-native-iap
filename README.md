@@ -260,10 +260,6 @@ Linking the package manually is not required anymore with [Autolinking](https://
     }
     -keep enum org.greenrobot.eventbus.ThreadMode { *; }
     ```
-6. Add the following to the `<permission>` block in `android/app/src/main/AndroidManifest.xml`:
-  ```xml
-  <uses-permission android:name="com.android.vending.BILLING" />
-  ```
 
 ### Migrating to 3.4.0
 
