@@ -2,7 +2,7 @@
   "name": "react-native-iap",
   "version": "6.0.9",
   "description": "React Native In App Purchase Module.",
-  "main": "index.js",
+  "main": "index.ts",
   "types": "index.d.ts",
   "postinstall": "dooboolab-welcome postinstall",
   "scripts": {
