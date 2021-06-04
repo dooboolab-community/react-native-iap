@@ -27,6 +27,10 @@
     "billing"
   ],
   "author": "dooboolab",
+  "contributors": [{
+    "name" : "Andres Aguilar",
+    "url" : "https://github.com/andresesfm"
+  }],
   "license": "MIT",
   "peerDependencies": {
     "react": ">=16.13.1",
