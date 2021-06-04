@@ -233,18 +233,30 @@ Linking the package manually is not required anymore with [Autolinking](https://
     include ':react-native-iap'
     project(':react-native-iap').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-iap/android')
     ```
-3. Insert the following lines inside the android block in `android/app/build.gradle`:
+3. Two options:
+  a. If you only need for Google Play IAP, Insert this inside the `defaultConfig` section in `android/app/build.gradle`:
+  ```gradle
+  defaultConfig {
+        ...
+        // react-native-iap: we only use the Google Play flavor
+        missingDimensionStrategy 'store', 'play'
+    }
+    ```
+  b. If you are using it for both Google Play and Amazon, insert the following lines inside the `android` block in `android/app/build.gradle`:
     ```gradle
-    flavorDimensions "appstore"
-    productFlavors{
-        googlePlay{
-            dimension "appstore"
-            missingDimensionStrategy "store", "play"
-        }
-        amazon{
-            dimension "appstore"
-            missingDimensionStrategy "store", "amazon"
-        }
+    android {
+      ...
+      flavorDimensions "appstore"
+      productFlavors{
+          googlePlay{
+              dimension "appstore"
+              missingDimensionStrategy "store", "play"
+          }
+          amazon{
+              dimension "appstore"
+              missingDimensionStrategy "store", "amazon"
+          }
+      }
     }
     ```
 4. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
