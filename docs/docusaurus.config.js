@@ -7,7 +7,7 @@ module.exports = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'dooboolab',
+  organizationName: 'giovannicimolin',
   projectName: 'react-native-iap', 
   themeConfig: {
     navbar: {
