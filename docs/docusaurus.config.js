@@ -3,7 +3,7 @@ module.exports = {
   title: 'React Native IAP',
   tagline: 'Dinosaurs are cool',
   url: 'http://giovannicimolin.github.io',
-  baseUrl: '/',
+  baseUrl: '/react-native-iap/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',

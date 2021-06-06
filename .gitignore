@@ -63,3 +63,4 @@ tsconfig.tsbuildinfo
 
 # Don't apply this gitignore for documenattion directory
 !docs/*
+!docs/**/*
