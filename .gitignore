@@ -58,10 +58,5 @@ tsconfig.tsbuildinfo
 # Generated files
 *.js.flow
 *.d.ts
-index.js
-src/hooks/useIAP.js
-src/iap.js
-src/index.js
-src/types/android.js
-src/types/apple.js
-src/types/index.js
+*.js
+!IamExample

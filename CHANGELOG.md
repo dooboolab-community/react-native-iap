@@ -1,6 +1,6 @@
 ## Changelogs
 
-## 6.0.9
+## 6.1.0
 Spliting Android app stores into Google Play and Amazon. They can now be accessed through different flavors
 
 ## 6.0.8

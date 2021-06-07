@@ -272,7 +272,7 @@ Linking the package manually is not required anymore with [Autolinking](https://
     }
     -keep enum org.greenrobot.eventbus.ThreadMode { *; }
     ```
-### Migrating to 6.0.10
+### Migrating to 6.1.0
  Android, follow step number 3 above
 
 ### Migrating to 3.4.0

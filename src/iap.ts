@@ -106,7 +106,7 @@ export const initConnection = (): Promise<boolean> =>
 
       const myRNIapModule = getAndroidModule();
 
-      if (!RNIapModule || !RNIapAmazonModule) return Promise.resolve();
+      if (!RNIapModule && !RNIapAmazonModule) return Promise.reject("Unable to detect Android platform modules");
 
       return myRNIapModule.initConnection();
     },
@@ -130,8 +130,8 @@ export const endConnection = (): Promise<void> =>
     android: async () => {
       const myRNIapModule = getAndroidModule();
 
-      if (!RNIapModule || !RNIapAmazonModule) {
-        console.info('Native android module does not exist, while ending connection');
+      if (!RNIapModule && !RNIapAmazonModule) {
+        console.info('Native android module does not exist, while calling end connection');
 
         return Promise.resolve();
       }
@@ -269,13 +269,11 @@ export const getProducts = <SkuType extends string>(
       const myRNIapModule = getAndroidModule();
 
       await checkNativeAndroidAvailable(myRNIapModule);
-      console.log("skus",skus);
       
       const products = await myRNIapModule.getItemsByType(
         ANDROID_ITEM_TYPE_IAP,
         skus,
       );
-      console.log("products",products);
         
       return fillProductsAdditionalData(products);
     },
@@ -533,10 +531,7 @@ export const finishTransaction = (
     },
     android: async () => {
       const myRNIapModule = getAndroidModule();
-      console.warn("purchase",purchase);
-      console.warn('isConsumable',isConsumable);
-      
-      
+
       if (purchase)
         if (isConsumable)
           return myRNIapModule.consumeProduct(
