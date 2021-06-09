@@ -48,7 +48,7 @@ export function getInstallSourceAndroid(): InstallSourceAndroid {
 }
 
 async function detectInstallSourceAndroid(): Promise<void> {
-  const detectedInstallSourceAndroid = await RNIapModule.getInstallSource();
+  const detectedInstallSourceAndroid = RNIapModule? await RNIapModule.getInstallSource(): 'AMAZON';
   let newInstallSourceAndroid = iapFallbackInstallSourceAndroid;
 
   switch (detectedInstallSourceAndroid) {
@@ -106,7 +106,7 @@ export const initConnection = (): Promise<boolean> =>
 
       const myRNIapModule = getAndroidModule();
 
-      if (!RNIapModule || !RNIapAmazonModule) return Promise.resolve();
+      if (!RNIapModule && !RNIapAmazonModule) return Promise.reject("Unable to detect Android platform modules");
 
       return myRNIapModule.initConnection();
     },
@@ -130,8 +130,8 @@ export const endConnection = (): Promise<void> =>
     android: async () => {
       const myRNIapModule = getAndroidModule();
 
-      if (!RNIapModule || !RNIapAmazonModule) {
-        console.warn('Native android module does not exist');
+      if (!RNIapModule && !RNIapAmazonModule) {
+        console.info('Native android module does not exist, while calling end connection');
 
         return Promise.resolve();
       }
@@ -204,7 +204,7 @@ export const flushFailedPurchasesCachedAsPendingAndroid = (): Promise<
 
       await checkNativeAndroidAvailable(myRNIapModule);
 
-      return RNIapModule.flushFailedPurchasesCachedAsPending();
+      return RNIapModule ? RNIapModule.flushFailedPurchasesCachedAsPending() :[];
     },
   }) || Promise.resolve)();
 
@@ -269,12 +269,12 @@ export const getProducts = <SkuType extends string>(
       const myRNIapModule = getAndroidModule();
 
       await checkNativeAndroidAvailable(myRNIapModule);
-
+      
       const products = await myRNIapModule.getItemsByType(
         ANDROID_ITEM_TYPE_IAP,
         skus,
       );
-
+        
       return fillProductsAdditionalData(products);
     },
   }) || Promise.resolve)();
@@ -805,12 +805,12 @@ export const purchaseUpdatedListener = (
 
     return myModuleEvt.addListener('purchase-updated', listener);
   } else {
-    const emitterSubscription = DeviceEventEmitter.addListener(
+    const myRNIapModule = getAndroidModule();
+    const myModuleEvt = new NativeEventEmitter(myRNIapModule);
+    const emitterSubscription = myModuleEvt.addListener(
       'purchase-updated',
       listener,
     );
-
-    const myRNIapModule = getAndroidModule();
 
     myRNIapModule.startListening();
 

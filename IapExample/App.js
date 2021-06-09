@@ -115,27 +115,21 @@ class Page extends Component {
 
   async componentDidMount(): void {
     try {
-      const result = await RNIap.initConnection();
+      await RNIap.initConnection();
       await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
-      console.log('result', result);
     } catch (err) {
       console.warn(err.code, err.message);
     }
 
     purchaseUpdateSubscription = purchaseUpdatedListener(
       async (purchase: InAppPurchase | SubscriptionPurchase) => {
-        const receipt = purchase.transactionReceipt;
+        console.info("purchase",purchase);
+        const receipt =  purchase.transactionReceipt? purchase.transactionReceipt : purchase.originalJson;
+        console.info(receipt)
         if (receipt) {
           try {
-            // if (Platform.OS === 'ios') {
-            //   finishTransactionIOS(purchase.transactionId);
-            // } else if (Platform.OS === 'android') {
-            //   // If consumable (can be purchased again)
-            //   consumePurchaseAndroid(purchase.purchaseToken);
-            //   // If not consumable
-            //   acknowledgePurchaseAndroid(purchase.purchaseToken);
-            // }
             const ackResult = await finishTransaction(purchase);
+            console.info("ackResult",ackResult)
           } catch (ackErr) {
             console.warn('ackErr', ackErr);
           }

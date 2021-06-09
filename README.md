@@ -233,11 +233,37 @@ Linking the package manually is not required anymore with [Autolinking](https://
     include ':react-native-iap'
     project(':react-native-iap').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-iap/android')
     ```
-3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
+3. Two options:
+  a. If you only need for Google Play IAP, Insert this inside the `defaultConfig` section in `android/app/build.gradle`:
+  ```gradle
+  defaultConfig {
+        ...
+        // react-native-iap: we only use the Google Play flavor
+        missingDimensionStrategy 'store', 'play'
+    }
+    ```
+  b. If you are using it for both Google Play and Amazon, insert the following lines inside the `android` block in `android/app/build.gradle`:
+    ```gradle
+    android {
+      ...
+      flavorDimensions "appstore"
+      productFlavors{
+          googlePlay{
+              dimension "appstore"
+              missingDimensionStrategy "store", "play"
+          }
+          amazon{
+              dimension "appstore"
+              missingDimensionStrategy "store", "amazon"
+          }
+      }
+    }
+    ```
+4. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
     ```gradle
     compile project(':react-native-iap')
     ```
-4. Update ProGuard config (Optional)
+5. Update ProGuard config (Optional)
   - Append the following lines to your ProGuard config (`proguard-rules.pro`)
     ```
     -keepattributes *Annotation*
@@ -246,10 +272,8 @@ Linking the package manually is not required anymore with [Autolinking](https://
     }
     -keep enum org.greenrobot.eventbus.ThreadMode { *; }
     ```
-5. Add the following to the `<permission>` block in `android/app/src/main/AndroidManifest.xml`:
-  ```xml
-  <uses-permission android:name="com.android.vending.BILLING" />
-  ```
+### Migrating to 6.1.0
+ Android, follow step number 3 above
 
 ### Migrating to 3.4.0
 

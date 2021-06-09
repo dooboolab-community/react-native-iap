@@ -162,6 +162,17 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+    flavorDimensions "appstore"
+    productFlavors{
+        googlePlay{
+            dimension "appstore"
+            missingDimensionStrategy "store", "play"
+        }
+        amazon{
+            dimension "appstore"
+            missingDimensionStrategy "store", "amazon"
+        }
+    }
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
@@ -180,7 +191,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation "com.facebook.react:react-native:+"
+    implementation project(path: ':react-native-iap')
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

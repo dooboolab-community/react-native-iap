@@ -13,7 +13,7 @@
     "apsl-react-native-button": "^3.1.1",
     "react": "16.9.0",
     "react-native": "0.61.5",
-    "react-native-iap": "^6.0.6",
+    "react-native-iap": "file:..",
     "react-navigation": "^4.3.9"
   },
   "devDependencies": {

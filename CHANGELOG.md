@@ -1,5 +1,8 @@
 ## Changelogs
 
+## 6.1.0
+Spliting Android app stores into Google Play and Amazon. They can now be accessed through different flavors
+
 ## 6.0.8
 - [Android] Handle deffered proration in `purchaseUpdated` listener [#1357](https://github.com/dooboolab/react-native-iap/pull/1357)
 
