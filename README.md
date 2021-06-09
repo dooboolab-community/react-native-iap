@@ -95,14 +95,11 @@ Quick News
 
 Breaking Changes
 ----------------
-- Migrated to AndroidX in `3.1.0`. Please check the [Migration Guide][a-migration-guide].
-- Recommended to use `3.2.0` or above for `react-native-iap@^3.0.0` users.
-  - Now, you should [acknowledge purchase][a-acknowledge-purchase-android]
-      with non-consumable and subscription purchase from `3.0.0`.
-      See more about [acknowledgePurchase][android-acknowledge-purchase].
-  - If you are using version `^3.0.* < ^3.1.0`, please use `acknowledgePurchase` supported in `3.0.3`.
-      You can use method like `androidpublisher.purchases.subscriptions.acknowledge`.
-- `3.4.0` introduces a similar flow to consumable purchases on iOS. You should update your code according to the recommended flow and pass `false` to `andDangerouslyFinishTransactionAutomatically` when calling`requestPurchase`.
+[6.1.0]
+- Creates two variants: `play` and `amazon` and only uses the required code.
+  ```
+  NOTE: This would be a breaking change with a very simple fix described in the documentation. To add: `missingDimensionStrategy 'store', 'play'` `in build.gradle`
+  ```
 
 Configuration of Google Play & iTunes Connect
 ---------------------------------------------

@@ -1,7 +1,11 @@
 ## Changelogs
 
-## 6.1.0
-Spliting Android app stores into Google Play and Amazon. They can now be accessed through different flavors
+## 6.2.0
+Spliting Android app stores into Google Play and Amazon. They can now be accessed through different flavors [#1358](https://github.com/dooboolab/react-native-iap/pull/1358)
+
+Creates two variants: `play` and `amazon` and only uses the required code.
+
+NOTE: This would be a breaking change with a very simple fix described in the documentation. To add: `missingDimensionStrategy 'store', 'play'` `in build.gradle`
 
 ## 6.0.8
 - [Android] Handle deffered proration in `purchaseUpdated` listener [#1357](https://github.com/dooboolab/react-native-iap/pull/1357)
