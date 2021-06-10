@@ -231,15 +231,19 @@ Linking the package manually is not required anymore with [Autolinking](https://
     project(':react-native-iap').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-iap/android')
     ```
 3. Two options:
-  a. If you only need for Google Play IAP, Insert this inside the `defaultConfig` section in `android/app/build.gradle`:
-  ```gradle
-  defaultConfig {
-        ...
-        // react-native-iap: we only use the Google Play flavor
-        missingDimensionStrategy 'store', 'play'
-    }
+  
+    a. If you only need for Google Play IAP, Insert this inside the `defaultConfig` section in `android/app/build.gradle`:
+
+    ```gradle
+    defaultConfig {
+          ...
+          // react-native-iap: we only use the Google Play flavor
+          missingDimensionStrategy 'store', 'play'
+      }
     ```
-  b. If you are using it for both Google Play and Amazon, insert the following lines inside the `android` block in `android/app/build.gradle`:
+  
+    b. If you are using it for both Google Play and Amazon, insert the following lines inside the `android` block in `android/app/build.gradle`
+
     ```gradle
     android {
       ...
@@ -256,12 +260,14 @@ Linking the package manually is not required anymore with [Autolinking](https://
       }
     }
     ```
-4. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
+    
+4. Insert the following lines inside the dependencies block in `android/app/build.gradle`
     ```gradle
     compile project(':react-native-iap')
     ```
+    
 5. Update ProGuard config (Optional)
-  - Append the following lines to your ProGuard config (`proguard-rules.pro`)
+Append the following lines to your ProGuard config (`proguard-rules.pro`)
     ```
     -keepattributes *Annotation*
     -keepclassmembers class ** {
@@ -269,6 +275,7 @@ Linking the package manually is not required anymore with [Autolinking](https://
     }
     -keep enum org.greenrobot.eventbus.ThreadMode { *; }
     ```
+    
 ### Migrating to 6.1.0
  Android, follow step number 3 above
 
