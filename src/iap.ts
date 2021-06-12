@@ -29,17 +29,17 @@ const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
 
 let iapInstallSourceAndroid = InstallSourceAndroid.NOT_SET;
-let iapFallbackInstallSourceAndroid = InstallSourceAndroid.GOOGLE_PLAY;
 
-export function setFallbackInstallSourceAndroid(
-  installSourceAndroid: InstallSourceAndroid,
-): void {
-  iapFallbackInstallSourceAndroid = installSourceAndroid;
-}
-
+/**
+ * This function will be made internal (not exported) in future versions.
+ * @deprecated
+ */
 export function setInstallSourceAndroid(
   installSourceAndroid: InstallSourceAndroid,
 ): void {
+  console.warn(
+    'setInstallSourceAndroid is deprecated and will be removed in the future.',
+  );
   iapInstallSourceAndroid = installSourceAndroid;
 }
 
@@ -47,47 +47,25 @@ export function getInstallSourceAndroid(): InstallSourceAndroid {
   return iapInstallSourceAndroid;
 }
 
-async function detectInstallSourceAndroid(): Promise<void> {
-  const detectedInstallSourceAndroid = RNIapModule? await RNIapModule.getInstallSource(): 'AMAZON';
-  let newInstallSourceAndroid = iapFallbackInstallSourceAndroid;
-
-  switch (detectedInstallSourceAndroid) {
-    case 'GOOGLE_PLAY':
-      newInstallSourceAndroid = InstallSourceAndroid.GOOGLE_PLAY;
-      break;
-    case 'AMAZON':
-      newInstallSourceAndroid = InstallSourceAndroid.AMAZON;
-      break;
-  }
-
+function detectInstallSourceAndroid() {
+  const newInstallSourceAndroid = RNIapModule? InstallSourceAndroid.GOOGLE_PLAY :  InstallSourceAndroid.AMAZON;
   setInstallSourceAndroid(newInstallSourceAndroid);
 }
 
-function getAndroidModule(): any {
-  let myRNIapModule = null;
+function getAndroidModule(): typeof RNIapModule| typeof RNIapAmazonModule {
+  checkNativeAndroidAvailable();
+  return RNIapModule? RNIapModule:RNIapAmazonModule;
+}
 
-  switch (iapInstallSourceAndroid) {
-    case InstallSourceAndroid.AMAZON:
-      myRNIapModule = RNIapAmazonModule;
-      break;
-    default:
-      myRNIapModule = RNIapModule;
-      break;
+function checkNativeAndroidAvailable(){
+  if (!RNIapModule && !RNIapAmazonModule){
+    throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
   }
-
-  return myRNIapModule;
 }
 
-function checkNativeAndroidAvailable(myRNIapModule: any): Promise<void> {
-  if (!myRNIapModule)
-    return Promise.reject(new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE));
-  return Promise.resolve()
-}
-
-function checkNativeiOSAvailable(): Promise<void> {
+function checkNativeiOSAvailable(){
   if (!RNIapIos)
-    return Promise.reject(new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE));
-  return Promise.resolve()
+    throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
 }
 
 /**
@@ -102,13 +80,8 @@ export const initConnection = (): Promise<boolean> =>
       return RNIapIos.canMakePayments();
     },
     android: async () => {
-      await detectInstallSourceAndroid();
-
-      const myRNIapModule = getAndroidModule();
-
-      if (!RNIapModule && !RNIapAmazonModule) return Promise.reject("Unable to detect Android platform modules");
-
-      return myRNIapModule.initConnection();
+      detectInstallSourceAndroid();
+      return getAndroidModule().initConnection();
     },
   }) || Promise.resolve)();
 
@@ -129,41 +102,9 @@ export const endConnection = (): Promise<void> =>
     },
     android: async () => {
       const myRNIapModule = getAndroidModule();
-
-      if (!RNIapModule && !RNIapAmazonModule) {
-        console.info('Native android module does not exist, while calling end connection');
-
-        return Promise.resolve();
-      }
-
       return myRNIapModule.endConnection();
     },
   }) || Promise.resolve)();
-
-/**
- * @deprecated
- * End module for purchase flow. Required on Android. No-op on iOS.
- * @returns {Promise<void>}
- */
-export const endConnectionAndroid = (): Promise<void> => {
-  console.warn(
-    'endConnectionAndroid is deprecated and will be removed in the future. Please use endConnection instead',
-  );
-
-  return (Platform.select({
-    ios: async () => Promise.resolve(),
-    android: async () => {
-      switch (iapInstallSourceAndroid) {
-        case InstallSourceAndroid.AMAZON:
-          return Promise.resolve();
-        default:
-          if (!RNIapModule) return Promise.resolve();
-
-          return RNIapModule.endConnection();
-      }
-    },
-  }) || Promise.resolve)();
-};
 
 /**
  * Consume all remaining tokens. Android only.
@@ -181,11 +122,7 @@ export const consumeAllItemsAndroid = (): Promise<string[]> => {
   return (Platform.select({
     ios: async () => Promise.resolve(),
     android: async () => {
-      const myRNIapModule = getAndroidModule();
-
-      await checkNativeAndroidAvailable(myRNIapModule);
-
-      return myRNIapModule.refreshItems();
+      return getAndroidModule().refreshItems();
     },
   }) || Promise.resolve)();
 };
@@ -200,10 +137,6 @@ export const flushFailedPurchasesCachedAsPendingAndroid = (): Promise<
   (Platform.select({
     ios: async () => Promise.resolve(),
     android: async () => {
-      const myRNIapModule = getAndroidModule();
-
-      await checkNativeAndroidAvailable(myRNIapModule);
-
       return RNIapModule ? RNIapModule.flushFailedPurchasesCachedAsPending() :[];
     },
   }) || Promise.resolve)();
@@ -266,11 +199,7 @@ export const getProducts = <SkuType extends string>(
       );
     },
     android: async () => {
-      const myRNIapModule = getAndroidModule();
-
-      await checkNativeAndroidAvailable(myRNIapModule);
-      
-      const products = await myRNIapModule.getItemsByType(
+      const products = await getAndroidModule().getItemsByType(
         ANDROID_ITEM_TYPE_IAP,
         skus,
       );
@@ -287,18 +216,14 @@ export const getProducts = <SkuType extends string>(
 export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
   (Platform.select({
     ios: async () => {
-      await checkNativeiOSAvailable();
+      checkNativeiOSAvailable();
 
       return RNIapIos.getItems(skus).then((items: Subscription[]) =>
         items.filter((item: Subscription) => skus.includes(item.productId)),
       );
     },
     android: async () => {
-      const myModule = getAndroidModule();
-
-      await checkNativeAndroidAvailable(myModule);
-
-      const subscriptions = await myModule.getItemsByType(
+      const subscriptions = await getAndroidModule().getItemsByType(
         ANDROID_ITEM_TYPE_SUBSCRIPTION,
         skus,
       );
@@ -316,20 +241,16 @@ export const getPurchaseHistory = (): Promise<
 > =>
   (Platform.select({
     ios: async () => {
-      await checkNativeiOSAvailable();
+      checkNativeiOSAvailable();
 
       return RNIapIos.getAvailableItems();
     },
     android: async () => {
-      const myRNIapModule = getAndroidModule();
-
-      await checkNativeAndroidAvailable(myRNIapModule);
-
-      const products = await myRNIapModule.getPurchaseHistoryByType(
+      const products = await getAndroidModule().getPurchaseHistoryByType(
         ANDROID_ITEM_TYPE_IAP,
       );
 
-      const subscriptions = await myRNIapModule.getPurchaseHistoryByType(
+      const subscriptions = await getAndroidModule().getPurchaseHistoryByType(
         ANDROID_ITEM_TYPE_SUBSCRIPTION,
       );
 
@@ -346,20 +267,16 @@ export const getAvailablePurchases = (): Promise<
 > =>
   (Platform.select({
     ios: async () => {
-      await checkNativeiOSAvailable();
+      checkNativeiOSAvailable();
 
       return RNIapIos.getAvailableItems();
     },
     android: async () => {
-      const myRNIapModule = getAndroidModule();
-
-      await checkNativeAndroidAvailable(myRNIapModule);
-
-      const products = await myRNIapModule.getAvailableItemsByType(
+      const products = await getAndroidModule().getAvailableItemsByType(
         ANDROID_ITEM_TYPE_IAP,
       );
 
-      const subscriptions = await myRNIapModule.getAvailableItemsByType(
+      const subscriptions = await getAndroidModule().getAvailableItemsByType(
         ANDROID_ITEM_TYPE_SUBSCRIPTION,
       );
 
@@ -394,7 +311,7 @@ export const requestPurchase = (
           'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
         );
 
-      await checkNativeiOSAvailable();
+      checkNativeiOSAvailable();
 
       return RNIapIos.buyProduct(
         sku,
@@ -402,11 +319,7 @@ export const requestPurchase = (
       );
     },
     android: async () => {
-      const myRNIapModule = getAndroidModule();
-
-      await checkNativeAndroidAvailable(myRNIapModule);
-
-      return myRNIapModule.buyItemByType(
+      return getAndroidModule().buyItemByType(
         ANDROID_ITEM_TYPE_IAP,
         sku,
         null,
@@ -451,7 +364,7 @@ export const requestSubscription = (
           'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
         );
 
-      await checkNativeiOSAvailable();
+      checkNativeiOSAvailable();
 
       return RNIapIos.buyProduct(
         sku,
@@ -460,12 +373,7 @@ export const requestSubscription = (
     },
     android: async () => {
       if (!prorationModeAndroid) prorationModeAndroid = -1;
-
-      const myRNIapModule = getAndroidModule();
-
-      await checkNativeAndroidAvailable(myRNIapModule);
-
-      return myRNIapModule.buyItemByType(
+      return getAndroidModule().buyItemByType(
         ANDROID_ITEM_TYPE_SUBSCRIPTION,
         sku,
         oldSkuAndroid,
@@ -488,7 +396,7 @@ export const requestPurchaseWithQuantityIOS = (
 ): Promise<InAppPurchase> =>
   (Platform.select({
     ios: async () => {
-      await checkNativeiOSAvailable();
+      checkNativeiOSAvailable();
 
       return RNIapIos.buyProductWithQuantityIOS(sku, quantity);
     },
@@ -505,7 +413,7 @@ export const requestPurchaseWithQuantityIOS = (
 export const finishTransactionIOS = (transactionId: string): Promise<void> =>
   (Platform.select({
     ios: async () => {
-      await checkNativeiOSAvailable();
+      checkNativeiOSAvailable();
 
       return RNIapIos.finishTransaction(transactionId);
     },
@@ -525,16 +433,13 @@ export const finishTransaction = (
 ): Promise<string | void> => {
   return (Platform.select({
     ios: async () => {
-      await checkNativeiOSAvailable();
-
+      checkNativeiOSAvailable();
       return RNIapIos.finishTransaction(purchase.transactionId);
     },
     android: async () => {
-      const myRNIapModule = getAndroidModule();
-
       if (purchase)
         if (isConsumable)
-          return myRNIapModule.consumeProduct(
+          return getAndroidModule().consumeProduct(
             purchase.purchaseToken,
             developerPayloadAndroid,
           );
@@ -543,7 +448,7 @@ export const finishTransaction = (
           (!purchase.isAcknowledgedAndroid &&
             purchase.purchaseStateAndroid === PurchaseStateAndroid.PURCHASED)
         )
-          return myRNIapModule.acknowledgePurchase(
+          return getAndroidModule().acknowledgePurchase(
             purchase.purchaseToken,
             developerPayloadAndroid,
           );
@@ -563,8 +468,7 @@ export const finishTransaction = (
 export const clearTransactionIOS = (): Promise<void> => {
   return (Platform.select({
     ios: async () => {
-      await checkNativeiOSAvailable();
-
+      checkNativeiOSAvailable();
       return RNIapIos.clearTransaction();
     },
     android: async () => Promise.resolve(),
@@ -579,8 +483,7 @@ export const clearTransactionIOS = (): Promise<void> => {
 export const clearProductsIOS = (): Promise<void> =>
   (Platform.select({
     ios: async () => {
-      await checkNativeiOSAvailable();
-
+      checkNativeiOSAvailable();
       return RNIapIos.clearProducts();
     },
     android: async () => undefined,
@@ -598,11 +501,7 @@ export const acknowledgePurchaseAndroid = (
   (Platform.select({
     ios: async () => Promise.resolve(),
     android: async () => {
-      const myRNIapModule = getAndroidModule();
-
-      await checkNativeAndroidAvailable(myRNIapModule);
-
-      return myRNIapModule.acknowledgePurchase(token, developerPayload);
+      return getAndroidModule().acknowledgePurchase(token, developerPayload);
     },
   }) || Promise.resolve)();
 
@@ -618,11 +517,7 @@ export const consumePurchaseAndroid = (
   (Platform.select({
     ios: async () => Promise.resolve(),
     android: async () => {
-      const myRNIapModule = getAndroidModule();
-
-      await checkNativeAndroidAvailable(myRNIapModule);
-
-      return myRNIapModule.consumeProduct(token, developerPayload);
+      return getAndroidModule().consumeProduct(token, developerPayload);
     },
   }) || Promise.resolve)();
 
@@ -634,7 +529,7 @@ export const consumePurchaseAndroid = (
 export const getPromotedProductIOS = (): Promise<Product> =>
   (Platform.select({
     ios: async () => {
-      await checkNativeiOSAvailable();
+      checkNativeiOSAvailable();
 
       return RNIapIos.promotedProduct();
     },
@@ -649,7 +544,7 @@ export const getPromotedProductIOS = (): Promise<Product> =>
 export const buyPromotedProductIOS = (): Promise<void> =>
   (Platform.select({
     ios: async () => {
-      await checkNativeiOSAvailable();
+      checkNativeiOSAvailable();
 
       return RNIapIos.buyPromotedProduct();
     },
@@ -724,7 +619,7 @@ export const requestPurchaseWithOfferIOS = (
 ): Promise<void> =>
   (Platform.select({
     ios: async () => {
-      await checkNativeiOSAvailable();
+      checkNativeiOSAvailable();
 
       return RNIapIos.buyProductWithOffer(sku, forUser, withOffer);
     },
@@ -827,7 +722,6 @@ export const purchaseErrorListener = (
 ): EmitterSubscription => {
   if (Platform.OS === 'ios') {
     checkNativeiOSAvailable();
-
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
 
     return myModuleEvt.addListener('purchase-error', listener);
@@ -841,8 +735,7 @@ export const purchaseErrorListener = (
  */
 export const getReceiptIOS = async (forceRefresh?:boolean): Promise<string> => {
   if (Platform.OS === 'ios') {
-    await checkNativeiOSAvailable();
-
+    checkNativeiOSAvailable();
     return RNIapIos.requestReceipt(forceRefresh??false);
   }
   return Promise.reject("This API is only available on iOS");
@@ -854,8 +747,7 @@ export const getReceiptIOS = async (forceRefresh?:boolean): Promise<string> => {
  */
 export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> => {
   if (Platform.OS === 'ios') {
-    await checkNativeiOSAvailable();
-
+    checkNativeiOSAvailable();
     return RNIapIos.getPendingTransactions();
   }
   return Promise.reject("This API is only available on iOS")
@@ -867,8 +759,7 @@ export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> => {
  */
 export const presentCodeRedemptionSheetIOS = async (): Promise<null> => {
   if (Platform.OS === 'ios') {
-    await checkNativeiOSAvailable();
-
+    checkNativeiOSAvailable();
     return RNIapIos.presentCodeRedemptionSheet();
   }
   return Promise.reject("This API is only available on iOS")

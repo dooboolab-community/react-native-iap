@@ -1,5 +1,7 @@
 ## Changelogs
 
+## 6.2.1
+Clean up internal code that detects GooglePlay vs Amazon modules
 ## 6.2.0
 Spliting Android app stores into Google Play and Amazon. They can now be accessed through different flavors [#1358](https://github.com/dooboolab/react-native-iap/pull/1358)
 

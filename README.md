@@ -203,6 +203,36 @@ Linking the package manually is not required anymore with [Autolinking](https://
     }
   ```
 
+  Ypu have two options depending on the stores you support:
+  
+    a. If you only need for Google Play IAP, Insert this inside the `defaultConfig` section in `android/app/build.gradle`:
+
+    ```gradle
+    defaultConfig {
+          ...
+          // react-native-iap: we only use the Google Play flavor
+          missingDimensionStrategy 'store', 'play'
+      }
+    ```
+  
+    b. If you are using it for both Google Play and Amazon, insert the following lines inside the `android` block in `android/app/build.gradle`
+
+    ```gradle
+    android {
+      ...
+      flavorDimensions "appstore"
+      productFlavors{
+          googlePlay{
+              dimension "appstore"
+              missingDimensionStrategy "store", "play"
+          }
+          amazon{
+              dimension "appstore"
+              missingDimensionStrategy "store", "amazon"
+          }
+      }
+    }
+    ```
 #### Using React Native < 0.60
 
 `$ react-native link react-native-iap`
@@ -287,6 +317,13 @@ Append the following lines to your ProGuard config (`proguard-rules.pro`)
 Usage
 -----
 You can look in the [`RNIapExample/`][example] folder to try the example.
+
+NOTE: To run `RNIapExample` on Android use the variant flag as follows:
+```
+yarn android --variant=MY_VARIANT
+```
+where `MY_VARIANT` is `PlayDebug` or `AmazonDebug`
+
 Below is basic implementation which is also provided in `RNIapExample` project.
 
 Init IAP, In App Billing
