@@ -1,13 +1,13 @@
-name: Deploy document
+name: document
 on:
   workflow_dispatch:
-  release:
-    types: [created]
+  push:
+    branches: [master]
     paths:
       - 'docs/**'
 
 jobs:
-  update:
+  publish-doc:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -26,8 +26,7 @@ jobs:
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        env:
-          PERSONAL_TOKEN: ${{secrets.GH_TOKEN}}
-          PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: ./website/build
-          SCRIPT_MODE: true
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: ./docs/build
+          publish_branch: gh-pages

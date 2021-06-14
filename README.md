@@ -2,9 +2,10 @@
 ================
 [![Version](http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
 [![Download](http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
-[![License](https://img.shields.io/npm/l/react-native-iap.svg)](https://npmjs.org/package/react-native-iap)
 [![Build Status](https://travis-ci.com/dooboolab/react-native-iap.svg?branch=master)](https://travis-ci.com/dooboolab/react-native-iap)
 [![CI](https://github.com/dooboolab/react-native-iap/actions/workflows/ci.yml/badge.svg)](https://github.com/dooboolab/react-native-iap/actions/workflows/ci.yml)
+[![document](https://github.com/dooboolab/react-native-iap/actions/workflows/deploy-document.yml/badge.svg)](https://github.com/dooboolab/react-native-iap/actions/workflows/deploy-document.yml)
+[![License](https://img.shields.io/npm/l/react-native-iap.svg)](https://npmjs.org/package/react-native-iap)
 [![Vulnerabilites](https://img.shields.io/snyk/vulnerabilities/github/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap)
 [![Issue Opened](https://img.shields.io/opencollective/all/react-native-iap.svg)](https://opencollective.com/react-native-iap#backers)
 [![Issue Opened](https://img.shields.io/github/issues/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/issues)
@@ -15,7 +16,7 @@
 
 ## Documentation
 
-Published in [website](https://giovannicimolin.github.io/react-native-iap/docs/intro).
+Published in [website](https://react-native-iap.dooboolab.com).
 
 ## Announcement
 
@@ -115,14 +116,6 @@ Configuration of Google Play & iTunes Connect
 --------------------------------------
 - If you are using `react-native-iap@^2.*`, please follow the above README.
 
-Npm Module
-----------
-https://www.npmjs.com/package/react-native-iap
-
-Git Repo
---------
-https://github.com/dooboolab/react-native-iap
-
 Usage
 -----
 You can look in the [`RNIapExample/`][example] folder to try the example.
@@ -130,13 +123,16 @@ Below is basic implementation which is also provided in `RNIapExample` project.
 
 If you want more advanced one please refer to [dooboolab.com/sponsor.tsx](https://github.com/hyochan/dooboolab.com/blob/master/src/components/pages/Sponsor.tsx)
 
+Sponsoring
+----------
+
 Since `IAP` itself is not perfect on each platform, we desperately need
 this project to be maintained. If you'd like to help us, please consider being
 with us in [Open Collective](https://opencollective.com/react-native-iap).
 
 ### Sponsors
 Support this project by becoming a sponsor. Your logo will show up here with
-a link to your website. [Become a sponsor][open-collective-sponsor]
+a link to your website. [Become a sponsor][open-collective-sponsor].
 <a href="https://opencollective.com/react-native-iap#sponsors" target="_blank"><img src="https://opencollective.com/react-native-iap/sponsors.svg?width=890"></a>
 
 ### Backers

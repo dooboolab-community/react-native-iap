@@ -1,17 +1,21 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: 'React Native IAP',
-  tagline: 'Dinosaurs are cool',
-  url: 'http://giovannicimolin.github.io',
-  baseUrl: '/react-native-iap/',
+  tagline: 'React Native In App Purchase',
+  url: 'https://react-native-iap.dooboolab.com',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'giovannicimolin',
+  organizationName: 'dooboolab',
   projectName: 'react-native-iap', 
   themeConfig: {
     navbar: {
       title: 'React Native IAP',
+      logo: {
+        alt: 'react ntaive iap',
+        src: 'img/logo.png',
+      },
       items: [
         {
           type: 'doc',
@@ -47,7 +51,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `This is an Open Source project using the MIT license. Documentation built with Docusaurus.`,
+      copyright: `This is an Open Source project using the MIT license built with Docusaurus.`,
     },
   },
   presets: [
@@ -58,13 +62,13 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
+            'https://github.com/dooboolab/react-native-iap/edit/master/docs/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/blog/',
+            'https://github.com/dooboolab/react-native-iap/edit/master/docs/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
