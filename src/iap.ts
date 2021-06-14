@@ -37,6 +37,7 @@ let iapInstallSourceAndroid = InstallSourceAndroid.NOT_SET;
 export function setInstallSourceAndroid(
   installSourceAndroid: InstallSourceAndroid,
 ): void {
+  // eslint-disable-next-line no-console
   console.warn(
     'setInstallSourceAndroid is deprecated and will be removed in the future.',
   );
@@ -56,15 +57,15 @@ function detectInstallSourceAndroid(): void {
   setInstallSourceAndroid(newInstallSourceAndroid);
 }
 
+function checkNativeAndroidAvailable(): void {
+  if (!RNIapModule && !RNIapAmazonModule)
+    throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
+}
+
 function getAndroidModule(): typeof RNIapModule | typeof RNIapAmazonModule {
   checkNativeAndroidAvailable();
 
   return RNIapModule ? RNIapModule : RNIapAmazonModule;
-}
-
-function checkNativeAndroidAvailable(): void {
-  if (!RNIapModule && !RNIapAmazonModule)
-    throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
 }
 
 function checkNativeiOSAvailable(): void {
@@ -99,11 +100,7 @@ export const endConnection = (): Promise<void> =>
   (
     Platform.select({
       ios: async () => {
-        if (!RNIapIos) {
-          console.warn('Native ios module does not exist');
-
-          return Promise.resolve();
-        }
+        checkNativeiOSAvailable();
 
         return RNIapIos.endConnection();
       },
@@ -124,6 +121,7 @@ export const endConnection = (): Promise<void> =>
  * @returns {Promise<string[]>}
  */
 export const consumeAllItemsAndroid = (): Promise<string[]> => {
+  // eslint-disable-next-line no-console
   console.warn(
     'consumeAllItemsAndroid is deprecated and will be removed in the future. Please use flushFailedPurchasesCachedAsPendingAndroid instead',
   );
@@ -330,6 +328,7 @@ export const requestPurchase = (
             : andDangerouslyFinishTransactionAutomaticallyIOS;
 
         if (andDangerouslyFinishTransactionAutomaticallyIOS)
+          // eslint-disable-next-line no-console
           console.warn(
             // eslint-disable-next-line max-len
             'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
@@ -385,6 +384,7 @@ export const requestSubscription = (
             : andDangerouslyFinishTransactionAutomaticallyIOS;
 
         if (andDangerouslyFinishTransactionAutomaticallyIOS)
+          // eslint-disable-next-line no-console
           console.warn(
             // eslint-disable-next-line max-len
             'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
