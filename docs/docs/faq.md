@@ -22,7 +22,7 @@
 
     However, now you should always `fetchProducts` first in both platforms.
     It is because Android `BillingClient` has been updated `billingFlowParams`
-    to include [SkuDetails][android-sku-details] instead `sku` string which is
+    to include [SkuDetails](https://developer.android.com/reference/com/android/billingclient/api/SkuDetails) instead `sku` string which is
     hard to share between `react-native` and `android`.
 
     It happened since `com.android.billingclient:billing:2.0.*`.
@@ -32,22 +32,22 @@
     list of items to “purchase” before requesting purchase.
 
   - Related [blog](https://medium.com/p/e4b55491479b).
-  - Related issue [#283][issue-283].
+  - Related issue [#283](https://github.com/dooboolab/react-native-iap/issues/283).
 
 
 ### How do I validate receipt in iOS?
-- Official doc is [here][apple-iap-validation-guide].
-- Resolved issues in [#203][issue-203], [#237][issue-237].
+- Official doc is [here](https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
+- Resolved issues in [#203](https://github.com/dooboolab/react-native-iap/issues/203), [#237](https://github.com/dooboolab/react-native-iap/issues/237).
 
 
 ### How do I validate receipt in Android?
-- Offical doc is [here][android-iap-validation-guide].
+- Offical doc is [here](https://developer.android.com/google/play/billing/billing_library_overview).
 - I've developed this feature for other developers to contribute easily who are
     aware of these things. The doc says you can also get the `accessToken` via
     play console without any of your backend server.
 
     You can get this by following process:
-  - Open [Google Play Console][google-play-console]
+  - Open [Google Play Console](https://play.google.com/apps/publish/)
       &gt; Select your app
       &gt; Development tools
       &gt; Services & APIs
@@ -57,16 +57,16 @@
 
 ### How to make consumable product in Android developer mode?
 - If you are facing `"You already own this item"` on developer(test) mode,
-    you might check related issue [#126][issue-126-c1]
+    you might check related issue [#126](https://github.com/dooboolab/react-native-iap/issues/126)
 
 
 ### How do I use `react-native-iap` in Expo?
 - You should detach from `expo` and get `expokit` out of it.
-- Releated issue in [#174][issue-174].
+- Releated issue in [#174](https://github.com/dooboolab/react-native-iap/issues/174).
 
 
 ### How do I handle promoted products in iOS?
-- Offical doc is [here][apple-iap-promoting].
+- Offical doc is [here](https://developer.apple.com/app-store/promoting-in-app-purchases/).
 - No initial setup needed from `4.4.5`.
 
 Somewhere early in your app's lifecycle,

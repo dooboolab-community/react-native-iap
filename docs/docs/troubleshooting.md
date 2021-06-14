@@ -44,4 +44,4 @@ Please try `unlink` and `link` again, or try manual install.
         - Quit “store” related processes in Activity Monitor
         - Development Provisioning Profile -> Clean -> Build.
 
-- Related issues [#256][issue-256] , [#263][issue-263].
+- Related issues [#256](https://github.com/dooboolab/react-native-iap/issues/256) , [#263](https://github.com/dooboolab/react-native-iap/issues/263).
