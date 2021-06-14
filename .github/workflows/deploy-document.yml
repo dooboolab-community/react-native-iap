@@ -4,7 +4,7 @@ on:
   release:
     types: [created]
     paths:
-      - 'doc/**'
+      - 'docs/**'
 
 jobs:
   update:
@@ -19,7 +19,7 @@ jobs:
 
       - name: Install packages and build
         run: |
-          pushd ./doc
+          pushd ./docs
           yarn install --ignore-engines
           yarn build
           popd
