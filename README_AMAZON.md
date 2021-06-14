@@ -18,7 +18,7 @@ Here are the additional steps to add Amazon IAP support.
 
 Testing in development
 ----------------------
-The `react-native-iap` determines the the appstore depending on the "variant" of the app that you are running. For example to run the Amazon variand use the `variant` flag:
+The `react-native-iap` determines the the appstore depending on the "variant" of the app that you are running. For example to run the Amazon variant use the `variant` flag:
 ```
 yarn android --variant=AmazonDebug
 ```
