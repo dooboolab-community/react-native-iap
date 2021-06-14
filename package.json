@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsc && flowgen index.d.ts -o index.js.flow",
     "flow": "flow",
-    "lint": "eslint -c .eslintrc.js 'index.ts'",
+    "lint": "eslint src --ext .ts,.tsx",
     "test": "exit 0",
     "test:flow": "flow",
     "test:typescript": "tsc --noEmit",
