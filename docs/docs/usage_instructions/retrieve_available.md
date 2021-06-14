@@ -21,7 +21,7 @@ const productIds = Platform.select({
 
 To get a list of valid items, call `getProducts()`.
 
-You can do it in `componentDidMount()`, or another area as appropriate for you app.
+You can do it in `componentDidMount()`, or another area as appropriate for your app.
 
 Since a user may first start your app with a bad internet connection, then later have an internet connection, making preparing/getting items more than once may be a good idea.
 
