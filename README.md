@@ -127,14 +127,6 @@ Git Repo
 --------
 https://github.com/dooboolab/react-native-iap
 
-### Migrating to 6.1.0
- Android, follow step number 3 above
-
-### Migrating to 3.4.0
-
-- Upgrade to the new [purchase flow][a-purchase-flow].
-- There is no longer any need to call endConnection on Android as this is done automatically.
-
 Usage
 -----
 You can look in the [`RNIapExample/`][example] folder to try the example.
