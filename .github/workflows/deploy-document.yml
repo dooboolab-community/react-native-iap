@@ -1,0 +1,33 @@
+name: Deploy document
+on:
+  workflow_dispatch:
+  release:
+    types: [created]
+    paths:
+      - 'docs/**'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up Node.js
+        uses: actions/setup-node@master
+        with:
+          node-version: 14.x
+
+      - name: Install packages and build
+        run: |
+          pushd ./docs
+          yarn install --ignore-engines
+          yarn build
+          popd
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        env:
+          PERSONAL_TOKEN: ${{secrets.GH_TOKEN}}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: ./website/build
+          SCRIPT_MODE: true

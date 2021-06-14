@@ -13,6 +13,10 @@
 [![PR Closed](https://img.shields.io/github/issues-pr-closed/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/pulls?q=is%3Apr+is%3Aclosed) [![Greenkeeper badge](https://badges.greenkeeper.io/dooboolab/react-native-iap.svg)](https://greenkeeper.io/)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap?ref=badge_shield)
 
+## Documentation
+
+Published in [website](https://giovannicimolin.github.io/react-native-iap/docs/intro).
+
 ## Announcement
 
 React Native IAP hook is out. You can see [medium post](https://medium.com/dooboolab/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it.
@@ -33,12 +37,6 @@ If you're looking for a module going further than react-native-iap, we recommend
   - A device simulator, use a real device for testing!
   - The sandbox environment of the project not being configured properly ([Configure android sandbox](https://www.iaphub.com/docs/set-up-android/configure-sandbox-testing), [Configure ios sandbox](https://www.iaphub.com/docs/set-up-ios/configure-sandbox-testing/))
   - An incorrect usage of the library
-
-
-Documentation
-----------
-
-You can access the documentation [here](https://giovannicimolin.github.io/react-native-iap/docs/intro).
 
 
 Demo
@@ -106,6 +104,8 @@ Breaking Changes
   ```
   NOTE: This would be a breaking change with a very simple fix described in the documentation. To add: `missingDimensionStrategy 'store', 'play'` `in build.gradle`
   ```
+[3.0.0+]
+[react-native-iap V3 note][blog-v3-note]
 
 Configuration of Google Play & iTunes Connect
 ---------------------------------------------
@@ -114,10 +114,6 @@ Configuration of Google Play & iTunes Connect
 [Deprecated README][readme-deprecated]
 --------------------------------------
 - If you are using `react-native-iap@^2.*`, please follow the above README.
-
-News on Major Releases
-----------------------
-- [react-native-iap V3 note][blog-v3-note]
 
 Npm Module
 ----------
@@ -132,9 +128,15 @@ Usage
 You can look in the [`RNIapExample/`][example] folder to try the example.
 Below is basic implementation which is also provided in `RNIapExample` project.
 
+If you want more advanced one please refer to [dooboolab.com/sponsor.tsx](https://github.com/hyochan/dooboolab.com/blob/master/src/components/pages/Sponsor.tsx)
+
+Since `IAP` itself is not perfect on each platform, we desperately need
+this project to be maintained. If you'd like to help us, please consider being
+with us in [Open Collective](https://opencollective.com/react-native-iap).
+
 ### Sponsors
 Support this project by becoming a sponsor. Your logo will show up here with
-a link to your website. \[[Become a sponsor][open-collective-sponsor]\]
+a link to your website. [Become a sponsor][open-collective-sponsor]
 <a href="https://opencollective.com/react-native-iap#sponsors" target="_blank"><img src="https://opencollective.com/react-native-iap/sponsors.svg?width=890"></a>
 
 ### Backers
