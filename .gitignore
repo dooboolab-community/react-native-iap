@@ -60,6 +60,8 @@ tsconfig.tsbuildinfo
 *.d.ts
 *.js
 !IamExample
+!jest.config.js
+!babel.config.js
 
 # Don't apply this gitignore for documenattion directory
 !docs/*
