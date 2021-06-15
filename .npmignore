@@ -10,3 +10,13 @@ tsconfig.tsbuildinfo
 tsconfig.json
 greenkeeper.json
 react-native-iap-*.tgz
+.vscode/
+docs/
+.github/
+*.md
+.travis.yml
+.ncurc.json
+.eslintrc.js
+.eslintignore
+.prettierrc.js
+.gitattributes
