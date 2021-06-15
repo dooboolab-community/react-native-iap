@@ -110,7 +110,7 @@ export const initConnection = (): Promise<boolean> =>
 
       return myRNIapModule.initConnection();
     },
-  }) || Promise.resolve)();
+  }) || (() => Promise.resolve("Hello")))();
 
 /**
  * End module for purchase flow.

@@ -1,11 +1,21 @@
+import { NativeModules, Platform } from "react-native";
 import { initConnection } from "../iap";
 
-describe('init should work', () => {
-    test('should do', () => {
-            initConnection()
-    })
+const rnLib = "../../node_modules/react-native/Libraries"
+
+describe('Google Play IAP', () => {
+
+  beforeEach(()=>{
+    jest.mock( rnLib+'/Utilities/Platform', () => ({
+      OS: 'android', 
+      select: (dict: { [x: string]: any; }) => dict['android']
+  }));
     
-    console.log('====================================');
-    console.log();
-    console.log('====================================');
+  });
+    it('should call init on native module', async () => {
+            const initVal = await initConnection();
+            
+            expect(NativeModules.RNIapModule.initConnection).toBeCalled()
+            expect(NativeModules.RNIapAmazonModule.initConnection).not.toBeCalled()
+    })
 })
