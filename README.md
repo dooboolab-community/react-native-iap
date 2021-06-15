@@ -119,6 +119,13 @@ Configuration of Google Play & iTunes Connect
 Usage
 -----
 You can look in the [`RNIapExample/`][example] folder to try the example.
+
+NOTE: To run `RNIapExample` on Android use the variant flag as follows:
+```
+yarn android --variant=MY_VARIANT
+```
+where `MY_VARIANT` is `PlayDebug` or `AmazonDebug`
+
 Below is basic implementation which is also provided in `RNIapExample` project.
 
 If you want more advanced one please refer to [dooboolab.com/sponsor.tsx](https://github.com/hyochan/dooboolab.com/blob/master/src/components/pages/Sponsor.tsx)

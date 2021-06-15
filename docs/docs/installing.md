@@ -51,6 +51,37 @@ Then follow the instructions below depending on the platform you're working with
       // Put here other AndroidX dependencies
     }
   ```
+  You have two options depending on the stores you support:
+  
+    a. If you only need for Google Play IAP, Insert this inside the `defaultConfig` section in `android/app/build.gradle`:
+
+    ```gradle
+    defaultConfig {
+          ...
+          // react-native-iap: we only use the Google Play flavor
+          missingDimensionStrategy 'store', 'play'
+      }
+    ```
+  
+    b. If you are using it for both Google Play and Amazon, insert the following lines inside the `android` block in `android/app/build.gradle`
+
+    ```gradle
+    android {
+      ...
+      flavorDimensions "appstore"
+      productFlavors{
+          googlePlay{
+              dimension "appstore"
+              missingDimensionStrategy "store", "play"
+          }
+          amazon{
+              dimension "appstore"
+              missingDimensionStrategy "store", "amazon"
+          }
+      }
+    }
+    ```
+
 
 ## Using `react-native<=0.60`
 
