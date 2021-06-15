@@ -60,10 +60,8 @@ export function useIAP(): IAP_STATUS {
 
   const [currentPurchase, setCurrentPurchase] = useState<Purchase>();
 
-  const [
-    currentPurchaseError,
-    setCurrentPurchaseError,
-  ] = useState<PurchaseError>();
+  const [currentPurchaseError, setCurrentPurchaseError] =
+    useState<PurchaseError>();
 
   const getProducts = useCallback(async (skus: string[]): Promise<void> => {
     const iaps = await iapGetProducts(skus);

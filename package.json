@@ -1,14 +1,14 @@
 {
   "name": "react-native-iap",
-  "version": "6.2.0",
+  "version": "6.2.1",
   "description": "React Native In App Purchase Module.",
-  "main": "index.ts",
+  "main": "index.js",
   "types": "index.d.ts",
   "postinstall": "dooboolab-welcome postinstall",
   "scripts": {
     "build": "tsc && flowgen index.d.ts -o index.js.flow",
     "flow": "flow",
-    "lint": "eslint -c .eslintrc.js 'index.ts'",
+    "lint": "eslint src --ext .ts,.tsx",
     "test": "jest",
     "test:flow": "flow",
     "test:typescript": "tsc --noEmit",
