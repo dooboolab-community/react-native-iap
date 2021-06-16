@@ -9,16 +9,16 @@
     "source.fixAll": true
   },
   "[javascript]": {
-    "editor.defaultFormatter": "SimonSiefke.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascriptreact]": {
-    "editor.defaultFormatter": "SimonSiefke.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "SimonSiefke.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "SimonSiefke.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "javascript.preferences.importModuleSpecifier": "relative",
   "typescript.preferences.importModuleSpecifier": "relative",
