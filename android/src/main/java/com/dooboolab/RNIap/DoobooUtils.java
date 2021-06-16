@@ -1,11 +1,6 @@
 package com.dooboolab.RNIap;
 
-import android.os.Build;
 import android.util.Log;
-
-
-import android.content.Context;
-import android.content.pm.PackageManager;
 import com.facebook.react.bridge.ObjectAlreadyConsumedException;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
@@ -15,14 +10,12 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class DoobooUtils {
   private static final String TAG = "DoobooUtils";
@@ -37,7 +30,8 @@ public class DoobooUtils {
   public static final String E_REMOTE_ERROR = "E_REMOTE_ERROR";
   public static final String E_USER_ERROR = "E_USER_ERROR";
   public static final String E_DEVELOPER_ERROR = "E_DEVELOPER_ERROR";
-  public static final String E_BILLING_RESPONSE_JSON_PARSE_ERROR = "E_BILLING_RESPONSE_JSON_PARSE_ERROR";
+  public static final String E_BILLING_RESPONSE_JSON_PARSE_ERROR =
+      "E_BILLING_RESPONSE_JSON_PARSE_ERROR";
 
   public static final String APPSTORE_UNKNOWN = "UNKNOWN";
   public static final String APPSTORE_GOOGLE = "GOOGLE_PLAY";
@@ -55,8 +49,7 @@ public class DoobooUtils {
       ArrayList<Promise> list;
       if (promises.containsKey(key)) {
         list = promises.get(key);
-      }
-      else {
+      } else {
         list = new ArrayList<>();
         promises.put(key, list);
       }
@@ -81,7 +74,8 @@ public class DoobooUtils {
     }
   }
 
-  public void rejectPromisesForKey(final String key, final String code, final String message, final Exception err) {
+  public void rejectPromisesForKey(
+      final String key, final String code, final String message, final Exception err) {
     try {
       if (promises.containsKey(key)) {
         ArrayList<Promise> list = promises.get(key);
@@ -95,8 +89,6 @@ public class DoobooUtils {
     }
   }
 
-
-
   public WritableMap convertJsonToMap(JSONObject jsonObject) throws JSONException {
     WritableMap map = new WritableNativeMap();
 
@@ -108,13 +100,13 @@ public class DoobooUtils {
         map.putMap(key, convertJsonToMap((JSONObject) value));
       } else if (value instanceof JSONArray) {
         map.putArray(key, convertJsonToArray((JSONArray) value));
-      } else if (value instanceof  Boolean) {
+      } else if (value instanceof Boolean) {
         map.putBoolean(key, (Boolean) value);
-      } else if (value instanceof  Integer) {
+      } else if (value instanceof Integer) {
         map.putInt(key, (Integer) value);
-      } else if (value instanceof  Double) {
+      } else if (value instanceof Double) {
         map.putDouble(key, (Double) value);
-      } else if (value instanceof String)  {
+      } else if (value instanceof String) {
         map.putString(key, (String) value);
       } else {
         map.putString(key, value.toString());
@@ -130,15 +122,15 @@ public class DoobooUtils {
       Object value = jsonArray.get(i);
       if (value instanceof JSONObject) {
         array.pushMap(convertJsonToMap((JSONObject) value));
-      } else if (value instanceof  JSONArray) {
+      } else if (value instanceof JSONArray) {
         array.pushArray(convertJsonToArray((JSONArray) value));
-      } else if (value instanceof  Boolean) {
+      } else if (value instanceof Boolean) {
         array.pushBoolean((Boolean) value);
-      } else if (value instanceof  Integer) {
+      } else if (value instanceof Integer) {
         array.pushInt((Integer) value);
-      } else if (value instanceof  Double) {
+      } else if (value instanceof Double) {
         array.pushDouble((Double) value);
-      } else if (value instanceof String)  {
+      } else if (value instanceof String) {
         array.pushString((String) value);
       } else {
         array.pushString(value.toString());

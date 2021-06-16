@@ -1,27 +1,11 @@
 package com.dooboolab.RNIap;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.util.Log;
-
 import com.android.billingclient.api.BillingClient;
 import com.facebook.react.bridge.ObjectAlreadyConsumedException;
 import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.ReadableMapKeySetIterator;
-import com.facebook.react.bridge.WritableArray;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.WritableNativeArray;
-import com.facebook.react.bridge.WritableNativeMap;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class PlayUtils {
   private static final String TAG = "DoobooUtils";
@@ -36,7 +20,8 @@ public class PlayUtils {
   public static final String E_REMOTE_ERROR = "E_REMOTE_ERROR";
   public static final String E_USER_ERROR = "E_USER_ERROR";
   public static final String E_DEVELOPER_ERROR = "E_DEVELOPER_ERROR";
-  public static final String E_BILLING_RESPONSE_JSON_PARSE_ERROR = "E_BILLING_RESPONSE_JSON_PARSE_ERROR";
+  public static final String E_BILLING_RESPONSE_JSON_PARSE_ERROR =
+      "E_BILLING_RESPONSE_JSON_PARSE_ERROR";
 
   public static final String APPSTORE_UNKNOWN = "UNKNOWN";
   public static final String APPSTORE_GOOGLE = "GOOGLE_PLAY";
@@ -75,11 +60,13 @@ public class PlayUtils {
         break;
       case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
         errorData[0] = E_SERVICE_ERROR;
-        errorData[1] = "The service is unreachable. This may be your internet connection, or the Play Store may be down.";
+        errorData[1] =
+            "The service is unreachable. This may be your internet connection, or the Play Store may be down.";
         break;
       case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
         errorData[0] = E_SERVICE_ERROR;
-        errorData[1] = "Billing is unavailable. This may be a problem with your device, or the Play Store may be down.";
+        errorData[1] =
+            "Billing is unavailable. This may be a problem with your device, or the Play Store may be down.";
         break;
       case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
         errorData[0] = E_ITEM_UNAVAILABLE;
