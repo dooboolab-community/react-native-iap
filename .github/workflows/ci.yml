@@ -16,14 +16,11 @@ jobs:
     - name: Install modules
       run: yarn
 
-    - name: Check linting
-      run: yarn lint
-
     - name: Build typescript & flow
       run: yarn build
 
-    - name: Run Unit Tests
-      run: yarn test
+    - name: Run Validation steps including Linting and Unit Tests
+      run: yarn validate
 
   build_android:
 
@@ -50,8 +47,10 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Install base modules
+      run: yarn
     - name: Install modules
-      run: cd IapExample;yarn build
+      run: cd IapExample;yarn
     - name: Grant execute permission for gradlew in example app
       run: chmod +x IapExample/android/gradlew
     - name: Build with example app with Gradle
