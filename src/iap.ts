@@ -105,7 +105,6 @@ export const endConnection = (): Promise<void> =>
         return RNIapIos.endConnection();
       },
       android: async () => {
-
         return getAndroidModule().endConnection();
       },
     }) || Promise.resolve
@@ -160,7 +159,6 @@ export const flushFailedPurchasesCachedAsPendingAndroid = (): Promise<
 const fillProductsAdditionalData = async (
   products: Array<ProductCommon>,
 ): Promise<Array<ProductCommon>> => {
-  
   // Amazon
   if (iapInstallSourceAndroid === InstallSourceAndroid.AMAZON) {
     // On amazon we must get the user marketplace to detect the currency
