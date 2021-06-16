@@ -9,12 +9,12 @@
     "build": "tsc && flowgen index.d.ts -o index.js.flow",
     "flow": "flow",
     "lint": "eslint src --ext .ts,.tsx",
-    "test": "exit 0",
+    "test": "jest",
     "test:flow": "flow",
     "test:typescript": "tsc --noEmit",
     "tsc:sync": "npx typesync",
     "tsc": "tsc",
-    "validate": "npm run lint && npm run test:typescript && npm run test:flow && npm run test"
+    "validate": "yarn lint && yarn test:typescript && yarn test:flow && yarn test"
   },
   "repository": {
     "type": "git",
@@ -27,10 +27,12 @@
     "billing"
   ],
   "author": "dooboolab",
-  "contributors": [{
-    "name" : "Andres Aguilar",
-    "url" : "https://github.com/andresesfm"
-  }],
+  "contributors": [
+    {
+      "name": "Andres Aguilar",
+      "url": "https://github.com/andresesfm"
+    }
+  ],
   "license": "MIT",
   "peerDependencies": {
     "react": ">=16.13.1",
@@ -40,15 +42,27 @@
     "dooboolab-welcome": "^1.3.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.5",
+    "@babel/preset-react": "^7.14.5",
+    "@babel/preset-typescript": "^7.14.5",
     "@dooboo/eslint-config": "^0.7.2",
+    "@testing-library/jest-native": "^4.0.1",
+    "@testing-library/react-native": "^7.2.0",
     "@types/eslint": "^7.2.10",
+    "@types/jest": "^26.0.23",
     "@types/react": "17.0.5",
     "@types/react-native": "0.64.5",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.26.0",
     "flow-bin": "^0.150.1",
     "flowgen": "^1.14.1",
+    "jest": "^26.6.3",
+    "metro-react-native-babel-preset": "^0.66.0",
     "prettier": "^2.2.1",
+    "react-native": "0.64.2",
+    "ts-jest": "^26.5.6",
     "typescript": "^4.2.4"
   }
 }

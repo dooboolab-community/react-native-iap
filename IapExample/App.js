@@ -123,13 +123,15 @@ class Page extends Component {
 
     purchaseUpdateSubscription = purchaseUpdatedListener(
       async (purchase: InAppPurchase | SubscriptionPurchase) => {
-        console.info("purchase",purchase);
-        const receipt =  purchase.transactionReceipt? purchase.transactionReceipt : purchase.originalJson;
-        console.info(receipt)
+        console.info('purchase', purchase);
+        const receipt = purchase.transactionReceipt
+          ? purchase.transactionReceipt
+          : purchase.originalJson;
+        console.info(receipt);
         if (receipt) {
           try {
             const ackResult = await finishTransaction(purchase);
-            console.info("ackResult",ackResult)
+            console.info('ackResult', ackResult);
           } catch (ackErr) {
             console.warn('ackErr', ackErr);
           }

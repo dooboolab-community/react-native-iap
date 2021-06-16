@@ -105,9 +105,7 @@ export const endConnection = (): Promise<void> =>
         return RNIapIos.endConnection();
       },
       android: async () => {
-        const myRNIapModule = getAndroidModule();
-
-        return myRNIapModule.endConnection();
+        return getAndroidModule().endConnection();
       },
     }) || Promise.resolve
   )();
@@ -161,12 +159,10 @@ export const flushFailedPurchasesCachedAsPendingAndroid = (): Promise<
 const fillProductsAdditionalData = async (
   products: Array<ProductCommon>,
 ): Promise<Array<ProductCommon>> => {
-  const myRNIapModule = getAndroidModule();
-
   // Amazon
   if (iapInstallSourceAndroid === InstallSourceAndroid.AMAZON) {
     // On amazon we must get the user marketplace to detect the currency
-    const user = await myRNIapModule.getUser();
+    const user = await getAndroidModule().getUser();
 
     const currencies = {
       CA: 'CAD',

@@ -60,6 +60,9 @@ tsconfig.tsbuildinfo
 *.d.ts
 *.js
 !IamExample
+!jest.config.js
+!babel.config.js
+!test/mocks/react-native-modules.js
 
 # Don't apply this gitignore for documenattion directory
 !docs/*
