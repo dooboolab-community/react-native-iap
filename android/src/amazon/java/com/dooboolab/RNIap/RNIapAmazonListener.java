@@ -27,29 +27,25 @@ import java.util.Set;
 public class RNIapAmazonListener implements PurchasingListener {
   final String TAG = "RNIapAmazonListener";
 
-  private static final String E_PRODUCT_DATA_RESPONSE_FAILED =
-    "E_PRODUCT_DATA_RESPONSE_FAILED";
+  private static final String E_PRODUCT_DATA_RESPONSE_FAILED = "E_PRODUCT_DATA_RESPONSE_FAILED";
   private static final String E_PRODUCT_DATA_RESPONSE_NOT_SUPPORTED =
-    "E_PRODUCT_DATA_RESPONSE_NOT_SUPPORTED";
+      "E_PRODUCT_DATA_RESPONSE_NOT_SUPPORTED";
 
   private static final String E_PURCHASE_UPDATES_RESPONSE_FAILED =
-    "E_PURCHASE_UPDATES_RESPONSE_FAILED";
+      "E_PURCHASE_UPDATES_RESPONSE_FAILED";
   private static final String E_PURCHASE_UPDATES_RESPONSE_NOT_SUPPORTED =
-    "E_PURCHASE_UPDATES_RESPONSE_NOT_SUPPORTED";
+      "E_PURCHASE_UPDATES_RESPONSE_NOT_SUPPORTED";
 
-  private static final String E_PURCHASE_RESPONSE_FAILED =
-    "E_PURCHASE_RESPONSE_FAILED";
+  private static final String E_PURCHASE_RESPONSE_FAILED = "E_PURCHASE_RESPONSE_FAILED";
   private static final String E_PURCHASE_RESPONSE_ALREADY_PURCHASED =
-    "E_PURCHASE_RESPONSE_ALREADY_PURCHASED";
+      "E_PURCHASE_RESPONSE_ALREADY_PURCHASED";
   private static final String E_PURCHASE_RESPONSE_NOT_SUPPORTED =
-    "E_PURCHASE_RESPONSE_NOT_SUPPORTED";
-  private static final String E_PURCHASE_RESPONSE_INVALID_SKU =
-    "E_PURCHASE_RESPONSE_INVALID_SKU";
+      "E_PURCHASE_RESPONSE_NOT_SUPPORTED";
+  private static final String E_PURCHASE_RESPONSE_INVALID_SKU = "E_PURCHASE_RESPONSE_INVALID_SKU";
 
-  private static final String E_USER_DATA_RESPONSE_FAILED =
-    "E_USER_DATA_RESPONSE_FAILED";
+  private static final String E_USER_DATA_RESPONSE_FAILED = "E_USER_DATA_RESPONSE_FAILED";
   private static final String E_USER_DATA_RESPONSE_NOT_SUPPORTED =
-    "E_USER_DATA_RESPONSE_NOT_SUPPORTED";
+      "E_USER_DATA_RESPONSE_NOT_SUPPORTED";
 
   private final ReactContext reactContext;
   private final List<Product> skus;
@@ -89,12 +85,10 @@ public class RNIapAmazonListener implements PurchasingListener {
           }
 
           ProductType productType = product.getProductType();
-          final String productTypeString = (
-              productType == ProductType.ENTITLED ||
-              productType == ProductType.CONSUMABLE
-            )
-            ? "inapp"
-            : "subs";
+          final String productTypeString =
+              (productType == ProductType.ENTITLED || productType == ProductType.CONSUMABLE)
+                  ? "inapp"
+                  : "subs";
           Number priceNumber = 0.00;
           String priceString = product.getPrice();
           try {
@@ -103,10 +97,8 @@ public class RNIapAmazonListener implements PurchasingListener {
             }
           } catch (NumberFormatException e) {
             Log.w(
-              TAG,
-              "onProductDataResponse: Failed to parse price for product: " +
-              product.getSku()
-            );
+                TAG,
+                "onProductDataResponse: Failed to parse price for product: " + product.getSku());
           }
           WritableMap item = Arguments.createMap();
           CoinsReward coinsReward = product.getCoinsReward();
@@ -119,48 +111,38 @@ public class RNIapAmazonListener implements PurchasingListener {
           item.putString("iconUrl", product.getSmallIconUrl());
           item.putString("originalJson", product.toString());
           item.putString("originalPrice", priceString);
-          //item.putString("userMarketplaceAmazon", marketplace);
+          // item.putString("userMarketplaceAmazon", marketplace);
           if (coinsReward != null) {
             item.putInt("coinsRewardAmountAmazon", coinsReward.getAmount());
           }
           items.pushMap(item);
         }
 
-        DoobooUtils
-          .getInstance()
-          .resolvePromisesForKey(
-            RNIapAmazonModule.PROMISE_GET_PRODUCT_DATA,
-            items
-          );
+        DoobooUtils.getInstance()
+            .resolvePromisesForKey(RNIapAmazonModule.PROMISE_GET_PRODUCT_DATA, items);
         break;
       case FAILED:
-        DoobooUtils
-          .getInstance()
-          .rejectPromisesForKey(
-            RNIapAmazonModule.PROMISE_GET_PRODUCT_DATA,
-            E_PRODUCT_DATA_RESPONSE_FAILED,
-            null,
-            null
-          );
+        DoobooUtils.getInstance()
+            .rejectPromisesForKey(
+                RNIapAmazonModule.PROMISE_GET_PRODUCT_DATA,
+                E_PRODUCT_DATA_RESPONSE_FAILED,
+                null,
+                null);
         break;
       case NOT_SUPPORTED:
-        DoobooUtils
-          .getInstance()
-          .rejectPromisesForKey(
-            RNIapAmazonModule.PROMISE_GET_PRODUCT_DATA,
-            E_PRODUCT_DATA_RESPONSE_NOT_SUPPORTED,
-            null,
-            null
-          );
+        DoobooUtils.getInstance()
+            .rejectPromisesForKey(
+                RNIapAmazonModule.PROMISE_GET_PRODUCT_DATA,
+                E_PRODUCT_DATA_RESPONSE_NOT_SUPPORTED,
+                null,
+                null);
         break;
     }
   }
 
   @Override
-  public void onPurchaseUpdatesResponse(
-    final PurchaseUpdatesResponse response
-  ) {
-    //Info for potential error reporting
+  public void onPurchaseUpdatesResponse(final PurchaseUpdatesResponse response) {
+    // Info for potential error reporting
     String debugMessage = null;
     String errorCode = DoobooUtils.E_UNKNOWN;
     WritableMap error = Arguments.createMap();
@@ -186,12 +168,10 @@ public class RNIapAmazonListener implements PurchasingListener {
           sendEvent(reactContext, "purchase-updated", item);
 
           ProductType productType = receipt.getProductType();
-          final String productTypeString = (
-              productType == ProductType.ENTITLED ||
-              productType == ProductType.CONSUMABLE
-            )
-            ? "inapp"
-            : "subs";
+          final String productTypeString =
+              (productType == ProductType.ENTITLED || productType == ProductType.CONSUMABLE)
+                  ? "inapp"
+                  : "subs";
           if (productTypeString.equals(availableItemsType)) {
             availableItems.pushMap(promiseItem);
           }
@@ -200,33 +180,21 @@ public class RNIapAmazonListener implements PurchasingListener {
           PurchasingService.getPurchaseUpdates(false);
         } else {
           if (purchases.size() > 0 && promiseItem != null) {
-            DoobooUtils
-              .getInstance()
-              .resolvePromisesForKey(
-                RNIapAmazonModule.PROMISE_BUY_ITEM,
-                promiseItem
-              );
+            DoobooUtils.getInstance()
+                .resolvePromisesForKey(RNIapAmazonModule.PROMISE_BUY_ITEM, promiseItem);
           }
-          DoobooUtils
-            .getInstance()
-            .resolvePromisesForKey(
-              RNIapAmazonModule.PROMISE_QUERY_PURCHASES,
-              true
-            );
+          DoobooUtils.getInstance()
+              .resolvePromisesForKey(RNIapAmazonModule.PROMISE_QUERY_PURCHASES, true);
 
-          DoobooUtils
-            .getInstance()
-            .resolvePromisesForKey(
-              RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS,
-              availableItems
-            );
+          DoobooUtils.getInstance()
+              .resolvePromisesForKey(
+                  RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS, availableItems);
           availableItems = new WritableNativeArray();
           availableItemsType = null;
         }
         break;
       case FAILED:
-        debugMessage =
-          "An unknown or unexpected error has occured. Please try again later.";
+        debugMessage = "An unknown or unexpected error has occured. Please try again later.";
         errorCode = DoobooUtils.E_UNKNOWN;
         error.putInt("responseCode", 0);
         error.putString("debugMessage", debugMessage);
@@ -234,23 +202,13 @@ public class RNIapAmazonListener implements PurchasingListener {
         error.putString("message", debugMessage);
         sendEvent(reactContext, "purchase-error", error);
 
-        DoobooUtils
-          .getInstance()
-          .rejectPromisesForKey(
-            RNIapAmazonModule.PROMISE_QUERY_PURCHASES,
-            errorCode,
-            debugMessage,
-            null
-          );
+        DoobooUtils.getInstance()
+            .rejectPromisesForKey(
+                RNIapAmazonModule.PROMISE_QUERY_PURCHASES, errorCode, debugMessage, null);
 
-        DoobooUtils
-          .getInstance()
-          .rejectPromisesForKey(
-            RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS,
-            errorCode,
-            debugMessage,
-            null
-          );
+        DoobooUtils.getInstance()
+            .rejectPromisesForKey(
+                RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS, errorCode, debugMessage, null);
         availableItems = new WritableNativeArray();
         availableItemsType = null;
         break;
@@ -263,23 +221,13 @@ public class RNIapAmazonListener implements PurchasingListener {
         error.putString("message", debugMessage);
         sendEvent(reactContext, "purchase-error", error);
 
-        DoobooUtils
-          .getInstance()
-          .rejectPromisesForKey(
-            RNIapAmazonModule.PROMISE_QUERY_PURCHASES,
-            errorCode,
-            debugMessage,
-            null
-          );
+        DoobooUtils.getInstance()
+            .rejectPromisesForKey(
+                RNIapAmazonModule.PROMISE_QUERY_PURCHASES, errorCode, debugMessage, null);
 
-        DoobooUtils
-          .getInstance()
-          .rejectPromisesForKey(
-            RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS,
-            errorCode,
-            debugMessage,
-            null
-          );
+        DoobooUtils.getInstance()
+            .rejectPromisesForKey(
+                RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS, errorCode, debugMessage, null);
         availableItems = new WritableNativeArray();
         availableItemsType = null;
         break;
@@ -292,7 +240,7 @@ public class RNIapAmazonListener implements PurchasingListener {
     final String userId = response.getUserData().getUserId();
     final PurchaseResponse.RequestStatus status = response.getRequestStatus();
 
-    //Info for potential error reporting
+    // Info for potential error reporting
     String debugMessage = null;
     String errorCode = DoobooUtils.E_UNKNOWN;
     WritableMap error = Arguments.createMap();
@@ -315,12 +263,8 @@ public class RNIapAmazonListener implements PurchasingListener {
 
         sendEvent(reactContext, "purchase-updated", item);
 
-        DoobooUtils
-          .getInstance()
-          .resolvePromisesForKey(
-            RNIapAmazonModule.PROMISE_BUY_ITEM,
-            promiseItem
-          );
+        DoobooUtils.getInstance()
+            .resolvePromisesForKey(RNIapAmazonModule.PROMISE_BUY_ITEM, promiseItem);
         break;
       case ALREADY_PURCHASED:
         debugMessage = "You already own this item.";
@@ -331,18 +275,12 @@ public class RNIapAmazonListener implements PurchasingListener {
         error.putString("message", debugMessage);
         sendEvent(reactContext, "purchase-error", error);
 
-        DoobooUtils
-          .getInstance()
-          .rejectPromisesForKey(
-            RNIapAmazonModule.PROMISE_BUY_ITEM,
-            errorCode,
-            debugMessage,
-            null
-          );
+        DoobooUtils.getInstance()
+            .rejectPromisesForKey(
+                RNIapAmazonModule.PROMISE_BUY_ITEM, errorCode, debugMessage, null);
         break;
       case FAILED:
-        debugMessage =
-          "An unknown or unexpected error has occurred. Please try again later.";
+        debugMessage = "An unknown or unexpected error has occurred. Please try again later.";
         errorCode = DoobooUtils.E_UNKNOWN;
         error.putInt("responseCode", 0);
         error.putString("debugMessage", debugMessage);
@@ -350,14 +288,9 @@ public class RNIapAmazonListener implements PurchasingListener {
         error.putString("message", debugMessage);
         sendEvent(reactContext, "purchase-error", error);
 
-        DoobooUtils
-          .getInstance()
-          .rejectPromisesForKey(
-            RNIapAmazonModule.PROMISE_BUY_ITEM,
-            errorCode,
-            debugMessage,
-            null
-          );
+        DoobooUtils.getInstance()
+            .rejectPromisesForKey(
+                RNIapAmazonModule.PROMISE_BUY_ITEM, errorCode, debugMessage, null);
         break;
       case INVALID_SKU:
         debugMessage = "That item is unavailable.";
@@ -368,14 +301,9 @@ public class RNIapAmazonListener implements PurchasingListener {
         error.putString("message", debugMessage);
         sendEvent(reactContext, "purchase-error", error);
 
-        DoobooUtils
-          .getInstance()
-          .rejectPromisesForKey(
-            RNIapAmazonModule.PROMISE_BUY_ITEM,
-            errorCode,
-            debugMessage,
-            null
-          );
+        DoobooUtils.getInstance()
+            .rejectPromisesForKey(
+                RNIapAmazonModule.PROMISE_BUY_ITEM, errorCode, debugMessage, null);
         break;
       case NOT_SUPPORTED:
         debugMessage = "This feature is not available on your device.";
@@ -386,14 +314,9 @@ public class RNIapAmazonListener implements PurchasingListener {
         error.putString("message", debugMessage);
         sendEvent(reactContext, "purchase-error", error);
 
-        DoobooUtils
-          .getInstance()
-          .rejectPromisesForKey(
-            RNIapAmazonModule.PROMISE_BUY_ITEM,
-            errorCode,
-            debugMessage,
-            null
-          );
+        DoobooUtils.getInstance()
+            .rejectPromisesForKey(
+                RNIapAmazonModule.PROMISE_BUY_ITEM, errorCode, debugMessage, null);
         break;
     }
   }
@@ -409,40 +332,29 @@ public class RNIapAmazonListener implements PurchasingListener {
         item.putString("userMarketplaceAmazon", userData.getMarketplace());
         item.putString("userJsonAmazon", userData.toJSON().toString());
 
-        DoobooUtils
-          .getInstance()
-          .resolvePromisesForKey(RNIapAmazonModule.PROMISE_GET_USER_DATA, item);
+        DoobooUtils.getInstance()
+            .resolvePromisesForKey(RNIapAmazonModule.PROMISE_GET_USER_DATA, item);
         break;
       case NOT_SUPPORTED:
-        DoobooUtils
-          .getInstance()
-          .rejectPromisesForKey(
-            RNIapAmazonModule.PROMISE_GET_USER_DATA,
-            E_USER_DATA_RESPONSE_NOT_SUPPORTED,
-            null,
-            null
-          );
+        DoobooUtils.getInstance()
+            .rejectPromisesForKey(
+                RNIapAmazonModule.PROMISE_GET_USER_DATA,
+                E_USER_DATA_RESPONSE_NOT_SUPPORTED,
+                null,
+                null);
         break;
       case FAILED:
-        DoobooUtils
-          .getInstance()
-          .rejectPromisesForKey(
-            RNIapAmazonModule.PROMISE_GET_USER_DATA,
-            E_USER_DATA_RESPONSE_FAILED,
-            null,
-            null
-          );
+        DoobooUtils.getInstance()
+            .rejectPromisesForKey(
+                RNIapAmazonModule.PROMISE_GET_USER_DATA, E_USER_DATA_RESPONSE_FAILED, null, null);
         break;
     }
   }
 
   private void sendEvent(
-    ReactContext reactContext,
-    String eventName,
-    @Nullable WritableMap params
-  ) {
+      ReactContext reactContext, String eventName, @Nullable WritableMap params) {
     reactContext
-      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-      .emit(eventName, params);
+        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+        .emit(eventName, params);
   }
 }
