@@ -1,5 +1,8 @@
 ## Changelogs
 
+## 6.2.2
+Fixe java lint errors and add CI [#1380](https://github.com/dooboolab/react-native-iap/pull/1380)
+
 ## 6.2.1
 Clean up internal code that detects GooglePlay vs Amazon modules[#1374](https://github.com/dooboolab/react-native-iap/pull/1374)
 
