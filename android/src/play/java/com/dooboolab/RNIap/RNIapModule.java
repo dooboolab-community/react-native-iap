@@ -65,7 +65,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   public RNIapModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
-    this.skus = new ArrayList<SkuDetails>();
+    this.skus = new ArrayList<>();
     reactContext.addLifecycleEventListener(lifecycleEventListener);
   }
 
@@ -199,21 +199,13 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
   @ReactMethod
   public void refreshItems(final Promise promise) {
-    //    Purchase.PurchasesResult purchasesResult =
-    // billingClient.queryPurchases(BillingClient.SkuType.INAPP);
-    //    purchasesResult.getPurchasesList();
     ensureConnection(
         promise,
         new Runnable() {
           @Override
           public void run() {
-            final WritableNativeArray array = new WritableNativeArray();
             Purchase.PurchasesResult result =
                 billingClient.queryPurchases(BillingClient.SkuType.INAPP);
-            if (result == null) {
-              promise.reject("refreshItem", "No results for query");
-              return;
-            }
             final List<Purchase> purchases = result.getPurchasesList();
             if (purchases == null || purchases.size() == 0) {
               promise.reject("refreshItem", "No purchases found");
@@ -232,14 +224,8 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         new Runnable() {
           @Override
           public void run() {
-            final WritableNativeArray array = new WritableNativeArray();
             Purchase.PurchasesResult result =
                 billingClient.queryPurchases(BillingClient.SkuType.INAPP);
-            if (result == null) {
-              // No results for query
-              promise.resolve(false);
-              return;
-            }
             final List<Purchase> purchases = result.getPurchasesList();
             if (purchases == null) {
               // No purchases found
