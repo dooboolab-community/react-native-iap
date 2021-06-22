@@ -621,17 +621,21 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
   @Override
   public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> purchases) {
-    if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+    final int responseCode = billingResult.getResponseCode();
+    if (responseCode != BillingClient.BillingResponseCode.OK) {
       WritableMap error = Arguments.createMap();
-      error.putInt("responseCode", billingResult.getResponseCode());
+      error.putInt("responseCode", responseCode);
       error.putString("debugMessage", billingResult.getDebugMessage());
       String[] errorData =
-          PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+          PlayUtils.getInstance().getBillingResponseData(responseCode);
       error.putString("code", errorData[0]);
       error.putString("message", errorData[1]);
       sendEvent(reactContext, "purchase-error", error);
-      PlayUtils.getInstance()
-          .rejectPromisesWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
+
+      if (responseCode != BillingClient.BillingResponseCode.USER_CANCELED) {
+        PlayUtils.getInstance()
+            .rejectPromisesWithBillingError(PROMISE_BUY_ITEM, responseCode);
+      }
       return;
     }
 
