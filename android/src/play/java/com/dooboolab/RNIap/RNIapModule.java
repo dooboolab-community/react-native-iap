@@ -45,27 +45,26 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
   private final List<SkuDetails> skus;
 
-  private final LifecycleEventListener lifecycleEventListener =
-      new LifecycleEventListener() {
-        @Override
-        public void onHostResume() {}
-
-        @Override
-        public void onHostPause() {}
-
-        @Override
-        public void onHostDestroy() {
-          if (billingClientCache != null) {
-            billingClientCache.endConnection();
-            billingClientCache = null;
-          }
-        }
-      };
-
   public RNIapModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
     this.skus = new ArrayList<>();
+    LifecycleEventListener lifecycleEventListener =
+        new LifecycleEventListener() {
+          @Override
+          public void onHostResume() {}
+
+          @Override
+          public void onHostPause() {}
+
+          @Override
+          public void onHostDestroy() {
+            if (billingClientCache != null) {
+              billingClientCache.endConnection();
+              billingClientCache = null;
+            }
+          }
+        };
     reactContext.addLifecycleEventListener(lifecycleEventListener);
   }
 
@@ -79,8 +78,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   }
 
   private void ensureConnection(final Promise promise, final EnsureConnectionCallback callback) {
-    if (billingClientCache != null && billingClientCache.isReady()) {
-      callback.run(billingClientCache);
+    final BillingClient billingClient = billingClientCache;
+    if (billingClient != null && billingClient.isReady()) {
+      callback.run(billingClient);
       return;
     }
 
@@ -93,8 +93,9 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             if (!bSetupCallbackConsumed) {
               bSetupCallbackConsumed = true;
               if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                if (billingClientCache != null && billingClientCache.isReady()) {
-                  callback.run(billingClientCache);
+                final BillingClient billingClient = billingClientCache;
+                if (billingClient != null && billingClient.isReady()) {
+                  callback.run(billingClient);
                 }
               } else {
                 WritableMap error = Arguments.createMap();
@@ -279,9 +280,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
                   return;
                 }
 
-                for (SkuDetails sku : skuDetailsList) {
-                  if (!skus.contains(sku)) {
-                    skus.add(sku);
+                if (skuDetailsList != null) {
+                  for (SkuDetails sku : skuDetailsList) {
+                    if (!skus.contains(sku)) {
+                      skus.add(sku);
+                    }
                   }
                 }
                 WritableNativeArray items = new WritableNativeArray();
