@@ -32,6 +32,8 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +70,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     reactContext.addLifecycleEventListener(lifecycleEventListener);
   }
 
+  @NonNull
   @Override
   public String getName() {
     return "RNIapModule";
@@ -83,52 +86,26 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       callback.run(billingClient);
       return;
     }
-
-    final BillingClientStateListener billingClientStateListener =
-        new BillingClientStateListener() {
-          private boolean bSetupCallbackConsumed = false;
-
-          @Override
-          public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
-            if (!bSetupCallbackConsumed) {
-              bSetupCallbackConsumed = true;
-              if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                final BillingClient billingClient = billingClientCache;
-                if (billingClient != null && billingClient.isReady()) {
-                  callback.run(billingClient);
-                }
-              } else {
-                WritableMap error = Arguments.createMap();
-                error.putInt("responseCode", billingResult.getResponseCode());
-                error.putString("debugMessage", billingResult.getDebugMessage());
-                String[] errorData =
-                    PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
-                error.putString("code", errorData[0]);
-                error.putString("message", errorData[1]);
-                sendEvent(reactContext, "purchase-error", error);
-                PlayUtils.getInstance()
-                    .rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
-              }
-            }
-          }
-
-          @Override
-          public void onBillingServiceDisconnected() {
-            Log.d(TAG, "billing client disconnected");
-          }
-        };
-
-    try {
-      billingClientCache =
-          BillingClient.newBuilder(reactContext).enablePendingPurchases().setListener(this).build();
-      billingClientCache.startConnection(billingClientStateListener);
-    } catch (Exception e) {
-      promise.reject(DoobooUtils.E_NOT_PREPARED, e.getMessage(), e);
-    }
+    promise.reject(DoobooUtils.E_NOT_PREPARED, "Not initialized, Please call initConnection()");
   }
 
   @ReactMethod
   public void initConnection(final Promise promise) {
+    if (billingClientCache != null) {
+      promise.reject(
+          DoobooUtils.E_ALREADY_PREPARED,
+          "Already initialized, you should only call initConnection() once when your app starts");
+      return;
+    }
+
+    if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(reactContext)
+        != ConnectionResult.SUCCESS) {
+      promise.reject(
+          PlayUtils.E_PLAY_SERVICES_UNAVAILABLE,
+          "Google Play Services are not available on this device");
+      return;
+    }
+
     billingClientCache =
         BillingClient.newBuilder(reactContext).enablePendingPurchases().setListener(this).build();
     billingClientCache.startConnection(
