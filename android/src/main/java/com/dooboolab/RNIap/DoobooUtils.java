@@ -1,6 +1,7 @@
 package com.dooboolab.RNIap;
 
 import android.util.Log;
+import androidx.annotation.Nullable;
 import com.facebook.react.bridge.ObjectAlreadyConsumedException;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
@@ -32,10 +33,6 @@ public class DoobooUtils {
   public static final String E_DEVELOPER_ERROR = "E_DEVELOPER_ERROR";
   public static final String E_BILLING_RESPONSE_JSON_PARSE_ERROR =
       "E_BILLING_RESPONSE_JSON_PARSE_ERROR";
-
-  public static final String APPSTORE_UNKNOWN = "UNKNOWN";
-  public static final String APPSTORE_GOOGLE = "GOOGLE_PLAY";
-  public static final String APPSTORE_AMAZON = "AMAZON";
 
   private final HashMap<String, ArrayList<Promise>> promises = new HashMap<>();
   private static final DoobooUtils instance = new DoobooUtils();
@@ -75,7 +72,7 @@ public class DoobooUtils {
   }
 
   public void rejectPromisesForKey(
-      final String key, final String code, final String message, final Exception err) {
+      final String key, final String code, final String message, final @Nullable Exception err) {
     try {
       if (promises.containsKey(key)) {
         ArrayList<Promise> list = promises.get(key);
