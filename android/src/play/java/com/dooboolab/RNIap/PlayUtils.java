@@ -2,10 +2,7 @@ package com.dooboolab.RNIap;
 
 import android.util.Log;
 import com.android.billingclient.api.BillingClient;
-import com.facebook.react.bridge.ObjectAlreadyConsumedException;
 import com.facebook.react.bridge.Promise;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PlayUtils {
   private static final String TAG = "DoobooUtils";
@@ -23,11 +20,6 @@ public class PlayUtils {
   public static final String E_BILLING_RESPONSE_JSON_PARSE_ERROR =
       "E_BILLING_RESPONSE_JSON_PARSE_ERROR";
 
-  public static final String APPSTORE_UNKNOWN = "UNKNOWN";
-  public static final String APPSTORE_GOOGLE = "GOOGLE_PLAY";
-  public static final String APPSTORE_AMAZON = "AMAZON";
-
-  private HashMap<String, ArrayList<Promise>> promises = new HashMap<>();
   private static PlayUtils instance = new PlayUtils();
 
   public static PlayUtils getInstance() {
@@ -94,16 +86,7 @@ public class PlayUtils {
   }
 
   public void rejectPromisesWithBillingError(final String key, final int responseCode) {
-    try {
-      if (promises.containsKey(key)) {
-        ArrayList<Promise> list = promises.get(key);
-        for (Promise promise : list) {
-          rejectPromiseWithBillingError(promise, responseCode);
-        }
-        promises.remove(key);
-      }
-    } catch (ObjectAlreadyConsumedException oce) {
-      Log.e(TAG, oce.getMessage());
-    }
+    String[] errorData = getBillingResponseData(responseCode);
+    DoobooUtils.getInstance().rejectPromisesForKey(key, errorData[0], errorData[1], null);
   }
 }
