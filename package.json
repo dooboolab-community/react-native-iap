@@ -1,6 +1,6 @@
 {
   "name": "react-native-iap",
-  "version": "6.2.2",
+  "version": "6.2.3",
   "description": "React Native In App Purchase Module.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dooboolab/react-native-iap"
+    "url": "https://github.com/dooboolab/react-native-iap"
   },
   "keywords": [
     "react-native",

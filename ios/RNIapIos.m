@@ -461,9 +461,12 @@ RCT_EXPORT_METHOD(presentCodeRedemptionSheet:(RCTPromiseResolveBlock)resolve
                                              ];
                         [self sendEventWithName:@"purchase-error" body:err];
                     }
-                    [self rejectPromisesForKey:transaction.payment.productIdentifier code:[self standardErrorCode:(int)transaction.error.code]
-                                       message:transaction.error.localizedDescription
-                                         error:transaction.error];
+
+                    if (transaction.error.code != SKErrorPaymentCancelled) {
+                        [self rejectPromisesForKey:transaction.payment.productIdentifier code:[self standardErrorCode:(int)transaction.error.code]
+                                        message:transaction.error.localizedDescription
+                                            error:transaction.error];
+                    }
                 });
                 break;
             }
