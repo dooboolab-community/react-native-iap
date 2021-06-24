@@ -1,4 +1,5 @@
 import * as Android from './types/android';
+import * as Amazon from './types/amazon';
 import * as Apple from './types/apple';
 
 import {
@@ -696,7 +697,9 @@ export const validateReceiptIos = async (
 };
 
 /**
- * Validate receipt for Android.
+ * Validate receipt for Android. NOTE: This method is here for debugging purposes only. Including
+ * your access token in the binary you ship to users is potentially dangerous. 
+ * Use server side validation instead for your production builds
  * @param {string} packageName package name of your app.
  * @param {string} productId product id for your in app product.
  * @param {string} productToken token for your purchase.
@@ -717,6 +720,40 @@ export const validateReceiptAndroid = async (
     'https://androidpublisher.googleapis.com/androidpublisher/v3/applications' +
     `/${packageName}/purchases/${type}/${productId}` +
     `/tokens/${productToken}?access_token=${accessToken}`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok)
+    throw Object.assign(new Error(response.statusText), {
+      statusCode: response.status,
+    });
+
+  return response.json();
+};
+
+/**
+ * Validate receipt for Amazon. NOTE: This method is here for debugging purposes only. Including
+ * your developer secret in the binary you ship to users is potentially dangerous. 
+ * Use server side validation instead for your production builds
+ * @param {string} developerSecret: from the Amazon developer console.
+ * @param {string} userId who purchased the item.
+ * @param {string} receiptId long obfuscated string returned when purchasing the item
+ * @param {boolean} useSandbox Defaults to true, use sandbox environment or production.
+ * @returns {Promise<object>}
+ */
+export const validateReceiptAmazon = async (
+  developerSecret: string,
+  userId: string,
+  receiptId: string,
+  useSandbox: boolean = true,
+): Promise<Amazon.ReceiptType> => {
+  const sandoboxUrl = useSandbox ? 'sandbox/' : '';
+  const url = `https://appstore-sdk.amazon.com/${sandoboxUrl}version/1.0/verifyReceiptId/developer/${developerSecret}/user/${userId}/receiptId/${receiptId}`;
 
   const response = await fetch(url, {
     method: 'GET',
