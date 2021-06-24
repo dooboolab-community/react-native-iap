@@ -5,6 +5,7 @@ import * as Apple from './types/apple';
 import {
   DeviceEventEmitter,
   EmitterSubscription,
+  Linking,
   NativeEventEmitter,
   NativeModules,
   Platform,
@@ -560,6 +561,22 @@ export const consumePurchaseAndroid = (
       android: async () => {
         return getAndroidModule().consumeProduct(token, developerPayload);
       },
+    }) || Promise.resolve
+  )();
+
+/**
+ * Deep link to subscriptions screen on Android. No-op on iOS.
+ * @param {string} sku The product's SKU (on Android)
+ * @returns {Promise<void>}
+ */
+export const deepLinkToSubscriptionsAndroid = (sku: string): Promise<void> =>
+  (
+    Platform.select({
+      ios: async () => Promise.resolve(),
+      android: async () =>
+        Linking.openURL(
+          `https://play.google.com/store/account/subscriptions?package=${RNIapModule.getPackageName()}&sku=${sku}`,
+        ),
     }) || Promise.resolve
   )();
 
