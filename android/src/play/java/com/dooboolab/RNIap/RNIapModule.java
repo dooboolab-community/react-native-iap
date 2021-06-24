@@ -700,7 +700,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
   @ReactMethod
   public String getPackageName() {
-    return getReactApplicationContext().getOpPackageName();
+    return getReactApplicationContext().getPackageName();
   }
 
   private void sendEvent(
