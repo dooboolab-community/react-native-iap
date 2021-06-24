@@ -566,9 +566,9 @@ export const consumePurchaseAndroid = (
 /**
  * Should Add Store Payment (iOS only)
  *   Indicates the the App Store purchase should continue from the app instead of the App Store.
- * @returns {Promise<Product>}
+ * @returns {Promise<string>} productId of the promoted product
  */
-export const getPromotedProductIOS = (): Promise<Product> =>
+export const getPromotedProductIOS = (): Promise<string> =>
   (
     Platform.select({
       ios: async () => {
