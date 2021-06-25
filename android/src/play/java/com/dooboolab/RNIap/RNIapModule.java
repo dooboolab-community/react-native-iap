@@ -92,18 +92,23 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   @ReactMethod
   public void initConnection(final Promise promise) {
     if (billingClientCache != null) {
-      promise.reject(
-          DoobooUtils.E_ALREADY_PREPARED,
+      Log.i(
+          TAG,
           "Already initialized, you should only call initConnection() once when your app starts");
-      return;
+      //      promise.reject(
+      //          DoobooUtils.E_ALREADY_PREPARED,
+      //          "Already initialized, you should only call initConnection() once when your app
+      // starts");
+      //      return;
     }
 
     if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(reactContext)
         != ConnectionResult.SUCCESS) {
-      promise.reject(
-          PlayUtils.E_PLAY_SERVICES_UNAVAILABLE,
-          "Google Play Services are not available on this device");
-      return;
+      Log.i(TAG, "Google Play Services are not available on this device");
+      //      promise.reject(
+      //          PlayUtils.E_PLAY_SERVICES_UNAVAILABLE,
+      //          "Google Play Services are not available on this device");
+      //      return;
     }
 
     billingClientCache =
@@ -342,12 +347,13 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
               item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
               item.putString("packageNameAndroid", purchase.getPackageName());
-              item.putString(
-                  "obfuscatedAccountIdAndroid",
-                  purchase.getAccountIdentifiers().getObfuscatedAccountId());
-              item.putString(
-                  "obfuscatedProfileIdAndroid",
-                  purchase.getAccountIdentifiers().getObfuscatedProfileId());
+              AccountIdentifiers accountIdentifiers = purchase.getAccountIdentifiers();
+              if (accountIdentifiers != null) {
+                item.putString(
+                    "obfuscatedAccountIdAndroid", accountIdentifiers.getObfuscatedAccountId());
+                item.putString(
+                    "obfuscatedProfileIdAndroid", accountIdentifiers.getObfuscatedProfileId());
+              }
 
               if (type.equals(BillingClient.SkuType.SUBS)) {
                 item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
@@ -374,7 +380,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               new PurchaseHistoryResponseListener() {
                 @Override
                 public void onPurchaseHistoryResponse(
-                    BillingResult billingResult,
+                    @NonNull BillingResult billingResult,
                     List<PurchaseHistoryRecord> purchaseHistoryRecordList) {
                   if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
                     PlayUtils.getInstance()
@@ -501,6 +507,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
           String[] errorData =
               PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+          Log.i(TAG, errorData[0] + ":" + errorData[1]);
         });
   }
 
