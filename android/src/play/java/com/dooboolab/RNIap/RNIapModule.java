@@ -189,7 +189,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     ensureConnection(
         promise,
         billingClient -> {
-          final WritableNativeArray array = new WritableNativeArray();
           Purchase.PurchasesResult result =
               billingClient.queryPurchases(BillingClient.SkuType.INAPP);
           final List<Purchase> purchases = result.getPurchasesList();
@@ -654,6 +653,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   @ReactMethod
   public void startListening(final Promise promise) {
     sendUnconsumedPurchases(promise);
+  }
+
+  @ReactMethod
+  public String getPackageName() {
+    return getReactApplicationContext().getPackageName();
   }
 
   private void sendEvent(

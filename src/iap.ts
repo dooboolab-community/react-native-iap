@@ -1,9 +1,11 @@
 import * as Android from './types/android';
+import * as Amazon from './types/amazon';
 import * as Apple from './types/apple';
 
 import {
   DeviceEventEmitter,
   EmitterSubscription,
+  Linking,
   NativeEventEmitter,
   NativeModules,
   Platform,
@@ -353,14 +355,14 @@ export const requestPurchase = (
 
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
- * @param {string} sku The product's sku/ID
+ * @param {string} [sku] The product's sku/ID
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [oldSkuAndroid] SKU that the user is upgrading or downgrading from.
  * @param {string} [purchaseTokenAndroid] purchaseToken that the user is upgrading or downgrading from (Android).
+ * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
  * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
- * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
- * @returns {Promise<void>}
+ * @returns {Promise<SubscriptionPurchase | null>} Promise resolves to null when using proratioModesAndroid=DEFERRED, and to a SubscriptionPurchase otherwise
  */
 export const requestSubscription = (
   sku: string,
@@ -370,7 +372,7 @@ export const requestSubscription = (
   prorationModeAndroid?: ProrationModesAndroid,
   obfuscatedAccountIdAndroid?: string,
   obfuscatedProfileIdAndroid?: string,
-): Promise<SubscriptionPurchase> =>
+): Promise<SubscriptionPurchase | null> =>
   (
     Platform.select({
       ios: async () => {
@@ -563,11 +565,27 @@ export const consumePurchaseAndroid = (
   )();
 
 /**
+ * Deep link to subscriptions screen on Android. No-op on iOS.
+ * @param {string} sku The product's SKU (on Android)
+ * @returns {Promise<void>}
+ */
+export const deepLinkToSubscriptionsAndroid = (sku: string): Promise<void> =>
+  (
+    Platform.select({
+      ios: async () => Promise.resolve(),
+      android: async () =>
+        Linking.openURL(
+          `https://play.google.com/store/account/subscriptions?package=${RNIapModule.getPackageName()}&sku=${sku}`,
+        ),
+    }) || Promise.resolve
+  )();
+
+/**
  * Should Add Store Payment (iOS only)
  *   Indicates the the App Store purchase should continue from the app instead of the App Store.
- * @returns {Promise<Product>}
+ * @returns {Promise<Product | null>} promoted product
  */
-export const getPromotedProductIOS = (): Promise<Product> =>
+export const getPromotedProductIOS = (): Promise<Product | null> =>
   (
     Platform.select({
       ios: async () => {
@@ -696,7 +714,9 @@ export const validateReceiptIos = async (
 };
 
 /**
- * Validate receipt for Android.
+ * Validate receipt for Android. NOTE: This method is here for debugging purposes only. Including
+ * your access token in the binary you ship to users is potentially dangerous.
+ * Use server side validation instead for your production builds
  * @param {string} packageName package name of your app.
  * @param {string} productId product id for your in app product.
  * @param {string} productToken token for your purchase.
@@ -717,6 +737,40 @@ export const validateReceiptAndroid = async (
     'https://androidpublisher.googleapis.com/androidpublisher/v3/applications' +
     `/${packageName}/purchases/${type}/${productId}` +
     `/tokens/${productToken}?access_token=${accessToken}`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok)
+    throw Object.assign(new Error(response.statusText), {
+      statusCode: response.status,
+    });
+
+  return response.json();
+};
+
+/**
+ * Validate receipt for Amazon. NOTE: This method is here for debugging purposes only. Including
+ * your developer secret in the binary you ship to users is potentially dangerous.
+ * Use server side validation instead for your production builds
+ * @param {string} developerSecret: from the Amazon developer console.
+ * @param {string} userId who purchased the item.
+ * @param {string} receiptId long obfuscated string returned when purchasing the item
+ * @param {boolean} useSandbox Defaults to true, use sandbox environment or production.
+ * @returns {Promise<object>}
+ */
+export const validateReceiptAmazon = async (
+  developerSecret: string,
+  userId: string,
+  receiptId: string,
+  useSandbox: boolean = true,
+): Promise<Amazon.ReceiptType> => {
+  const sandoboxUrl = useSandbox ? 'sandbox/' : '';
+  const url = `https://appstore-sdk.amazon.com/${sandoboxUrl}version/1.0/verifyReceiptId/developer/${developerSecret}/user/${userId}/receiptId/${receiptId}`;
 
   const response = await fetch(url, {
     method: 'GET',
