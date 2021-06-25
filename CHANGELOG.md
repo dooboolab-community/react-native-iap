@@ -1,5 +1,18 @@
 ## Changelogs
 
+## 6.2.4
+
+[Feature]
+* Implement deeplinking to subscriptins for Android (#1394)
+* Implement requested client-side validation for amazon purchases (#1392)
+
+[Regression]
+* Fix regression on return type (#1393)
+* Fix promise resolving logic #1390 
+
+[Documentation]
+* Adds documentation to Android deferred proration (#1387)
+* Update URL in package.json (#1386)
 
 ## 6.2.3
 Fix an unnecessary error when canceling a purchase [#1385](https://github.com/dooboolab/react-native-iap/pull/1385).
