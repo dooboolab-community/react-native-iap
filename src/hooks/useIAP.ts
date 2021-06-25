@@ -134,11 +134,11 @@ export function useIAP(): IAP_STATUS {
       promotedProductsSubscription = IAPEmitter.addListener(
         'iap-promoted-product',
         async () => {
-          const productId = await getPromotedProductIOS();
+          const product = await getPromotedProductIOS();
 
           setPromotedProductsIOS((prevProducts) => [
             ...prevProducts,
-            productId,
+            ...(product ? [product] : []),
           ]);
         },
       );
