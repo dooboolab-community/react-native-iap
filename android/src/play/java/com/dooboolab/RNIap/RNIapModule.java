@@ -698,6 +698,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     sendUnconsumedPurchases(promise);
   }
 
+  @ReactMethod
+  public String getPackageName() {
+    return getReactApplicationContext().getPackageName();
+  }
+
   private void sendEvent(
       ReactContext reactContext, String eventName, @Nullable WritableMap params) {
     reactContext
