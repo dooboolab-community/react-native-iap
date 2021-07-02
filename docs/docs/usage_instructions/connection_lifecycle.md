@@ -21,11 +21,11 @@ componentDidMount() {
 In order to release the resources, call `endConnection()` when you no longer need any interaction with the library.
 
 ```javascript
-componentWillUnmount(): void {
-    ...
-    RNIap.endConnection();
-  }
-  ```
+componentWillUnmount() {
+  ...
+  RNIap.endConnection();
+}
+```
 
 ## Dos and Don'ts
 You shoud not call `initConnection` and `endConnection` every time you need to interact with the library. This is considered an anti-pattern as it consumes more time, resources and could lead to undesired side effects such as many callbacks.
@@ -35,24 +35,25 @@ You shoud not call `initConnection` and `endConnection` every time you need to i
 import * as RNIap from 'react-native-iap';
 
 componentDidMount() {
-    await RNIap.initConnection();
+  await RNIap.initConnection();
 
-    await RNIap.getProducts(productIds)
-    ...
+  await RNIap.getProducts(productIds)
+  ...
 }
 
-BuyProductButtonClick(){
-  //startPurchaseCode
-}
-SubscribeButtonClick(){
+buyProductButtonClick() {
   //startPurchaseCode
 }
 
+bubscribeButtonClick() {
+  //startPurchaseCode
+}
 
-componentWillUnmount(): void {
-    ...
-    RNIap.endConnection();
-  }
+
+componentWillUnmount() {
+  ...
+  RNIap.endConnection();
+}
 ```
 
 ### :x: DON'T :
@@ -60,19 +61,19 @@ componentWillUnmount(): void {
 import * as RNIap from 'react-native-iap';
 
 componentDidMount() {
-    ...
+  ...
 }
 
-BuyProductButtonClick(){
-    await RNIap.initConnection();
+const buyProductButtonClick = async() => {
+  await RNIap.initConnection();
 
-    await RNIap.getProducts(productIds)
-    // Purchase IAP Code
-    ...
+  await RNIap.getProducts(productIds)
+  // Purchase IAP Code
+  ...
     await RNIap.endConnection();
-
 }
-SubscribeButtonClick(){
+
+const subscribeButtonClick = async() => {
   await RNIap.initConnection();
 
     await RNIap.getProducts(productIds)
@@ -81,8 +82,7 @@ SubscribeButtonClick(){
     await RNIap.endConnection();
 }
 
-
-componentWillUnmount(): void {
-    ...
-  }
+componentWillUnmount() {
+  ...
+}
 ```
