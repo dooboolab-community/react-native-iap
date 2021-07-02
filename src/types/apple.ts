@@ -200,11 +200,11 @@ export interface ReceiptValidationResponse {
   /**
    * *Only returned for receipts containing auto-renewable subscriptions.*
    *
-   * For iOS 6 style transaction receipts, this is the JSON representation of the receipt for the most recent renewal.
+   * iOS 6 style transaction receipts are not longer supported.
    *
    * For iOS 7 style app receipts, the value of this key is an array containing all in-app purchase transactions. This excludes transactions for a consumable product that have been marked as finished by your app.
    */
-  latest_receipt_info?: Record<string, unknown>;
+  latest_receipt_info?: Record<string, unknown>[];
 
   /**
    * *Only returned for iOS 6 style transaction receipts, for an auto-renewable subscription.*
