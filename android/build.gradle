@@ -59,7 +59,7 @@ repositories {
 
 dependencies {
   implementation 'com.facebook.react:react-native:+'
-  playImplementation 'com.android.billingclient:billing:3.0.3'
+  playImplementation 'com.android.billingclient:billing:4.0.0'
   def playServicesVersion = safeExtGet('playServicesVersion', DEFAULT_PLAY_SERVICES_VERSION)
   playImplementation "com.google.android.gms:play-services-base:$playServicesVersion"
   amazonImplementation fileTree(dir: 'libs', include: ['*.jar'])
