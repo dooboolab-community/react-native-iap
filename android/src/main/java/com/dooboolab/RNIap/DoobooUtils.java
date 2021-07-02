@@ -22,6 +22,7 @@ public class DoobooUtils {
   private static final String TAG = "DoobooUtils";
   public static final String E_UNKNOWN = "E_UNKNOWN";
   public static final String E_NOT_PREPARED = "E_NOT_PREPARED";
+  public static final String E_ALREADY_PREPARED = "E_ALREADY_PREPARED";
   public static final String E_NOT_ENDED = "E_NOT_ENDED";
   public static final String E_USER_CANCELLED = "E_USER_CANCELLED";
   public static final String E_ITEM_UNAVAILABLE = "E_ITEM_UNAVAILABLE";

@@ -1,3 +1,7 @@
+---
+sidebar_position: 6
+---
+
 # Using hooks
 
 From `react-native-iap@6.0.0+` we support the useIAP hook that handles purchases better. 

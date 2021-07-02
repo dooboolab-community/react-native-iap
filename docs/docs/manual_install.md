@@ -30,16 +30,34 @@ sidebar_position: 100
     ```gradle
     compile project(':react-native-iap')
     ```
-4. Update ProGuard config (Optional)
-  - Append the following lines to your ProGuard config (`proguard-rules.pro`)
+
+4. You have two options depending on the stores you support:
+  
+    a. If you only need for Google Play IAP, Insert this inside the `defaultConfig` section in `android/app/build.gradle`:
+
+    ```gradle
+    defaultConfig {
+          ...
+          // react-native-iap: we only use the Google Play flavor
+          missingDimensionStrategy 'store', 'play'
+      }
     ```
-    -keepattributes *Annotation*
-    -keepclassmembers class ** {
-      @org.greenrobot.eventbus.Subscribe <methods>;
+  
+    b. If you are using it for both Google Play and Amazon, insert the following lines inside the `android` block in `android/app/build.gradle`
+
+    ```gradle
+    android {
+      ...
+      flavorDimensions "appstore"
+      productFlavors{
+          googlePlay{
+              dimension "appstore"
+              missingDimensionStrategy "store", "play"
+          }
+          amazon{
+              dimension "appstore"
+              missingDimensionStrategy "store", "amazon"
+          }
+      }
     }
-    -keep enum org.greenrobot.eventbus.ThreadMode { *; }
     ```
-5. Add the following to the `<permission>` block in `android/app/src/main/AndroidManifest.xml`:
-  ```xml
-  <uses-permission android:name="com.android.vending.BILLING" />
-  ```
