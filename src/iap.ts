@@ -30,38 +30,19 @@ const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
 
-let iapInstallSourceAndroid = InstallSourceAndroid.NOT_SET;
-
-/**
- * This function will be made internal (not exported) in future versions.
- * @deprecated
- */
-export function setInstallSourceAndroid(
-  installSourceAndroid: InstallSourceAndroid,
-): void {
-  // eslint-disable-next-line no-console
-  console.warn(
-    'setInstallSourceAndroid is deprecated and will be removed in the future.',
-  );
-
-  iapInstallSourceAndroid = installSourceAndroid;
-}
-
 export function getInstallSourceAndroid(): InstallSourceAndroid {
-  return iapInstallSourceAndroid;
-}
-
-function detectInstallSourceAndroid(): void {
-  const newInstallSourceAndroid = RNIapModule
+  return RNIapModule
     ? InstallSourceAndroid.GOOGLE_PLAY
     : InstallSourceAndroid.AMAZON;
-
-  setInstallSourceAndroid(newInstallSourceAndroid);
 }
 
 function checkNativeAndroidAvailable(): void {
   if (!RNIapModule && !RNIapAmazonModule)
     throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
+}
+
+function checkNativeAmazonAvailable(): void {
+  if (!RNIapAmazonModule) throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
 }
 
 function getAndroidModule(): typeof RNIapModule | typeof RNIapAmazonModule {
@@ -82,12 +63,12 @@ export const initConnection = (): Promise<boolean> =>
   (
     Platform.select({
       ios: async () => {
-        if (!RNIapIos) return Promise.resolve();
+        checkNativeiOSAvailable();
 
         return RNIapIos.canMakePayments();
       },
       android: async () => {
-        detectInstallSourceAndroid();
+        checkNativeAndroidAvailable();
 
         return getAndroidModule().initConnection();
       },
@@ -162,31 +143,31 @@ const fillProductsAdditionalData = async (
   products: Array<ProductCommon>,
 ): Promise<Array<ProductCommon>> => {
   // Amazon
-  if (iapInstallSourceAndroid === InstallSourceAndroid.AMAZON) {
-    // On amazon we must get the user marketplace to detect the currency
-    const user = await getAndroidModule().getUser();
+  checkNativeAmazonAvailable();
 
-    const currencies = {
-      CA: 'CAD',
-      ES: 'EUR',
-      AU: 'AUD',
-      DE: 'EUR',
-      IN: 'INR',
-      US: 'USD',
-      JP: 'JPY',
-      GB: 'GBP',
-      IT: 'EUR',
-      BR: 'BRL',
-      FR: 'EUR',
-    };
+  // On amazon we must get the user marketplace to detect the currency
+  const user = await getAndroidModule().getUser();
 
-    const currency = currencies[user.userMarketplaceAmazon];
+  const currencies = {
+    CA: 'CAD',
+    ES: 'EUR',
+    AU: 'AUD',
+    DE: 'EUR',
+    IN: 'INR',
+    US: 'USD',
+    JP: 'JPY',
+    GB: 'GBP',
+    IT: 'EUR',
+    BR: 'BRL',
+    FR: 'EUR',
+  };
 
-    // Add currency to products
-    products.forEach((product) => {
-      if (currency) product.currency = currency;
-    });
-  }
+  const currency = currencies[user.userMarketplaceAmazon];
+
+  // Add currency to products
+  products.forEach((product) => {
+    if (currency) product.currency = currency;
+  });
 
   return products;
 };
