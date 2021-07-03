@@ -1,7 +1,14 @@
 ## Changelogs
 
+## 7.0.0
+
+Migrate `Android`to [billing client 4.0.0](https://developer.android.google.cn/google/play/billing/release-notes?hl=en).
+
+- TODO
+  - [ ] Include `getQuantityAndroid` function to add [getQuantity](https://developer.android.google.cn/reference/com/android/billingclient/api/Purchase#getQuantity()) api.
+
 ## 6.3.0
-Refactors Google Play Java code limiting to a single billingClient. This can be considered a breaking change as it will fail when attempting to initialize the library more than once. It also adds documentation on the proper handling of the lifecycle [docs][docs/usage_instructions/connection_lifecyle.md]
+Refactors Google Play Java code limiting to a single billingClient. This can be considered a breaking change as it will fail when attempting to initialize the library more than once. It also adds documentation on the proper handling of the lifecycle [docs](docs/usage_instructions/connection_lifecyle.md)
 
 ## 6.2.4
 

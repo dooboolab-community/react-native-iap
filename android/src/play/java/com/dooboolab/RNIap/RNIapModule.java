@@ -194,15 +194,17 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     ensureConnection(
         promise,
         billingClient -> {
-          Purchase.PurchasesResult result =
-              billingClient.queryPurchases(BillingClient.SkuType.INAPP);
-          final List<Purchase> purchases = result.getPurchasesList();
-          if (purchases == null || purchases.size() == 0) {
-            promise.reject("refreshItem", "No purchases found");
-            return;
-          }
+          billingClient.queryPurchasesAsync(
+              BillingClient.SkuType.INAPP,
+              (billingResult, list) -> {
+                final List<Purchase> purchases = list;
+                if (purchases == null || purchases.size() == 0) {
+                  promise.reject("refreshItem", "No purchases found");
+                  return;
+                }
 
-          consumeItems(purchases, promise);
+                consumeItems(purchases, promise);
+              });
         });
   }
 
@@ -212,28 +214,32 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         promise,
         billingClient -> {
           final WritableNativeArray array = new WritableNativeArray();
-          Purchase.PurchasesResult result =
-              billingClient.queryPurchases(BillingClient.SkuType.INAPP);
-          final List<Purchase> purchases = result.getPurchasesList();
-          if (purchases == null) {
-            // No purchases found
-            promise.resolve(false);
-            return;
-          }
-          final List<Purchase> pendingPurchases = new ArrayList<>();
-          for (Purchase purchase : purchases) {
-            // we only want to try to consume PENDING items, in order to force cache-refresh for
-            // them
-            if (purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
-              pendingPurchases.add(purchase);
-            }
-          }
-          if (pendingPurchases.size() == 0) {
-            promise.resolve(false);
-            return;
-          }
+          billingClient.queryPurchasesAsync(
+              BillingClient.SkuType.INAPP,
+              (billingResult, list) -> {
+                final List<Purchase> purchases = list;
+                if (purchases == null) {
+                  // No purchases found
+                  promise.resolve(false);
+                  return;
+                }
+                final List<Purchase> pendingPurchases = new ArrayList<>();
+                for (Purchase purchase : purchases) {
+                  // we only want to try to consume PENDING items, in order to force cache-refresh
+                  // for
+                  // them
+                  if (purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
+                    pendingPurchases.add(purchase);
+                  }
+                }
+                if (pendingPurchases.size() == 0) {
+                  promise.resolve(false);
+                  return;
+                }
 
-          consumeItems(pendingPurchases, promise, BillingClient.BillingResponseCode.ITEM_NOT_OWNED);
+                consumeItems(
+                    pendingPurchases, promise, BillingClient.BillingResponseCode.ITEM_NOT_OWNED);
+              });
         });
   }
 
@@ -292,7 +298,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
                   item.putString("description", skuDetails.getDescription());
                   item.putString("introductoryPrice", skuDetails.getIntroductoryPrice());
                   item.putString("typeAndroid", skuDetails.getType());
-                  item.putString("packageNameAndroid", skuDetails.zza());
+                  item.putString("packageNameAndroid", skuDetails.zzc());
                   item.putString("originalPriceAndroid", skuDetails.getOriginalPrice());
                   item.putString("subscriptionPeriodAndroid", skuDetails.getSubscriptionPeriod());
                   item.putString("freeTrialPeriodAndroid", skuDetails.getFreeTrialPeriod());
@@ -328,45 +334,44 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         promise,
         billingClient -> {
           final WritableNativeArray items = new WritableNativeArray();
-          Purchase.PurchasesResult result =
-              billingClient.queryPurchases(
-                  type.equals("subs") ? BillingClient.SkuType.SUBS : BillingClient.SkuType.INAPP);
-          final List<Purchase> purchases = result.getPurchasesList();
+          billingClient.queryPurchasesAsync(
+              type.equals("subs") ? BillingClient.SkuType.SUBS : BillingClient.SkuType.INAPP,
+              (billingResult, purchases) -> {
+                if (purchases != null) {
+                  for (int i = 0; i < purchases.size(); i++) {
+                    Purchase purchase = purchases.get(i);
+                    WritableNativeMap item = new WritableNativeMap();
+                    item.putString("productId", purchase.getSkus().get(i));
+                    item.putString("transactionId", purchase.getOrderId());
+                    item.putDouble("transactionDate", purchase.getPurchaseTime());
+                    item.putString("transactionReceipt", purchase.getOriginalJson());
+                    item.putString("orderId", purchase.getOrderId());
+                    item.putString("purchaseToken", purchase.getPurchaseToken());
+                    item.putString("developerPayloadAndroid", purchase.getDeveloperPayload());
+                    item.putString("signatureAndroid", purchase.getSignature());
+                    item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
+                    item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
+                    item.putString("packageNameAndroid", purchase.getPackageName());
+                    item.putString(
+                        "obfuscatedAccountIdAndroid",
+                        purchase.getAccountIdentifiers().getObfuscatedAccountId());
+                    item.putString(
+                        "obfuscatedProfileIdAndroid",
+                        purchase.getAccountIdentifiers().getObfuscatedProfileId());
 
-          if (purchases != null) {
-            for (Purchase purchase : purchases) {
-              WritableNativeMap item = new WritableNativeMap();
-              item.putString("productId", purchase.getSku());
-              item.putString("transactionId", purchase.getOrderId());
-              item.putDouble("transactionDate", purchase.getPurchaseTime());
-              item.putString("transactionReceipt", purchase.getOriginalJson());
-              item.putString("orderId", purchase.getOrderId());
-              item.putString("purchaseToken", purchase.getPurchaseToken());
-              item.putString("developerPayloadAndroid", purchase.getDeveloperPayload());
-              item.putString("signatureAndroid", purchase.getSignature());
-              item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
-              item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
-              item.putString("packageNameAndroid", purchase.getPackageName());
-              AccountIdentifiers accountIdentifiers = purchase.getAccountIdentifiers();
-              if (accountIdentifiers != null) {
-                item.putString(
-                    "obfuscatedAccountIdAndroid", accountIdentifiers.getObfuscatedAccountId());
-                item.putString(
-                    "obfuscatedProfileIdAndroid", accountIdentifiers.getObfuscatedProfileId());
-              }
+                    if (type.equals(BillingClient.SkuType.SUBS)) {
+                      item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
+                    }
+                    items.pushMap(item);
+                  }
+                }
 
-              if (type.equals(BillingClient.SkuType.SUBS)) {
-                item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
-              }
-              items.pushMap(item);
-            }
-          }
-
-          try {
-            promise.resolve(items);
-          } catch (ObjectAlreadyConsumedException oce) {
-            Log.e(TAG, oce.getMessage());
-          }
+                try {
+                  promise.resolve(items);
+                } catch (ObjectAlreadyConsumedException oce) {
+                  Log.e(TAG, oce.getMessage());
+                }
+              });
         });
   }
 
@@ -380,7 +385,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               new PurchaseHistoryResponseListener() {
                 @Override
                 public void onPurchaseHistoryResponse(
-                    @NonNull BillingResult billingResult,
+                    BillingResult billingResult,
                     List<PurchaseHistoryRecord> purchaseHistoryRecordList) {
                   if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
                     PlayUtils.getInstance()
@@ -391,9 +396,10 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
                   Log.d(TAG, purchaseHistoryRecordList.toString());
                   WritableArray items = Arguments.createArray();
 
-                  for (PurchaseHistoryRecord purchase : purchaseHistoryRecordList) {
+                  for (int i = 0; i < purchaseHistoryRecordList.size(); i++) {
                     WritableMap item = Arguments.createMap();
-                    item.putString("productId", purchase.getSku());
+                    PurchaseHistoryRecord purchase = purchaseHistoryRecordList.get(i);
+                    item.putString("productId", purchase.getSkus().get(i));
                     item.putDouble("transactionDate", purchase.getPurchaseTime());
                     item.putString("transactionReceipt", purchase.getOriginalJson());
                     item.putString("purchaseToken", purchase.getPurchaseToken());
@@ -417,7 +423,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   public void buyItemByType(
       final String type,
       final String sku,
-      final String oldSku,
+      final String oldPurchaseToken,
       final String purchaseToken,
       final Integer prorationMode,
       final String obfuscatedAccountId,
@@ -458,8 +464,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           }
           builder.setSkuDetails(selectedSku);
 
-          if (oldSku != null && purchaseToken != null) {
-            builder.setOldSku(oldSku, purchaseToken);
+          BillingFlowParams.SubscriptionUpdateParams.Builder subscriptionUpdateParams =
+              BillingFlowParams.SubscriptionUpdateParams.newBuilder();
+
+          if (oldPurchaseToken != null) {
+            subscriptionUpdateParams.setOldSkuPurchaseToken(oldPurchaseToken);
           }
 
           if (obfuscatedAccountId != null) {
@@ -473,7 +482,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           if (prorationMode != null && prorationMode != -1) {
             if (prorationMode
                 == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE) {
-              builder.setReplaceSkusProrationMode(
+              subscriptionUpdateParams.setReplaceSkusProrationMode(
                   BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE);
               if (!type.equals(BillingClient.SkuType.SUBS)) {
                 String debugMessage =
@@ -489,16 +498,21 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               }
             } else if (prorationMode
                 == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION) {
-              builder.setReplaceSkusProrationMode(
+              subscriptionUpdateParams.setReplaceSkusProrationMode(
                   BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
             } else if (prorationMode == BillingFlowParams.ProrationMode.DEFERRED) {
-              builder.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.DEFERRED);
+              subscriptionUpdateParams.setReplaceSkusProrationMode(
+                  BillingFlowParams.ProrationMode.DEFERRED);
             } else if (prorationMode
                 == BillingFlowParams.ProrationMode.IMMEDIATE_WITH_TIME_PRORATION) {
-              builder.setReplaceSkusProrationMode(
-                  BillingFlowParams.ProrationMode.IMMEDIATE_WITH_TIME_PRORATION);
+              subscriptionUpdateParams.setReplaceSkusProrationMode(
+                  BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
+            } else if (prorationMode
+                == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE) {
+              subscriptionUpdateParams.setReplaceSkusProrationMode(
+                  BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE);
             } else {
-              builder.setReplaceSkusProrationMode(
+              subscriptionUpdateParams.setReplaceSkusProrationMode(
                   BillingFlowParams.ProrationMode.UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY);
             }
           }
@@ -507,7 +521,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
           String[] errorData =
               PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
-          Log.i(TAG, errorData[0] + ":" + errorData[1]);
         });
   }
 
@@ -593,9 +606,10 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
     if (purchases != null) {
       WritableMap promiseItem = null;
-      for (Purchase purchase : purchases) {
+      for (int i = 0; i < purchases.size(); i++) {
         WritableMap item = Arguments.createMap();
-        item.putString("productId", purchase.getSku());
+        Purchase purchase = purchases.get(i);
+        item.putString("productId", purchase.getSkus().get(i));
         item.putString("transactionId", purchase.getOrderId());
         item.putDouble("transactionDate", purchase.getPurchaseTime());
         item.putString("transactionReceipt", purchase.getOriginalJson());
@@ -638,19 +652,22 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           String[] types = {BillingClient.SkuType.INAPP, BillingClient.SkuType.SUBS};
 
           for (String type : types) {
-            Purchase.PurchasesResult purchasesResult = billingClient.queryPurchases(type);
-            ArrayList<Purchase> unacknowledgedPurchases = new ArrayList<>();
+            billingClient.queryPurchasesAsync(
+                type,
+                (billingResult, list) -> {
+                  ArrayList<Purchase> unacknowledgedPurchases = new ArrayList<>();
 
-            if (purchasesResult.getPurchasesList() == null
-                || purchasesResult.getPurchasesList().size() == 0) {
-              continue;
-            }
-            for (Purchase purchase : purchasesResult.getPurchasesList()) {
-              if (!purchase.isAcknowledged()) {
-                unacknowledgedPurchases.add(purchase);
-              }
-            }
-            onPurchasesUpdated(purchasesResult.getBillingResult(), unacknowledgedPurchases);
+                  if (list == null || list.size() == 0) {
+                    //                    continue;
+                  }
+
+                  for (Purchase purchase : list) {
+                    if (!purchase.isAcknowledged()) {
+                      unacknowledgedPurchases.add(purchase);
+                    }
+                  }
+                  onPurchasesUpdated(billingResult, unacknowledgedPurchases);
+                });
           }
 
           promise.resolve(true);
