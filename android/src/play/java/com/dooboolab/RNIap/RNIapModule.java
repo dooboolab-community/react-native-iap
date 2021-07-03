@@ -486,7 +486,8 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
                   BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE);
               if (!type.equals(BillingClient.SkuType.SUBS)) {
                 String debugMessage =
-                    "IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in subscription purchase.";
+                    "IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in"
+                        + " subscription purchase.";
                 WritableMap error = Arguments.createMap();
                 error.putString("debugMessage", debugMessage);
                 error.putString("code", PROMISE_BUY_ITEM);
@@ -590,17 +591,19 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
   @Override
   public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> purchases) {
-    if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+    final int responseCode = billingResult.getResponseCode();
+    if (responseCode != BillingClient.BillingResponseCode.OK) {
       WritableMap error = Arguments.createMap();
-      error.putInt("responseCode", billingResult.getResponseCode());
+      error.putInt("responseCode", responseCode);
       error.putString("debugMessage", billingResult.getDebugMessage());
-      String[] errorData =
-          PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+      String[] errorData = PlayUtils.getInstance().getBillingResponseData(responseCode);
       error.putString("code", errorData[0]);
       error.putString("message", errorData[1]);
       sendEvent(reactContext, "purchase-error", error);
-      PlayUtils.getInstance()
-          .rejectPromisesWithBillingError(PROMISE_BUY_ITEM, billingResult.getResponseCode());
+
+      if (responseCode != BillingClient.BillingResponseCode.USER_CANCELED) {
+        PlayUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, responseCode);
+      }
       return;
     }
 
@@ -639,7 +642,8 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       result.putString("debugMessage", billingResult.getDebugMessage());
       result.putString(
           "extraMessage",
-          "The purchases are null. This is a normal behavior if you have requested DEFERRED proration. If not please report an issue.");
+          "The purchases are null. This is a normal behavior if you have requested DEFERRED"
+              + " proration. If not please report an issue.");
       sendEvent(reactContext, "purchase-updated", result);
       DoobooUtils.getInstance().resolvePromisesForKey(PROMISE_BUY_ITEM, null);
     }
