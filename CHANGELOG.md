@@ -7,6 +7,13 @@ Migrate `Android`to [billing client 4.0.0](https://developer.android.google.cn/g
 - TODO
   - [ ] Include `getQuantityAndroid` function to add [getQuantity](https://developer.android.google.cn/reference/com/android/billingclient/api/Purchase#getQuantity()) api.
 
+Removed setInstallSource and updated docs [#1401](https://github.com/dooboolab/react-native-iap/pull/1401).
+
+[iOS]
+
+- Remove an unnecessary reject when canceling by user [#1389](https://github.com/dooboolab/react-native-iap/pull/1389)
+- Update type to match new `iOS` receipt style [#1402](https://github.com/dooboolab/react-native-iap/pull/1402)
+
 ## 6.3.0
 Refactors Google Play Java code limiting to a single billingClient. This can be considered a breaking change as it will fail when attempting to initialize the library more than once. It also adds documentation on the proper handling of the lifecycle [docs](docs/usage_instructions/connection_lifecyle.md)
 
