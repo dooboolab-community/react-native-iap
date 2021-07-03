@@ -194,15 +194,17 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     ensureConnection(
         promise,
         billingClient -> {
-          billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP, (billingResult, list) -> {
-              final List<Purchase> purchases = list;
-              if (purchases == null || purchases.size() == 0) {
+          billingClient.queryPurchasesAsync(
+              BillingClient.SkuType.INAPP,
+              (billingResult, list) -> {
+                final List<Purchase> purchases = list;
+                if (purchases == null || purchases.size() == 0) {
                   promise.reject("refreshItem", "No purchases found");
                   return;
-              }
+                }
 
-              consumeItems(purchases, promise);
-          });
+                consumeItems(purchases, promise);
+              });
         });
   }
 
@@ -212,29 +214,33 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
         promise,
         billingClient -> {
           final WritableNativeArray array = new WritableNativeArray();
-              billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP, (billingResult, list) -> {
-                  final List<Purchase> purchases = list;
-                  if (purchases == null) {
-                      // No purchases found
-                      promise.resolve(false);
-                      return;
+          billingClient.queryPurchasesAsync(
+              BillingClient.SkuType.INAPP,
+              (billingResult, list) -> {
+                final List<Purchase> purchases = list;
+                if (purchases == null) {
+                  // No purchases found
+                  promise.resolve(false);
+                  return;
+                }
+                final List<Purchase> pendingPurchases = new ArrayList<>();
+                for (Purchase purchase : purchases) {
+                  // we only want to try to consume PENDING items, in order to force cache-refresh
+                  // for
+                  // them
+                  if (purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
+                    pendingPurchases.add(purchase);
                   }
-                  final List<Purchase> pendingPurchases = new ArrayList<>();
-                  for (Purchase purchase : purchases) {
-                      // we only want to try to consume PENDING items, in order to force cache-refresh for
-                      // them
-                      if (purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
-                          pendingPurchases.add(purchase);
-                      }
-                  }
-                  if (pendingPurchases.size() == 0) {
-                      promise.resolve(false);
-                      return;
-                  }
+                }
+                if (pendingPurchases.size() == 0) {
+                  promise.resolve(false);
+                  return;
+                }
 
-                  consumeItems(pendingPurchases, promise, BillingClient.BillingResponseCode.ITEM_NOT_OWNED);
+                consumeItems(
+                    pendingPurchases, promise, BillingClient.BillingResponseCode.ITEM_NOT_OWNED);
               });
-    });
+        });
   }
 
   @ReactMethod
@@ -325,117 +331,128 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   @ReactMethod
   public void getAvailableItemsByType(final String type, final Promise promise) {
     ensureConnection(
-      promise, billingClient -> {
+        promise,
+        billingClient -> {
           final WritableNativeArray items = new WritableNativeArray();
           billingClient.queryPurchasesAsync(
-                  type.equals("subs") ? BillingClient.SkuType.SUBS : BillingClient.SkuType.INAPP,
-                  (billingResult, purchases) -> {
-                      if (purchases != null) {
-                          for (int i = 0; i < purchases.size(); i++) {
-                              Purchase purchase = purchases.get(i);
-                              WritableNativeMap item = new WritableNativeMap();
-                              item.putString("productId", purchase.getSkus().get(i));
-                              item.putString("transactionId", purchase.getOrderId());
-                              item.putDouble("transactionDate", purchase.getPurchaseTime());
-                              item.putString("transactionReceipt", purchase.getOriginalJson());
-                              item.putString("orderId", purchase.getOrderId());
-                              item.putString("purchaseToken", purchase.getPurchaseToken());
-                              item.putString("developerPayloadAndroid", purchase.getDeveloperPayload());
-                              item.putString("signatureAndroid", purchase.getSignature());
-                              item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
-                              item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
-                              item.putString("packageNameAndroid", purchase.getPackageName());
-                              item.putString("obfuscatedAccountIdAndroid", purchase.getAccountIdentifiers().getObfuscatedAccountId());
-                              item.putString("obfuscatedProfileIdAndroid", purchase.getAccountIdentifiers().getObfuscatedProfileId());
+              type.equals("subs") ? BillingClient.SkuType.SUBS : BillingClient.SkuType.INAPP,
+              (billingResult, purchases) -> {
+                if (purchases != null) {
+                  for (int i = 0; i < purchases.size(); i++) {
+                    Purchase purchase = purchases.get(i);
+                    WritableNativeMap item = new WritableNativeMap();
+                    item.putString("productId", purchase.getSkus().get(i));
+                    item.putString("transactionId", purchase.getOrderId());
+                    item.putDouble("transactionDate", purchase.getPurchaseTime());
+                    item.putString("transactionReceipt", purchase.getOriginalJson());
+                    item.putString("orderId", purchase.getOrderId());
+                    item.putString("purchaseToken", purchase.getPurchaseToken());
+                    item.putString("developerPayloadAndroid", purchase.getDeveloperPayload());
+                    item.putString("signatureAndroid", purchase.getSignature());
+                    item.putInt("purchaseStateAndroid", purchase.getPurchaseState());
+                    item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged());
+                    item.putString("packageNameAndroid", purchase.getPackageName());
+                    item.putString(
+                        "obfuscatedAccountIdAndroid",
+                        purchase.getAccountIdentifiers().getObfuscatedAccountId());
+                    item.putString(
+                        "obfuscatedProfileIdAndroid",
+                        purchase.getAccountIdentifiers().getObfuscatedProfileId());
 
-                              if (type.equals(BillingClient.SkuType.SUBS)) {
-                                  item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
-                              }
-                              items.pushMap(item);
-                          }
-                      }
-
-                      try {
-                          promise.resolve(items);
-                      } catch (ObjectAlreadyConsumedException oce) {
-                          Log.e(TAG, oce.getMessage());
-                      }
+                    if (type.equals(BillingClient.SkuType.SUBS)) {
+                      item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing());
+                    }
+                    items.pushMap(item);
                   }
-          );
-      });
+                }
+
+                try {
+                  promise.resolve(items);
+                } catch (ObjectAlreadyConsumedException oce) {
+                  Log.e(TAG, oce.getMessage());
+                }
+              });
+        });
   }
 
   @ReactMethod
   public void getPurchaseHistoryByType(final String type, final Promise promise) {
     ensureConnection(
-        promise, billingClient -> {
-            billingClient.queryPurchaseHistoryAsync(type.equals("subs") ? BillingClient.SkuType.SUBS : BillingClient.SkuType.INAPP, new PurchaseHistoryResponseListener() {
+        promise,
+        billingClient -> {
+          billingClient.queryPurchaseHistoryAsync(
+              type.equals("subs") ? BillingClient.SkuType.SUBS : BillingClient.SkuType.INAPP,
+              new PurchaseHistoryResponseListener() {
                 @Override
-                public void onPurchaseHistoryResponse(BillingResult billingResult, List<PurchaseHistoryRecord> purchaseHistoryRecordList) {
-                    if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-                        PlayUtils.getInstance().rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
-                        return;
-                    }
+                public void onPurchaseHistoryResponse(
+                    BillingResult billingResult,
+                    List<PurchaseHistoryRecord> purchaseHistoryRecordList) {
+                  if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+                    PlayUtils.getInstance()
+                        .rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
+                    return;
+                  }
 
-                    Log.d(TAG, purchaseHistoryRecordList.toString());
-                    WritableArray items = Arguments.createArray();
+                  Log.d(TAG, purchaseHistoryRecordList.toString());
+                  WritableArray items = Arguments.createArray();
 
-                    for (int i = 0; i < purchaseHistoryRecordList.size(); i++) {
-                        WritableMap item = Arguments.createMap();
-                        PurchaseHistoryRecord purchase = purchaseHistoryRecordList.get(i);
-                        item.putString("productId", purchase.getSkus().get(i));
-                        item.putDouble("transactionDate", purchase.getPurchaseTime());
-                        item.putString("transactionReceipt", purchase.getOriginalJson());
-                        item.putString("purchaseToken", purchase.getPurchaseToken());
-                        item.putString("dataAndroid", purchase.getOriginalJson());
-                        item.putString("signatureAndroid", purchase.getSignature());
-                        item.putString("developerPayload", purchase.getDeveloperPayload());
-                        items.pushMap(item);
-                    }
+                  for (int i = 0; i < purchaseHistoryRecordList.size(); i++) {
+                    WritableMap item = Arguments.createMap();
+                    PurchaseHistoryRecord purchase = purchaseHistoryRecordList.get(i);
+                    item.putString("productId", purchase.getSkus().get(i));
+                    item.putDouble("transactionDate", purchase.getPurchaseTime());
+                    item.putString("transactionReceipt", purchase.getOriginalJson());
+                    item.putString("purchaseToken", purchase.getPurchaseToken());
+                    item.putString("dataAndroid", purchase.getOriginalJson());
+                    item.putString("signatureAndroid", purchase.getSignature());
+                    item.putString("developerPayload", purchase.getDeveloperPayload());
+                    items.pushMap(item);
+                  }
 
-                    try {
-                        promise.resolve(items);
-                    } catch (ObjectAlreadyConsumedException oce) {
-                        Log.e(TAG, oce.getMessage());
-                    }
+                  try {
+                    promise.resolve(items);
+                  } catch (ObjectAlreadyConsumedException oce) {
+                    Log.e(TAG, oce.getMessage());
+                  }
                 }
-            });
-    });
+              });
+        });
   }
 
   @ReactMethod
   public void buyItemByType(
-        final String type,
-        final String sku,
-        final String oldPurchaseToken,
-        final String purchaseToken,
-        final Integer prorationMode,
-        final String obfuscatedAccountId,
-        final String obfuscatedProfileId,
-        final Promise promise
-  ) {
+      final String type,
+      final String sku,
+      final String oldPurchaseToken,
+      final String purchaseToken,
+      final Integer prorationMode,
+      final String obfuscatedAccountId,
+      final String obfuscatedProfileId,
+      final Promise promise) {
     final Activity activity = getCurrentActivity();
 
     if (activity == null) {
-        promise.reject(DoobooUtils.E_UNKNOWN, "getCurrentActivity returned null");
-        return;
+      promise.reject(DoobooUtils.E_UNKNOWN, "getCurrentActivity returned null");
+      return;
     }
 
-      ensureConnection(
-              promise, billingClient -> {
-        DoobooUtils.getInstance().addPromiseForKey(PROMISE_BUY_ITEM, promise);
-        final BillingFlowParams.Builder builder = BillingFlowParams.newBuilder();
+    ensureConnection(
+        promise,
+        billingClient -> {
+          DoobooUtils.getInstance().addPromiseForKey(PROMISE_BUY_ITEM, promise);
+          final BillingFlowParams.Builder builder = BillingFlowParams.newBuilder();
 
-        SkuDetails selectedSku = null;
-        for (SkuDetails skuDetail : skus) {
+          SkuDetails selectedSku = null;
+          for (SkuDetails skuDetail : skus) {
             if (skuDetail.getSku().equals(sku)) {
-                selectedSku = skuDetail;
-                break;
+              selectedSku = skuDetail;
+              break;
             }
-        }
+          }
 
-        if (selectedSku == null) {
-            String debugMessage = "The sku was not found. Please fetch products first by calling getItems";
+          if (selectedSku == null) {
+            String debugMessage =
+                "The sku was not found. Please fetch products first by calling getItems";
             WritableMap error = Arguments.createMap();
             error.putString("debugMessage", debugMessage);
             error.putString("code", PROMISE_BUY_ITEM);
@@ -444,54 +461,67 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             sendEvent(reactContext, "purchase-error", error);
             promise.reject(PROMISE_BUY_ITEM, debugMessage);
             return;
-        }
-        builder.setSkuDetails(selectedSku);
+          }
+          builder.setSkuDetails(selectedSku);
 
-        BillingFlowParams.SubscriptionUpdateParams.Builder subscriptionUpdateParams = BillingFlowParams.SubscriptionUpdateParams.newBuilder();
+          BillingFlowParams.SubscriptionUpdateParams.Builder subscriptionUpdateParams =
+              BillingFlowParams.SubscriptionUpdateParams.newBuilder();
 
-        if (oldPurchaseToken != null) {
+          if (oldPurchaseToken != null) {
             subscriptionUpdateParams.setOldSkuPurchaseToken(oldPurchaseToken);
-        }
+          }
 
-        if (obfuscatedAccountId != null) {
+          if (obfuscatedAccountId != null) {
             builder.setObfuscatedAccountId(obfuscatedAccountId);
-        }
+          }
 
-        if (obfuscatedProfileId != null) {
+          if (obfuscatedProfileId != null) {
             builder.setObfuscatedProfileId(obfuscatedProfileId);
-        }
+          }
 
-        if (prorationMode != null && prorationMode != -1) {
-            if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE) {
-                subscriptionUpdateParams.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE);
-                if (!type.equals(BillingClient.SkuType.SUBS)) {
-                    String debugMessage = "IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in subscription purchase.";
-                    WritableMap error = Arguments.createMap();
-                    error.putString("debugMessage", debugMessage);
-                    error.putString("code", PROMISE_BUY_ITEM);
-                    error.putString("message", debugMessage);
-                    error.putString("productId", sku);
-                    sendEvent(reactContext, "purchase-error", error);
-                    promise.reject(PROMISE_BUY_ITEM, debugMessage);
-                    return;
-                }
-            } else if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION) {
-                subscriptionUpdateParams.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
+          if (prorationMode != null && prorationMode != -1) {
+            if (prorationMode
+                == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE) {
+              subscriptionUpdateParams.setReplaceSkusProrationMode(
+                  BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE);
+              if (!type.equals(BillingClient.SkuType.SUBS)) {
+                String debugMessage =
+                    "IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in subscription purchase.";
+                WritableMap error = Arguments.createMap();
+                error.putString("debugMessage", debugMessage);
+                error.putString("code", PROMISE_BUY_ITEM);
+                error.putString("message", debugMessage);
+                error.putString("productId", sku);
+                sendEvent(reactContext, "purchase-error", error);
+                promise.reject(PROMISE_BUY_ITEM, debugMessage);
+                return;
+              }
+            } else if (prorationMode
+                == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION) {
+              subscriptionUpdateParams.setReplaceSkusProrationMode(
+                  BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
             } else if (prorationMode == BillingFlowParams.ProrationMode.DEFERRED) {
-                subscriptionUpdateParams.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.DEFERRED);
-            } else if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_WITH_TIME_PRORATION) {
-                subscriptionUpdateParams.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
-            } else if (prorationMode == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE) {
-                subscriptionUpdateParams.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE);
+              subscriptionUpdateParams.setReplaceSkusProrationMode(
+                  BillingFlowParams.ProrationMode.DEFERRED);
+            } else if (prorationMode
+                == BillingFlowParams.ProrationMode.IMMEDIATE_WITH_TIME_PRORATION) {
+              subscriptionUpdateParams.setReplaceSkusProrationMode(
+                  BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
+            } else if (prorationMode
+                == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE) {
+              subscriptionUpdateParams.setReplaceSkusProrationMode(
+                  BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE);
             } else {
-                subscriptionUpdateParams.setReplaceSkusProrationMode(BillingFlowParams.ProrationMode.UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY);
+              subscriptionUpdateParams.setReplaceSkusProrationMode(
+                  BillingFlowParams.ProrationMode.UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY);
             }
-        }
+          }
 
-        BillingFlowParams flowParams = builder.build();
-        BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
-        String[] errorData = PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
-    });
+          BillingFlowParams flowParams = builder.build();
+          BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
+          String[] errorData =
+              PlayUtils.getInstance().getBillingResponseData(billingResult.getResponseCode());
+        });
   }
 
   @ReactMethod
@@ -576,7 +606,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
     if (purchases != null) {
       WritableMap promiseItem = null;
-      for (int i=0; i < purchases.size(); i++) {
+      for (int i = 0; i < purchases.size(); i++) {
         WritableMap item = Arguments.createMap();
         Purchase purchase = purchases.get(i);
         item.putString("productId", purchase.getSkus().get(i));
@@ -622,20 +652,22 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           String[] types = {BillingClient.SkuType.INAPP, BillingClient.SkuType.SUBS};
 
           for (String type : types) {
-            billingClient.queryPurchasesAsync(type, (billingResult, list) -> {
-                ArrayList<Purchase> unacknowledgedPurchases = new ArrayList<>();
+            billingClient.queryPurchasesAsync(
+                type,
+                (billingResult, list) -> {
+                  ArrayList<Purchase> unacknowledgedPurchases = new ArrayList<>();
 
-                if (list == null || list.size() == 0) {
-//                    continue;
-                }
+                  if (list == null || list.size() == 0) {
+                    //                    continue;
+                  }
 
-                for (Purchase purchase : list) {
+                  for (Purchase purchase : list) {
                     if (!purchase.isAcknowledged()) {
-                        unacknowledgedPurchases.add(purchase);
+                      unacknowledgedPurchases.add(purchase);
                     }
-                }
-                onPurchasesUpdated(billingResult, unacknowledgedPurchases);
-            });
+                  }
+                  onPurchasesUpdated(billingResult, unacknowledgedPurchases);
+                });
           }
 
           promise.resolve(true);
