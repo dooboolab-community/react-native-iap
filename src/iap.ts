@@ -41,10 +41,6 @@ function checkNativeAndroidAvailable(): void {
     throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
 }
 
-function checkNativeAmazonAvailable(): void {
-  if (!RNIapAmazonModule) throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
-}
-
 function getAndroidModule(): typeof RNIapModule | typeof RNIapAmazonModule {
   checkNativeAndroidAvailable();
 
@@ -143,31 +139,31 @@ const fillProductsAdditionalData = async (
   products: Array<ProductCommon>,
 ): Promise<Array<ProductCommon>> => {
   // Amazon
-  checkNativeAmazonAvailable();
+  if (RNIapAmazonModule) {
+    // On amazon we must get the user marketplace to detect the currency
+    const user = await RNIapAmazonModule.getUser();
 
-  // On amazon we must get the user marketplace to detect the currency
-  const user = await getAndroidModule().getUser();
+    const currencies = {
+      CA: 'CAD',
+      ES: 'EUR',
+      AU: 'AUD',
+      DE: 'EUR',
+      IN: 'INR',
+      US: 'USD',
+      JP: 'JPY',
+      GB: 'GBP',
+      IT: 'EUR',
+      BR: 'BRL',
+      FR: 'EUR',
+    };
 
-  const currencies = {
-    CA: 'CAD',
-    ES: 'EUR',
-    AU: 'AUD',
-    DE: 'EUR',
-    IN: 'INR',
-    US: 'USD',
-    JP: 'JPY',
-    GB: 'GBP',
-    IT: 'EUR',
-    BR: 'BRL',
-    FR: 'EUR',
-  };
+    const currency = currencies[user.userMarketplaceAmazon];
 
-  const currency = currencies[user.userMarketplaceAmazon];
-
-  // Add currency to products
-  products.forEach((product) => {
-    if (currency) product.currency = currency;
-  });
+    // Add currency to products
+    products.forEach((product) => {
+      if (currency) product.currency = currency;
+    });
+  }
 
   return products;
 };
