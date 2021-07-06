@@ -1,5 +1,8 @@
 ## Changelogs
 
+## 7.0.1
+Revert strict check for Amazon module [#1407](https://github.com/dooboolab/react-native-iap/pull/1407).
+
 ## 7.0.0
 
 Migrate `Android`to [billing client 4.0.0](https://developer.android.google.cn/google/play/billing/release-notes?hl=en).
