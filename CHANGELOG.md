@@ -1,5 +1,8 @@
 ## Changelogs
 
+## 7.0.3
+Hotfix on getting skus on android [#1414](https://github.com/dooboolab/react-native-iap/pull/1414)
+
 ## 7.0.2
 Update gradle plugin to 4.2.2 [#1410](https://github.com/dooboolab/react-native-iap/pull/1410)
 

@@ -341,7 +341,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
                   for (int i = 0; i < purchases.size(); i++) {
                     Purchase purchase = purchases.get(i);
                     WritableNativeMap item = new WritableNativeMap();
-                    item.putString("productId", purchase.getSkus().get(i));
+                    item.putString("productId", purchase.getSkus().get(0));
                     item.putString("transactionId", purchase.getOrderId());
                     item.putDouble("transactionDate", purchase.getPurchaseTime());
                     item.putString("transactionReceipt", purchase.getOriginalJson());
@@ -612,7 +612,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       for (int i = 0; i < purchases.size(); i++) {
         WritableMap item = Arguments.createMap();
         Purchase purchase = purchases.get(i);
-        item.putString("productId", purchase.getSkus().get(i));
+        item.putString("productId", purchase.getSkus().get(0));
         item.putString("transactionId", purchase.getOrderId());
         item.putDouble("transactionDate", purchase.getPurchaseTime());
         item.putString("transactionReceipt", purchase.getOriginalJson());
