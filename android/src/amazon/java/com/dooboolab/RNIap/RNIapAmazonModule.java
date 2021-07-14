@@ -25,28 +25,6 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
 
   public RNIapAmazonModule(final ReactApplicationContext reactContext) {
     super(reactContext);
-
-    UiThreadUtil.runOnUiThread(
-        () -> {
-          PurchasingService.registerListener(reactContext, new RNIapAmazonListener(reactContext));
-        });
-    LifecycleEventListener lifecycleEventListener =
-        new LifecycleEventListener() {
-
-          @Override
-          public void onHostResume() {
-            PurchasingService.getUserData();
-            PurchasingService.getPurchaseUpdates(false);
-          }
-
-          @Override
-          public void onHostPause() {}
-
-          @Override
-          public void onHostDestroy() {}
-        };
-
-    reactContext.addLifecycleEventListener(lifecycleEventListener);
   }
 
   @Override
@@ -56,6 +34,11 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void initConnection(final Promise promise) {
+    UiThreadUtil.runOnUiThread(
+            () -> PurchasingService.registerListener(getReactApplicationContext(), new RNIapAmazonListener(getReactApplicationContext())));
+    //Prefetch user and purchases as per Amazon SDK documentation:
+    PurchasingService.getUserData();
+    PurchasingService.getPurchaseUpdates(false);
     promise.resolve(true);
   }
 
