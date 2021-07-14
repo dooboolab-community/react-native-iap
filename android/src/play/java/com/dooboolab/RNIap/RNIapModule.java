@@ -464,11 +464,11 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           }
           builder.setSkuDetails(selectedSku);
 
-          BillingFlowParams.SubscriptionUpdateParams.Builder subscriptionUpdateParams =
+          BillingFlowParams.SubscriptionUpdateParams.Builder subscriptionUpdateParamsBuilder =
               BillingFlowParams.SubscriptionUpdateParams.newBuilder();
 
           if (oldPurchaseToken != null) {
-            subscriptionUpdateParams.setOldSkuPurchaseToken(oldPurchaseToken);
+            subscriptionUpdateParamsBuilder.setOldSkuPurchaseToken(oldPurchaseToken);
           }
 
           if (obfuscatedAccountId != null) {
@@ -482,7 +482,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           if (prorationMode != null && prorationMode != -1) {
             if (prorationMode
                 == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE) {
-              subscriptionUpdateParams.setReplaceSkusProrationMode(
+              subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
                   BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE);
               if (!type.equals(BillingClient.SkuType.SUBS)) {
                 String debugMessage =
@@ -499,23 +499,30 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
               }
             } else if (prorationMode
                 == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION) {
-              subscriptionUpdateParams.setReplaceSkusProrationMode(
+              subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
                   BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
             } else if (prorationMode == BillingFlowParams.ProrationMode.DEFERRED) {
-              subscriptionUpdateParams.setReplaceSkusProrationMode(
+              subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
                   BillingFlowParams.ProrationMode.DEFERRED);
             } else if (prorationMode
                 == BillingFlowParams.ProrationMode.IMMEDIATE_WITH_TIME_PRORATION) {
-              subscriptionUpdateParams.setReplaceSkusProrationMode(
+              subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
                   BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION);
             } else if (prorationMode
                 == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE) {
-              subscriptionUpdateParams.setReplaceSkusProrationMode(
+              subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
                   BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE);
             } else {
-              subscriptionUpdateParams.setReplaceSkusProrationMode(
+              subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
                   BillingFlowParams.ProrationMode.UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY);
             }
+          }
+
+          if (oldPurchaseToken != null) {
+            BillingFlowParams.SubscriptionUpdateParams subscriptionUpdateParams =
+                subscriptionUpdateParamsBuilder.build();
+
+            builder.setSubscriptionUpdateParams(subscriptionUpdateParams);
           }
 
           BillingFlowParams flowParams = builder.build();
