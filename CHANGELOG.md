@@ -1,5 +1,11 @@
 ## Changelogs
 
+## 7.0.4
+
+Move init code to initConnection method in Amazon [#1425](https://github.com/dooboolab/react-native-iap/pull/1425) 
+
+Fix Android subscription update [#1423](https://github.com/dooboolab/react-native-iap/pull/1423)
+
 ## 7.0.3
 Hotfix on getting skus on android [#1414](https://github.com/dooboolab/react-native-iap/pull/1414)
 
