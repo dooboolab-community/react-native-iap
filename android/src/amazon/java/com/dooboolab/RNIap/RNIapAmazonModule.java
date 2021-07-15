@@ -3,7 +3,6 @@ package com.dooboolab.RNIap;
 import com.amazon.device.iap.PurchasingService;
 import com.amazon.device.iap.model.FulfillmentResult;
 import com.amazon.device.iap.model.RequestId;
-import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -25,28 +24,6 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
 
   public RNIapAmazonModule(final ReactApplicationContext reactContext) {
     super(reactContext);
-
-    UiThreadUtil.runOnUiThread(
-        () -> {
-          PurchasingService.registerListener(reactContext, new RNIapAmazonListener(reactContext));
-        });
-    LifecycleEventListener lifecycleEventListener =
-        new LifecycleEventListener() {
-
-          @Override
-          public void onHostResume() {
-            PurchasingService.getUserData();
-            PurchasingService.getPurchaseUpdates(false);
-          }
-
-          @Override
-          public void onHostPause() {}
-
-          @Override
-          public void onHostDestroy() {}
-        };
-
-    reactContext.addLifecycleEventListener(lifecycleEventListener);
   }
 
   @Override
@@ -56,6 +33,14 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void initConnection(final Promise promise) {
+    UiThreadUtil.runOnUiThread(
+        () ->
+            PurchasingService.registerListener(
+                getReactApplicationContext(),
+                new RNIapAmazonListener(getReactApplicationContext())));
+    // Prefetch user and purchases as per Amazon SDK documentation:
+    PurchasingService.getUserData();
+    PurchasingService.getPurchaseUpdates(false);
     promise.resolve(true);
   }
 
