@@ -33,8 +33,7 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void initConnection(final Promise promise) {
     ReactApplicationContext context = getReactApplicationContext();
-    PurchasingService.registerListener(
-            context, new RNIapAmazonListener(context));
+    PurchasingService.registerListener(context, new RNIapAmazonListener(context));
     // Prefetch user and purchases as per Amazon SDK documentation:
     PurchasingService.getUserData();
     PurchasingService.getPurchaseUpdates(false);
