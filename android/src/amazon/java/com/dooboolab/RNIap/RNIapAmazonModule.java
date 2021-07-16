@@ -8,7 +8,6 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableNativeArray;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,11 +32,8 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void initConnection(final Promise promise) {
-    UiThreadUtil.runOnUiThread(
-        () ->
-            PurchasingService.registerListener(
-                getReactApplicationContext(),
-                new RNIapAmazonListener(getReactApplicationContext())));
+    ReactApplicationContext context = getReactApplicationContext();
+    PurchasingService.registerListener(context, new RNIapAmazonListener(context));
     // Prefetch user and purchases as per Amazon SDK documentation:
     PurchasingService.getUserData();
     PurchasingService.getPurchaseUpdates(false);
