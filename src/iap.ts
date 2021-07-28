@@ -334,7 +334,6 @@ export const requestPurchase = (
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} [sku] The product's sku/ID
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
- * @param {string} [oldSkuAndroid] WARNING: This field is deprecated and will be removed in a future version
  * @param {string} [purchaseTokenAndroid] purchaseToken that the user is upgrading or downgrading from (Android).
  * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
  * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
@@ -344,7 +343,6 @@ export const requestPurchase = (
 export const requestSubscription = (
   sku: string,
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean,
-  oldSkuAndroid?: string,
   purchaseTokenAndroid?: string,
   prorationModeAndroid?: ProrationModesAndroid,
   obfuscatedAccountIdAndroid?: string,
@@ -374,14 +372,7 @@ export const requestSubscription = (
       },
       android: async () => {
         if (!prorationModeAndroid) prorationModeAndroid = -1;
-
-        if (oldSkuAndroid)
-          // eslint-disable-next-line no-console
-          console.warn(
-            // eslint-disable-next-line max-len
-            "You are still passing 'oldSkuAndroid' This parameter has been deprecated and will be removed in a future version",
-          );
-
+        
         return getAndroidModule().buyItemByType(
           ANDROID_ITEM_TYPE_SUBSCRIPTION,
           sku,
