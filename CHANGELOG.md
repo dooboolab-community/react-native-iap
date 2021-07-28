@@ -1,6 +1,6 @@
 ## Changelogs
 
-# 7.0.6
+# 7.1.0
 
 *Breaking Change*: Removed oldAndroidSku from requestSubscription. This field was passed for Android only
 
