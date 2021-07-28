@@ -372,7 +372,7 @@ export const requestSubscription = (
       },
       android: async () => {
         if (!prorationModeAndroid) prorationModeAndroid = -1;
-        
+
         return getAndroidModule().buyItemByType(
           ANDROID_ITEM_TYPE_SUBSCRIPTION,
           sku,
