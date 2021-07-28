@@ -9,6 +9,7 @@
     "build": "tsc && flowgen index.d.ts -o index.js.flow",
     "flow": "flow",
     "lint": "eslint src --ext .ts,.tsx",
+    "lint:android": "cd android && ./gradlew goJF",
     "test": "jest",
     "test:flow": "flow",
     "test:typescript": "tsc --noEmit",
