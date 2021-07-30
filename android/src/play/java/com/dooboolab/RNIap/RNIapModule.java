@@ -423,7 +423,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   public void buyItemByType(
       final String type,
       final String sku,
-      final String oldPurchaseToken,
       final String purchaseToken,
       final Integer prorationMode,
       final String obfuscatedAccountId,
@@ -467,8 +466,8 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           BillingFlowParams.SubscriptionUpdateParams.Builder subscriptionUpdateParamsBuilder =
               BillingFlowParams.SubscriptionUpdateParams.newBuilder();
 
-          if (oldPurchaseToken != null) {
-            subscriptionUpdateParamsBuilder.setOldSkuPurchaseToken(oldPurchaseToken);
+          if (purchaseToken != null) {
+            subscriptionUpdateParamsBuilder.setOldSkuPurchaseToken(purchaseToken);
           }
 
           if (obfuscatedAccountId != null) {
@@ -518,7 +517,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
             }
           }
 
-          if (oldPurchaseToken != null) {
+          if (purchaseToken != null) {
             BillingFlowParams.SubscriptionUpdateParams subscriptionUpdateParams =
                 subscriptionUpdateParamsBuilder.build();
 

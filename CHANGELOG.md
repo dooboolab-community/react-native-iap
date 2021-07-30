@@ -1,5 +1,9 @@
 ## Changelogs
 
+# 7.1.0
+
+*Breaking Change*: Removed oldAndroidSku from requestSubscription. This field was passed for Android only
+
 ## 7.0.5
 
 Remove init on main thread as it is no longer needed in this version of the SDK [#1427](https://github.com/dooboolab/react-native-iap/pull/1427).
