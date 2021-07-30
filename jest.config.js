@@ -171,14 +171,14 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
    transform: {
-    '^.+\\.(js|jsx)$': '<rootDir>/node_modules/react-native/jest/preprocessor.js',
+    "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
     "\\.(ts|tsx)$": "ts-jest"
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  // transformIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  transformIgnorePatterns: [
+    'node_modules/(?!@react-native|react-native)'
+  ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
