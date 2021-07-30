@@ -100,6 +100,10 @@ Quick News
 
 Breaking Changes
 ----------------
+
+[7.1.0]
+- `androidOldSku` is no longer required [#1438](https://github.com/dooboolab/react-native-iap/pull/1438).
+
 [6.1.0]
 - Creates two variants: `play` and `amazon` and only uses the required code.
   ```
