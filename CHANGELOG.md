@@ -1,5 +1,12 @@
 ## Changelogs
 
+# 7.2.0
+Moved Amazon readme to the docs folder
+Separated "Support us" doc to it's own file for better visibility
+*Breaking Change*: removed deprecated method: `consumeAllItemsAndroid` , alternative `flushFailedPurchasesCachedAsPendingAndroid` has been available for a while. Also removed `refreshItems` from android native modules since they were only used by this deprecated method
+*Breaking Change*: Methods that are suffixed by `Android` or `iOS` not fail if called in the wrong platform
+instead of returnning a default value.
+*Breaking Change*: (Only if you were using the nativive module directly) iOS Native Method `canMakePayments` was renamed to match `initConnection` from the other platforms.
 # 7.1.0
 
 *Breaking Change*: Removed oldAndroidSku from requestSubscription. This field was passed for Android only

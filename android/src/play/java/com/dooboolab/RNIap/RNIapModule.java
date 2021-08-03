@@ -190,25 +190,6 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   }
 
   @ReactMethod
-  public void refreshItems(final Promise promise) {
-    ensureConnection(
-        promise,
-        billingClient -> {
-          billingClient.queryPurchasesAsync(
-              BillingClient.SkuType.INAPP,
-              (billingResult, list) -> {
-                final List<Purchase> purchases = list;
-                if (purchases == null || purchases.size() == 0) {
-                  promise.reject("refreshItem", "No purchases found");
-                  return;
-                }
-
-                consumeItems(purchases, promise);
-              });
-        });
-  }
-
-  @ReactMethod
   public void flushFailedPurchasesCachedAsPending(final Promise promise) {
     ensureConnection(
         promise,

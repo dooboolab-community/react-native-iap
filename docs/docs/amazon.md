@@ -1,4 +1,5 @@
-Amazon IAP Support
+
+# Amazon IAP Support
 ------------------
 The guide assumes that `react-native-iap` is implemented in your app and it works with Google Play with no issues.
 Here are the additional steps to add Amazon IAP support.

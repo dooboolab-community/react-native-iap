@@ -2,7 +2,7 @@
 
 | Method | Result | Description |
 | - | - | - |
-`initConnection()` | `Promise<boolean>` | Init IAP module. On Android this can be called to preload the connection to Play Services. On iOS, it will simply call `canMakePayments` method and return value which is required for the listeners to work properly.
+`initConnection()` | `Promise<boolean>` | Init IAP module. On Android this can be called to preload the connection to Play Services. True means the Native SDK was initialized successfully. On iOS, it will simply call `canMakePayments` method and return value which is required for the listeners to work properly.
 `purchaseUpdatedListener((purchase: ProductPurchase) => {})` | `EmitterSubscription` | Register a callback that gets called when the store has any updates to purchases that have not yet been finished, consumed or acknowledged. Returns a React Native `EmitterSubscription` on which you can call `.remove()` to stop receiving updates. Register you listener as soon as possible and react to updates at all times.   
 `purchaseErrorListener((error: PurchaseError) => {})` | `EmitterSubscription` | Register a callback that gets called when there has been an error with a purchase. Returns a React Native `EmitterSubscription` on which you can call `.remove()` to stop receiving updates.
 `getProducts(skus: string[])`<ul><li>skus: array of Product ID/sku</li></ul>           | `Promise<Product[]>`      | Get a list of products (consumable and non-consumable items, but not subscriptions). Note: With before `iOS 11.2`, this method _will_ also return subscriptions if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to `iOS 11.2`.
@@ -20,7 +20,6 @@ _*deprecated_ ~~`buySubscription(sku: string)`~~<ul><li>sku: subscription ID/sku
 `validateReceiptIos(body: Record<string, unknown>, devMode: boolean)`<ul><li>body: receiptBody</li><li>devMode: isTest</li></ul> | `Object\|boolean` | **iOS only** Validate receipt.
 `presentCodeRedemptionSheetIOS()` | `Promise<null>` | **iOS only** Availability: `iOS 14.0+` Displays a sheet that enables users to redeem subscription offer codes that you generated in App Store Connect.
 `endConnection()` | `Promise<void>` | End billing connection.
-`consumeAllItemsAndroid()` | `Promise<void>` | **Android only** Consume all items so they are able to buy again. ⚠️ Use in dev only (as you should deliver the purchased feature BEFORE consuming it)
 `flushFailedPurchasesCachedAsPendingAndroid()` | `Promise<void>` | **Android only** Consume all 'ghost' purchases (that is, pending payment that already failed but is still marked as pending in Play Store cache)
 `consumePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul>     | `void` | **Android only** Finish a purchase. All purchases should be finished once you have delivered the purchased items. E.g. by recording the purchase in your database or on your server.
 `acknowledgePurchaseAndroid(token: string, payload?: string)`<ul><li>token: purchase token</li><li>payload: developerPayload</li></ul> | `Promise<PurchaseResult>` | **Android only** Acknowledge a product. Like above for non-consumables. Use `finishTransaction` instead for both platforms since version 4.1.0 or later.

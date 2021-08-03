@@ -110,7 +110,7 @@ RCT_EXPORT_MODULE();
     return @[@"iap-promoted-product", @"purchase-updated", @"purchase-error"];
 }
 
-RCT_EXPORT_METHOD(canMakePayments:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(initConnection:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
     BOOL canMakePayments = [SKPaymentQueue canMakePayments];
