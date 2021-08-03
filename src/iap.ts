@@ -87,7 +87,7 @@ export const endConnection = (): Promise<void> =>
  */
 export const flushFailedPurchasesCachedAsPendingAndroid = (): Promise<
   string[]
-> =>  getAndroidModule().flushFailedPurchasesCachedAsPending();
+> => getAndroidModule().flushFailedPurchasesCachedAsPending();
 
 /**
  * Fill products with additional data
@@ -339,19 +339,12 @@ export const requestPurchaseWithQuantityIOS = (
   getIosModule().buyProductWithQuantityIOS(sku, quantity);
 
 /**
- * Finish Transaction (iOS only)
- *   Similar to `consumePurchaseAndroid`. Tells StoreKit that you have delivered the purchase to the user and StoreKit can now let go of the transaction.
+ * Finish Transaction (both platforms)
+ *   Abstracts  Finish Transaction
+ *   iOS: Tells StoreKit that you have delivered the purchase to the user and StoreKit can now let go of the transaction.
  *   Call this after you have persisted the purchased state to your server or local data in your app.
  *   `react-native-iap` will continue to deliver the purchase updated events with the successful purchase until you finish the transaction. **Even after the app has relaunched.**
- * @param {string} transactionId The transactionId of the function that you would like to finish.
- * @returns {Promise<void>}
- */
-export const finishTransactionIOS = (transactionId: string): Promise<void> =>
-  getIosModule().finishTransaction(transactionId);
-
-/**
- * Finish Transaction (both platforms)
- *   Abstracts `finishTransactionIOS`, `consumePurchaseAndroid`, `acknowledgePurchaseAndroid` in to one method.
+ *   Android: it will consume purchase for consumables and acknowledge purchase for non-consumables.
  * @param {object} purchase The purchase that you would like to finish.
  * @param {boolean} isConsumable Checks if purchase is consumable. Has effect on `android`.
  * @param {string} developerPayloadAndroid Android developerPayload.
@@ -417,16 +410,6 @@ export const acknowledgePurchaseAndroid = (
 ): Promise<PurchaseResult | void> => {
   return getAndroidModule().acknowledgePurchase(token, developerPayload);
 };
-
-/**
- * Consume a product (on Android.) No-op on iOS.
- * @param {string} token The product's token (on Android)
- * @returns {Promise<PurchaseResult>}
- */
-export const consumePurchaseAndroid = (
-  token: string,
-  developerPayload?: string,
-): Promise<PurchaseResult> =>  getAndroidModule().consumeProduct(token, developerPayload);
 
 /**
  * Deep link to subscriptions screen on Android. No-op on iOS.
