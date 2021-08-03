@@ -87,9 +87,7 @@ export const endConnection = (): Promise<void> =>
  */
 export const flushFailedPurchasesCachedAsPendingAndroid = (): Promise<
   string[]
-> => {
-  return getAndroidModule().flushFailedPurchasesCachedAsPending();
-};
+> =>  getAndroidModule().flushFailedPurchasesCachedAsPending();
 
 /**
  * Fill products with additional data
@@ -428,9 +426,7 @@ export const acknowledgePurchaseAndroid = (
 export const consumePurchaseAndroid = (
   token: string,
   developerPayload?: string,
-): Promise<PurchaseResult> => {
-  return getAndroidModule().consumeProduct(token, developerPayload);
-};
+): Promise<PurchaseResult> =>  getAndroidModule().consumeProduct(token, developerPayload);
 
 /**
  * Deep link to subscriptions screen on Android. No-op on iOS.
