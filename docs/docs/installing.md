@@ -26,7 +26,7 @@ Then follow the instructions below depending on the platform you're working with
   buildscript {
     ext {
       buildToolsVersion = "28.0.3"
-      minSdkVersion = 16
+      minSdkVersion = 21
       compileSdkVersion = 28
       targetSdkVersion = 28
       # Only using Android Support libraries
@@ -42,7 +42,7 @@ Then follow the instructions below depending on the platform you're working with
   buildscript {
     ext {
       buildToolsVersion = "28.0.3"
-      minSdkVersion = 16
+      minSdkVersion = 21
       compileSdkVersion = 28
       targetSdkVersion = 28
       # Remove 'supportLibVersion' property and put specific versions for AndroidX libraries
