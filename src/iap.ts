@@ -3,7 +3,6 @@ import * as Amazon from './types/amazon';
 import * as Apple from './types/apple';
 
 import {
-  DeviceEventEmitter,
   EmitterSubscription,
   Linking,
   NativeEventEmitter,
@@ -67,7 +66,7 @@ const checkNativeiOSAvailable = (): void => {
  * @returns {Promise<boolean>}
  */
 export const initConnection = (): Promise<boolean> =>
-  getNativeModule().canMakePayments();
+  getNativeModule().initConnection();
 
 /**
  * End module for purchase flow.
@@ -83,8 +82,6 @@ export const endConnection = (): Promise<void> =>
 export const flushFailedPurchasesCachedAsPendingAndroid = (): Promise<
   string[]
 > => {
-  checkNativeAndroidAvailable();
-
   return getAndroidModule().flushFailedPurchasesCachedAsPending();
 };
 
@@ -445,8 +442,6 @@ export const acknowledgePurchaseAndroid = (
   token: string,
   developerPayload?: string,
 ): Promise<PurchaseResult | void> => {
-  checkNativeAndroidAvailable();
-
   return getAndroidModule().acknowledgePurchase(token, developerPayload);
 };
 
@@ -459,8 +454,6 @@ export const consumePurchaseAndroid = (
   token: string,
   developerPayload?: string,
 ): Promise<PurchaseResult> => {
-  checkNativeAndroidAvailable();
-
   return getAndroidModule().consumeProduct(token, developerPayload);
 };
 
@@ -702,12 +695,14 @@ export const purchaseErrorListener = (
   listener: (errorEvent: PurchaseError) => void,
 ): EmitterSubscription => {
   if (Platform.OS === 'ios') {
-    checkNativeiOSAvailable();
-
     const myModuleEvt = new NativeEventEmitter(RNIapIos);
 
     return myModuleEvt.addListener('purchase-error', listener);
-  } else return DeviceEventEmitter.addListener('purchase-error', listener);
+  } else
+    return new NativeEventEmitter(getAndroidModule()).addListener(
+      'purchase-error',
+      listener,
+    );
 };
 
 /**
