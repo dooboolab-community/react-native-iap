@@ -95,20 +95,15 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       Log.i(
           TAG,
           "Already initialized, you should only call initConnection() once when your app starts");
-      //      promise.reject(
-      //          DoobooUtils.E_ALREADY_PREPARED,
-      //          "Already initialized, you should only call initConnection() once when your app
-      // starts");
-      //      return;
+      promise.resolve(true);
+      return;
     }
 
     if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(reactContext)
         != ConnectionResult.SUCCESS) {
       Log.i(TAG, "Google Play Services are not available on this device");
-      //      promise.reject(
-      //          PlayUtils.E_PLAY_SERVICES_UNAVAILABLE,
-      //          "Google Play Services are not available on this device");
-      //      return;
+      promise.resolve(false);
+      return;
     }
 
     billingClientCache =
