@@ -53,14 +53,7 @@ class RootComponent extends Component<*> {
                 // the purchase event will reappear on every relaunch of the app until you succeed
                 // in doing the below. It will also be impossible for the user to purchase consumables
                 // again until you do this.
-                if (Platform.OS === 'ios') {
-                  await RNIap.finishTransactionIOS(purchase.transactionId);
-                } else if (Platform.OS === 'android') {
-                  // If consumable (can be purchased again)
-                  await RNIap.consumePurchaseAndroid(purchase.purchaseToken);
-                  // If not consumable
-                  await RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken);
-                }
+                await RNIap.finishTransaction(purchase);
 
                 // From react-native-iap@4.1.0 you can simplify above `method`. Try to wrap the statement with `try` and `catch` to also grab the `error` message.
                 // If consumable (can be purchased again)
@@ -133,9 +126,8 @@ Finishing a Purchase
 ----------------------
 Purchases will keep being emitted to your `purchaseUpdatedListener` on every app relaunch until you finish the purchase.
 
-Consumable purchases should be consumed by calling `consumePurchaseAndroid()` or `finishTransactionIOS()`. Once an item is consumed, it will be removed from `getAvailablePurchases()` so it is up to you to record the purchase into your database before calling `consumePurchaseAndroid()` or `finishTransactionIOS()`.
-
-Non-consumable purchases need to be acknowledged on Android, or they will be automatically refunded after a few days. Acknowledge a purchase when you have delivered it to your user by calling `acknowledgePurchaseAndroid()`.
-On iOS non-consumable purchases are finished automatically but this will change in the future so it is recommended that you prepare by simply calling `finishTransactionIOS()` on non-consumables as well.
-
-`finishTransaction()` works for both platforms and is recommended since version 4.1.0 or later. Equal to finishTransactionIOS + consumePurchaseAndroid and acknowledgePurchaseAndroid.
+All purchases should be consumed by calling  `finishTransaction()`. 
+- For consumables: Once an item is consumed, it will be removed from `getAvailablePurchases()` so it is up to you to record the purchase into your database before calling  `finishTransaction()`.
+- For non-consumable purchases need to be acknowledged on Android, or they will be automatically refunded after a few days. This method acknowledges a purchase when you have delivered it to your user.
+- On iOS non-consumable purchases are finished automatically but this will change in the future so it is recommended that you prepare by simply calling this method on non-consumables as well.
+- It works for both platforms. Equal to finishTransaction for iOS + consumePurchase and acknowledgePurchase for Android.

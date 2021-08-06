@@ -70,12 +70,3 @@ Issue regarding `valid products`
 ### Example backend (Node.js)
 
 [Here](https://github.com/mifi/in-app-subscription-example) you can find an example backend for idempotent validating of receipts on both iOS/Android and storing and serving subscription state to the client.
-
-Supporting react-native-iap
----------------------------
-`react-native` is an open source project with MIT license. We are willing to
-maintain this repository to support devs to monetize around the world.
-
-Since `IAP` itself is not perfect on each platform, we desperately need
-this project to be maintained. If you'd like to help us, please consider being
-with us in [Open Collective](https://opencollective.com/react-native-iap).

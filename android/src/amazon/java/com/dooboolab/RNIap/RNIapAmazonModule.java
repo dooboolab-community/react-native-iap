@@ -46,18 +46,16 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void refreshItems(final Promise promise) {
-    // TODO: Determine what needs to happen here on Amazon, if anything.
-    // This is called from RNIap.consumeAllItemsAndroid()
-    // Android only
-    // Consume all items so they are able to buy again.
-    promise.resolve(true);
-  }
-
-  @ReactMethod
   public void getUser(final Promise promise) {
     RequestId requestId = PurchasingService.getUserData();
     DoobooUtils.getInstance().addPromiseForKey(PROMISE_GET_USER_DATA, promise);
+  }
+
+  @ReactMethod
+  public void flushFailedPurchasesCachedAsPending(final Promise promise) {
+    // No-op
+    final WritableNativeArray items = new WritableNativeArray();
+    promise.resolve(items);
   }
 
   @ReactMethod
