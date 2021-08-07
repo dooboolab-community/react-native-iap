@@ -1,5 +1,9 @@
 ## Changelogs
 
+# 7.2.1
+
+Fix android crash by delaying ios check [#1456](https://github.com/dooboolab/react-native-iap/pull/1456)
+
 # 7.2.0
 
 Moved Amazon readme to the docs folder
