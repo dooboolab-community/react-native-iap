@@ -138,10 +138,10 @@ export const getProducts = async <SkuType extends string>(
     const items: Product<SkuType>[] = await getIosModule()
       .getItems(skus)
       .filter((item: Product) => {
-        skus.includes(item.productId as SkuType);
-
-        return items;
+        if (skus.includes(item.productId as SkuType)) return item;
       });
+
+    return items;
   }
 
   if (Platform.OS === 'android') {
@@ -163,24 +163,49 @@ export const getProducts = async <SkuType extends string>(
  * @param {string[]} skus The item skus
  * @returns {Promise<Subscription[]>}
  */
-export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
-  (
-    Platform.select({
-      ios: getIosModule()
-        .getItems(skus)
-        .then((items: Subscription[]) =>
-          items.filter((item: Subscription) => skus.includes(item.productId)),
-        ),
-      android: async () => {
-        const subscriptions = await getAndroidModule().getItemsByType(
-          ANDROID_ITEM_TYPE_SUBSCRIPTION,
-          skus,
-        );
+export const getSubscriptions = async (
+  skus: string[],
+): Promise<Subscription[]> => {
+  if (Platform.OS === 'ios') {
+    const items: Subscription[] = await getIosModule()
+      .getItems(skus)
+      .filter((item: Subscription) => {
+        if (skus.includes(item.productId)) return item;
+      });
 
-        return fillProductsAdditionalData(subscriptions);
-      },
-    }) || Promise.resolve
-  )();
+    return items;
+  }
+
+  if (Platform.OS === 'android') {
+    const subscriptions = await getAndroidModule().getItemsByType(
+      ANDROID_ITEM_TYPE_SUBSCRIPTION,
+      skus,
+    );
+
+    fillProductsAdditionalData(subscriptions);
+
+    return subscriptions;
+  }
+
+  return Promise.resolve([]);
+};
+// (
+//   Platform.select({
+//     ios: getIosModule()
+//       .getItems(skus)
+//       .then((items: []) =>
+//         items.filter((item: Subscription) => skus.includes(item.productId)),
+//       ),
+//     android: async () => {
+//       const subscriptions = await getAndroidModule().getItemsByType(
+//         ANDROID_ITEM_TYPE_SUBSCRIPTION,
+//         skus,
+//       );
+
+//       return fillProductsAdditionalData(subscriptions);
+//     },
+//   }) || Promise.resolve
+// )();
 
 /**
  * Gets an invetory of purchases made by the user regardless of consumption status
