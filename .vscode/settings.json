@@ -22,10 +22,5 @@
   },
   "javascript.preferences.importModuleSpecifier": "relative",
   "typescript.preferences.importModuleSpecifier": "relative",
-  "prettier.configPath": ".prettierrc.js",
-  "workbench.colorCustomizations": {
-    "activityBar.background": "#441660",
-    "titleBar.activeBackground": "#5F1F87",
-    "titleBar.activeForeground": "#FDFAFE"
-  }
+  "prettier.configPath": ".prettierrc.js"
 }
