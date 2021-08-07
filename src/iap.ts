@@ -136,13 +136,15 @@ export const getProducts = <SkuType extends string>(
 ): Promise<Array<Product<SkuType>>> =>
   (
     Platform.select({
-      ios: getIosModule()
-        .getItems(skus)
-        .then((items: Product[]) =>
-          items.filter((item: Product) =>
-            skus.includes(item.productId as SkuType),
-          ),
-        ),
+      ios: async () => {
+        return getIosModule()
+          .getItems(skus)
+          .then((items: Product[]) =>
+            items.filter((item: Product) =>
+              skus.includes(item.productId as SkuType),
+            ),
+          );
+      },
       android: async () => {
         const products = await getAndroidModule().getItemsByType(
           ANDROID_ITEM_TYPE_IAP,
@@ -162,11 +164,13 @@ export const getProducts = <SkuType extends string>(
 export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
   (
     Platform.select({
-      ios: getIosModule()
-        .getItems(skus)
-        .then((items: Subscription[]) =>
-          items.filter((item: Subscription) => skus.includes(item.productId)),
-        ),
+      ios: async () => {
+        return getIosModule()
+          .getItems(skus)
+          .then((items: Subscription[]) =>
+            items.filter((item: Subscription) => skus.includes(item.productId)),
+          );
+      },
       android: async () => {
         const subscriptions = await getAndroidModule().getItemsByType(
           ANDROID_ITEM_TYPE_SUBSCRIPTION,
@@ -187,7 +191,9 @@ export const getPurchaseHistory = (): Promise<
 > =>
   (
     Platform.select({
-      ios: getIosModule().getAvailableItems(),
+      ios: async () => {
+        return getIosModule().getAvailableItems();
+      },
       android: async () => {
         const products = await getAndroidModule().getPurchaseHistoryByType(
           ANDROID_ITEM_TYPE_IAP,
@@ -211,7 +217,9 @@ export const getAvailablePurchases = (): Promise<
 > =>
   (
     Platform.select({
-      ios: getIosModule().getAvailableItems(),
+      ios: async () => {
+        return getIosModule().getAvailableItems();
+      },
       android: async () => {
         const products = await getAndroidModule().getAvailableItemsByType(
           ANDROID_ITEM_TYPE_IAP,
@@ -356,7 +364,9 @@ export const finishTransaction = (
 ): Promise<string | void> => {
   return (
     Platform.select({
-      ios: getIosModule().finishTransaction(purchase.transactionId),
+      ios: async () => {
+        return getIosModule().finishTransaction(purchase.transactionId);
+      },
       android: async () => {
         if (purchase)
           if (isConsumable)
