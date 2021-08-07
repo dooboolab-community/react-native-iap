@@ -1,5 +1,5 @@
-import * as Android from './types/android';
 import * as Amazon from './types/amazon';
+import * as Android from './types/android';
 import * as Apple from './types/apple';
 
 import {
@@ -131,28 +131,32 @@ const fillProductsAdditionalData = async (
  * @param {string[]} skus The item skus
  * @returns {Promise<Product[]>}
  */
-export const getProducts = <SkuType extends string>(
+export const getProducts = async <SkuType extends string>(
   skus: SkuType[],
-): Promise<Array<Product<SkuType>>> =>
-  (
-    Platform.select({
-      ios: getIosModule()
-        .getItems(skus)
-        .then((items: Product[]) =>
-          items.filter((item: Product) =>
-            skus.includes(item.productId as SkuType),
-          ),
-        ),
-      android: async () => {
-        const products = await getAndroidModule().getItemsByType(
-          ANDROID_ITEM_TYPE_IAP,
-          skus,
-        );
+): Promise<Array<Product<SkuType>>> => {
+  if (Platform.OS === 'ios') {
+    const items: Product<SkuType>[] = await getIosModule()
+      .getItems(skus)
+      .filter((item: Product) => {
+        skus.includes(item.productId as SkuType);
 
-        return fillProductsAdditionalData(products);
-      },
-    }) || Promise.resolve
-  )();
+        return items;
+      });
+  }
+
+  if (Platform.OS === 'android') {
+    const products = await getAndroidModule().getItemsByType(
+      ANDROID_ITEM_TYPE_IAP,
+      skus,
+    );
+
+    fillProductsAdditionalData(products);
+
+    return products;
+  }
+
+  return Promise.resolve([]);
+};
 
 /**
  * Get a list of subscriptions
