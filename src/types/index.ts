@@ -55,17 +55,20 @@ export interface ProductPurchase {
   transactionDate: number;
   transactionReceipt: string;
   purchaseToken?: string;
+  //iOS
+  originalTransactionDateIOS?: string;
+  originalTransactionIdentifierIOS?: string;
+  //Android
   dataAndroid?: string;
   signatureAndroid?: string;
   autoRenewingAndroid?: boolean;
   purchaseStateAndroid?: PurchaseStateAndroid;
-  originalTransactionDateIOS?: string;
-  originalTransactionIdentifierIOS?: string;
   isAcknowledgedAndroid?: boolean;
   packageNameAndroid?: string;
   developerPayloadAndroid?: string;
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
+  //Amazon
   userIdAmazon?: string;
   userMarketplaceAmazon?: string;
   userJsonAmazon?: string;
