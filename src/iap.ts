@@ -131,19 +131,13 @@ const fillProductsAdditionalData = async (
  * @param {string[]} skus The item skus
  * @returns {Promise<Product[]>}
  */
-export const getProducts = <SkuType extends string>(
-  skus: SkuType[],
-): Promise<Array<Product<SkuType>>> =>
+export const getProducts = (skus: string[]): Promise<Array<Product>> =>
   (
     Platform.select({
       ios: async () => {
-        return getIosModule()
-          .getItems(skus)
-          .then((items: Product[]) =>
-            items.filter((item: Product) =>
-              skus.includes(item.productId as SkuType),
-            ),
-          );
+        const items = await getIosModule().getItems(skus);
+
+        return items.filter((item: Product) => skus.includes(item.productId));
       },
       android: async () => {
         const products = await getAndroidModule().getItemsByType(
@@ -165,11 +159,11 @@ export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
   (
     Platform.select({
       ios: async () => {
-        return getIosModule()
-          .getItems(skus)
-          .then((items: Subscription[]) =>
-            items.filter((item: Subscription) => skus.includes(item.productId)),
-          );
+        const items = await getIosModule().getItems(skus);
+
+        return items.filter((item: Subscription) =>
+          skus.includes(item.productId),
+        );
       },
       android: async () => {
         const subscriptions = await getAndroidModule().getItemsByType(
@@ -244,18 +238,13 @@ export const getAvailablePurchases = (): Promise<
  */
 export const requestPurchase = (
   sku: string,
-  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean,
-  obfuscatedAccountIdAndroid?: string,
-  obfuscatedProfileIdAndroid?: string,
+  andDangerouslyFinishTransactionAutomaticallyIOS: boolean = false,
+  obfuscatedAccountIdAndroid: string | undefined = undefined,
+  obfuscatedProfileIdAndroid: string | undefined = undefined,
 ): Promise<InAppPurchase> =>
   (
     Platform.select({
       ios: async () => {
-        andDangerouslyFinishTransactionAutomaticallyIOS =
-          andDangerouslyFinishTransactionAutomaticallyIOS === undefined
-            ? false
-            : andDangerouslyFinishTransactionAutomaticallyIOS;
-
         if (andDangerouslyFinishTransactionAutomaticallyIOS)
           // eslint-disable-next-line no-console
           console.warn(
@@ -293,20 +282,15 @@ export const requestPurchase = (
  */
 export const requestSubscription = (
   sku: string,
-  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean,
-  purchaseTokenAndroid?: string,
-  prorationModeAndroid?: ProrationModesAndroid,
-  obfuscatedAccountIdAndroid?: string,
-  obfuscatedProfileIdAndroid?: string,
+  andDangerouslyFinishTransactionAutomaticallyIOS: boolean = false,
+  purchaseTokenAndroid: string | undefined = undefined,
+  prorationModeAndroid: ProrationModesAndroid = -1,
+  obfuscatedAccountIdAndroid: string | undefined = undefined,
+  obfuscatedProfileIdAndroid: string | undefined = undefined,
 ): Promise<SubscriptionPurchase | null> =>
   (
     Platform.select({
       ios: async () => {
-        andDangerouslyFinishTransactionAutomaticallyIOS =
-          andDangerouslyFinishTransactionAutomaticallyIOS === undefined
-            ? false
-            : andDangerouslyFinishTransactionAutomaticallyIOS;
-
         if (andDangerouslyFinishTransactionAutomaticallyIOS)
           // eslint-disable-next-line no-console
           console.warn(
@@ -320,8 +304,6 @@ export const requestSubscription = (
         );
       },
       android: async () => {
-        if (!prorationModeAndroid) prorationModeAndroid = -1;
-
         return getAndroidModule().buyItemByType(
           ANDROID_ITEM_TYPE_SUBSCRIPTION,
           sku,
@@ -613,48 +595,34 @@ export const validateReceiptAmazon = async (
 };
 
 /**
- * Add IAP purchase event in ios.
+ * Add IAP purchase event
  * @returns {callback(e: InAppPurchase | ProductPurchase)}
  */
 export const purchaseUpdatedListener = (
   listener: (event: InAppPurchase | SubscriptionPurchase) => void,
 ): EmitterSubscription => {
-  if (Platform.OS === 'ios') {
-    const myModuleEvt = new NativeEventEmitter(getIosModule());
+  const myModuleEvt = new NativeEventEmitter(getNativeModule());
 
-    return myModuleEvt.addListener('purchase-updated', listener);
-  } else {
-    const myRNIapModule = getAndroidModule();
-    const myModuleEvt = new NativeEventEmitter(myRNIapModule);
+  const emitterSubscription = myModuleEvt.addListener(
+    'purchase-updated',
+    listener,
+  );
+  if (Platform.OS === 'android') getAndroidModule().startListening();
 
-    const emitterSubscription = myModuleEvt.addListener(
-      'purchase-updated',
-      listener,
-    );
-
-    myRNIapModule.startListening();
-
-    return emitterSubscription;
-  }
+  return emitterSubscription;
 };
 
 /**
- * Add IAP purchase error event in ios.
+ * Add IAP purchase error event
  * @returns {callback(e: PurchaseError)}
  */
 export const purchaseErrorListener = (
   listener: (errorEvent: PurchaseError) => void,
-): EmitterSubscription => {
-  if (Platform.OS === 'ios') {
-    const myModuleEvt = new NativeEventEmitter(getIosModule());
-
-    return myModuleEvt.addListener('purchase-error', listener);
-  } else
-    return new NativeEventEmitter(getAndroidModule()).addListener(
-      'purchase-error',
-      listener,
-    );
-};
+): EmitterSubscription =>
+  new NativeEventEmitter(getNativeModule()).addListener(
+    'purchase-error',
+    listener,
+  );
 
 /**
  * Get the current receipt base64 encoded in IOS.

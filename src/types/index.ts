@@ -107,10 +107,9 @@ export interface Discount {
   subscriptionPeriod: string;
 }
 
-export interface Product<ProductId extends string = string>
-  extends ProductCommon {
+export interface Product extends ProductCommon {
   type: 'inapp' | 'iap';
-  productId: ProductId;
+  productId: string;
 }
 
 export interface Subscription extends ProductCommon {
