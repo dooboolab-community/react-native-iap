@@ -162,6 +162,7 @@ public class RNIapAmazonListener implements PurchasingListener {
           item.putString("userIdAmazon", userData.getUserId());
           item.putString("userMarketplaceAmazon", userData.getMarketplace());
           item.putString("userJsonAmazon", userData.toJSON().toString());
+          item.putBoolean("isCanceledAmazon", receipt.isCanceled());
 
           promiseItem = new WritableNativeMap();
           promiseItem.merge(item);
