@@ -69,6 +69,7 @@ export interface ProductPurchase {
   userIdAmazon?: string;
   userMarketplaceAmazon?: string;
   userJsonAmazon?: string;
+  isCanceledAmazon?: boolean
 }
 
 export interface PurchaseResult {
