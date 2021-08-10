@@ -1,5 +1,7 @@
 ## Changelogs
 
+_Breaking Change_:Amazon's receipt was incorrectly being put in `originalJson` it now matches the other platforms: `transactionReceipt`. 
+
 # 7.2.1
 
 Fix android crash by delaying ios check [#1456](https://github.com/dooboolab/react-native-iap/pull/1456)
