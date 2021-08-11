@@ -1,6 +1,7 @@
 package com.dooboolab.RNIap;
 
 import android.util.Log;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.amazon.device.iap.PurchasingListener;
 import com.amazon.device.iap.PurchasingService;
@@ -154,14 +155,7 @@ public class RNIapAmazonListener implements PurchasingListener {
         WritableMap promiseItem = null;
         final List<Receipt> purchases = response.getReceipts();
         for (Receipt receipt : purchases) {
-          WritableMap item = Arguments.createMap();
-          item.putString("productId", receipt.getSku());
-          item.putDouble("transactionDate", receipt.getPurchaseDate().getTime());
-          item.putString("purchaseToken", receipt.getReceiptId());
-          item.putString("originalJson", receipt.toJSON().toString());
-          item.putString("userIdAmazon", userData.getUserId());
-          item.putString("userMarketplaceAmazon", userData.getMarketplace());
-          item.putString("userJsonAmazon", userData.toJSON().toString());
+          WritableMap item = receiptToMap(userData, receipt);
 
           promiseItem = new WritableNativeMap();
           promiseItem.merge(item);
@@ -234,6 +228,20 @@ public class RNIapAmazonListener implements PurchasingListener {
     }
   }
 
+  @NonNull
+  private WritableMap receiptToMap(UserData userData, Receipt receipt) {
+    WritableMap item = Arguments.createMap();
+    item.putString("productId", receipt.getSku());
+    item.putDouble("transactionDate", receipt.getPurchaseDate().getTime());
+    item.putString("purchaseToken", receipt.getReceiptId());
+    item.putString("transactionReceipt", receipt.toJSON().toString());
+    item.putString("userIdAmazon", userData.getUserId());
+    item.putString("userMarketplaceAmazon", userData.getMarketplace());
+    item.putString("userJsonAmazon", userData.toJSON().toString());
+    item.putBoolean("isCanceledAmazon", receipt.isCanceled());
+    return item;
+  }
+
   @Override
   public void onPurchaseResponse(final PurchaseResponse response) {
     final String requestId = response.getRequestId().toString();
@@ -249,14 +257,7 @@ public class RNIapAmazonListener implements PurchasingListener {
       case SUCCESSFUL:
         final Receipt receipt = response.getReceipt();
         final UserData userData = response.getUserData();
-        WritableMap item = Arguments.createMap();
-        item.putString("productId", receipt.getSku());
-        item.putDouble("transactionDate", receipt.getPurchaseDate().getTime());
-        item.putString("purchaseToken", receipt.getReceiptId());
-        item.putString("originalJson", receipt.toJSON().toString());
-        item.putString("userIdAmazon", userData.getUserId());
-        item.putString("userMarketplaceAmazon", userData.getMarketplace());
-        item.putString("userJsonAmazon", userData.toJSON().toString());
+        WritableMap item = receiptToMap(userData, receipt);
 
         WritableMap promiseItem = new WritableNativeMap();
         promiseItem.merge(item);
