@@ -18,7 +18,22 @@
 ////////////////////////////////////////////////////     _//////////_  // Implementation
 @implementation RNIapIos
 
++ (instancetype)sharedInstance {
+    static RNIapIos *shared = nil;
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        shared = [[RNIapIos alloc] initPrivate];
+    });
+
+    return shared;
+}
+
 -(instancetype)init {
+    return [RNIapIos sharedInstance];
+}
+
+-(instancetype)initPrivate {
     if ((self = [super init])) {
         promisesByKey = [NSMutableDictionary dictionary];
         pendingTransactionWithAutoFinish = false;
@@ -92,14 +107,13 @@
     }
 }
 
-- (BOOL)paymentQueue:(SKPaymentQueue *)queue shouldAddStorePayment:(SKPayment *)payment forProduct:(SKProduct *)product {
-  promotedProduct = product;
-  promotedPayment = payment;
+-(void)handlePromotedProduct:(SKPayment *)payment forProduct: (SKProduct *)product {
+    promotedProduct = product;
+    promotedPayment = payment;
 
-  if (hasListeners) {
-      [self sendEventWithName:@"iap-promoted-product" body:product.productIdentifier];
-  }
-  return NO;
+    if (hasListeners) {
+        [self sendEventWithName:@"iap-promoted-product" body:product.productIdentifier];
+    }
 }
 
 ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
