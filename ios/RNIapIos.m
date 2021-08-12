@@ -299,7 +299,7 @@ RCT_EXPORT_METHOD(clearProducts) {
 RCT_EXPORT_METHOD(promotedProduct:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     NSLog(@"\n\n\n  ***  get promoted product. \n\n.");
-    resolve(promotedProduct ? promotedProduct : [NSNull null]);
+    resolve(promotedProduct ? [self getProductObject:promotedProduct] : [NSNull null]);
 }
 
 RCT_EXPORT_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
