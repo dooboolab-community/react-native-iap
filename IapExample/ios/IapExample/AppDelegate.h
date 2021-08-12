@@ -7,9 +7,8 @@
 
 #import <React/RCTBridgeDelegate.h>
 #import <UIKit/UIKit.h>
-#import <StoreKit/StoreKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate, SKPaymentTransactionObserver>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
 
