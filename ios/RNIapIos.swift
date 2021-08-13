@@ -515,6 +515,9 @@ if originalTransaction {
 }
 
 block(purchase)
+}
+    }
+}
 
 
 
