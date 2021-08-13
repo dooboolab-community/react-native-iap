@@ -116,7 +116,11 @@ class Page extends Component {
   async componentDidMount(): void {
     try {
       await RNIap.initConnection();
-      await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
+      if(Platform.OS == 'android'){
+        await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
+      }else{
+        await RNIap.clearTransactionIOS();
+      }
     } catch (err) {
       console.warn(err.code, err.message);
     }
