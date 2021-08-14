@@ -2,14 +2,13 @@
 
 import React
 import StoreKit
-
+@objc(RNIapIos)
 class RNIapIos: SKRequestDelegate {
     private var promisesByKey: [AnyHashable : Any]?
     private var myQueue: DispatchQueue?
     private var hasListeners = false
     private var pendingTransactionWithAutoFinish = false
     private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
-}
 
 init() {
     super.init()
@@ -107,7 +106,288 @@ func supportedEvents() -> [String]? {
 }
 
 
+@objc public func initConnection(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+  SKPaymentQueue.default().addTransactionObserver(self)
+let canMakePayments = SKPaymentQueue.canMakePayments()
+resolve(NSNumber(value: canMakePayments))
+}
 
+@objc public func endConnection(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+  SKPaymentQueue.default().removeTransactionObserver(self)
+resolve(nil)
+}
+
+@objc public func getItems(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+  let productIdentifiers = Set<AnyHashable>(skus)
+if let productIdentifiers = productIdentifiers as? Set<String> {
+    productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
+}
+productsRequest.delegate = self
+let key = RCTKeyForInstance(productsRequest)
+addPromise(forKey: key, resolve: resolve, reject: reject)
+productsRequest.start()
+}
+
+@objc public func getAvailableItems(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+addPromise(forKey: "availableItems", resolve: resolve, reject: reject)
+SKPaymentQueue.default().restoreCompletedTransactions()
+    }
+
+
+@objc public func buyProduct(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+      pendingTransactionWithAutoFinish = finishAutomatically
+var product: SKProduct?
+let lockQueue = DispatchQueue(label: "validProducts")
+lockQueue.sync {
+    for p in validProducts {
+        if sku == p.productIdentifier {
+            product = p
+            break
+        }
+    }
+}
+if product {
+    addPromise(forKey: product.productIdentifier, resolve: resolve, reject: reject)
+
+    let payment = SKMutablePayment(product: product)
+    SKPaymentQueue.default().add(payment)
+} else{
+  if hasListeners {
+    let err = [
+        "debugMessage" : "Invalid product ID.",
+        "code" : "E_DEVELOPER_ERROR",
+        "message" : "Invalid product ID.",
+        "productId" : sku
+    ]
+    sendEvent(withName: "purchase-error", body: err)
+}
+reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
+}
+    }
+
+
+@objc public func buyProductWithOffer(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+var product: SKProduct?
+let payment: SKMutablePayment? = nil
+let lockQueue = DispatchQueue(label: "validProducts")
+lockQueue.sync {
+    for p in validProducts {
+        if sku == p.productIdentifier {
+            product = p
+            break
+        }
+    }
+}
+
+if product {
+    addPromise(forKey: product.productIdentifier, resolve: resolve, reject: reject)
+
+    payment = SKMutablePayment(product: product)
+    if __IPHONE_12_2 {
+    if #available(iOS 12.2, *) {
+        var discount: SKPaymentDiscount? = nil
+if let discountOffer = UUID(uuidString: discountOffer["nonce"]) {
+    discount = SKPaymentDiscount(
+        identifier: discountOffer["identifier"],
+        keyIdentifier: discountOffer["keyIdentifier"],
+        nonce: discountOffer,
+        signature: discountOffer["signature"],
+        timestamp: discountOffer["timestamp"])
+        payment.paymentDiscount = discount
+    }
+    
+    payment.applicationUsername = usernameHash
+    SKPaymentQueue.default().addPayment(payment)
+}else {
+  if hasListeners {
+    let err = [
+        "debugMessage" : "Invalid product ID.",
+        "message" : "Invalid product ID.",
+        "code" : "E_DEVELOPER_ERROR",
+        "productId" : sku
+    ]
+    sendEvent(withName: "purchase-error", body: err)
+}
+reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
+}
+
+    }
+
+
+@objc public func buyProductWithQuantityIOS(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+
+      print("\n\n\n  buyProductWithQuantityIOS  \n\n.")
+var product: SKProduct?
+let lockQueue = DispatchQueue(label: "validProducts")
+lockQueue.sync {
+    for p in validProducts {
+        if sku == p.productIdentifier {
+            product = p
+            break
+        }
+    }
+}
+
+if product {
+    let payment = SKMutablePayment(product: product)
+    payment.quantity = quantity
+    SKPaymentQueue.default().add(payment)
+} else {
+      if hasListeners {
+    let err = [
+        "debugMessage" : "Invalid product ID.",
+        "message" : "Invalid product ID.",
+        "code" : "E_DEVELOPER_ERROR",
+        "productId" : sku
+    ]
+    sendEvent(withName: "purchase-error", body: err)
+}
+reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
+    }
+    }
+
+
+@objc public func clearTransaction(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+
+print("\n\n\n  ***  clear remaining Transactions. Call this before make a new transaction   \n\n.")
+
+let pendingTrans = SKPaymentQueue.default().transactions()
+countPendingTransaction = (pendingTrans.count)
+
+if countPendingTransaction > 0 {
+    addPromise(forKey: "cleaningTransactions", resolve: resolve, reject: reject)
+    for transaction in pendingTrans {
+        SKPaymentQueue.default().finish(transaction)
+    }
+} else {
+    resolve(nil)
+}
+    }
+
+
+@objc public func clearProducts(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+      print("\n\n\n  ***  clear valid products. \n\n.")
+let lockQueue = DispatchQueue(label: "validProducts")
+lockQueue.sync {
+    validProducts.removeAll()
+}
+    }
+
+    @objc public func  promotedProduct(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+print("\n\n\n  ***  get promoted product. \n\n.")
+resolve(promotedProduct ?? NSNull())
+    }
+
+        @objc public func  buyPromotedProduct(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+if promotedPayment {
+    print("\n\n\n  ***  buy promoted product. \n\n.")
+    SKPaymentQueue.default().addPayment(promotedPayment)
+} else {
+    reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
+}
+    }
+
+
+
+        @objc public func  requestReceipt(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+requestReceiptData(withBlock: refresh) { [self] receiptData, error in
+    if error == nil {
+        resolve(receiptData?.base64EncodedString(options: []))
+    } else {
+        reject(standardErrorCode(9), "Invalid receipt", nil)
+    }
+}
+    }
+
+
+
+        @objc public func  finishTransaction(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+finishTransaction(withIdentifier: transactionIdentifier)
+    }
+
+
+        @objc public func getPendingTransactions (
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+      requestReceiptData(withBlock: false) { receiptData, error in
+    var output: [AnyHashable] = []
+    if receiptData != nil {
+        let transactions = SKPaymentQueue.default().transactions()
+
+        for item in transactions {
+
+          var purchase = [
+    "transactionDate" : NSNumber(value: item.transactionDate.timeIntervalSince1970 * 1000),
+    "transactionId" : item.transactionIdentifier,
+    "productId" : item.payment.productIdentifier,
+    "transactionReceipt" : receiptData.base64EncodedString(options: [])
+]
+output.append(purchase)
+
+        }
+    }
+    resolve(output)
+}
+
+    }
+
+        @objc public func  presentCodeRedemptionSheet(
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+if __IPHONE_14_0 && !TARGET_OS_TV {
+if #available(iOS 14.0, *) {
+    SKPaymentQueue.default().presentCodeRedemptionSheet()
+    resolve(nil)
+} else {
+    reject(standardErrorCode(2), "This method only available above iOS 14", nil)
+}
+} else {
+reject(standardErrorCode(2), "This method only available above iOS 14", nil)
+}
+    }
+
+    
 // StoreKitDelegate
 func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
     for prod in response.products {
@@ -590,4 +870,5 @@ func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SK
             countPendingTransaction = nil
         }
     }
+}
 }
