@@ -2,10 +2,20 @@
 
 import React
 import StoreKit
+
+extension Date {
+    var millisecondsSince1970:Int64 {
+        return Int64((self.timeIntervalSince1970 * 1000.0).rounded())
+    }
+
+    init(milliseconds:Int64) {
+        self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)
+    }
+}
 @objc(RNIapIos)
 class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver, SKProductsRequestDelegate {
     private var promisesByKey: Dictionary<String, Any>
-    private var myQueue: DispatchQueue?
+    private var myQueue: DispatchQueue
     private var hasListeners = false
     private var pendingTransactionWithAutoFinish = false
     private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
@@ -239,6 +249,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     
     @objc public func buyProductWithQuantityIOS(
+        sku: String,
+        quantity: Int,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
@@ -255,8 +267,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             }
         }
         
-        if product {
-            let payment = SKMutablePayment(product: product)
+        if let prod = product {
+            let payment = SKMutablePayment(product: prod)
             payment.quantity = quantity
             SKPaymentQueue.default().add(payment)
         } else {
@@ -281,13 +293,13 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         
         print("\n\n\n  ***  clear remaining Transactions. Call this before make a new transaction   \n\n.")
         
-        let pendingTrans = SKPaymentQueue.default().transactions()
-        countPendingTransaction = (pendingTrans.count)
+        let pendingTrans = SKPaymentQueue.default().transactions
+        let countPendingTransaction = pendingTrans.count
         
         if countPendingTransaction > 0 {
             addPromise(forKey: "cleaningTransactions", resolve: resolve, reject: reject)
             for transaction in pendingTrans {
-                SKPaymentQueue.default().finish(transaction)
+                SKPaymentQueue.default().finishTransaction(transaction)
             }
         } else {
             resolve(nil)
@@ -311,16 +323,16 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         print("\n\n\n  ***  get promoted product. \n\n.")
-        resolve(promotedProduct ?? NSNull())
+        resolve(promotedProduct )
     }
     
     @objc public func  buyPromotedProduct(
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        if promotedPayment {
+        if let promoPayment = promotedPayment {
             print("\n\n\n  ***  buy promoted product. \n\n.")
-            SKPaymentQueue.default().addPayment(promotedPayment)
+            SKPaymentQueue.default().add(promoPayment)
         } else {
             reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
         }
@@ -329,6 +341,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     
     @objc public func  requestReceipt(
+        refresh: Bool,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
@@ -344,6 +357,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     
     @objc public func  finishTransaction(
+        transactionIdentifier: String,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
@@ -357,16 +371,16 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     ) {
         requestReceiptData(withBlock: false) { receiptData, error in
             var output: [AnyHashable] = []
-            if receiptData != nil {
-                let transactions = SKPaymentQueue.default().transactions()
+            if let receipt = receiptData {
+                let transactions = SKPaymentQueue.default().transactions
                 
                 for item in transactions {
-                    
-                    var purchase = [
-                        "transactionDate" : NSNumber(value: item.transactionDate.timeIntervalSince1970 * 1000),
+                    let timestamp = item.transactionDate?.millisecondsSince1970 == nil ? nil : String(item.transactionDate!.millisecondsSince1970)
+                    let purchase = [
+                        "transactionDate" : timestamp,
                         "transactionId" : item.transactionIdentifier,
                         "productId" : item.payment.productIdentifier,
-                        "transactionReceipt" : receiptData.base64EncodedString(options: [])
+                        "transactionReceipt" : receipt.base64EncodedString(options: [])
                     ]
                     output.append(purchase)
                     
@@ -381,16 +395,16 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        if __IPHONE_14_0 && !TARGET_OS_TV {
+        #if !os(tvOS)
             if #available(iOS 14.0, *) {
                 SKPaymentQueue.default().presentCodeRedemptionSheet()
                 resolve(nil)
             } else {
                 reject(standardErrorCode(2), "This method only available above iOS 14", nil)
             }
-        } else {
-            reject(standardErrorCode(2), "This method only available above iOS 14", nil)
-        }
+        #else
+            reject(standardErrorCode(2), "This method is not available on tvOS", nil)
+        #endif
     }
     
     
@@ -413,14 +427,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
     // Add to valid products from Apple server response. Allowing getProducts, getSubscriptions call several times.
     // Doesn't allow duplication. Replace new product.
-    func add(_ aProd: SKProduct?) {
+    func add(_ aProd: SKProduct) {
         let lockQueue = DispatchQueue(label: "validProducts")
         lockQueue.sync {
-            print("\n  Add new object : \(aProd?.productIdentifier ?? "")")
+            print("\n  Add new object : \(aProd.productIdentifier)")
             var delTar = -1
             for k in 0..<validProducts.count {
                 let cur = validProducts[k]
-                if cur?.productIdentifier == aProd.productIdentifier {
+                if cur.productIdentifier == aProd.productIdentifier {
                     delTar = k
                 }
             }
@@ -433,9 +447,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     func request(_ request: SKRequest, didFailWithError error: Error) {
         if request is SKReceiptRefreshRequest {
-            if receiptBlock != nil {
+            if let unwrappedReceiptBlock = receiptBlock {
                 let standardError = NSError(domain: (error as NSError).domain, code: 9, userInfo: (error as NSError).userInfo)
-                receiptBlock(nil, standardError)
+                unwrappedReceiptBlock(nil, standardError)
                 receiptBlock = nil
                 return
             }else {
@@ -591,7 +605,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
     
     
-    func getProductObject(_ product: SKProduct?) -> [AnyHashable : Any]? {
+    func getProductObject(_ product: SKProduct?) -> [String : String]? {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.locale = product.priceLocale
