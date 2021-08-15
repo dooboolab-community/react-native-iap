@@ -3,18 +3,20 @@
 import React
 import StoreKit
 @objc(RNIapIos)
-class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
-    private var promisesByKey: [AnyHashable : Any]?
+class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver, SKProductsRequestDelegate {
+    private var promisesByKey: Dictionary<String, Any>
     private var myQueue: DispatchQueue?
     private var hasListeners = false
     private var pendingTransactionWithAutoFinish = false
     private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
     private var validProducts: [SKProduct]
     private var promotedPayment: SKPayment?
+    private var promotedProduct: SKProduct
+    private var productsRequest: SKProductsRequest
     
     override init() {
         super.init()
-        promisesByKey = [AnyHashable : Any]()
+        promisesByKey = [String : Any]()
         pendingTransactionWithAutoFinish = false
         myQueue = DispatchQueue(label: "reject")
         validProducts = [SKProduct]()
@@ -24,7 +26,7 @@ class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
         SKPaymentQueue.default().remove(self)
     }
     
-    class func requiresMainQueueSetup() -> Bool {
+    override class func requiresMainQueueSetup() -> Bool {
         return true
     }
     
@@ -32,36 +34,36 @@ class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
         paymentQueue(SKPaymentQueue.default(), updatedTransactions: SKPaymentQueue.default().transactions)
     }
     
-    func startObserving() {
+    override func startObserving() {
         hasListeners = true
         flushUnheardEvents()
     }
     
-    func stopObserving() {
+    override func stopObserving() {
         hasListeners = false
     }
     
-    func addListener(_ eventName: String?) {
+    override func addListener(_ eventName: String?) {
         super.addListener(eventName)
         
         if (eventName == "iap-promoted-product") && promotedPayment != nil {
-            sendEvent(withName: "iap-promoted-product", body: promotedPayment.productIdentifier)
+            sendEvent(withName: "iap-promoted-product", body: promotedPayment?.productIdentifier)
         }
     }
     
     func addPromise(forKey key: String?, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        var promises = promisesByKey.value(forKey: key ?? "") as? [AnyHashable]
+        var promises = promisesByKey[key ?? ""] as? [AnyHashable]
         
         if promises == nil {
             promises = []
-            promisesByKey.setValue(promises, forKey: key ?? "")
+            promisesByKey[ key ?? ""] = promises
         }
         
         promises?.append([resolve, reject])
     }
     
     func resolvePromises(forKey key: String?, value: Any?) {
-        var promises = promisesByKey.value(forKey: key ?? "") as? [AnyHashable]
+        let promises = promisesByKey[key ?? ""] as? [AnyHashable]
         
         if let promises = promises {
             for tuple in promises {
@@ -71,12 +73,12 @@ class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
                 let resolveBlck = tuple[0] as? RCTPromiseResolveBlock
                 resolveBlck?(value)
             }
-            promisesByKey.removeObject(forKey: key ?? "")
+            promisesByKey[key ?? ""] = nil
         }
     }
     
     func rejectPromises(forKey key: String?, code: String?, message: String?, error: Error?) {
-        var promises = promisesByKey.value(forKey: key ?? "") as? [AnyHashable]
+        let promises = promisesByKey[key ?? ""] as? [AnyHashable]
         
         if let promises = promises {
             for tuple in promises {
@@ -86,7 +88,7 @@ class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
                 let reject = tuple[1] as? RCTPromiseRejectBlock
                 reject?(code, message, error)
             }
-            promisesByKey.removeObject(forKey: key ?? "")
+            promisesByKey[ key ?? ""]=nil
         }
     }
     
@@ -103,7 +105,7 @@ class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
     ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
     //RCT_EXPORT_MODULE();
     
-    func supportedEvents() -> [String]? {
+    override func supportedEvents() -> [String]? {
         return ["iap-promoted-product", "purchase-updated", "purchase-error"]
     }
     
@@ -112,7 +114,7 @@ class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        SKPaymentQueue.default().addTransactionObserver(self)
+        SKPaymentQueue.default().add(self)
         let canMakePayments = SKPaymentQueue.canMakePayments()
         resolve(NSNumber(value: canMakePayments))
     }
@@ -121,11 +123,12 @@ class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        SKPaymentQueue.default().removeTransactionObserver(self)
+        SKPaymentQueue.default().remove(self)
         resolve(nil)
     }
     
     @objc public func getItems(
+        skus: [String],
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
@@ -148,9 +151,9 @@ class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
     }
     
     
-    @objc public func buyProduct(
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    @objc public func buyProduct(sku:String, finishAutomatically: Bool,
+                                 resolve: @escaping RCTPromiseResolveBlock = { _ in },
+                                 _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         pendingTransactionWithAutoFinish = finishAutomatically
         var product: SKProduct?
@@ -163,10 +166,10 @@ class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
                 }
             }
         }
-        if product {
-            addPromise(forKey: product.productIdentifier, resolve: resolve, reject: reject)
+        if let prod = product {
+            addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
             
-            let payment = SKMutablePayment(product: product)
+            let payment = SKMutablePayment(product: prod)
             SKPaymentQueue.default().add(payment)
         } else{
             if hasListeners {
@@ -184,11 +187,14 @@ class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
     
     
     @objc public func buyProductWithOffer(
+        sku: String,
+        usernameHash: String,
+        discountOffer: Dictionary<String,String>,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         var product: SKProduct?
-        let payment: SKMutablePayment? = nil
+        
         let lockQueue = DispatchQueue(label: "validProducts")
         lockQueue.sync {
             for p in validProducts {
@@ -199,42 +205,37 @@ class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
             }
         }
         
-        if product {
-            addPromise(forKey: product.productIdentifier, resolve: resolve, reject: reject)
+        if let prod = product {
+            addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
             
-            payment = SKMutablePayment(product: product)
-            if __IPHONE_12_2 {
-                if #available(iOS 12.2, *) {
-                    var discount: SKPaymentDiscount? = nil
-                    if let discountOffer = UUID(uuidString: discountOffer["nonce"]) {
-                        discount = SKPaymentDiscount(
-                            identifier: discountOffer["identifier"],
-                            keyIdentifier: discountOffer["keyIdentifier"],
-                            nonce: discountOffer,
-                            signature: discountOffer["signature"],
-                            timestamp: discountOffer["timestamp"])
-                        payment.paymentDiscount = discount
-                    }
-                    
-                    payment.applicationUsername = usernameHash
-                    SKPaymentQueue.default().addPayment(payment)
-                }else {
-                    if hasListeners {
-                        let err = [
-                            "debugMessage" : "Invalid product ID.",
-                            "message" : "Invalid product ID.",
-                            "code" : "E_DEVELOPER_ERROR",
-                            "productId" : sku
-                        ]
-                        sendEvent(withName: "purchase-error", body: err)
-                    }
-                    reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
-                }
-                
+            let payment: SKMutablePayment = SKMutablePayment(product: prod)
+            
+            if #available(iOS 12.2, *) {
+                let discount: SKPaymentDiscount = SKPaymentDiscount(
+                    identifier: discountOffer["identifier"]!,
+                    keyIdentifier: discountOffer["keyIdentifier"]!,
+                    nonce: UUID(uuidString: discountOffer["nonce"]!)!,
+                    signature: discountOffer["signature"]!,
+                    timestamp: NSNumber(value: Int(discountOffer["timestamp"]!)!))
+                payment.paymentDiscount = discount
             }
+            payment.applicationUsername = usernameHash
+            SKPaymentQueue.default().add(payment)
+        }else {
+            if hasListeners {
+                let err = [
+                    "debugMessage" : "Invalid product ID.",
+                    "message" : "Invalid product ID.",
+                    "code" : "E_DEVELOPER_ERROR",
+                    "productId" : sku
+                ]
+                sendEvent(withName: "purchase-error", body: err)
+            }
+            reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
         }
         
     }
+    
     
     
     @objc public func buyProductWithQuantityIOS(
