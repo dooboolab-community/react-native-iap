@@ -37,7 +37,8 @@ target 'IapExample' do
   pod 'React-perflogger', :path => '../node_modules/react-native/ReactCommon/reactperflogger'
   pod 'React-runtimeexecutor', :path => '../node_modules/react-native/ReactCommon/runtimeexecutor'
 
-
+#  pod 'RNIap', :path => '../node_modules/react-native-iap'
+  pod 'RNIap', :path => '../../'
 
   target 'IapExampleTests' do
     inherit! :search_paths

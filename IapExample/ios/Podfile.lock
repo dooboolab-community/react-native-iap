@@ -267,7 +267,7 @@ PODS:
     - React-cxxreact (= 0.64.2)
     - React-jsi (= 0.64.2)
     - React-perflogger (= 0.64.2)
-  - RNIap (7.2.1):
+  - RNIap (7.3.0):
     - React-Core
   - Yoga (1.14.0)
 
@@ -301,7 +301,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - RNIap (from `../node_modules/react-native-iap`)
+  - RNIap (from `../../`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -364,7 +364,7 @@ EXTERNAL SOURCES:
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
   RNIap:
-    :path: "../node_modules/react-native-iap"
+    :path: "../../"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -397,9 +397,9 @@ SPEC CHECKSUMS:
   React-RCTVibration: 24600e3b1aaa77126989bc58b6747509a1ba14f3
   React-runtimeexecutor: a9904c6d0218fb9f8b19d6dd88607225927668f9
   ReactCommon: 149906e01aa51142707a10665185db879898e966
-  RNIap: 536b64f090a3d2e707b4f55d9aa5351482f20ea4
+  RNIap: 148746bc5d43a942b30ddd67e6c40e268967c558
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
 
-PODFILE CHECKSUM: db6946eb2c0c03630bdd5ca76e8b4f87798c50dc
+PODFILE CHECKSUM: 2bdf945f0241005c0def0636f8ec7db1a8db8002
 
 COCOAPODS: 1.10.1

@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/andres.aguilar/reactWorkspace/react-native-iap/RNIapIos.swift">
+   </FileRef>
+   <FileRef
       location = "group:IapExample.xcodeproj">
    </FileRef>
    <FileRef
