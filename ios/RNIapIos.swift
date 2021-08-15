@@ -7,7 +7,11 @@ extension Date {
     var millisecondsSince1970:Int64 {
         return Int64((self.timeIntervalSince1970 * 1000.0).rounded())
     }
-
+    
+    var millisecondsSince1970String:String {
+        return String((self.timeIntervalSince1970 * 1000.0).rounded())
+    }
+    
     init(milliseconds:Int64) {
         self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)
     }
@@ -23,6 +27,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     private var promotedPayment: SKPayment?
     private var promotedProduct: SKProduct
     private var productsRequest: SKProductsRequest
+    private var countPendingTransaction: Int?
     
     override init() {
         super.init()
@@ -396,14 +401,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         #if !os(tvOS)
-            if #available(iOS 14.0, *) {
-                SKPaymentQueue.default().presentCodeRedemptionSheet()
-                resolve(nil)
-            } else {
-                reject(standardErrorCode(2), "This method only available above iOS 14", nil)
-            }
+        if #available(iOS 14.0, *) {
+            SKPaymentQueue.default().presentCodeRedemptionSheet()
+            resolve(nil)
+        } else {
+            reject(standardErrorCode(2), "This method only available above iOS 14", nil)
+        }
         #else
-            reject(standardErrorCode(2), "This method is not available on tvOS", nil)
+        reject(standardErrorCode(2), "This method is not available on tvOS", nil)
         #endif
     }
     
@@ -503,21 +508,22 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 SKPaymentQueue.default().finishTransaction(transaction)
                 myQueue.sync(execute: { [self] in
                     if hasListeners {
-                        let responseCode = NSNumber(value: transaction.error.code).stringValue
+                        let code =  (transaction.error as NSError?)?.code
+                        let responseCode = String(code ?? 0)
                         let err = [
                             "responseCode" : responseCode,
-                            "debugMessage" : transaction.error.localizedDescription,
-                            "code" : standardErrorCode(Int(transaction.error.code)),
-                            "message" : transaction.error.localizedDescription,
+                            "debugMessage" : transaction.error?.localizedDescription,
+                            "code" : standardErrorCode(code),
+                            "message" : transaction.error?.localizedDescription,
                             "productId" : transaction.payment.productIdentifier
                         ]
                         sendEvent(withName: "purchase-error", body: err)
                     }
                     
-                    if transaction.error.code != .paymentCancelled {
+                    if transaction.error?.code != .paymentCancelled {
                         rejectPromises(
                             forKey: transaction.payment.productIdentifier,
-                            code: standardErrorCode(Int(transaction.error.code)),
+                            code: standardErrorCode(transaction.error?.code),
                             message: transaction.error.localizedDescription)
                     }
                     
@@ -532,7 +538,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         let queue = SKPaymentQueue.default()
         for transaction in queue.transactions {
             if transaction.transactionIdentifier == transactionIdentifier {
-                SKPaymentQueue.default().finish(transaction)
+                SKPaymentQueue.default().finishTransaction(transaction)
             }
         }
     }
@@ -540,17 +546,18 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
         ////////   RESTORE
         print("\n\n\n  paymentQueueRestoreCompletedTransactionsFinished  \n\n.")
-        var items = [AnyHashable](repeating: 0, count: queue.transactions.count)
+        var items = [AnyHashable]()
         for transaction in queue.transactions {
             if transaction.transactionState == .restored || transaction.transactionState == .purchased {
                 getPurchaseData(transaction) { restored in
                     if let restored = restored {
                         items.append(restored)
                     }
-                    SKPaymentQueue.default().finish(transaction)
+                    SKPaymentQueue.default().finishTransaction(transaction)
                 }
             }
         }
+        resolvePromises(forKey: "availableItems", value: items)
     }
     
     func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
@@ -564,9 +571,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         print("\n\n\n restoreCompletedTransactionsFailedWithError \n\n.")
     }
     
-    func purchaseProcess(_ transaction: SKPaymentTransaction?) {
+    func purchaseProcess(_ transaction: SKPaymentTransaction) {
         if pendingTransactionWithAutoFinish {
-            SKPaymentQueue.default().finish(transaction)
+            SKPaymentQueue.default().finishTransaction(transaction)
             pendingTransactionWithAutoFinish = false
         }
         getPurchaseData(transaction) { [self] purchase in
@@ -577,13 +584,12 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 sendEvent(withName: "purchase-updated", body: purchase)
             }
         }
-        
-        
-        resolvePromises(forKey: "availableItems", value: items)
     }
     
     
-    func standardErrorCode(_ code: Int) -> String? {
+    func standardErrorCode(_ code: Int?) -> String? {
+        
+        
         let descriptions = [
             "E_UNKNOWN",
             "E_SERVICE_ERROR",
@@ -597,6 +603,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             "E_RECEIPT_FAILED",
             "E_RECEIPT_FINISHED_FAILED"
         ]
+        guard let code = code else {
+            return descriptions[0]
+        }
         
         if code > descriptions.count - 1 {
             return descriptions[0]
@@ -605,26 +614,26 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
     
     
-    func getProductObject(_ product: SKProduct?) -> [String : String]? {
+    func getProductObject(_ product: SKProduct) -> [String : Any]? {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.locale = product.priceLocale
         
         let localizedPrice = formatter.string(from: product.price)
-        let introductoryPrice = localizedPrice
-        let introductoryPriceAsAmountIOS = "\(product.price)"
+        var introductoryPrice = localizedPrice
+        var introductoryPriceAsAmountIOS = "\(product.price)"
         
-        let introductoryPricePaymentMode = ""
-        let introductoryPriceNumberOfPeriods = ""
+        var introductoryPricePaymentMode = ""
+        var introductoryPriceNumberOfPeriods = ""
         
-        let introductoryPriceSubscriptionPeriod = ""
+        var introductoryPriceSubscriptionPeriod = ""
         
-        let currencyCode = ""
-        let countryCode = ""
-        let periodNumberIOS = "0"
-        let periodUnitIOS = ""
+        var currencyCode: String? = ""
+        var countryCode: String? = ""
+        var periodNumberIOS = "0"
+        var periodUnitIOS = ""
         
-        let itemType = "iap"
+        var itemType = "iap"
         
         if #available(iOS 11.2, *) {
             let numOfUnits = UInt(product.subscriptionPeriod?.numberOfUnits ?? 0)
@@ -697,19 +706,19 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         }
         
         if #available(iOS 13.0, *) {
-            countryCode = SKPaymentQueue.default().storefront.countryCode
+            countryCode = SKPaymentQueue.default().storefront?.countryCode
         } else if #available(iOS 10.0, *) {
-            countryCode = product.priceLocale.countryCode
+            countryCode = product.priceLocale.regionCode
         }
         
-        var discounts: [AnyHashable]?
-        if __IPHONE_12_2 {
-            if #available(iOS 12.2, *) {
-                discounts = getDiscountData(product)
-            }
+        var discounts: [[String: String]]?
+        
+        if #available(iOS 12.2, *) {
+            discounts = getDiscountData(product)
         }
         
-        let obj = [
+        
+        let obj: [String: Any] = [
             "productId" : product.productIdentifier,
             "price" : "\(product.price)",
             "currency" : currencyCode,
@@ -733,9 +742,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     
     
-    func getDiscountData(_ product: SKProduct?) -> [AnyHashable]? {
+    func getDiscountData(_ product: SKProduct) -> [[String:String]]? {
         if #available(iOS 12.2, *) {
-            var mappedDiscounts = [AnyHashable](repeating: 0, count: product?.discounts.count ?? 0)
+            var mappedDiscounts : [[String:String]] = []
             var localizedPrice: String?
             var paymendMode: String?
             var subscriptionPeriods: String?
@@ -744,14 +753,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             for discount in product.discounts {
                 let formatter = NumberFormatter()
                 formatter.numberStyle = .currency
-                formatter.locale = discount.priceLocale ?? product.priceLocale
+                formatter.locale = discount.priceLocale
                 localizedPrice = formatter.string(from: discount.price)
                 var numberOfPeriods: String?
                 
                 switch discount.paymentMode {
                 case .freeTrial:
                     paymendMode = "FREETRIAL"
-                    numberOfPeriods = NSNumber(value: discount.subscriptionPeriod?.numberOfUnits ?? 0).stringValue
+                    numberOfPeriods = NSNumber(value: discount.subscriptionPeriod.numberOfUnits ).stringValue
                     break
                 case .payAsYouGo:
                     paymendMode = "PAYASYOUGO"
@@ -759,14 +768,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                     break
                 case .payUpFront:
                     paymendMode = "PAYUPFRONT"
-                    numberOfPeriods = NSNumber(value: discount.subscriptionPeriod?.numberOfUnits ?? 0).stringValue
+                    numberOfPeriods = NSNumber(value: discount.subscriptionPeriod.numberOfUnits ).stringValue
                     break
                 default:
                     paymendMode = ""
                     numberOfPeriods = "0"
                     break
                 }
-                switch discount.subscriptionPeriod?.unit {
+                switch discount.subscriptionPeriod.unit {
                 case .day:
                     subscriptionPeriods = "DAY"
                 case .week:
@@ -780,23 +789,20 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 }
                 
                 
-                var discountIdentifier = ""
-                if __IPHONE_12_2 {
-                    if #available(iOS 12.2, *) {
-                        discountIdentifier = discount.identifier
-                        switch discount.type {
-                        case SKProductDiscount.Type.introductory:
-                            discountType = "INTRODUCTORY"
-                            break
-                        case SKProductDiscount.Type.subscription:
-                            discountType = "SUBSCRIPTION"
-                            break
-                        default:
-                            discountType = ""
-                            break
-                        }
-                    }
+                var discountIdentifier = discount.identifier
+                switch discount.type {
+                case SKProductDiscount.Type.introductory:
+                    discountType = "INTRODUCTORY"
+                    break
+                case SKProductDiscount.Type.subscription:
+                    discountType = "SUBSCRIPTION"
+                    break
+                default:
+                    discountType = ""
+                    break
                 }
+                
+                
                 
                 mappedDiscounts.append(
                     [
@@ -815,21 +821,20 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
     
     
-    func getPurchaseData(_ transaction: SKPaymentTransaction?, withBlock block: @escaping (_ transactionDict: [AnyHashable : Any]?) -> Void) {
+    func getPurchaseData(_ transaction: SKPaymentTransaction, withBlock block: @escaping (_ transactionDict: [AnyHashable : Any]?) -> Void) {
         requestReceiptData(withBlock: false) { receiptData, error in
             if receiptData == nil {
                 block(nil)
             } else {
                 var purchase = [
-                    "transactionDate" : NSNumber(value: transaction.transactionDate.timeIntervalSince1970 * 1000),
+                    "transactionDate" : transaction.transactionDate?.millisecondsSince1970String,
                     "transactionId" : transaction.transactionIdentifier,
                     "productId" : transaction.payment.productIdentifier,
-                    "transactionReceipt" : receiptData.base64EncodedString(options: [])
+                    "transactionReceipt" : receiptData?.base64EncodedString(options: [])
                 ]
                 // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
-                let originalTransaction = transaction.original
-                if originalTransaction {
-                    purchase["originalTransactionDateIOS"] = NSNumber(value: originalTransaction.transactionDate?.timeIntervalSince1970 * 1000)
+                if let originalTransaction = transaction.original {
+                    purchase["originalTransactionDateIOS"] = originalTransaction.transactionDate?.millisecondsSince1970String
                     purchase["originalTransactionIdentifierIOS"] = originalTransaction.transactionIdentifier
                 }
                 
@@ -865,7 +870,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         var canReachError: Error? = nil
         do {
             try receiptURL?.checkResourceIsReachable()
-        } catch let canReachError {
+        } catch let error {
+            canReachError = error
         }
         return canReachError == nil
     }
@@ -874,7 +880,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         let receiptURL = Bundle.main.appStoreReceiptURL
         var receiptData: Data? = nil
         if let receiptURL = receiptURL {
-            receiptData = Data(contentsOf: receiptURL)
+            do{
+                try receiptData = Data(contentsOf: receiptURL)
+            }catch _{
+                
+            }
         }
         return receiptData
     }
@@ -883,10 +893,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         if request is SKReceiptRefreshRequest {
             if isReceiptPresent() == true {
                 print("Receipt refreshed success.")
-                if receiptBlock {
+                if let receiptBlock = receiptBlock {
                     receiptBlock(receiptData(), nil)
                 }
-            } else if receiptBlock {
+            } else if let receiptBlock = receiptBlock {
                 print("Finished but receipt refreshed failed!")
                 let error = NSError(domain: "Receipt request finished but it failed!", code: 10, userInfo: nil)
                 receiptBlock(nil, error)
@@ -898,9 +908,12 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]) {
         print("removedTransactions")
-        if countPendingTransaction != nil && countPendingTransaction > 0 {
-            countPendingTransaction -= transactions.count
-            if countPendingTransaction == 0 {
+        guard var unwrappedCount = countPendingTransaction else {
+            return
+        }
+        if unwrappedCount > 0 {
+            unwrappedCount -= transactions.count
+            if unwrappedCount == 0 {
                 resolvePromises(forKey: "cleaningTransactions", value: nil)
                 countPendingTransaction = nil
             }
