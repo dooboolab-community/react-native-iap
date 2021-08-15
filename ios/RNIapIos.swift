@@ -3,23 +3,25 @@
 import React
 import StoreKit
 @objc(RNIapIos)
-class RNIapIos: SKRequestDelegate {
+class RNIapIos: NSObject, SKRequestDelegate, SKPaymentTransactionObserver {
     private var promisesByKey: [AnyHashable : Any]?
     private var myQueue: DispatchQueue?
     private var hasListeners = false
     private var pendingTransactionWithAutoFinish = false
     private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
+    private var validProducts: [SKProduct]
+    private var promotedPayment: SKPayment?
     
-    init() {
+    override init() {
         super.init()
         promisesByKey = [AnyHashable : Any]()
         pendingTransactionWithAutoFinish = false
         myQueue = DispatchQueue(label: "reject")
-        validProducts = [AnyHashable]()
+        validProducts = [SKProduct]()
     }
     
     deinit {
-        SKPaymentQueue.default().removeTransactionObserver(self)
+        SKPaymentQueue.default().remove(self)
     }
     
     class func requiresMainQueueSetup() -> Bool {
@@ -27,7 +29,7 @@ class RNIapIos: SKRequestDelegate {
     }
     
     func flushUnheardEvents() {
-        paymentQueue(SKPaymentQueue.default(), updatedTransactions: SKPaymentQueue.default().transactions())
+        paymentQueue(SKPaymentQueue.default(), updatedTransactions: SKPaymentQueue.default().transactions)
     }
     
     func startObserving() {
@@ -808,9 +810,11 @@ class RNIapIos: SKRequestDelegate {
                     "transactionId" : transaction.transactionIdentifier,
                     "productId" : transaction.payment.productIdentifier,
                     "transactionReceipt" : receiptData.base64EncodedString(options: [])
+                ]
+                // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
                 let originalTransaction = transaction.original
                 if originalTransaction {
-                    purchase["originalTransactionDateIOS"] = NSNumber(value: originalTransaction.transactionDate?.timeIntervalSince1970 * 1000)]
+                    purchase["originalTransactionDateIOS"] = NSNumber(value: originalTransaction.transactionDate?.timeIntervalSince1970 * 1000)
                     purchase["originalTransactionIdentifierIOS"] = originalTransaction.transactionIdentifier
                 }
                 
@@ -818,11 +822,6 @@ class RNIapIos: SKRequestDelegate {
             }
         }
     }
-    
-    
-    
-    
-    
     
     
     ////////
