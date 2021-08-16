@@ -16,25 +16,26 @@ extension Date {
         self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)
     }
 }
+typealias IapPromise = (RCTPromiseResolveBlock,RCTPromiseRejectBlock)
 @objc(RNIapIos)
 class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver, SKProductsRequestDelegate {
-    private var promisesByKey: Dictionary<String, Any>
+    private var promisesByKey: [String: [IapPromise]]
     private var myQueue: DispatchQueue
     private var hasListeners = false
     private var pendingTransactionWithAutoFinish = false
     private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
     private var validProducts: [SKProduct]
-    private var promotedPayment: SKPayment?
-    private var promotedProduct: SKProduct
-    private var productsRequest: SKProductsRequest
+    private var promotedPayment: SKPayment? = nil
+    private var promotedProduct: SKProduct? = nil
+    private var productsRequest: SKProductsRequest? = nil
     private var countPendingTransaction: Int?
     
     override init() {
-        super.init()
-        promisesByKey = [String : Any]()
+        promisesByKey = [String : [IapPromise]]()
         pendingTransactionWithAutoFinish = false
         myQueue = DispatchQueue(label: "reject")
         validProducts = [SKProduct]()
+        super.init()
     }
     
     deinit {
@@ -66,27 +67,24 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         }
     }
     
-    func addPromise(forKey key: String?, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        var promises = promisesByKey[key ?? ""] as? [AnyHashable]
+    func addPromise(forKey key: String?, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        var promises:[IapPromise]? = promisesByKey[key ?? ""]
         
         if promises == nil {
             promises = []
             promisesByKey[ key ?? ""] = promises
         }
         
-        promises?.append([resolve, reject])
+        promises?.append((resolve, reject))
     }
     
     func resolvePromises(forKey key: String?, value: Any?) {
-        let promises = promisesByKey[key ?? ""] as? [AnyHashable]
+        let promises:[IapPromise]? = promisesByKey[key ?? ""]
         
         if let promises = promises {
             for tuple in promises {
-                guard let tuple = tuple as? [AnyHashable] else {
-                    continue
-                }
-                let resolveBlck = tuple[0] as? RCTPromiseResolveBlock
-                resolveBlck?(value)
+                let resolveBlck = tuple.0
+                resolveBlck(value)
             }
             promisesByKey[key ?? ""] = nil
         }
@@ -150,11 +148,13 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         let productIdentifiers = Set<AnyHashable>(skus)
         if let productIdentifiers = productIdentifiers as? Set<String> {
             productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
+            if let productsRequest = productsRequest {
+                productsRequest.delegate = self
+                let key = RCTKeyForInstance(productsRequest)
+                addPromise(forKey: key, resolve: resolve, reject: reject)
+                productsRequest.start()
+            }
         }
-        productsRequest.delegate = self
-        let key = RCTKeyForInstance(productsRequest)
-        addPromise(forKey: key, resolve: resolve, reject: reject)
-        productsRequest.start()
     }
     
     @objc public func getAvailableItems(
@@ -522,13 +522,13 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                         ]
                         sendEvent(withName: "purchase-error", body: err)
                     }
-            
+                    
                     //if nsError?.code != .paymentCancelled {
-                        rejectPromises(
-                            forKey: transaction.payment.productIdentifier,
-                            code: standardErrorCode(nsError?.code),
-                            message: nsError?.localizedDescription,
-                            error: nsError)
+                    rejectPromises(
+                        forKey: transaction.payment.productIdentifier,
+                        code: standardErrorCode(nsError?.code),
+                        message: nsError?.localizedDescription,
+                        error: nsError)
                     //}
                     
                 })
