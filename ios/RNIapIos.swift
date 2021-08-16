@@ -79,7 +79,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         
         if promises == nil {
             promises = []
-            promisesByKey[ key] = promises
+            promisesByKey[key] = promises
         }
         
         promises?.append((resolve, reject))
@@ -105,7 +105,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 let reject = tuple.1
                 reject(code, message, error)
             }
-            promisesByKey[ key]=nil
+            promisesByKey[key]=nil
         }
     }
     
@@ -119,17 +119,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         return false
     }
     
-    ////////////////////////////////////////////////////     _//////////_//      EXPORT_MODULE
-    //RCT_EXPORT_MODULE();
-    
     override func supportedEvents() -> [String]? {
         return ["iap-promoted-product", "purchase-updated", "purchase-error"]
     }
     
     
     @objc public func initConnection(
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         SKPaymentQueue.default().add(self)
         let canMakePayments = SKPaymentQueue.canMakePayments()
@@ -137,17 +134,17 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
     
     @objc public func endConnection(
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         SKPaymentQueue.default().remove(self)
         resolve(nil)
     }
     
     @objc public func getItems(
-        skus: [String],
+        _ skus: [String],
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         let productIdentifiers = Set<AnyHashable>(skus)
         if let productIdentifiers = productIdentifiers as? Set<String> {
@@ -162,17 +159,19 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
     
     @objc public func getAvailableItems(
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         addPromise(forKey: "availableItems", resolve: resolve, reject: reject)
         SKPaymentQueue.default().restoreCompletedTransactions()
     }
     
     
-    @objc public func buyProduct(sku:String, finishAutomatically: Bool,
-                                 resolve: @escaping RCTPromiseResolveBlock = { _ in },
-                                 _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    @objc public func buyProduct(
+        _ sku:String,
+        finishAutomatically: Bool,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         pendingTransactionWithAutoFinish = finishAutomatically
         var product: SKProduct?
@@ -206,11 +205,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     
     @objc public func buyProductWithOffer(
-        sku: String,
+        _ sku: String,
         usernameHash: String,
         discountOffer: Dictionary<String,String>,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         var product: SKProduct?
         
@@ -258,10 +257,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     
     @objc public func buyProductWithQuantityIOS(
-        sku: String,
+        _ sku: String,
         quantity: Int,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         
         print("\n\n\n  buyProductWithQuantityIOS  \n\n.")
@@ -296,8 +295,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     
     @objc public func clearTransaction(
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         
         print("\n\n\n  ***  clear remaining Transactions. Call this before make a new transaction   \n\n.")
@@ -317,8 +316,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     
     @objc public func clearProducts(
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         print("\n\n\n  ***  clear valid products. \n\n.")
         let lockQueue = DispatchQueue(label: "validProducts")
@@ -328,16 +327,16 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
     
     @objc public func  promotedProduct(
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         print("\n\n\n  ***  get promoted product. \n\n.")
         resolve(promotedProduct )
     }
     
     @objc public func  buyPromotedProduct(
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         if let promoPayment = promotedPayment {
             print("\n\n\n  ***  buy promoted product. \n\n.")
@@ -350,7 +349,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     
     @objc public func  requestReceipt(
-        refresh: Bool,
+        _ refresh: Bool,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
@@ -366,17 +365,17 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     
     @objc public func  finishTransaction(
-        transactionIdentifier: String,
+        _ transactionIdentifier: String,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         finishTransaction(withIdentifier: transactionIdentifier)
     }
     
     
     @objc public func getPendingTransactions (
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         requestReceiptData(withBlock: false) { receiptData, error in
             var output: [AnyHashable] = []
@@ -401,8 +400,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
     
     @objc public func  presentCodeRedemptionSheet(
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        _ reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         #if !os(tvOS)
         if #available(iOS 14.0, *) {
