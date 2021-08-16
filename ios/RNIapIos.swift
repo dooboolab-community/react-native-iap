@@ -3,6 +3,7 @@
 import React
 import StoreKit
 
+// Based on https://stackoverflow.com/a/40135192/570612
 extension Date {
     var millisecondsSince1970:Int64 {
         return Int64((self.timeIntervalSince1970 * 1000.0).rounded())
@@ -14,6 +15,12 @@ extension Date {
     
     init(milliseconds:Int64) {
         self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)
+    }
+}
+
+extension SKProductsRequest {
+    var key:String{
+        return String(self.hashValue)
     }
 }
 typealias IapPromise = (RCTPromiseResolveBlock,RCTPromiseRejectBlock)
@@ -67,12 +74,12 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         }
     }
     
-    func addPromise(forKey key: String?, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        var promises:[IapPromise]? = promisesByKey[key ?? ""]
+    func addPromise(forKey key: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        var promises:[IapPromise]? = promisesByKey[key]
         
         if promises == nil {
             promises = []
-            promisesByKey[ key ?? ""] = promises
+            promisesByKey[ key] = promises
         }
         
         promises?.append((resolve, reject))
@@ -90,18 +97,15 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         }
     }
     
-    func rejectPromises(forKey key: String?, code: String?, message: String?, error: Error?) {
-        let promises = promisesByKey[key ?? ""] as? [AnyHashable]
+    func rejectPromises(forKey key: String, code: String?, message: String?, error: Error?) {
+        let promises = promisesByKey[key]
         
         if let promises = promises {
             for tuple in promises {
-                guard let tuple = tuple as? [AnyHashable] else {
-                    continue
-                }
-                let reject = tuple[1] as? RCTPromiseRejectBlock
-                reject?(code, message, error)
+                let reject = tuple.1
+                reject(code, message, error)
             }
-            promisesByKey[ key ?? ""]=nil
+            promisesByKey[ key]=nil
         }
     }
     
@@ -150,7 +154,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
             if let productsRequest = productsRequest {
                 productsRequest.delegate = self
-                let key = RCTKeyForInstance(productsRequest)
+                let key: String = productsRequest.key
                 addPromise(forKey: key, resolve: resolve, reject: reject)
                 productsRequest.start()
             }
@@ -428,7 +432,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             }
         }
         
-        resolvePromises(forKey: RCTKeyForInstance(request), value: items)
+        resolvePromises(forKey: request.key, value: items)
     }
     // Add to valid products from Apple server response. Allowing getProducts, getSubscriptions call several times.
     // Doesn't allow duplication. Replace new product.
@@ -459,14 +463,16 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 receiptBlock = nil
                 return
             }else {
-                let key = RCTKeyForInstance(productsRequest)
-                myQueue.sync(execute: { [self] in
-                    rejectPromises(
-                        forKey: key,
-                        code: standardErrorCode(nsError.code),
-                        message: error.localizedDescription,
-                        error: error)
-                })
+                if let key: String = productsRequest?.key{
+                    myQueue.sync(execute: { [self] in
+                                    rejectPromises(
+                                        forKey: key,
+                                        code: standardErrorCode(nsError.code),
+                                        message: error.localizedDescription,
+                                        error: error)}
+                    )
+                    
+                }
             }
         }
     }
@@ -844,15 +850,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 block(purchase as [String : Any])
             }
         }
-    }
-    
-    
-    ////////
-    private func RCTKeyForInstance(_ instance: Any?) -> String? {
-        if let instance = instance {
-            return "\(instance)"
-        }
-        return nil
     }
     
     func requestReceiptData(withBlock forceRefresh: Bool, withBlock block: @escaping (_ data: Data?, _ error: Error?) -> Void) {

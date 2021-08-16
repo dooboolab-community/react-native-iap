@@ -18,6 +18,8 @@
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* IapExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* IapExampleTests.m */; };
 		58E9027CFA84736CE2DBA2F0 /* libPods-IapExample-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F74E1A785AA6FFF8FA47668B /* libPods-IapExample-tvOS.a */; };
+		852628D126CAD20E00D48B98 /* mains.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852628D026CAD20E00D48B98 /* mains.swift */; };
+		852628D226CAD20E00D48B98 /* mains.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852628D026CAD20E00D48B98 /* mains.swift */; };
 		C297D374AD356349260AD04D /* libPods-IapExample-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 093EE2DC846896174532B4D3 /* libPods-IapExample-tvOSTests.a */; };
 		CBCCDAEAEB691FB866833623 /* libPods-IapExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AD368AD16BFA43E39F02F37 /* libPods-IapExample.a */; };
 /* End PBXBuildFile section */
@@ -59,6 +61,9 @@
 		2D02E47B1E0B4A5D006451C7 /* IapExample-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IapExample-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* IapExample-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "IapExample-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30CCFAC71CD900404CC942EC /* Pods-IapExample-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IapExample-tvOS.release.xcconfig"; path = "Target Support Files/Pods-IapExample-tvOS/Pods-IapExample-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		852628CE26CAD20D00D48B98 /* IapExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IapExample-Bridging-Header.h"; sourceTree = "<group>"; };
+		852628CF26CAD20D00D48B98 /* IapExample-tvOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IapExample-tvOS-Bridging-Header.h"; sourceTree = "<group>"; };
+		852628D026CAD20E00D48B98 /* mains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mains.swift; sourceTree = "<group>"; };
 		94A981E7100CBDC80F2FF075 /* Pods-IapExampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IapExampleTests.release.xcconfig"; path = "Target Support Files/Pods-IapExampleTests/Pods-IapExampleTests.release.xcconfig"; sourceTree = "<group>"; };
 		B64D40B3C8032A354C7372CD /* Pods-IapExampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IapExampleTests.debug.xcconfig"; path = "Target Support Files/Pods-IapExampleTests/Pods-IapExampleTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C1BC040D1F9554B69FFFD8C8 /* libPods-IapExampleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IapExampleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,6 +137,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				852628D026CAD20E00D48B98 /* mains.swift */,
+				852628CE26CAD20D00D48B98 /* IapExample-Bridging-Header.h */,
+				852628CF26CAD20D00D48B98 /* IapExample-tvOS-Bridging-Header.h */,
 			);
 			name = IapExample;
 			sourceTree = "<group>";
@@ -292,8 +300,12 @@
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 1240;
+					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
+						LastSwiftMigration = 1240;
 						ProvisioningStyle = Automatic;
 					};
 					2D02E48F1E0B4A5D006451C7 = {
@@ -549,6 +561,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				852628D126CAD20E00D48B98 /* mains.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,6 +571,7 @@
 			files = (
 				2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */,
 				2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */,
+				852628D226CAD20E00D48B98 /* mains.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -601,6 +615,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B64D40B3C8032A354C7372CD /* Pods-IapExampleTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -624,6 +639,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 94A981E7100CBDC80F2FF075 /* Pods-IapExampleTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = IapExampleTests/Info.plist;
@@ -645,6 +661,7 @@
 			baseConfigurationReference = CEF1A83B1AC848DBE0C0A53E /* Pods-IapExample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				INFOPLIST_FILE = IapExample/Info.plist;
@@ -656,6 +673,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dooboolab.test;
 				PRODUCT_NAME = IapExample;
+				SWIFT_OBJC_BRIDGING_HEADER = "IapExample-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -665,6 +685,7 @@
 			baseConfigurationReference = FF7D28129E54A58AF6A7ECA0 /* Pods-IapExample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = IapExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -675,6 +696,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dooboolab.test;
 				PRODUCT_NAME = IapExample;
+				SWIFT_OBJC_BRIDGING_HEADER = "IapExample-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -686,6 +709,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -702,6 +726,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.IapExample-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
+				SWIFT_OBJC_BRIDGING_HEADER = "IapExample-tvOS-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 			};
@@ -714,6 +741,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -730,6 +758,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.IapExample-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
+				SWIFT_OBJC_BRIDGING_HEADER = "IapExample-tvOS-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 			};
@@ -739,6 +769,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 12DB2FAC4A19A20160F96BD9 /* Pods-IapExample-tvOSTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -766,6 +797,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0D6BC5860BBE438B2FD23AB5 /* Pods-IapExample-tvOSTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
