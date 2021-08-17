@@ -67,7 +67,28 @@
 
 ### How do I handle promoted products in iOS?
 - Offical doc is [here](https://developer.apple.com/app-store/promoting-in-app-purchases/).
-- No initial setup needed from `4.4.5`.
+
+To handle promoted products, the following code should be added on your `AppDelegate.h` and `AppDelegate.m`
+
+```objectivec
+// AppDelegate.h
+
+#import <StoreKit/StoreKit.h>
+
+@interface AppDelegate : UIResponder <SKPaymentTransactionObserver /*, other delegate */>
+```
+
+```objectivec
+// AppDelegate.m
+
+#import "RNIapIos.h"
+
+- (BOOL)paymentQueue:(SKPaymentQueue *)queue shouldAddStorePayment:(SKPayment *)payment forProduct:(SKProduct *)product {
+  [[RNIapIos sharedInstance] handlePromotedProduct:payment forProduct:product];
+  
+  return false;
+}
+```
 
 Somewhere early in your app's lifecycle,
 call `initConnection` first (see above), then
