@@ -528,13 +528,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                         sendEvent(withName: "purchase-error", body: err)
                     }
                     
-                    //if nsError?.code != .paymentCancelled {
                     rejectPromises(
                         forKey: transaction.payment.productIdentifier,
                         code: standardErrorCode(nsError?.code),
                         message: nsError?.localizedDescription,
                         error: nsError)
-                    //}
                     
                 })
                 break;
