@@ -16,5 +16,5 @@
   },
   "compileOnSave": true,
   "exclude": ["node_modules"],
-  "include": ["./index.ts", "src/**/*.ts"]
+  "include": ["./index.ts", "src/**/*.ts", "src/hooks/withIAPContext.tsx"]
 }
