@@ -47,7 +47,7 @@ export function useIAPContext(): IAPContextType {
   return ctx;
 }
 
-export default function withIAPContext<T>(Component: React.ComponentType<T>) {
+export function withIAPContext<T>(Component: React.ComponentType<T>) {
   return function WrapperComponent(props: T) {
     const [connected, setConnected] = useState<boolean>(false);
     const [products, setProducts] = useState<Product[]>([]);
