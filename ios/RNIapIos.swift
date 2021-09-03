@@ -388,7 +388,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                         "transactionDate" : timestamp,
                         "transactionId" : item.transactionIdentifier,
                         "productId" : item.payment.productIdentifier,
-                        "quantity" : item.payment.quantity,
+                        "quantity" : "\(item.payment.quantity)",
                         "transactionReceipt" : receipt.base64EncodedString(options: [])
                     ]
                     output.append(purchase)
@@ -501,7 +501,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                             "code" : "E_DEFERRED_PAYMENT",
                             "message" : "The payment was deferred (awaiting approval via parental controls for instance)",
                             "productId" : transaction.payment.productIdentifier,
-                            "quantity" : transaction.payment.quantity
+                            "quantity" : "\(transaction.payment.quantity)"
                         ]
                         sendEvent(withName: "purchase-error", body: err)
                     }
