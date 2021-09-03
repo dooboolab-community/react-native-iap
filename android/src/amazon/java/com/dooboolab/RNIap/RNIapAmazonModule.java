@@ -69,16 +69,9 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void getAvailableItemsByType(final String type, final Promise promise) {
+  public void getAvailableItems(final Promise promise) {
     DoobooUtils.getInstance().addPromiseForKey(PROMISE_QUERY_AVAILABLE_ITEMS, promise);
     PurchasingService.getPurchaseUpdates(true);
-  }
-
-  @ReactMethod
-  public void getPurchaseHistoryByType(final String type, final Promise promise) {
-    // TODO
-    final WritableNativeArray items = new WritableNativeArray();
-    promise.resolve(items);
   }
 
   @ReactMethod
