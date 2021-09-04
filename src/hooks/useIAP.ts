@@ -5,6 +5,8 @@ import {
   getAvailablePurchases as iapGetAvailablePurchases,
   getProducts as iapGetProducts,
   getSubscriptions as iapGetSubscriptions,
+  requestPurchase as iapRequestPurchase,
+  requestSubscription as iapRequestSubscription,
 } from '../iap';
 import {useCallback} from 'react';
 import {useIAPContext} from './withIAPContext';
@@ -23,6 +25,8 @@ type IAP_STATUS = {
   getPurchaseHistories: () => Promise<void>;
   getProducts: (skus: string[]) => Promise<void>;
   getSubscriptions: (skus: string[]) => Promise<void>;
+  requestPurchase: typeof iapRequestPurchase;
+  requesSubscription: typeof iapRequestSubscription;
 };
 
 export function useIAP(): IAP_STATUS {
@@ -78,7 +82,7 @@ export function useIAP(): IAP_STATUS {
           developerPayloadAndroid,
         );
       } catch (err) {
-        throw new Error(err);
+        throw err;
       } finally {
         if (purchase.productId === currentPurchase?.productId)
           setCurrentPurchase(undefined);
@@ -109,5 +113,7 @@ export function useIAP(): IAP_STATUS {
     getSubscriptions,
     getAvailablePurchases,
     getPurchaseHistories,
+    requestPurchase: iapRequestPurchase,
+    requesSubscription: iapRequestSubscription,
   };
 }
