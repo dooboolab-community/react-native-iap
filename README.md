@@ -101,6 +101,10 @@ Quick News
 Breaking Changes
 ----------------
 
+[8.0.0]
+- Now using React's Context to manage IAP state
+- Introduce `withIAPContext` HOC ([how to use](docs/docs/usage_instructions/using_hooks.md))
+
 [7.1.0]
 - `androidOldSku` is no longer required [#1438](https://github.com/dooboolab/react-native-iap/pull/1438).
 

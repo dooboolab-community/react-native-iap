@@ -1,32 +1,15 @@
+import type {Product, Purchase, PurchaseError, Subscription} from '../types';
 import {
-  EmitterSubscription,
-  NativeEventEmitter,
-  NativeModules,
-} from 'react-native';
-import type {
-  InAppPurchase,
-  Product,
-  Purchase,
-  PurchaseError,
-  Subscription,
-  SubscriptionPurchase,
-} from '../types';
-import {
-  endConnection,
-  getPromotedProductIOS,
   getPurchaseHistory,
   finishTransaction as iapFinishTransaction,
   getAvailablePurchases as iapGetAvailablePurchases,
   getProducts as iapGetProducts,
   getSubscriptions as iapGetSubscriptions,
-  initConnection,
-  purchaseErrorListener,
-  purchaseUpdatedListener,
+  requestPurchase as iapRequestPurchase,
+  requestSubscription as iapRequestSubscription,
 } from '../iap';
-import {useCallback, useEffect, useState} from 'react';
-
-const {RNIapIos} = NativeModules;
-const IAPEmitter = new NativeEventEmitter(RNIapIos);
+import {useCallback} from 'react';
+import {useIAPContext} from './withIAPContext';
 
 type IAP_STATUS = {
   connected: boolean;
@@ -42,49 +25,49 @@ type IAP_STATUS = {
   getPurchaseHistories: () => Promise<void>;
   getProducts: (skus: string[]) => Promise<void>;
   getSubscriptions: (skus: string[]) => Promise<void>;
+  requestPurchase: typeof iapRequestPurchase;
+  requesSubscription: typeof iapRequestSubscription;
 };
 
-let purchaseUpdateSubscription: EmitterSubscription;
-let purchaseErrorSubscription: EmitterSubscription;
-let promotedProductsSubscription: EmitterSubscription;
-
 export function useIAP(): IAP_STATUS {
-  const [connected, setConnected] = useState<boolean>(false);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [promotedProductsIOS, setPromotedProductsIOS] = useState<Product[]>([]);
+  const {
+    connected,
+    products,
+    promotedProductsIOS,
+    subscriptions,
+    purchaseHistories,
+    availablePurchases,
+    currentPurchase,
+    currentPurchaseError,
+    setProducts,
+    setSubscriptions,
+    setAvailablePurchases,
+    setPurchaseHistories,
+    setCurrentPurchase,
+    setCurrentPurchaseError,
+  } = useIAPContext();
 
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-
-  const [purchaseHistories, setPurchaseHistories] = useState<Purchase[]>([]);
-  const [availablePurchases, setAvailablePurchases] = useState<Purchase[]>([]);
-
-  const [currentPurchase, setCurrentPurchase] = useState<Purchase>();
-
-  const [currentPurchaseError, setCurrentPurchaseError] =
-    useState<PurchaseError>();
-
-  const getProducts = useCallback(async (skus: string[]): Promise<void> => {
-    const iaps = await iapGetProducts(skus);
-
-    setProducts(iaps);
-  }, []);
+  const getProducts = useCallback(
+    async (skus: string[]): Promise<void> => {
+      setProducts(await iapGetProducts(skus));
+    },
+    [setProducts],
+  );
 
   const getSubscriptions = useCallback(
     async (skus: string[]): Promise<void> => {
-      const subs = await iapGetSubscriptions(skus);
-
-      setSubscriptions(subs);
+      setSubscriptions(await iapGetSubscriptions(skus));
     },
-    [],
+    [setSubscriptions],
   );
 
   const getAvailablePurchases = useCallback(async (): Promise<void> => {
     setAvailablePurchases(await iapGetAvailablePurchases());
-  }, []);
+  }, [setAvailablePurchases]);
 
   const getPurchaseHistories = useCallback(async (): Promise<void> => {
     setPurchaseHistories(await getPurchaseHistory());
-  }, []);
+  }, [setPurchaseHistories]);
 
   const finishTransaction = useCallback(
     async (
@@ -99,7 +82,7 @@ export function useIAP(): IAP_STATUS {
           developerPayloadAndroid,
         );
       } catch (err) {
-        throw new Error(err);
+        throw err;
       } finally {
         if (purchase.productId === currentPurchase?.productId)
           setCurrentPurchase(undefined);
@@ -108,57 +91,13 @@ export function useIAP(): IAP_STATUS {
           setCurrentPurchaseError(undefined);
       }
     },
-    [currentPurchase?.productId, currentPurchaseError?.productId],
+    [
+      currentPurchase?.productId,
+      currentPurchaseError?.productId,
+      setCurrentPurchase,
+      setCurrentPurchaseError,
+    ],
   );
-
-  const initIapWithSubscriptions = useCallback(async (): Promise<void> => {
-    const result = await initConnection();
-
-    setConnected(result);
-
-    if (result) {
-      purchaseUpdateSubscription = purchaseUpdatedListener(
-        async (purchase: InAppPurchase | SubscriptionPurchase) => {
-          setCurrentPurchaseError(undefined);
-          setCurrentPurchase(purchase);
-        },
-      );
-
-      purchaseErrorSubscription = purchaseErrorListener(
-        (error: PurchaseError) => {
-          setCurrentPurchase(undefined);
-          setCurrentPurchaseError(error);
-        },
-      );
-
-      promotedProductsSubscription = IAPEmitter.addListener(
-        'iap-promoted-product',
-        async () => {
-          const product = await getPromotedProductIOS();
-
-          setPromotedProductsIOS((prevProducts) => [
-            ...prevProducts,
-            ...(product ? [product] : []),
-          ]);
-        },
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    initIapWithSubscriptions();
-
-    return (): void => {
-      if (purchaseUpdateSubscription) purchaseUpdateSubscription.remove();
-
-      if (purchaseErrorSubscription) purchaseErrorSubscription.remove();
-
-      if (promotedProductsSubscription) promotedProductsSubscription.remove();
-
-      endConnection();
-      setConnected(false);
-    };
-  }, [initIapWithSubscriptions]);
 
   return {
     connected,
@@ -174,5 +113,7 @@ export function useIAP(): IAP_STATUS {
     getSubscriptions,
     getAvailablePurchases,
     getPurchaseHistories,
+    requestPurchase: iapRequestPurchase,
+    requesSubscription: iapRequestSubscription,
   };
 }
