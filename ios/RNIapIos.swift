@@ -128,6 +128,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
+        SKPaymentQueue.default().remove(RNIapQueue.shared)
+        if let queue = RNIapQueue.shared.queue, let payment = RNIapQueue.shared.payment, let product = RNIapQueue.shared.product  {
+            let val = paymentQueue(queue, shouldAddStorePayment: payment,for: product)
+            print("Promoted product response \(val)")
+        }
         SKPaymentQueue.default().add(self)
         let canMakePayments = SKPaymentQueue.canMakePayments()
         resolve(NSNumber(value: canMakePayments))
