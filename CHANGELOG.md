@@ -1,10 +1,13 @@
 ## Changelogs
 
+# 7.4.1
+
+- [iOS] Add `quantityIOS` in purchase data [#1476](https://github.com/dooboolab/react-native-iap/pull/1476)
+
 # 7.4.0
 
 - Now using React's Context to manage IAP state
 - Introduce `withIAPContext` HOC ([how to use](docs/docs/usage_instructions/using_hooks.md))
-
 
 # 7.3.0
 
