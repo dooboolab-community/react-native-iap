@@ -327,6 +327,7 @@ RCT_EXPORT_METHOD(getPendingTransactions:(RCTPromiseResolveBlock)resolve
                                                  @(item.transactionDate.timeIntervalSince1970 * 1000), @"transactionDate",
                                                  item.transactionIdentifier, @"transactionId",
                                                  item.payment.productIdentifier, @"productId",
+                                                 @(item.payment.quantity), @"quantityIOS",
                                                  [receiptData base64EncodedStringWithOptions:0], @"transactionReceipt",
                                                  nil
                                                  ];
@@ -768,6 +769,7 @@ RCT_EXPORT_METHOD(presentCodeRedemptionSheet:(RCTPromiseResolveBlock)resolve
                                              @(transaction.transactionDate.timeIntervalSince1970 * 1000), @"transactionDate",
                                              transaction.transactionIdentifier, @"transactionId",
                                              transaction.payment.productIdentifier, @"productId",
+                                             @(transaction.payment.quantity), @"quantityIOS",
                                              [receiptData base64EncodedStringWithOptions:0], @"transactionReceipt",
                                              nil
                                              ];

@@ -56,6 +56,7 @@ export interface ProductPurchase {
   transactionReceipt: string;
   purchaseToken?: string;
   //iOS
+  quantityIOS?: number;
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;
   //Android

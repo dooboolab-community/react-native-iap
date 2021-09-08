@@ -7,6 +7,7 @@ Property                           | Type      | iOS | And | Comment
 `transactionReceipt`               | `string`  | ✓   | ✓   | **iOS**: The `receipt`. **Android**: Stringified JSON of the original purchase object.
 `transactionId`                    | `string`  | ✓   | ✓   | A unique order identifier for the transaction.
 `transactionDate`                  | `number`  | ✓   | ✓   | The time the product was purchased, in milliseconds since the epoch (Jan 1, 1970).
+`quantityIOS`                      | `number`  | ✓   |     | The number of items purchased.
 `originalTransactionDateIOS`       | `number`  | ✓   |     | For a transaction that restores a previous transaction, the date of the original transaction.
 `originalTransactionIdentifierIOS` | `string`  | ✓   |     | For a transaction that restores a previous transaction, the transaction identifier of the original transaction.
 `purchaseToken`                    | `string`  |     | ✓   | A token that uniquely identifies a purchase for a given item and user pair.
