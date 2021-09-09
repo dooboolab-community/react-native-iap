@@ -41,7 +41,7 @@
 
 
 ### How do I validate receipt in Android?
-- Offical doc is [here](https://developer.android.com/google/play/billing/billing_library_overview).
+- Official doc is [here](https://developer.android.com/google/play/billing/billing_library_overview).
 - I've developed this feature for other developers to contribute easily who are
     aware of these things. The doc says you can also get the `accessToken` via
     play console without any of your backend server.
@@ -66,7 +66,7 @@
 
 
 ### How do I handle promoted products in iOS?
-- Offical doc is [here](https://developer.apple.com/app-store/promoting-in-app-purchases/).
+- Official doc is [here](https://developer.apple.com/app-store/promoting-in-app-purchases/).
 - No initial setup needed from `4.4.5`.
 
 Somewhere early in your app's lifecycle,

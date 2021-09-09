@@ -6,7 +6,7 @@
 [![CI](https://github.com/dooboolab/react-native-iap/actions/workflows/ci.yml/badge.svg)](https://github.com/dooboolab/react-native-iap/actions/workflows/ci.yml)
 [![document](https://github.com/dooboolab/react-native-iap/actions/workflows/deploy-document.yml/badge.svg)](https://github.com/dooboolab/react-native-iap/actions/workflows/deploy-document.yml)
 [![License](https://img.shields.io/npm/l/react-native-iap.svg)](https://npmjs.org/package/react-native-iap)
-[![Vulnerabilites](https://img.shields.io/snyk/vulnerabilities/github/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap)
+[![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap)
 [![Issue Opened](https://img.shields.io/opencollective/all/react-native-iap.svg)](https://opencollective.com/react-native-iap#backers)
 [![Issue Opened](https://img.shields.io/github/issues/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/issues)
 [![Issue Closed](https://img.shields.io/github/issues-closed/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/issues?q=is%3Aissue+is%3Aclosed)
@@ -90,13 +90,13 @@ Quick News
 - We had hard time supporting `react-native-iap` issues that did not provide working codes or any other examples. Therefore, we've decided to make an `example` app called [DoobooIAP](https://github.com/hyochan/DoobooIAP), which will contain all the features of `IAP`'s and willing to continuously improve to support real-life examples. [@Bang9](http://github.com/bang9) who had been helping many others for `react-native-iap`, is willing to support this repo so he will grant $300 of our income in `opencollective` as described in [#855](https://github.com/dooboolab/react-native-iap/issues/855) :tada:.
 - `react-native-iap@4.0.8` ~ `react-native-iap@4.1.0` is incompatible with `react-native <0.61`. This is fixed in `react-native-iap@4.1.1` and above.
 - `react-native-iap@4.0.0` has been released. You can see [#716](https://github.com/dooboolab/react-native-iap/pull/716) for updates.
-- In the past, `react-native-iap@^3.*` has been updated very prompty for migration issues.
-    Don't get suprised too much on why it is bumping up version so quickly these days.
+- In the past, `react-native-iap@^3.*` has been updated very promptly for migration issues.
+    Don't get surprised too much on why it is bumping up version so quickly these days.
   1. Migrated to new `AndroidX` APIs.
   2. Migrated to new `Android` billing client which is `> 2.0.0`.
      - [`acknowledgePurchase()`][android-acknowledge-purchase] has been added since `3.2.0` which is very important.
   3. New [Purchase Flow][a-purchase-flow]
-  4. More is comming in `iOS 13`.
+  4. More is coming in `iOS 13`.
 
 Breaking Changes
 ----------------
