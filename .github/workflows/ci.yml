@@ -36,7 +36,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x android/gradlew
     - name: Build with Library with Gradle and check lints
-      run: cd android;./gradlew build test verGJF
+      run: cd android;./gradlew build test
   
   build_android_example:
 
