@@ -11,9 +11,6 @@ buildscript {
       classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
 }
-plugins {
-  id("com.github.sherter.google-java-format").version("0.9")
-}
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
