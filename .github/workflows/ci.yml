@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Install modules
-      run: yarn
+      - name: Install modules
+        run: yarn
 
-    - name: Build typescript & flow
-      run: yarn build
+      - name: Build typescript & flow
+        run: yarn build
 
-    - name: Run Validation steps including Linting and Unit Tests
-      run: yarn validate --no-verify
+      - name: Run Validation steps including Linting and Unit Tests
+        run: yarn validate --no-verify
