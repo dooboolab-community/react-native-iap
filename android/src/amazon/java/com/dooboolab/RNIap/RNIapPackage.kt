@@ -37,8 +37,8 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
 import com.facebook.react.uimanager.ViewManager
 
 class RNIapPackage : ReactPackage {
-    override fun createJSModules(): List<Class<out JavaScriptModule?>> {
-        return emptyList()
+    override fun createJSModules(): MutableList<Class<out JavaScriptModule>> {
+        return mutableListOf()
     }
 
     override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
@@ -50,4 +50,5 @@ class RNIapPackage : ReactPackage {
         modules.add(RNIapAmazonModule(reactContext))
         return modules
     }
+
 }
