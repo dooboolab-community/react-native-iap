@@ -118,21 +118,23 @@ class DoobooUtils {
     }
 
     @Throws(JSONException::class)
-    fun convertMapToJson(readableMap: ReadableMap): JSONObject {
+    fun convertMapToJson(readableMap: ReadableMap?): JSONObject {
         val `object` = JSONObject()
-        val iterator = readableMap.keySetIterator()
-        while (iterator.hasNextKey()) {
-            val key = iterator.nextKey()
-            when (readableMap.getType(key)) {
-                ReadableType.Null -> `object`.put(key, JSONObject.NULL)
-                ReadableType.Boolean -> `object`.put(key, readableMap.getBoolean(key))
-                ReadableType.Number -> `object`.put(key, readableMap.getDouble(key))
-                ReadableType.String -> `object`.put(key, readableMap.getString(key))
-                ReadableType.Map -> `object`.put(key, convertMapToJson(readableMap.getMap(key)))
-                ReadableType.Array -> `object`.put(
-                    key,
-                    convertArrayToJson(readableMap.getArray(key))
-                )
+        val iterator = readableMap?.keySetIterator()
+        iterator?.let {
+            while (iterator.hasNextKey()) {
+                val key = iterator.nextKey()
+                when (readableMap.getType(key)) {
+                    ReadableType.Null -> `object`.put(key, JSONObject.NULL)
+                    ReadableType.Boolean -> `object`.put(key, readableMap.getBoolean(key))
+                    ReadableType.Number -> `object`.put(key, readableMap.getDouble(key))
+                    ReadableType.String -> `object`.put(key, readableMap.getString(key))
+                    ReadableType.Map -> `object`.put(key, convertMapToJson(readableMap.getMap(key)))
+                    ReadableType.Array -> `object`.put(
+                        key,
+                        convertArrayToJson(readableMap.getArray(key))
+                    )
+                }
             }
         }
         return `object`
