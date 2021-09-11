@@ -33,7 +33,7 @@ Amazon IAP API supports validation of in-app purchases on a remote server side. 
 
 Subscriptions
 ----------------------
-When fetching subscriptions from Amazon, make sure to use children SKUs (so SKUs for specific period ex. monthly or annualy), do not use parent subscription SKUs! 
+When fetching subscriptions from Amazon, make sure to use children SKUs (so SKUs for specific period ex. monthly or annually), do not use parent subscription SKUs! 
 
 
 Caveats

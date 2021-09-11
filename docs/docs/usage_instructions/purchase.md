@@ -120,7 +120,7 @@ New Purchase Flow
 Most likely, you'll want to handle the “store kit flow”[<sup>\[2\]</sup>][apple-store-kit-flow],
 which happens when a user successfully pays after solving a problem with his or her account – for example, when the credit card information has expired.
 
-For above reason, we decided to remove ~~`buyProduct`~~ and use `requestPurchase` instead which doesn't rely on promise function. The `purchaseUpdatedListener` will receive the success purchase and `purchaseErrorListener` will receive all the failure result that occured during the purchase attempt.
+For above reason, we decided to remove ~~`buyProduct`~~ and use `requestPurchase` instead which doesn't rely on promise function. The `purchaseUpdatedListener` will receive the success purchase and `purchaseErrorListener` will receive all the failure result that occurred during the purchase attempt.
 
 Finishing a Purchase
 ----------------------
