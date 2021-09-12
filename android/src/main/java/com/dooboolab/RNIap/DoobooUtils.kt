@@ -141,17 +141,19 @@ class DoobooUtils {
     }
 
     @Throws(JSONException::class)
-    fun convertArrayToJson(readableArray: ReadableArray): JSONArray {
+    fun convertArrayToJson(readableArray: ReadableArray?): JSONArray {
         val array = JSONArray()
-        for (i in 0 until readableArray.size()) {
-            when (readableArray.getType(i)) {
-                ReadableType.Null -> {
+        readableArray?.let {
+            for (i in 0 until readableArray.size()) {
+                when (readableArray.getType(i)) {
+                    ReadableType.Null -> {
+                    }
+                    ReadableType.Boolean -> array.put(readableArray.getBoolean(i))
+                    ReadableType.Number -> array.put(readableArray.getDouble(i))
+                    ReadableType.String -> array.put(readableArray.getString(i))
+                    ReadableType.Map -> array.put(convertMapToJson(readableArray.getMap(i)))
+                    ReadableType.Array -> array.put(convertArrayToJson(readableArray.getArray(i)))
                 }
-                ReadableType.Boolean -> array.put(readableArray.getBoolean(i))
-                ReadableType.Number -> array.put(readableArray.getDouble(i))
-                ReadableType.String -> array.put(readableArray.getString(i))
-                ReadableType.Map -> array.put(convertMapToJson(readableArray.getMap(i)))
-                ReadableType.Array -> array.put(convertArrayToJson(readableArray.getArray(i)))
             }
         }
         return array
