@@ -1,5 +1,5 @@
 rootProject.name = 'IapExample'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
-//include ':@iap.dev_react-native-iap'
-//project(':@iap.dev_react-native-iap').projectDir = new File(rootProject.projectDir, '../../android')
+//include ':react-native-iap'
+//project(':react-native-iap').projectDir = new File(rootProject.projectDir, '../../android')
