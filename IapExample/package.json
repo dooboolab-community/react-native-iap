@@ -1,5 +1,5 @@
 {
-  "name": "iap-example",
+  "name": "rniap-example",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -12,7 +12,7 @@
   "dependencies": {
     "apsl-react-native-button": "3.1.1",
     "react": "17.0.1",
-    "react-native": "0.64.2",
+    "react-native": "0.65.1",
     "react-native-iap": "7.5.1",
     "react-navigation": "4.4.4"
   },
@@ -20,6 +20,7 @@
     "@babel/core": "7.16.0",
     "@babel/runtime": "7.16.3",
     "@dooboo/eslint-config": "1.2.2",
+    "@react-native-community/eslint-config": "3.0.1",
     "babel-jest": "27.4.2",
     "eslint": "8.3.0",
     "eslint-plugin-flowtype": "^8.0.3",

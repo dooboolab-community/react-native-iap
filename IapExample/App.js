@@ -16,7 +16,7 @@ import RNIap, {
   finishTransactionIOS,
   purchaseErrorListener,
   purchaseUpdatedListener,
-} from '@iap.dev/react-native-iap';
+} from 'react-native-iap';
 import React, {Component} from 'react';
 
 import NativeButton from 'apsl-react-native-button';
