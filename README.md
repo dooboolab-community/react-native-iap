@@ -33,7 +33,6 @@ Published in [website](https://react-native-iap.dooboolab.com).
 
   - The sample code is out in [Sponsor page](https://github.com/hyochan/dooboolab.com/blob/master/src/components/pages/Sponsor.tsx) in [dooboolab.com](https://github.com/hyochan/dooboolab.com) repository which sadly is rejected by Apple because of lacking product features. I will work on another example project to support this module. More information in [#1241 commment](https://github.com/dooboolab/react-native-iap/issues/1241#issuecomment-798540785).
 
-If you are implementing promoted products. Seee the updated FAQ
 ## Introduction
 
 This react-native module will help you access the In-app purchases capabilities of your phone on the `Android`, `iOS` platforms and the `Amazon` platform (Beta).
