@@ -75,8 +75,12 @@ dependencies {
     if (androidXVersion == null) {
       androidXVersion = defaultAndroidXVersion
     }
-    def androidXAnnotation = safeExtGet('androidXAnnotation', androidXVersion)
-    def androidXBrowser = safeExtGet('androidXBrowser', androidXVersion)
+
+    def androidXAnnotationVersion = safeExtGet('androidXAnnotationVersion', androidXVersion)
+    def androidXBrowserVersion = safeExtGet('androidXBrowserVersion', androidXVersion)
+
+    def androidXAnnotation = safeExtGet('androidXAnnotation', androidXAnnotationVersion)
+    def androidXBrowser = safeExtGet('androidXBrowser', androidXBrowserVersion)
     implementation "androidx.annotation:annotation:$androidXAnnotation"
     implementation "androidx.browser:browser:$androidXBrowser"
   }
