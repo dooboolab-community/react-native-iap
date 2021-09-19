@@ -583,9 +583,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
       error.putString("message", errorData[1]);
       sendEvent(reactContext, "purchase-error", error);
 
-      if (responseCode != BillingClient.BillingResponseCode.USER_CANCELED) {
-        PlayUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, responseCode);
-      }
+      PlayUtils.getInstance().rejectPromisesWithBillingError(PROMISE_BUY_ITEM, responseCode);
       return;
     }
 
