@@ -1,5 +1,14 @@
 ## Changelogs
 
+# 7.5.0
+
+### Bugfix
+- Fix canceled purchase dangling [#1504](https://github.com/dooboolab/react-native-iap/pull/1504)
+
+### Dependencies
+- Set default `androidX` version [#1505](https://github.com/dooboolab/react-native-iap/pull/1505)
+- Update packages [#1506](https://github.com/dooboolab/react-native-iap/pull/1506)
+
 # 7.4.1
 
 - [iOS] Add `quantityIOS` in purchase data [#1476](https://github.com/dooboolab/react-native-iap/pull/1476)
