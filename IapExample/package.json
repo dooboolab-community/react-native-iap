@@ -13,16 +13,16 @@
     "apsl-react-native-button": "3.1.1",
     "react": "17.0.1",
     "react-native": "0.64.2",
-    "react-native-iap": "7.3.0",
-    "react-navigation": "4.3.9"
+    "react-native-iap": "7.4.1",
+    "react-navigation": "4.4.4"
   },
   "devDependencies": {
-    "@babel/core": "7.14.8",
-    "@babel/runtime": "7.14.8",
-    "@react-native-community/eslint-config": "1.1.0",
-    "babel-jest": "27.0.6",
-    "eslint": "7.31.0",
-    "jest": "27.0.6",
+    "@babel/core": "7.15.5",
+    "@babel/runtime": "7.15.4",
+    "@react-native-community/eslint-config": "3.0.1",
+    "babel-jest": "27.2.0",
+    "eslint": "7.32.0",
+    "jest": "27.2.0",
     "metro-react-native-babel-preset": "0.66.2",
     "react-test-renderer": "16.9.0"
   },
