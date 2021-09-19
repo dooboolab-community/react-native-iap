@@ -71,7 +71,7 @@ dependencies {
     implementation "com.android.support:support-annotations:$supportLibVersion"
     implementation "com.android.support:customtabs:$supportLibVersion"
   } else {
-    def defaultAndroidXVersion = "1.+"
+    def defaultAndroidXVersion = "1.2.0"
     if (androidXVersion == null) {
       androidXVersion = defaultAndroidXVersion
     }
