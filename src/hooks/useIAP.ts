@@ -26,7 +26,7 @@ type IAP_STATUS = {
   getProducts: (skus: string[]) => Promise<void>;
   getSubscriptions: (skus: string[]) => Promise<void>;
   requestPurchase: typeof iapRequestPurchase;
-  requesSubscription: typeof iapRequestSubscription;
+  requestSubscription: typeof iapRequestSubscription;
 };
 
 export function useIAP(): IAP_STATUS {
@@ -114,6 +114,6 @@ export function useIAP(): IAP_STATUS {
     getAvailablePurchases,
     getPurchaseHistories,
     requestPurchase: iapRequestPurchase,
-    requesSubscription: iapRequestSubscription,
+    requestSubscription: iapRequestSubscription,
   };
 }
