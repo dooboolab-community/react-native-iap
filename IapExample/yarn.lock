@@ -5547,10 +5547,10 @@ react-native-codegen@^0.0.6:
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
 
-react-native-iap@8.0.0-rc.1:
-  version "8.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-8.0.0-rc.1.tgz#1befe2a725afbd7afd46617196b4838cd9dc91e4"
-  integrity sha512-ejzuWC2R5USM2F3qhiVj+cvCZxYwPQ9GrKPF9iXSeL03R04mA5gLw1E0hmVAlPibgbixbAl9ridDkH7rj1X+zQ==
+react-native-iap@7.5.0:
+  version "7.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-7.5.0.tgz#86d0ccc4cc6a2eabc0470993921a45aec603392c"
+  integrity sha512-3iy+q3m7OAjh2+7LA53151Y+1Jmix76NMWcMXJdax/yw1dB7YWQ47eHkY3PLhShp+LO+XHZxv/iaPVtkkeiPwA==
   dependencies:
     dooboolab-welcome "1.3.2"
 
