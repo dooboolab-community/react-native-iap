@@ -1,5 +1,9 @@
-// WIP Migrating from Objective C to swift 
-
+//
+//  RNIapIos.swift
+//  
+//
+//  Created by Andres Aguilar on 9/8/21.
+//
 import React
 import StoreKit
 
