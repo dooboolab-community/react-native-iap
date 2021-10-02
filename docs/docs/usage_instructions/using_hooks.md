@@ -18,7 +18,7 @@ export default withIAPContext(App);
 2. Later then, somewhere in your components
 
 ```jsx
-import {withIAP} from 'react-native-iap';
+import {useIAP} from 'react-native-iap';
 
 const YourComponent = () => {
   const {
