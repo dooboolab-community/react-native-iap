@@ -45,8 +45,7 @@ export interface ProductCommon {
   price: string;
   currency: string;
   localizedPrice: string;
-
-  countryCodeIOS?: string;
+  countryCode?: string;
 }
 
 export interface ProductPurchase {
