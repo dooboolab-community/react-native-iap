@@ -6,6 +6,7 @@ android/react-native-iap.iml
 android/android.iml
 tsconfig.tsbuildinfo
 *.ts
+*.tsx
 !*.d.ts
 tsconfig.json
 greenkeeper.json
