@@ -20,7 +20,11 @@ type IAP_STATUS = {
   availablePurchases: Purchase[];
   currentPurchase?: Purchase;
   currentPurchaseError?: PurchaseError;
-  finishTransaction: (purchase: Purchase) => Promise<string | void>;
+  finishTransaction: (
+    purchase: Purchase,
+    isConsumable?: boolean,
+    developerPayloadAndroid?: string,
+  ) => Promise<string | void>;
   getAvailablePurchases: () => Promise<void>;
   getPurchaseHistories: () => Promise<void>;
   getProducts: (skus: string[]) => Promise<void>;
