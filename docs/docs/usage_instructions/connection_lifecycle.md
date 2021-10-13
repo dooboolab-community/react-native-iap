@@ -45,7 +45,7 @@ buyProductButtonClick() {
   //startPurchaseCode
 }
 
-bubscribeButtonClick() {
+subscribeButtonClick() {
   //startPurchaseCode
 }
 
