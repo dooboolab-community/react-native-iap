@@ -246,7 +246,8 @@ class Page extends Component {
               onPress={this.getAvailablePurchases}
               activeOpacity={0.5}
               style={styles.btn}
-              textStyle={styles.txt}>
+              textStyle={styles.txt}
+            >
               Get available purchases
             </NativeButton>
 
@@ -262,7 +263,8 @@ class Page extends Component {
               onPress={(): void => this.getItems()}
               activeOpacity={0.5}
               style={styles.btn}
-              textStyle={styles.txt}>
+              textStyle={styles.txt}
+            >
               Get Products ({productList.length})
             </NativeButton>
             {productList.map((product, i) => {
@@ -271,7 +273,8 @@ class Page extends Component {
                   key={i}
                   style={{
                     flexDirection: 'column',
-                  }}>
+                  }}
+                >
                   <Text
                     style={{
                       marginTop: 20,
@@ -280,7 +283,8 @@ class Page extends Component {
                       minHeight: 100,
                       alignSelf: 'center',
                       paddingHorizontal: 20,
-                    }}>
+                    }}
+                  >
                     {JSON.stringify(product)}
                   </Text>
                   <NativeButton
@@ -290,7 +294,8 @@ class Page extends Component {
                     }
                     activeOpacity={0.5}
                     style={styles.btn}
-                    textStyle={styles.txt}>
+                    textStyle={styles.txt}
+                  >
                     Request purchase for above product
                   </NativeButton>
                 </View>
