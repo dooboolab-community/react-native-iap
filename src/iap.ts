@@ -115,7 +115,7 @@ const fillProductsAdditionalData = async (
       FR: 'EUR',
     };
 
-    const currency = currencies[user.userMarketplaceAmazon];
+    const currency = (currencies as any)[user.userMarketplaceAmazon];
 
     // Add currency to products
     products.forEach((product) => {
