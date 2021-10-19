@@ -117,7 +117,8 @@ public class RNIapAmazonModule extends ReactContextBaseJavaModule {
   public void startListening(final Promise promise) {
     sendUnconsumedPurchases(promise);
   }
-    @ReactMethod
+  
+  @ReactMethod
   public void addListener(String eventName) {
     // Keep: Required for RN built in Event Emitter Calls.
   }
