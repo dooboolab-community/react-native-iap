@@ -20,15 +20,11 @@ type IAP_STATUS = {
   availablePurchases: Purchase[];
   currentPurchase?: Purchase;
   currentPurchaseError?: PurchaseError;
-  finishTransaction: (
-    purchase: Purchase,
-    isConsumable?: boolean,
-    developerPayloadAndroid?: string,
-  ) => Promise<string | void>;
-  getAvailablePurchases: () => Promise<void>;
-  getPurchaseHistories: () => Promise<void>;
-  getProducts: (skus: string[]) => Promise<void>;
-  getSubscriptions: (skus: string[]) => Promise<void>;
+  finishTransaction: typeof iapFinishTransaction;
+  getAvailablePurchases: typeof iapGetAvailablePurchases;
+  getPurchaseHistories: typeof getPurchaseHistory;
+  getProducts: typeof iapGetProducts;
+  getSubscriptions: typeof iapGetSubscriptions;
   requestPurchase: typeof iapRequestPurchase;
   requestSubscription: typeof iapRequestSubscription;
 };
