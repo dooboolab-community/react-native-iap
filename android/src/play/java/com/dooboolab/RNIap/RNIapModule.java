@@ -36,7 +36,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RNIapModule extends ReactContextBaseJavaModule implements PurchasesUpdatedListener {
   final String TAG = "RNIapModule";
@@ -45,12 +47,12 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   private final ReactContext reactContext;
   private BillingClient billingClientCache;
 
-  private final List<SkuDetails> skus;
+  private final Map<String, SkuDetails> skus;
 
   public RNIapModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
-    this.skus = new ArrayList<>();
+    this.skus = new HashMap<>();
     LifecycleEventListener lifecycleEventListener =
         new LifecycleEventListener() {
           @Override
@@ -245,9 +247,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
 
                 if (skuDetailsList != null) {
                   for (SkuDetails sku : skuDetailsList) {
-                    if (!skus.contains(sku)) {
-                      skus.add(sku);
-                    }
+                    skus.put(sku.getSku(), sku);
                   }
                 }
                 WritableNativeArray items = new WritableNativeArray();
@@ -417,13 +417,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           DoobooUtils.getInstance().addPromiseForKey(PROMISE_BUY_ITEM, promise);
           final BillingFlowParams.Builder builder = BillingFlowParams.newBuilder();
 
-          SkuDetails selectedSku = null;
-          for (SkuDetails skuDetail : skus) {
-            if (skuDetail.getSku().equals(sku)) {
-              selectedSku = skuDetail;
-              break;
-            }
-          }
+          SkuDetails selectedSku = skus.get(sku);
 
           if (selectedSku == null) {
             String debugMessage =
