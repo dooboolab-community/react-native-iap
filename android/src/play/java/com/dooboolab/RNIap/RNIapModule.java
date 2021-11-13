@@ -664,6 +664,16 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   }
 
   @ReactMethod
+  public void addListener(String eventName) {
+    // Keep: Required for RN built in Event Emitter Calls.
+  }
+
+  @ReactMethod
+  public void removeListeners(double count) {
+    // Keep: Required for RN built in Event Emitter Calls.
+  }
+
+  @ReactMethod
   public String getPackageName() {
     return getReactApplicationContext().getPackageName();
   }
