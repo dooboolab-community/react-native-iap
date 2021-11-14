@@ -88,11 +88,13 @@ export function useIAP(): IAP_STATUS {
       } catch (err) {
         throw err;
       } finally {
-        if (purchase.productId === currentPurchase?.productId)
+        if (purchase.productId === currentPurchase?.productId) {
           setCurrentPurchase(undefined);
+        }
 
-        if (purchase.productId === currentPurchaseError?.productId)
+        if (purchase.productId === currentPurchaseError?.productId) {
           setCurrentPurchaseError(undefined);
+        }
       }
     },
     [
