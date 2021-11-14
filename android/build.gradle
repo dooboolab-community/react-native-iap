@@ -1,6 +1,6 @@
 
 buildscript {
-    ext.kotlin_version = '1.5.30'
+    ext.kotlinVersion = '1.5.30'
     repositories {
     google()
     mavenCentral()
@@ -8,7 +8,7 @@ buildscript {
 
   dependencies {
     classpath 'com.android.tools.build:gradle:4.2.2'
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
   }
 }
 
@@ -85,5 +85,5 @@ dependencies {
     implementation "androidx.browser:browser:$androidXBrowser"
   }
     implementation "androidx.core:core-ktx:1.6.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
 }
