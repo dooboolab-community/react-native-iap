@@ -22,3 +22,5 @@ docs/
 .prettierrc.js
 .gitattributes
 .yarn/cache
+
+package/
