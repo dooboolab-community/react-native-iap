@@ -21,3 +21,5 @@ docs/
 .eslintignore
 .prettierrc.js
 .gitattributes
+
+package/
