@@ -136,7 +136,7 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
   }
 
   @ReactMethod
-  public void isReady(final Promise promise) {
+  public void isReadyAndroid(final Promise promise) {
     if(billingClientCache != null && billingClientCache.isReady()) {
       promise.resolve(true);
     } else {

@@ -90,4 +90,4 @@ componentWillUnmount() {
 ## Long lived connections (Android)
 Although using hooks and tying the connection lifecycle to a component is recommended, you might want to handle connections separate from the UI layer (e.g. Redux Sagas), in this case you need to take extra care of the connection lifecycle, the connection might break and the only way to reconnect is to call the `RNIap.endConnection()` method and then `RNIap.initConnection()` again, this creates a new internal instance of a billing client and is the only way to reconnect to the Play Store services.
 
-You can check if the connection is valid by calling the `RNIap.isReady()` method, if it returns `false` a call to `initConnection` is necessary.
+You can check if the connection is valid by calling the `RNIap.isReadyAndroid()` method, if it returns `false` a call to `initConnection` is necessary.

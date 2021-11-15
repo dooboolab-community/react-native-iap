@@ -27,4 +27,4 @@ _*deprecated_ ~~`buySubscription(sku: string, prevSku?: string, mode?: number)`~
 `deepLinkToSubscriptionsAndroid(sku: string)` <ul><li>sku: subscription sku</li></ul> | `void` | **Android only** Deep link user into Google Play's subscriptions screen.
 `validateReceiptAmazon(developerSecret: string, userId: string, receiptId: string, useSandbox : boolean)` <ul><li>developerSecret: from the Amazon developer console</li><li>userId: who purchased the item</li><li>receiptId: long obfuscated string returned when purchasing the item</li><li>useSandbox: Defaults to true, use sandbox environment or production.</li></ul> | <code>Object &#124; boolean</code> | **Amazon only** Validate receipt.
 `getPromotedProductIOS()` | <code>Promise<Product &#124; null></code> | **IOS only** Returns the productId of the promoted product. Indicates the the App Store purchase should continue from the app instead of the App Store.
-`isReady()` | `Promise<boolean>` | **Android only** Returns if the Google Play Store connection is ready to be queried.
+`isReadyAndroid()` | `Promise<boolean>` | **Android only** Returns if the Google Play Store connection is ready to be queried.
