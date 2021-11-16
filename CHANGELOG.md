@@ -1,11 +1,20 @@
 ## Changelogs
 
+# 7.5.1
+
+- Refresh SkuDetails (#1566)
+- fix: NativeEventEmitter warnings since ReactNative 0.65 (#1544)
+- Using TCK Tested JDK builds of OpenJDK (#1525)
+- Add missing types for finishTransaction within useIAP() (#1533)
+
 # 7.5.0
 
 ### Bugfix
+
 - Fix canceled purchase dangling [#1504](https://github.com/dooboolab/react-native-iap/pull/1504)
 
 ### Dependencies
+
 - Set default `androidX` version [#1505](https://github.com/dooboolab/react-native-iap/pull/1505)
 - Update packages [#1506](https://github.com/dooboolab/react-native-iap/pull/1506)
 
