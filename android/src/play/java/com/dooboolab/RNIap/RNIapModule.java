@@ -226,6 +226,13 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
     ensureConnection(
         promise,
         billingClient -> {
+          final Activity activity = getCurrentActivity();
+
+          if (activity == null) {
+            promise.reject(DoobooUtils.E_UNKNOWN, "getCurrentActivity returned null");
+            return;
+          }
+
           final ArrayList<String> skuList = new ArrayList<>();
 
           for (int i = 0; i < skuArr.size(); i++) {
@@ -238,68 +245,76 @@ public class RNIapModule extends ReactContextBaseJavaModule implements Purchases
           billingClient.querySkuDetailsAsync(
               params.build(),
               (billingResult, skuDetailsList) -> {
-                Log.d(TAG, "responseCode: " + billingResult.getResponseCode());
-                if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-                  PlayUtils.getInstance()
-                      .rejectPromiseWithBillingError(promise, billingResult.getResponseCode());
-                  return;
-                }
+                activity.runOnUiThread(
+                    () -> {
+                      Log.d(TAG, "responseCode: " + billingResult.getResponseCode());
+                      if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+                        PlayUtils.getInstance()
+                            .rejectPromiseWithBillingError(
+                                promise, billingResult.getResponseCode());
+                        return;
+                      }
 
-                if (skuDetailsList != null) {
-                  for (SkuDetails sku : skuDetailsList) {
-                    skus.put(sku.getSku(), sku);
-                  }
-                }
-                WritableNativeArray items = new WritableNativeArray();
+                      if (skuDetailsList != null) {
+                        for (SkuDetails sku : skuDetailsList) {
+                          skus.put(sku.getSku(), sku);
+                        }
+                      }
+                      WritableNativeArray items = new WritableNativeArray();
 
-                for (SkuDetails skuDetails : skuDetailsList) {
-                  WritableMap item = Arguments.createMap();
-                  item.putString("productId", skuDetails.getSku());
-                  long introductoryPriceMicros = skuDetails.getIntroductoryPriceAmountMicros();
-                  long priceAmountMicros = skuDetails.getPriceAmountMicros();
-                  // Use valueOf instead of constructors.
-                  // See:
-                  // https://www.javaworld.com/article/2073176/caution--double-to-bigdecimal-in-java.html
-                  BigDecimal priceAmount = BigDecimal.valueOf(priceAmountMicros);
-                  BigDecimal introductoryPriceAmount = BigDecimal.valueOf(introductoryPriceMicros);
-                  BigDecimal microUnitsDivisor = BigDecimal.valueOf(1000000);
-                  String price = priceAmount.divide(microUnitsDivisor).toString();
-                  String introductoryPriceAsAmountAndroid =
-                      introductoryPriceAmount.divide(microUnitsDivisor).toString();
-                  item.putString("price", price);
-                  item.putString("currency", skuDetails.getPriceCurrencyCode());
-                  item.putString("type", skuDetails.getType());
-                  item.putString("localizedPrice", skuDetails.getPrice());
-                  item.putString("title", skuDetails.getTitle());
-                  item.putString("description", skuDetails.getDescription());
-                  item.putString("introductoryPrice", skuDetails.getIntroductoryPrice());
-                  item.putString("typeAndroid", skuDetails.getType());
-                  item.putString("packageNameAndroid", skuDetails.zzc());
-                  item.putString("originalPriceAndroid", skuDetails.getOriginalPrice());
-                  item.putString("subscriptionPeriodAndroid", skuDetails.getSubscriptionPeriod());
-                  item.putString("freeTrialPeriodAndroid", skuDetails.getFreeTrialPeriod());
-                  item.putString(
-                      "introductoryPriceCyclesAndroid",
-                      String.valueOf(skuDetails.getIntroductoryPriceCycles()));
-                  item.putString(
-                      "introductoryPricePeriodAndroid", skuDetails.getIntroductoryPricePeriod());
-                  item.putString(
-                      "introductoryPriceAsAmountAndroid", introductoryPriceAsAmountAndroid);
-                  item.putString("iconUrl", skuDetails.getIconUrl());
-                  item.putString("originalJson", skuDetails.getOriginalJson());
-                  BigDecimal originalPriceAmountMicros =
-                      BigDecimal.valueOf(skuDetails.getOriginalPriceAmountMicros());
-                  String originalPrice =
-                      originalPriceAmountMicros.divide(microUnitsDivisor).toString();
-                  item.putString("originalPrice", originalPrice);
-                  items.pushMap(item);
-                }
+                      for (SkuDetails skuDetails : skuDetailsList) {
+                        WritableMap item = Arguments.createMap();
+                        item.putString("productId", skuDetails.getSku());
+                        long introductoryPriceMicros =
+                            skuDetails.getIntroductoryPriceAmountMicros();
+                        long priceAmountMicros = skuDetails.getPriceAmountMicros();
+                        // Use valueOf instead of constructors.
+                        // See:
+                        // https://www.javaworld.com/article/2073176/caution--double-to-bigdecimal-in-java.html
+                        BigDecimal priceAmount = BigDecimal.valueOf(priceAmountMicros);
+                        BigDecimal introductoryPriceAmount =
+                            BigDecimal.valueOf(introductoryPriceMicros);
+                        BigDecimal microUnitsDivisor = BigDecimal.valueOf(1000000);
+                        String price = priceAmount.divide(microUnitsDivisor).toString();
+                        String introductoryPriceAsAmountAndroid =
+                            introductoryPriceAmount.divide(microUnitsDivisor).toString();
+                        item.putString("price", price);
+                        item.putString("currency", skuDetails.getPriceCurrencyCode());
+                        item.putString("type", skuDetails.getType());
+                        item.putString("localizedPrice", skuDetails.getPrice());
+                        item.putString("title", skuDetails.getTitle());
+                        item.putString("description", skuDetails.getDescription());
+                        item.putString("introductoryPrice", skuDetails.getIntroductoryPrice());
+                        item.putString("typeAndroid", skuDetails.getType());
+                        item.putString("packageNameAndroid", skuDetails.zzc());
+                        item.putString("originalPriceAndroid", skuDetails.getOriginalPrice());
+                        item.putString(
+                            "subscriptionPeriodAndroid", skuDetails.getSubscriptionPeriod());
+                        item.putString("freeTrialPeriodAndroid", skuDetails.getFreeTrialPeriod());
+                        item.putString(
+                            "introductoryPriceCyclesAndroid",
+                            String.valueOf(skuDetails.getIntroductoryPriceCycles()));
+                        item.putString(
+                            "introductoryPricePeriodAndroid",
+                            skuDetails.getIntroductoryPricePeriod());
+                        item.putString(
+                            "introductoryPriceAsAmountAndroid", introductoryPriceAsAmountAndroid);
+                        item.putString("iconUrl", skuDetails.getIconUrl());
+                        item.putString("originalJson", skuDetails.getOriginalJson());
+                        BigDecimal originalPriceAmountMicros =
+                            BigDecimal.valueOf(skuDetails.getOriginalPriceAmountMicros());
+                        String originalPrice =
+                            originalPriceAmountMicros.divide(microUnitsDivisor).toString();
+                        item.putString("originalPrice", originalPrice);
+                        items.pushMap(item);
+                      }
 
-                try {
-                  promise.resolve(items);
-                } catch (ObjectAlreadyConsumedException oce) {
-                  Log.e(TAG, oce.getMessage());
-                }
+                      try {
+                        promise.resolve(items);
+                      } catch (ObjectAlreadyConsumedException oce) {
+                        Log.e(TAG, oce.getMessage());
+                      }
+                    });
               });
         });
   }
