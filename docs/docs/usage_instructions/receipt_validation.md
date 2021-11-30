@@ -23,7 +23,17 @@ Further reading is [here](https://stackoverflow.com/questions/35127086) or refer
 
 ### With App Store
 
-Currently, serverless receipt validation is possible using `validateReceiptIos()`.
+#### Local Validation 
+
+Local on-device cryptographic validation is not currently supported. More details are here: https://developer.apple.com/documentation/appstorereceipts/validating_receipts_on_the_device 
+
+#### Validating with the App Store
+
+> WARNING: This method is not recommended for production usage, and Apple explicitly warn against it in their docs: https://developer.apple.com/documentation/storekit/original_api_for_in-app_purchase/validating_receipts_with_the_app_store 
+
+This can be used as a convenience method for developing and testing receipt validation through the development lifecycle.
+
+Currently, validating receipts with the App Store is possible locally using `validateReceiptIos()`.
 - The first parameter, you should pass `transactionReceipt` which returns after `buyProduct()`.
 - The second parameter, you should pass whether this is `test` environment.
     If `true`, it will request to `sandbox` and `false` it will request to `production`.
@@ -31,7 +41,7 @@ Currently, serverless receipt validation is possible using `validateReceiptIos()
 ```javascript
   const receiptBody = {
     'receipt-data': purchase.transactionReceipt,
-    'password': '******'
+    'password': '******' // app shared secret, can be found in App Store Connect
   };
   const result = await RNIap.validateReceiptIos(receiptBody, false);
   console.log(result);
