@@ -7,22 +7,24 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint index.js"
   },
   "dependencies": {
     "apsl-react-native-button": "3.1.1",
     "react": "17.0.1",
     "react-native": "0.64.2",
-    "react-native-iap": "7.5.0",
+    "react-native-iap": "7.5.1",
     "react-navigation": "4.4.4"
   },
   "devDependencies": {
     "@babel/core": "7.16.0",
     "@babel/runtime": "7.16.3",
     "@react-native-community/eslint-config": "3.0.1",
-    "babel-jest": "27.3.1",
-    "eslint": "7.32.0",
-    "jest": "27.3.1",
+    "@dooboo/eslint-config": "1.2.2",
+    "babel-jest": "27.4.2",
+    "eslint": "8.3.0",
+    "eslint-plugin-flowtype": "^8.0.3",
+    "jest": "27.4.3",
     "metro-react-native-babel-preset": "0.66.2",
     "react-test-renderer": "16.9.0"
   },

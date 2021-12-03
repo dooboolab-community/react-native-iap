@@ -128,6 +128,7 @@ class Page extends Component {
     purchaseUpdateSubscription = purchaseUpdatedListener(
       async (purchase: InAppPurchase | SubscriptionPurchase) => {
         console.info('purchase', purchase);
+
         const receipt = purchase.transactionReceipt
           ? purchase.transactionReceipt
           : purchase.originalJson;
@@ -158,10 +159,12 @@ class Page extends Component {
       purchaseUpdateSubscription.remove();
       purchaseUpdateSubscription = null;
     }
+
     if (purchaseErrorSubscription) {
       purchaseErrorSubscription.remove();
       purchaseErrorSubscription = null;
     }
+
     RNIap.endConnection();
   }
 
@@ -195,6 +198,7 @@ class Page extends Component {
       console.info(
         'Get available purchases (non-consumable or unconsumed consumable)',
       );
+
       const purchases = await RNIap.getAvailablePurchases();
       console.info('Available purchases :: ', purchases);
       if (purchases && purchases.length > 0) {

@@ -1,0 +1,27 @@
+name: CI Android
+
+on:
+  push:
+    branches: [master]
+  paths:
+    - "android/**"
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build_android:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ 11.0.3, 11 ]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK ${{ matrix.java-version }} 
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'zulu'
+        java-version: ${{ matrix.java-version }}
+    - name: Grant execute permission for gradlew
+      run: chmod +x android/gradlew
+    - name: Build with Library with Gradle and check lints
+      run: cd android;./gradlew build test verGJF
