@@ -68,6 +68,8 @@ tsconfig.tsbuildinfo
 !docs/*
 !docs/**/*
 
+package
+
 # yarn2
 .pnp.*
 .yarn/*
@@ -76,4 +78,3 @@ tsconfig.tsbuildinfo
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-package

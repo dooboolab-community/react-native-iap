@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
     paths:
-      - "IapExample/**"
+      - 'IapExample/**'
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -13,22 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [ 11.0.3, 11 ]
+        java-version: [11.0.3, 11]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup kernel for react native, increase watchers
-      run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-    - name: Set up JDK ${{ matrix.java-version }}
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'zulu'
-        java-version: ${{ matrix.java-version }}
-    - name: Install base modules
-      run: yarn; yarn build
-    - name: Install modules
-      run: cd IapExample;yarn
-    - name: Grant execute permission for gradlew in example app
-      run: chmod +x IapExample/android/gradlew
-    - name: Build with example app with Gradle
-      run: cd IapExample/android;./gradlew build test
+      - uses: actions/checkout@v2
+      - name: Setup kernel for react native, increase watchers
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: ${{ matrix.java-version }}
+      - name: Install base modules
+        run: yarn; yarn build
+      - name: Install modules
+        run: cd IapExample;yarn
+      - name: Grant execute permission for gradlew in example app
+        run: chmod +x IapExample/android/gradlew
+      - name: Build with example app with Gradle
+        run: cd IapExample/android;./gradlew build test
