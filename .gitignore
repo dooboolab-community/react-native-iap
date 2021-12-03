@@ -67,3 +67,12 @@ tsconfig.tsbuildinfo
 # Don't apply this gitignore for documenattion directory
 !docs/*
 !docs/**/*
+
+# yarn2
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
