@@ -1,4 +1,11 @@
 module.exports = {
   root: true,
-  extends: '@react-native-community',
+  extends: '@dooboo/eslint-config',
+  rules: {
+    'eslint-comments/no-unlimited-disable': 0,
+    'eslint-comments/no-unused-disable': 0,
+  },
+  env: {
+    'jest/globals': true,
+  }
 };
