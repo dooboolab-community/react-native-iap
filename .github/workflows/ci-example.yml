@@ -3,8 +3,8 @@ name: CI Example
 on:
   push:
     branches: [master]
-  paths:
-    - "IapExample/**"
+    paths:
+      - "IapExample/**"
   pull_request:
     types: [opened, synchronize, reopened]
 
