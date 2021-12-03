@@ -3,8 +3,8 @@ name: CI Android
 on:
   push:
     branches: [master]
-  paths:
-    - "android/**"
+    paths:
+      - "android/**"
   pull_request:
     types: [opened, synchronize, reopened]
 
