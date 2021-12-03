@@ -42,7 +42,9 @@ const IAPContext = React.createContext<IAPContextType>(null);
 
 export function useIAPContext(): IAPContextType {
   const ctx = useContext(IAPContext);
-  if (!ctx) throw new Error('You need wrap your app with withIAPContext HOC');
+  if (!ctx) {
+    throw new Error('You need wrap your app with withIAPContext HOC');
+  }
 
   return ctx;
 }
@@ -106,7 +108,9 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
     }, []);
 
     useEffect(() => {
-      if (!connected) return;
+      if (!connected) {
+        return;
+      }
 
       const purchaseUpdateSubscription = purchaseUpdatedListener(
         async (purchase: InAppPurchase | SubscriptionPurchase) => {

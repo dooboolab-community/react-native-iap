@@ -1,5 +1,9 @@
 ## Changelogs
 
+# 7.5.2
+
+- fix: android querySkuDetailsAsync ui thread (#1578)
+
 # 7.5.1
 
 - Refresh SkuDetails (#1566)
