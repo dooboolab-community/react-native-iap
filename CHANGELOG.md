@@ -1,5 +1,8 @@
 ## Changelogs
 
+# 7.5.3
+- Expose new `isReadyAndroid` method (#1563)
+
 # 7.5.2
 
 - fix: android querySkuDetailsAsync ui thread (#1578)
