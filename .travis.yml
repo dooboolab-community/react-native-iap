@@ -37,4 +37,4 @@ matrix:
         - yarn build
 
       script:
-        - yarn validate
+        - yarn validate --no-verify
