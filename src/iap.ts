@@ -668,4 +668,4 @@ export const presentCodeRedemptionSheetIOS = async (): Promise<null> =>
  * @returns {Promise<boolean>}
  */
 export const isReadyAndroid = (): Promise<boolean> =>
-  getNativeModule().isReadyAndroid();
+  getAndroidModule().isReadyAndroid();
