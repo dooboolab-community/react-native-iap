@@ -1,5 +1,9 @@
 ## Changelogs
 
+# 7.5.4
+- Fix missing isReadyAndroid method in iap.ts (#1604)
+- Android 12 compability fix (#1586)
+
 # 7.5.3
 - Expose new `isReadyAndroid` method (#1563)
 
