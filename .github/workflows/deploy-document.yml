@@ -20,7 +20,7 @@ jobs:
       - name: Install packages and build
         run: |
           pushd ./docs
-          yarn install --ignore-engines
+          yarn
           yarn build
           popd
 
