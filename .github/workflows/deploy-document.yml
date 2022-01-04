@@ -20,7 +20,7 @@ jobs:
       - name: Install packages and build
         run: |
           pushd ./docs
-          yarn install --immutable
+          yarn
           yarn build
           popd
 
