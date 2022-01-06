@@ -21,3 +21,4 @@ docs/
 .eslintignore
 .prettierrc.js
 .gitattributes
+.yarn/cache
