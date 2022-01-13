@@ -182,7 +182,7 @@ export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
   )();
 
 /**
- * Gets an invetory of purchases made by the user regardless of consumption status
+ * Gets an inventory of purchases made by the user regardless of consumption status
  * @returns {Promise<(InAppPurchase | SubscriptionPurchase)[]>}
  */
 export const getPurchaseHistory = (): Promise<
