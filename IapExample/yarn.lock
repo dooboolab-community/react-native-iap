@@ -1912,7 +1912,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/eslint-config@npm:^3.0.1":
+"@react-native-community/eslint-config@npm:3.0.1, @react-native-community/eslint-config@npm:^3.0.1":
   version: 3.0.1
   resolution: "@react-native-community/eslint-config@npm:3.0.1"
   dependencies:
@@ -5189,27 +5189,6 @@ __metadata:
   checksum: 9c7a74a2827f9294c009266c82031030eae811ca87b0da3dceb8d6071b9bde22c9f3daef0469c3c533cc67a97d8a167cd9fc0389350e5f415f61a79b171ded16
   languageName: node
   linkType: hard
-
-"iap-example@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "iap-example@workspace:."
-  dependencies:
-    "@babel/core": 7.16.0
-    "@babel/runtime": 7.16.3
-    "@dooboo/eslint-config": 1.2.2
-    apsl-react-native-button: 3.1.1
-    babel-jest: 27.4.2
-    eslint: 8.3.0
-    eslint-plugin-flowtype: ^8.0.3
-    jest: 27.4.3
-    metro-react-native-babel-preset: 0.66.2
-    react: 17.0.1
-    react-native: 0.64.2
-    react-native-iap: 7.5.1
-    react-navigation: 4.4.4
-    react-test-renderer: 16.9.0
-  languageName: unknown
-  linkType: soft
 
 "iconv-lite@npm:0.4.24":
   version: 0.4.24
@@ -8680,6 +8659,28 @@ __metadata:
   checksum: 3ea587b981a19016297edb96d1ffe48af7e6af69660e3b371dbfc73722a73a0b0e9be5c88089fbeeb866c389c1098e07f64929c7414290504b855f54f901ab10
   languageName: node
   linkType: hard
+
+"rniap-example@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "rniap-example@workspace:."
+  dependencies:
+    "@babel/core": 7.16.0
+    "@babel/runtime": 7.16.3
+    "@dooboo/eslint-config": 1.2.2
+    "@react-native-community/eslint-config": 3.0.1
+    apsl-react-native-button: 3.1.1
+    babel-jest: 27.4.2
+    eslint: 8.3.0
+    eslint-plugin-flowtype: ^8.0.3
+    jest: 27.4.3
+    metro-react-native-babel-preset: 0.66.2
+    react: 17.0.1
+    react-native: 0.64.2
+    react-native-iap: 7.5.1
+    react-navigation: 4.4.4
+    react-test-renderer: 16.9.0
+  languageName: unknown
+  linkType: soft
 
 "rsvp@npm:^4.8.4":
   version: 4.8.5
