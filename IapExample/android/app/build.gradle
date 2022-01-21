@@ -191,7 +191,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.facebook.react:react-native:+"
+    implementation "com.facebook.react:react-native:0.65.1"
     // included with Autolinking: 
     //implementation project(path: ':react-native-iap')
 

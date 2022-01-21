@@ -1,23 +1,23 @@
-
 buildscript {
-    ext.kotlinVersion = '1.5.30'
+  ext.DEFAULT_KOTLIN_VERSION = '1.5.10'
+  ext.safeExtGet={prop, fallback-> 
+    return rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+  }
     repositories {
     google()
     mavenCentral()
   }
 
+
   dependencies {
     classpath 'com.android.tools.build:gradle:4.2.2'
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${safeExtGet('kotlinVersion',DEFAULT_KOTLIN_VERSION)}"
   }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
-def safeExtGet(prop, fallback) {
-    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
-}
 
 def DEFAULT_COMPILE_SDK_VERSION = 30
 def DEFAULT_BUILD_TOOLS_VERSION = "30.0.2"
@@ -59,7 +59,6 @@ repositories {
         }
   google()
   mavenCentral()
-  jcenter()
 }
 
 dependencies {
@@ -84,6 +83,4 @@ dependencies {
     implementation "androidx.annotation:annotation:$androidXAnnotation"
     implementation "androidx.browser:browser:$androidXBrowser"
   }
-    implementation "androidx.core:core-ktx:1.6.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
 }

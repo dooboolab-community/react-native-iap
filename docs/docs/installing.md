@@ -108,7 +108,7 @@ Then follow the instructions below depending on the platform you're working with
     }
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath("com.android.tools.build:gradle:4.1.0")
