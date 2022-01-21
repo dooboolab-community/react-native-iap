@@ -21,6 +21,8 @@ Published in [website](https://react-native-iap.dooboolab.com).
 
 ## Announcement
 
+- Version `8.0.0` has finally landed in Jan 21st. Since this is early release, please use it with caution 🚧.
+
 - Version `8.0.0` is currently in release candidate. The module is completely rewritten with `Kotlin` and `Swift` for maintenenance issue by [andresesfm](https://github.com/andresesfm) 🔆. You may install this for early preview.
 
   ```
