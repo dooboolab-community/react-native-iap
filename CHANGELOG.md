@@ -1,8 +1,12 @@
 ## Changelogs
 
+# 7.5.6
+
+- Add missing android type (#1619)
+
 # 7.5.5
 
-- Ignore yarn cache in npmignore #1607
+- Ignore yarn cache in npmignore (#1607)
 
 # 7.5.4
 

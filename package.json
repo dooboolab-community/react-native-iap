@@ -1,7 +1,7 @@
 {
   "name": "react-native-iap",
   "packageManager": "yarn@3.1.1",
-  "version": "7.5.5",
+  "version": "7.5.6",
   "description": "React Native In App Purchase Module.",
   "main": "index.js",
   "types": "index.d.ts",
