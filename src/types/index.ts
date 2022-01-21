@@ -139,6 +139,7 @@ export interface Subscription extends ProductCommon {
   subscriptionPeriodNumberIOS?: string;
   subscriptionPeriodUnitIOS?: '' | 'YEAR' | 'MONTH' | 'WEEK' | 'DAY';
 
+  introductoryPriceAsAmountAndroid: string;
   introductoryPriceCyclesAndroid?: string;
   introductoryPricePeriodAndroid?: string;
   subscriptionPeriodAndroid?: string;
