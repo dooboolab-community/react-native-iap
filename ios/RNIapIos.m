@@ -18,7 +18,7 @@ RCT_EXTERN_METHOD(getAvailableItems:
                   reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(buyProduct:
                   (NSString*)sku
-                  andDangerouslyFinishTransactionAutomatically:(BOOL)finishAutomatically
+                  andDangerouslyFinishTransactionAutomatically:(BOOL)andDangerouslyFinishTransactionAutomatically
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(buyProductWithOffer:

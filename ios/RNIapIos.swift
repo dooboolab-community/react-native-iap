@@ -178,11 +178,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     @objc public func buyProduct(
         _ sku:String,
-        finishAutomatically: Bool,
+        andDangerouslyFinishTransactionAutomatically: Bool,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        pendingTransactionWithAutoFinish = finishAutomatically
+        pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
         var product: SKProduct?
         let lockQueue = DispatchQueue(label: "validProducts")
         lockQueue.sync {
