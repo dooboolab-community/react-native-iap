@@ -49,7 +49,7 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
     val TAG = "RNIapModule"
     private val reactContext: ReactContext
     private var billingClientCache: BillingClient? = null
-    private val skus: MutableList<SkuDetails>
+    private val skus: MutableMap<String, SkuDetails>
     override fun getName(): String {
         return "RNIapModule"
     }
@@ -227,9 +227,7 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
                         }
                         if (skuDetailsList != null) {
                             for (sku in skuDetailsList) {
-                                if (!skus.contains(sku)) {
-                                    skus.add(sku)
-                                }
+                                skus.put(sku.getSku(), sku)
                             }
                         }
                         val items = WritableNativeArray()
@@ -402,13 +400,7 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
                         PROMISE_BUY_ITEM, promise
                     )
                     val builder = BillingFlowParams.newBuilder()
-                    var selectedSku: SkuDetails? = null
-                    for (skuDetail in skus) {
-                        if (skuDetail.sku == sku) {
-                            selectedSku = skuDetail
-                            break
-                        }
-                    }
+                    var selectedSku: SkuDetails? = skus.get(sku)
                     if (selectedSku == null) {
                         val debugMessage =
                             "The sku was not found. Please fetch products first by calling getItems"
@@ -674,7 +666,7 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
 
     init {
         this.reactContext = reactContext
-        skus = ArrayList()
+        skus = mutableMapOf<String, SkuDetails>()
         val lifecycleEventListener: LifecycleEventListener = object : LifecycleEventListener {
             override fun onHostResume() {}
             override fun onHostPause() {}
