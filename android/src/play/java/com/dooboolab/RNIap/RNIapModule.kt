@@ -49,7 +49,7 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
     val TAG = "RNIapModule"
     private val reactContext: ReactContext
     private var billingClientCache: BillingClient? = null
-    private val skus: MutableList<SkuDetails>
+    private val skus: MutableMap<String, SkuDetails>
     override fun getName(): String {
         return "RNIapModule"
     }
