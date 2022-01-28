@@ -1,5 +1,17 @@
 ## Changelogs
 
+# 8.0.0
+
+Migration to Kotlin from Java
+Migration to swift from ObjectiveC
+Fixed Amazon getProducts being called twice
+Implemented fix for Promoted product on iOS
+Removed Java style plugin
+Updated example app to RN 0.65
+Removes redundant builds on multiple similar java versions [11,11.0.3]
+Allows for configuration of kotlinVersion reading it from the rootProject just like the other versions, including default to 1.5.10 (Fixes Incompatibility with react-native-pager-view: Kotlin version issue #1598)
+Adds missing introductoryPriceAsAmountAndroid to typescript (same as add missing android type #1619)
+
 # 7.5.6
 
 - Add missing android type (#1619)

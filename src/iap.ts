@@ -194,6 +194,10 @@ export const getPurchaseHistory = (): Promise<
         return getIosModule().getAvailableItems();
       },
       android: async () => {
+        if (RNIapAmazonModule) {
+          return await RNIapAmazonModule.getAvailableItems();
+        }
+
         const products = await getAndroidModule().getPurchaseHistoryByType(
           ANDROID_ITEM_TYPE_IAP,
         );
@@ -220,6 +224,10 @@ export const getAvailablePurchases = (): Promise<
         return getIosModule().getAvailableItems();
       },
       android: async () => {
+        if (RNIapAmazonModule) {
+          return await RNIapAmazonModule.getAvailableItems();
+        }
+
         const products = await getAndroidModule().getAvailableItemsByType(
           ANDROID_ITEM_TYPE_IAP,
         );

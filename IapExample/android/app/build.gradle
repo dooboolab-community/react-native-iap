@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-
+apply plugin: 'kotlin-android'
 import com.android.build.OutputFile
 
 /**
@@ -191,8 +191,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.facebook.react:react-native:+"
-    implementation project(path: ':react-native-iap')
+    implementation "com.facebook.react:react-native:0.65.1"
+    // included with Autolinking: 
+    //implementation project(path: ':react-native-iap')
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

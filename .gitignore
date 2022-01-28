@@ -68,6 +68,8 @@ tsconfig.tsbuildinfo
 !docs/*
 !docs/**/*
 
+package
+
 # yarn2
 .pnp.*
 .yarn/*
