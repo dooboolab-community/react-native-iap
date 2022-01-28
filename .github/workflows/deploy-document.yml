@@ -2,7 +2,7 @@ name: document
 on:
   workflow_dispatch:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - 'docs/**'
 
@@ -10,10 +10,10 @@ jobs:
   publish-doc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@main
 
       - name: Set up Node.js
-        uses: actions/setup-node@master
+        uses: actions/setup-node@main
         with:
           node-version: 16.x
 

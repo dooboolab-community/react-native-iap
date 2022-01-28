@@ -2,7 +2,7 @@ name: CI Example
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - 'IapExample/**'
   pull_request:

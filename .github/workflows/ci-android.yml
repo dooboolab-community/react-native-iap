@@ -2,7 +2,7 @@ name: CI Android
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - 'android/**'
   pull_request:
