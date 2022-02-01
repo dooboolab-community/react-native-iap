@@ -83,10 +83,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         
         if promises == nil {
             promises = []
-            promisesByKey[key] = promises
         }
         
         promises?.append((resolve, reject))
+        promisesByKey[key] = promises
     }
     
     func resolvePromises(forKey key: String?, value: Any?) {
