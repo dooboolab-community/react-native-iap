@@ -1,5 +1,10 @@
 ## Changelogs
 
+# 8.0.1
+
+## Bug Fixes
+Promise never resolved or rejected (#1634)
+
 # 8.0.0
 
 Migration to Kotlin from Java
