@@ -29,9 +29,9 @@ class DoobooUtils {
                 list = promises[key]!!
             } else {
                 list = ArrayList()
-                promises[key] = list
             }
             list.add(promise)
+            promises[key] = list
         } catch (oce: ObjectAlreadyConsumedException) {
             Log.e(TAG, oce.message!!)
         }
