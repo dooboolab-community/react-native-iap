@@ -378,7 +378,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        SKPaymentQueue.default().finishTransaction(withIdentifier: transactionIdentifier)
+        finishTransaction(withIdentifier: transactionIdentifier)
     }
     
     

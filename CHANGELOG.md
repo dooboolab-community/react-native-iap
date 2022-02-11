@@ -1,10 +1,5 @@
 ## Changelogs
 
-# 8.0.2
-
-## Hot Fixes
-`finishTransaction` crashing (#1637)
-
 # 8.0.1
 
 ## Bug Fixes
