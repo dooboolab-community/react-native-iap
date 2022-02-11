@@ -1,5 +1,10 @@
 ## Changelogs
 
+# 8.0.4
+
+## Hot Fixes
+Resolve #1637.
+
 # 8.0.3
 
 Reverts 8.0.2

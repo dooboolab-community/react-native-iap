@@ -46,7 +46,9 @@ RCT_EXTERN_METHOD(requestReceipt:
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(finishTransaction:
-                  (NSString*)transactionIdentifier)
+                  (NSString*)transactionIdentifier
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(getPendingTransactions:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
