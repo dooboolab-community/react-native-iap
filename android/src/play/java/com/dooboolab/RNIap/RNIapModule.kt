@@ -648,6 +648,16 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
         sendUnconsumedPurchases(promise)
     }
 
+    @ReactMethod
+    fun addListener(eventName: String) {
+        // Keep: Required for RN built-in Event Emitter Calls.
+    }
+
+    @ReactMethod
+    fun removeListeners(count: Double) {
+        // Keep: Required for RN built-in Event Emitter Calls.
+    }
+
     @get:ReactMethod
     val packageName: String
         get() = reactApplicationContext.packageName

@@ -129,6 +129,16 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext?) :
         sendUnconsumedPurchases(promise)
     }
 
+    @ReactMethod
+    fun addListener(eventName: String) {
+        // Keep: Required for RN built-in Event Emitter Calls.
+    }
+
+    @ReactMethod
+    fun removeListeners(count: Double) {
+        // Keep: Required for RN built-in Event Emitter Calls.
+    }
+
     companion object {
         const val PROMISE_BUY_ITEM = "PROMISE_BUY_ITEM"
         const val PROMISE_GET_PRODUCT_DATA = "PROMISE_GET_PRODUCT_DATA"
