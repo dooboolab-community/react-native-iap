@@ -1,5 +1,10 @@
 ## Changelogs
 
+# 8.0.5
+
+Fix NativeEventEmitter warnings
+- Resolve #1496
+
 # 8.0.4
 
 ## Hot Fixes
