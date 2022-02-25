@@ -5,7 +5,6 @@ import java.util.ArrayList
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ObjectAlreadyConsumedException
 import android.util.Log
-import com.dooboolab.RNIap.DoobooUtils
 import java.lang.Exception
 import kotlin.Throws
 import org.json.JSONException
@@ -16,7 +15,6 @@ import org.json.JSONArray
 import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.bridge.ReadableMapKeySetIterator
 import com.facebook.react.bridge.ReadableType
 import com.facebook.react.bridge.ReadableArray
 
@@ -52,7 +50,10 @@ class DoobooUtils {
     }
 
     fun rejectPromisesForKey(
-        key: String, code: String?, message: String?, err: Exception?
+        key: String,
+        code: String?,
+        message: String?,
+        err: Exception?
     ) {
         try {
             if (promises.containsKey(key)) {

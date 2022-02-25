@@ -1,23 +1,8 @@
 package com.dooboolab.RNIap
 
-import com.facebook.react.ReactPackage
-import java.lang.Class
-import com.facebook.react.bridge.JavaScriptModule
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.NativeModule
 import java.util.ArrayList
-import com.dooboolab.RNIap.RNIapAmazonModule
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.Promise
 import com.amazon.device.iap.PurchasingService
-import com.dooboolab.RNIap.RNIapAmazonListener
-import com.amazon.device.iap.model.RequestId
-import com.dooboolab.RNIap.DoobooUtils
 import com.facebook.react.bridge.WritableNativeArray
-import com.facebook.react.bridge.ReadableArray
-import java.util.HashSet
-import com.amazon.device.iap.model.FulfillmentResult
 import com.facebook.react.bridge.ReactContext
 import com.amazon.device.iap.PurchasingListener
 import com.amazon.device.iap.model.Product
@@ -27,7 +12,6 @@ import java.lang.NumberFormatException
 import android.util.Log
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.Arguments
-import com.amazon.device.iap.model.CoinsReward
 import com.amazon.device.iap.model.PurchaseUpdatesResponse
 import com.amazon.device.iap.model.Receipt
 import com.facebook.react.bridge.WritableNativeMap
@@ -335,7 +319,9 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
     }
 
     private fun sendEvent(
-        reactContext: ReactContext, eventName: String, params: WritableMap?
+        reactContext: ReactContext,
+        eventName: String,
+        params: WritableMap?
     ) {
         reactContext
             .getJSModule(RCTDeviceEventEmitter::class.java)
