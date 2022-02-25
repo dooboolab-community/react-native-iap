@@ -1,22 +1,22 @@
 package com.dooboolab.RNIap
 
-import java.util.HashMap
-import java.util.ArrayList
-import com.facebook.react.bridge.Promise
-import com.facebook.react.bridge.ObjectAlreadyConsumedException
 import android.util.Log
-import java.lang.Exception
-import kotlin.Throws
-import org.json.JSONException
-import org.json.JSONObject
-import com.facebook.react.bridge.WritableMap
-import com.facebook.react.bridge.WritableNativeMap
-import org.json.JSONArray
-import com.facebook.react.bridge.WritableArray
-import com.facebook.react.bridge.WritableNativeArray
+import com.facebook.react.bridge.ObjectAlreadyConsumedException
+import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.ReadableType
-import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.WritableArray
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeArray
+import com.facebook.react.bridge.WritableNativeMap
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
+import java.lang.Exception
+import java.util.ArrayList
+import java.util.HashMap
+import kotlin.Throws
 
 class DoobooUtils {
     private val promises = HashMap<String, ArrayList<Promise>>()

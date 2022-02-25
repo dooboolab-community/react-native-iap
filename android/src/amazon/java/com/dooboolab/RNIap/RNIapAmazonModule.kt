@@ -1,14 +1,14 @@
 package com.dooboolab.RNIap
 
+import com.amazon.device.iap.PurchasingService
+import com.amazon.device.iap.model.FulfillmentResult
+import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.Promise
-import com.amazon.device.iap.PurchasingService
-import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.WritableNativeArray
 import java.util.HashSet
-import com.amazon.device.iap.model.FulfillmentResult
 
 class RNIapAmazonModule(reactContext: ReactApplicationContext?) :
     ReactContextBaseJavaModule(reactContext) {

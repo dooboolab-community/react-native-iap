@@ -1,24 +1,24 @@
 package com.dooboolab.RNIap
 
-import java.util.ArrayList
-import com.amazon.device.iap.PurchasingService
-import com.facebook.react.bridge.WritableNativeArray
-import com.facebook.react.bridge.ReactContext
+import android.util.Log
 import com.amazon.device.iap.PurchasingListener
+import com.amazon.device.iap.PurchasingService
 import com.amazon.device.iap.model.Product
 import com.amazon.device.iap.model.ProductDataResponse
 import com.amazon.device.iap.model.ProductType
-import java.lang.NumberFormatException
-import android.util.Log
-import com.facebook.react.bridge.WritableMap
-import com.facebook.react.bridge.Arguments
+import com.amazon.device.iap.model.PurchaseResponse
 import com.amazon.device.iap.model.PurchaseUpdatesResponse
 import com.amazon.device.iap.model.Receipt
-import com.facebook.react.bridge.WritableNativeMap
-import com.amazon.device.iap.model.PurchaseResponse
 import com.amazon.device.iap.model.UserData
 import com.amazon.device.iap.model.UserDataResponse
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ReactContext
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeArray
+import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
+import java.lang.NumberFormatException
+import java.util.ArrayList
 
 class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingListener {
     val TAG = "RNIapAmazonListener"
@@ -80,20 +80,22 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                         items
                     )
             }
-            ProductDataResponse.RequestStatus.FAILED -> DoobooUtils.instance
-                .rejectPromisesForKey(
-                    RNIapAmazonModule.Companion.PROMISE_GET_PRODUCT_DATA,
-                    E_PRODUCT_DATA_RESPONSE_FAILED,
-                    null,
-                    null
-                )
-            ProductDataResponse.RequestStatus.NOT_SUPPORTED -> DoobooUtils.instance
-                .rejectPromisesForKey(
-                    RNIapAmazonModule.Companion.PROMISE_GET_PRODUCT_DATA,
-                    E_PRODUCT_DATA_RESPONSE_NOT_SUPPORTED,
-                    null,
-                    null
-                )
+            ProductDataResponse.RequestStatus.FAILED ->
+                DoobooUtils.instance
+                    .rejectPromisesForKey(
+                        RNIapAmazonModule.Companion.PROMISE_GET_PRODUCT_DATA,
+                        E_PRODUCT_DATA_RESPONSE_FAILED,
+                        null,
+                        null
+                    )
+            ProductDataResponse.RequestStatus.NOT_SUPPORTED ->
+                DoobooUtils.instance
+                    .rejectPromisesForKey(
+                        RNIapAmazonModule.Companion.PROMISE_GET_PRODUCT_DATA,
+                        E_PRODUCT_DATA_RESPONSE_NOT_SUPPORTED,
+                        null,
+                        null
+                    )
         }
     }
 
@@ -301,20 +303,22 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                 DoobooUtils.instance
                     .resolvePromisesForKey(RNIapAmazonModule.Companion.PROMISE_GET_USER_DATA, item)
             }
-            UserDataResponse.RequestStatus.NOT_SUPPORTED -> DoobooUtils.instance
-                .rejectPromisesForKey(
-                    RNIapAmazonModule.Companion.PROMISE_GET_USER_DATA,
-                    E_USER_DATA_RESPONSE_NOT_SUPPORTED,
-                    null,
-                    null
-                )
-            UserDataResponse.RequestStatus.FAILED -> DoobooUtils.instance
-                .rejectPromisesForKey(
-                    RNIapAmazonModule.Companion.PROMISE_GET_USER_DATA,
-                    E_USER_DATA_RESPONSE_FAILED,
-                    null,
-                    null
-                )
+            UserDataResponse.RequestStatus.NOT_SUPPORTED ->
+                DoobooUtils.instance
+                    .rejectPromisesForKey(
+                        RNIapAmazonModule.Companion.PROMISE_GET_USER_DATA,
+                        E_USER_DATA_RESPONSE_NOT_SUPPORTED,
+                        null,
+                        null
+                    )
+            UserDataResponse.RequestStatus.FAILED ->
+                DoobooUtils.instance
+                    .rejectPromisesForKey(
+                        RNIapAmazonModule.Companion.PROMISE_GET_USER_DATA,
+                        E_USER_DATA_RESPONSE_FAILED,
+                        null,
+                        null
+                    )
         }
     }
 
