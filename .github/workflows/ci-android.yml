@@ -20,6 +20,8 @@ jobs:
           java-version: 11.0.3
       - name: Install base modules
         run: yarn; yarn build
+      - name: Kotlin Linter
+        uses: vroy/gha-kotlin-linter@v3
       - name: Grant execute permission for gradlew
         run: chmod +x android/gradlew
       - name: Build with Library with Gradle and check lints

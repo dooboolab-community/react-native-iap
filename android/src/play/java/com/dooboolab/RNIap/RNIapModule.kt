@@ -1,50 +1,39 @@
 package com.dooboolab.RNIap
 
-import com.facebook.react.bridge.Promise
-import com.android.billingclient.api.BillingClient
-import com.dooboolab.RNIap.DoobooUtils
 import android.util.Log
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.facebook.react.bridge.ReactContext
-import com.android.billingclient.api.SkuDetails
-import com.facebook.react.bridge.ReactMethod
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.common.ConnectionResult
+import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingResult
-import com.facebook.react.bridge.ObjectAlreadyConsumedException
-import java.lang.Exception
-import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.ConsumeParams
-import com.android.billingclient.api.ConsumeResponseListener
-import com.facebook.react.bridge.WritableNativeArray
-import com.android.billingclient.api.PurchasesResponseListener
-import java.util.ArrayList
-import com.facebook.react.bridge.ReadableArray
-import com.android.billingclient.api.SkuDetailsParams
-import com.android.billingclient.api.SkuDetailsResponseListener
-import com.facebook.react.bridge.WritableMap
-import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.WritableNativeMap
-import com.android.billingclient.api.PurchaseHistoryResponseListener
-import com.android.billingclient.api.PurchaseHistoryRecord
-import com.facebook.react.bridge.WritableArray
-import android.app.Activity
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams
-import com.android.billingclient.api.AcknowledgePurchaseParams
-import com.android.billingclient.api.AcknowledgePurchaseResponseListener
-import com.android.billingclient.api.AccountIdentifiers
-import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ConsumeParams
+import com.android.billingclient.api.ConsumeResponseListener
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.SkuDetails
+import com.android.billingclient.api.SkuDetailsParams
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
-import com.facebook.react.ReactPackage
-import com.facebook.react.bridge.JavaScriptModule
-import com.facebook.react.bridge.NativeModule
+import com.facebook.react.bridge.ObjectAlreadyConsumedException
+import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContext
+import com.facebook.react.bridge.ReactContextBaseJavaModule
+import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeArray
+import com.facebook.react.bridge.WritableNativeMap
+import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import java.lang.Exception
 import java.math.BigDecimal
+import java.util.ArrayList
 
-class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext),
+class RNIapModule(reactContext: ReactApplicationContext) :
+    ReactContextBaseJavaModule(reactContext),
     PurchasesUpdatedListener {
     val TAG = "RNIapModule"
     private val reactContext: ReactContext
@@ -162,7 +151,8 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
                             }
                         billingClient.consumeAsync(consumeParams, listener)
                     }
-                })
+                }
+            )
         }
     }
 
@@ -201,7 +191,8 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
                         )
                     }
                 }
-            })
+            }
+        )
     }
 
     @ReactMethod
@@ -287,7 +278,8 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
                         }
                     }
                 }
-            })
+            }
+        )
     }
 
     @ReactMethod
@@ -336,7 +328,8 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
                         }
                     }
                 }
-            })
+            }
+        )
     }
 
     @ReactMethod
@@ -374,7 +367,8 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
                         }
                     }
                 }
-            })
+            }
+        )
     }
 
     @ReactMethod
@@ -433,8 +427,10 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
                             )
                             if (type != BillingClient.SkuType.SUBS) {
                                 val debugMessage =
-                                    ("IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in"
-                                            + " subscription purchase.")
+                                    (
+                                        "IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in" +
+                                            " subscription purchase."
+                                        )
                                 val error = Arguments.createMap()
                                 error.putString("debugMessage", debugMessage)
                                 error.putString("code", PROMISE_BUY_ITEM)
@@ -481,12 +477,15 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
                     val errorData: Array<String?> =
                         PlayUtils.instance.getBillingResponseData(billingResult.responseCode)
                 }
-            })
+            }
+        )
     }
 
     @ReactMethod
     fun acknowledgePurchase(
-        token: String?, developerPayLoad: String?, promise: Promise
+        token: String?,
+        developerPayLoad: String?,
+        promise: Promise
     ) {
         ensureConnection(
             promise,
@@ -517,12 +516,15 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
                         }
                     }
                 }
-            })
+            }
+        )
     }
 
     @ReactMethod
     fun consumeProduct(
-        token: String?, developerPayLoad: String?, promise: Promise
+        token: String?,
+        developerPayLoad: String?,
+        promise: Promise
     ) {
         val params = ConsumeParams.newBuilder().setPurchaseToken(token!!).build()
         ensureConnection(
@@ -550,7 +552,8 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
                         }
                     }
                 }
-            })
+            }
+        )
     }
 
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
@@ -608,8 +611,8 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
             result.putString("debugMessage", billingResult.debugMessage)
             result.putString(
                 "extraMessage",
-                "The purchases are null. This is a normal behavior if you have requested DEFERRED"
-                        + " proration. If not please report an issue."
+                "The purchases are null. This is a normal behavior if you have requested DEFERRED" +
+                    " proration. If not please report an issue."
             )
             sendEvent(reactContext, "purchase-updated", result)
             DoobooUtils.instance.resolvePromisesForKey(PROMISE_BUY_ITEM, null)
@@ -640,7 +643,8 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
                     }
                     promise.resolve(true)
                 }
-            })
+            }
+        )
     }
 
     @ReactMethod
@@ -663,7 +667,9 @@ class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
         get() = reactApplicationContext.packageName
 
     private fun sendEvent(
-        reactContext: ReactContext, eventName: String, params: WritableMap?
+        reactContext: ReactContext,
+        eventName: String,
+        params: WritableMap?
     ) {
         reactContext
             .getJSModule(RCTDeviceEventEmitter::class.java)
