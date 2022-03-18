@@ -318,9 +318,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             for transaction in pendingTrans {
                 SKPaymentQueue.default().finishTransaction(transaction)
             }
-        } else {
-            resolve(nil)
         }
+        resolve(nil)
+
     }
     
     
