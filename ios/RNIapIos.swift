@@ -379,6 +379,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         finishTransaction(withIdentifier: transactionIdentifier)
+        resolve(nil)
     }
     
     
