@@ -318,9 +318,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             for transaction in pendingTrans {
                 SKPaymentQueue.default().finishTransaction(transaction)
             }
-        } else {
-            resolve(nil)
         }
+        resolve(nil)
+
     }
     
     
@@ -379,6 +379,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         finishTransaction(withIdentifier: transactionIdentifier)
+        resolve(nil)
     }
     
     
