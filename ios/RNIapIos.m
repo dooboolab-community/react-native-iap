@@ -11,7 +11,7 @@ RCT_EXTERN_METHOD(endConnection:
                   reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(getItems:
                   (NSArray*)skus
-                  resolve:(RCTPromiseResolveBlock)resolve 
+                  resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(getAvailableItems:
                   (RCTPromiseResolveBlock)resolve
@@ -35,7 +35,9 @@ RCT_EXTERN_METHOD(buyProductWithQuantityIOS:
 RCT_EXTERN_METHOD(clearTransaction:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(clearProducts) 
+RCT_EXTERN_METHOD(clearProducts:
+                  (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(promotedProduct:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
