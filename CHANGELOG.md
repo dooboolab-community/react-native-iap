@@ -1,5 +1,15 @@
 ## Changelogs
 
+# 8.0.6
+* add kotlin linter by @andresesfm in https://github.com/dooboolab/react-native-iap/pull/1652
+* Fixes finishTransaction not resolving for iOS by @andresesfm in https://github.com/dooboolab/react-native-iap/pull/1665
+* fix: apply handlers to method by @jeremybarbet in https://github.com/dooboolab/react-native-iap/pull/1662
+
+## New Contributors
+* @jeremybarbet made their first contribution in https://github.com/dooboolab/react-native-iap/pull/1662
+
+**Full Changelog**: https://github.com/dooboolab/react-native-iap/compare/8.0.5...8.0.6
+
 # 8.0.5
 
 Fix NativeEventEmitter warnings
