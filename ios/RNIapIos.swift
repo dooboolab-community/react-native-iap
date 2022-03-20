@@ -333,6 +333,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         lockQueue.sync {
             validProducts.removeAll()
         }
+        resolve(nil)
     }
     
     @objc public func  promotedProduct(
