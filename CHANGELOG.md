@@ -1,5 +1,8 @@
 ## Changelogs
 
+# 8.0.7
+* fix: clearProducts not resolving on iOS #1666
+
 # 8.0.6
 * add kotlin linter by @andresesfm in https://github.com/dooboolab/react-native-iap/pull/1652
 * Fixes finishTransaction not resolving for iOS by @andresesfm in https://github.com/dooboolab/react-native-iap/pull/1665
