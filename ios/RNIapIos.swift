@@ -236,8 +236,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
             
             let payment: SKMutablePayment = SKMutablePayment(product: prod)
-            
-            if #available(iOS 12.2, *) {
+
+            if #available(iOS 12.2, tvOS 12.2, *) {
                 let discount: SKPaymentDiscount = SKPaymentDiscount(
                     identifier: discountOffer["identifier"]!,
                     keyIdentifier: discountOffer["keyIdentifier"]!,
@@ -416,7 +416,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         #if !os(tvOS)
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14.0, tvOS 14.0, *) {
             SKPaymentQueue.default().presentCodeRedemptionSheet()
             resolve(nil)
         } else {
@@ -654,8 +654,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         var periodUnitIOS = ""
         
         var itemType = "iap"
-        
-        if #available(iOS 11.2, *) {
+
+        if #available(iOS 11.2, tvOS 11.2, *) {
             let numOfUnits = UInt(product.subscriptionPeriod?.numberOfUnits ?? 0)
             let unit = product.subscriptionPeriod?.unit
             
@@ -718,22 +718,22 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 introductoryPriceSubscriptionPeriod = ""
             }
         }
-        
-        
-        
-        if #available(iOS 10.0, *) {
+
+
+
+        if #available(iOS 10.0, tvOS 10.0, *) {
             currencyCode = product.priceLocale.currencyCode
         }
-        
-        if #available(iOS 13.0, *) {
+
+        if #available(iOS 13.0, tvOS 13.0, *) {
             countryCode = SKPaymentQueue.default().storefront?.countryCode
-        } else if #available(iOS 10.0, *) {
+        } else if #available(iOS 10.0, tvOS 10.0, *) {
             countryCode = product.priceLocale.regionCode
         }
         
         var discounts: [[String: String?]]?
-        
-        if #available(iOS 12.2, *) {
+
+        if #available(iOS 12.2, tvOS 12.2, *) {
             discounts = getDiscountData(product)
         }
         
@@ -763,7 +763,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     
     func getDiscountData(_ product: SKProduct) -> [[String:String?]]? {
-        if #available(iOS 12.2, *) {
+        if #available(iOS 12.2, tvOS 12.2, *) {
             var mappedDiscounts : [[String:String?]] = []
             var localizedPrice: String?
             var paymendMode: String?
