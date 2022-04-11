@@ -627,7 +627,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             return descriptions[0]
         }
         
-        if code > descriptions.count - 1 {
+        if code > descriptions.count - 1 || code < 0 { // Fix crash app without internet connection
             return descriptions[0]
         }
         return descriptions[code]
