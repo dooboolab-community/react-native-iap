@@ -1,5 +1,16 @@
 ## Changelogs
 
+# 8.0.8
+## What's Changed
+* Crash in the absence of the Internet on the device by @Sliokkory in https://github.com/dooboolab/react-native-iap/pull/1679
+* fix: minimum version for tvOS by @fontesrp in https://github.com/dooboolab/react-native-iap/pull/1678
+
+## New Contributors
+* @Sliokkory made their first contribution in https://github.com/dooboolab/react-native-iap/pull/1679
+* @fontesrp made their first contribution in https://github.com/dooboolab/react-native-iap/pull/1678
+
+**Full Changelog**: https://github.com/dooboolab/react-native-iap/compare/8.0.7...8.0.8
+
 # 8.0.7
 * fix: clearProducts not resolving on iOS #1666
 
