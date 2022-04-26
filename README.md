@@ -20,6 +20,8 @@ Published in [website](https://react-native-iap.dooboolab.com).
 
 ## Announcement
 
+- Current module is ported to [expo-iap](https://www.npmjs.com/package/expo-iap) which share the same codebase but different environment. This is currently experimental but you can use it in expo managed workflow. The source code is maintained in branch [expo](https://github.com/dooboolab/react-native-iap/tree/expo).
+
 - Version `8.0.0` has finally landed in Jan 28th. Since this is early release, please use it with caution 🚧. We recommend user to use `>=8.0.0` with react-native `>=0.65.1`. The `next` package is no longer updated until we organize the roadmap for `9.0.0`.
 
 - Version `8.0.0` is currently in release candidate. The module is completely rewritten with `Kotlin` and `Swift` for maintenenance issue by [andresesfm](https://github.com/andresesfm) 🔆. You may install this for early preview.

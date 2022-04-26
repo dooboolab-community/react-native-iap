@@ -124,3 +124,14 @@ Then call `initConnection` (see above)
 
   Please note that in development or TestFlight, it will **NOT** use FaceID/Touch
   to checkout because they are using the Sandbox environment.
+
+
+### Get products has empty list
+
+Here are some resources you might get help out of.
+
+- For `iOS`, check if you’ve agreed on taxes
+https://github.com/dooboolab/react-native-iap/issues/1272#issuecomment-800131501. Also, you may try to add storekit.
+
+- For Android, hope you to check this one.
+https://github.com/dooboolab/react-native-iap/issues/124#issuecomment-386593185
