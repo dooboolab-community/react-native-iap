@@ -118,8 +118,6 @@ class Page extends Component {
       await RNIap.initConnection();
       if (Platform.OS === 'android') {
         await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
-      } else {
-        await RNIap.clearTransactionIOS();
       }
     } catch (err) {
       console.warn(err.code, err.message);
