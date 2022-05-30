@@ -118,6 +118,12 @@ class Page extends Component {
       await RNIap.initConnection();
       if (Platform.OS === 'android') {
         await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
+      } else {
+        // WARNING This line should not be included in production code
+        // This call will call finishTransaction in all pending purchases on every launch,
+        // effectively consuming purchases that you might not have verified the receipt or given the consumer their product
+        // TD:DR you will no longer receive any updates from Apple on every launch for pending purchases
+        await RNIap.clearTransactionIOS();
       }
     } catch (err) {
       console.warn(err.code, err.message);
