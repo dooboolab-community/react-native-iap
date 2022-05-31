@@ -203,7 +203,10 @@ class RNIapModule(reactContext: ReactApplicationContext) :
                 override fun run(billingClient: BillingClient) {
                     val skuList = ArrayList<String>()
                     for (i in 0 until skuArr.size()) {
-                        skuList.add(skuArr.getString(i))
+                        val sku = skuArr.getString(i)
+                        if (sku is String) {
+                            skuList.add(sku)
+                        }
                     }
                     val params = SkuDetailsParams.newBuilder()
                     params.setSkusList(skuList).setType(type!!)

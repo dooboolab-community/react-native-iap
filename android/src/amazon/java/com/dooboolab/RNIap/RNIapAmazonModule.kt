@@ -51,7 +51,10 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext?) :
         var ii = 0
         val skuSize = skuArr.size()
         while (ii < skuSize) {
-            productSkus.add(skuArr.getString(ii))
+            val sku = skuArr.getString(ii)
+            if (sku is String) {
+                productSkus.add(sku)
+            }
             ii++
         }
         DoobooUtils.instance.addPromiseForKey(PROMISE_GET_PRODUCT_DATA, promise)
