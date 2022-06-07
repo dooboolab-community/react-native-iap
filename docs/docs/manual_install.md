@@ -28,7 +28,7 @@ sidebar_position: 100
     ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
     ```gradle
-    compile project(':react-native-iap')
+    implementation project(':react-native-iap')
     ```
 
 4. You have two options depending on the stores you support:
