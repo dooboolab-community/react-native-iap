@@ -6,7 +6,7 @@ sidebar_position: 1
 
 ## Initializing
 
-In order to initialize the native modules, call `initConnection()` early in the lifecycle of your application. This should be done at a top-level component as the library caches the native connection. Initializing just before you needed is discouraged as it incurrs on a performance hit. Calling this method multiple times without ending the previous connection will result in an error. Not calling this method will cause other method calls to be rejected as connection needs to be established ahead of time. 
+In order to initialize the native modules, call `initConnection()` early in the lifecycle of your application. This should be done at a top-level component as the library caches the native connection. Initializing just before the connection is needed is discouraged as it incurs a performance hit. Calling this method multiple times without ending the previous connection will result in an error. Not calling this method will cause other method calls to be rejected as connection needs to be established ahead of time. 
 
 ```javascript
 import * as RNIap from 'react-native-iap';
