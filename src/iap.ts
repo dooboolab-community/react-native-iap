@@ -630,7 +630,7 @@ export const purchaseUpdatedListener = (
     'purchase-updated',
     listener,
   );
-  
+
   if (Platform.OS === 'android') {
     getAndroidModule().startListening();
   }
