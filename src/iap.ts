@@ -630,6 +630,7 @@ export const purchaseUpdatedListener = (
     'purchase-updated',
     listener,
   );
+  
   if (Platform.OS === 'android') {
     getAndroidModule().startListening();
   }
@@ -670,4 +671,3 @@ export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> =>
  */
 export const presentCodeRedemptionSheetIOS = async (): Promise<null> =>
   getIosModule().presentCodeRedemptionSheet();
-
