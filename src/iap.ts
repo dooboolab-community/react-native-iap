@@ -71,7 +71,7 @@ const getNativeModule = ():
 };
 
 /**
- * Init module for purchase flow. Required on Android. In ios it will check wheter user canMakePayment.
+ * Init module for purchase flow. Required on Android. In ios it will check whether user canMakePayment.
  * @returns {Promise<boolean>}
  */
 export const initConnection = (): Promise<boolean> =>
@@ -500,7 +500,7 @@ const requestAgnosticReceiptValidationIos = async (
 /**
  * Buy products or subscriptions with offers (iOS only)
  *
- * Runs the payment process with some infor you must fetch
+ * Runs the payment process with some info you must fetch
  * from your server.
  * @param {string} sku The product identifier
  * @param {string} forUser  An user identifier on you system
@@ -598,8 +598,8 @@ export const validateReceiptAmazon = async (
   receiptId: string,
   useSandbox: boolean = true,
 ): Promise<Amazon.ReceiptType> => {
-  const sandoboxUrl = useSandbox ? 'sandbox/' : '';
-  const url = `https://appstore-sdk.amazon.com/${sandoboxUrl}version/1.0/verifyReceiptId/developer/${developerSecret}/user/${userId}/receiptId/${receiptId}`;
+  const sandBoxUrl = useSandbox ? 'sandbox/' : '';
+  const url = `https://appstore-sdk.amazon.com/${sandBoxUrl}version/1.0/verifyReceiptId/developer/${developerSecret}/user/${userId}/receiptId/${receiptId}`;
 
   const response = await fetch(url, {
     method: 'GET',
