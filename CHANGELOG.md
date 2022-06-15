@@ -1,5 +1,10 @@
 ## Changelogs
 
+# 8.0.9
+## What's Changed
+* Fixed documentation. On Android you should use `implementation` instead of `compile`
+* *Breaking Change* Removed `isReadyAndroid` method as it was broken and it is no longer needed since `initConnection` has been refactored to handle multiple attempts init and only creates a single connection. 
+
 # 8.0.8
 ## What's Changed
 * Crash in the absence of the Internet on the device by @Sliokkory in https://github.com/dooboolab/react-native-iap/pull/1679

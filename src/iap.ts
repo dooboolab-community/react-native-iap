@@ -630,6 +630,7 @@ export const purchaseUpdatedListener = (
     'purchase-updated',
     listener,
   );
+
   if (Platform.OS === 'android') {
     getAndroidModule().startListening();
   }
@@ -670,10 +671,3 @@ export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> =>
  */
 export const presentCodeRedemptionSheetIOS = async (): Promise<null> =>
   getIosModule().presentCodeRedemptionSheet();
-
-/**
- * Checks if the internal client is ready to be used (Android only)
- * @returns {Promise<boolean>}
- */
-export const isReadyAndroid = (): Promise<boolean> =>
-  getAndroidModule().isReadyAndroid();
