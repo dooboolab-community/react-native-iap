@@ -773,7 +773,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             for discount in product.discounts {
                 let formatter = NumberFormatter()
                 formatter.numberStyle = .currency
-                guard formatter.locale = discount.priceLocale else { continue }
+                formatter.locale = discount.priceLocale
                 localizedPrice = formatter.string(from: discount.price)
                 var numberOfPeriods: String?
                 
