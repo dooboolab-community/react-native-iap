@@ -49,7 +49,7 @@ class RNIapModule(reactContext: ReactApplicationContext) :
 
     private fun ensureConnection(promise: Promise, callback: EnsureConnectionCallback) {
         val billingClient = billingClientCache
-        if (billingClient != null && billingClient.isReady) {
+        if (billingClient?.isReady == true) {
             callback.run(billingClient)
             return
         }
@@ -58,7 +58,7 @@ class RNIapModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun initConnection(promise: Promise) {
-        if (billingClientCache != null) {
+        if (billingClientCache?.isReady == true) {
             Log.i(
                 TAG,
                 "Already initialized, you should only call initConnection() once when your app starts"
@@ -94,6 +94,7 @@ class RNIapModule(reactContext: ReactApplicationContext) :
 
                 override fun onBillingServiceDisconnected() {
                     try {
+                        billingClientCache = null
                         promise.reject("initConnection", "Billing service disconnected")
                     } catch (oce: ObjectAlreadyConsumedException) {
                         Log.e(TAG, oce.message!!)
