@@ -47,21 +47,24 @@ class RNIapModule(private val reactContext: ReactApplicationContext) :
             callback()
             return
         } else {
-            val nested = PromiseImpl({
-                if (it.isNotEmpty() && it[0] is Boolean && it[0] as Boolean) {
-                    callback()
-                } else {
-                    Log.i(TAG, "Incorrect parameter in resolve")
+            val nested = PromiseImpl(
+                {
+                    if (it.isNotEmpty() && it[0] is Boolean && it[0] as Boolean) {
+                        callback()
+                    } else {
+                        Log.i(TAG, "Incorrect parameter in resolve")
+                    }
+                },
+                {
+                    if (it.size > 1 && it[0] is String && it[1] is String) {
+                        promise.reject(
+                            it[0] as String, it[1] as String
+                        )
+                    } else {
+                        Log.i(TAG, "Incorrect parameters in reject")
+                    }
                 }
-            }, {
-                if (it.size > 1 && it[0] is String && it[1] is String) {
-                    promise.reject(
-                        it[0] as String, it[1] as String
-                    )
-                } else {
-                    Log.i(TAG, "Incorrect parameters in reject")
-                }
-            })
+            )
             initConnection(nested)
         }
     }
