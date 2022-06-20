@@ -32,9 +32,11 @@ import com.google.android.gms.common.GoogleApiAvailability
 import java.math.BigDecimal
 import java.util.ArrayList
 
-class RNIapModule(private val reactContext: ReactApplicationContext,
-                  builder: BillingClient.Builder = BillingClient.newBuilder(reactContext).enablePendingPurchases(),
-                  private val googleApiAvailability: GoogleApiAvailability = GoogleApiAvailability.getInstance()) :
+class RNIapModule(
+    private val reactContext: ReactApplicationContext,
+    builder: BillingClient.Builder = BillingClient.newBuilder(reactContext).enablePendingPurchases(),
+    private val googleApiAvailability: GoogleApiAvailability = GoogleApiAvailability.getInstance()
+) :
     ReactContextBaseJavaModule(reactContext),
     PurchasesUpdatedListener {
 
