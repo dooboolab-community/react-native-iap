@@ -6,117 +6,120 @@ import com.android.billingclient.api.BillingResult
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.google.android.gms.common.GoogleApiAvailability
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 
 class RNIapModuleTest {
 
-   @MockK
-   lateinit var context:ReactApplicationContext
-   @MockK
-   lateinit var builder : BillingClient.Builder
-   @MockK
-   lateinit var billingClient: BillingClient
-   @MockK
-   lateinit var availability: GoogleApiAvailability
+    @MockK
+    lateinit var context: ReactApplicationContext
+    @MockK
+    lateinit var builder: BillingClient.Builder
+    @MockK
+    lateinit var billingClient: BillingClient
+    @MockK
+    lateinit var availability: GoogleApiAvailability
 
-   private lateinit var module: RNIapModule
+    private lateinit var module: RNIapModule
 
-   @Before
-   fun setUp() {
-      MockKAnnotations.init(this, relaxUnitFun = true)
-      every { builder.setListener(any()) } returns builder
-      every { builder.build() } returns billingClient
-      module = RNIapModule(context, builder, availability)
+    @Before
+    fun setUp() {
+        MockKAnnotations.init(this, relaxUnitFun = true)
+        every { builder.setListener(any()) } returns builder
+        every { builder.build() } returns billingClient
+        module = RNIapModule(context, builder, availability)
+    }
 
-   }
+    @Test
+    fun `initConnection Already connected should resolve to true`() {
+        every { billingClient.isReady } returns true
+        val promise = mockk<Promise>(relaxed = true)
 
-   @Test
-   fun `initConnection Already connected should resolve to true`() {
-      every { billingClient.isReady } returns true
-      val promise = mockk<Promise>(relaxed = true)
+        module.initConnection(promise)
+        verify(exactly = 0) { promise.reject(any(), any<String>()) }
+        verify { promise.resolve(true) }
+    }
 
-      module.initConnection(promise)
-      verify(exactly = 0) { promise.reject(any(),any<String>()) }
-      verify { promise.resolve(true)  }
-   }
+    @Test
+    fun `initConnection Play Services not available on device should reject`() {
+        every { billingClient.isReady } returns false
+        every { availability.isGooglePlayServicesAvailable(any()) } returns 1
+        val promise = mockk<Promise>(relaxed = true)
 
-   @Test
-   fun `initConnection Play Services not available on device should reject`() {
-      every { billingClient.isReady } returns false
-      every { availability.isGooglePlayServicesAvailable(any()) } returns 1
-      val promise = mockk<Promise>(relaxed = true)
+        module.initConnection(promise)
+        verify { promise.reject(any(), any<String>()) }
+        verify(exactly = 0) { promise.resolve(any()) }
+    }
 
-      module.initConnection(promise)
-      verify { promise.reject(any(),any<String>()) }
-      verify(exactly = 0) { promise.resolve(any())  }
-   }
+    @Test
+    fun `initConnection start new connection succeeds`() {
+        every { billingClient.isReady } returns false
+        val listener = slot<BillingClientStateListener>()
+        every { billingClient.startConnection(capture(listener)) } answers {
+            listener.captured.onBillingSetupFinished(BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.OK).build())
+        }
+        every { availability.isGooglePlayServicesAvailable(any()) } returns 0
+        val promise = mockk<Promise>(relaxed = true)
 
-   @Test
-   fun `initConnection start new connection succeeds`() {
-      every { billingClient.isReady } returns false
-      val listener =  slot<BillingClientStateListener>()
-      every { billingClient.startConnection(capture(listener))} answers {
-         listener.captured.onBillingSetupFinished(BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.OK).build())
-      }
-      every { availability.isGooglePlayServicesAvailable(any()) } returns 0
-      val promise = mockk<Promise>(relaxed = true)
+        module.initConnection(promise)
+        verify(exactly = 0) { promise.reject(any(), any<String>()) }
+        verify { promise.resolve(any()) }
+    }
 
-      module.initConnection(promise)
-      verify(exactly = 0) { promise.reject(any(),any<String>()) }
-      verify { promise.resolve(any())  }
-   }
+    @Test
+    fun `initConnection start new connection fails`() {
+        every { billingClient.isReady } returns false
+        val listener = slot<BillingClientStateListener>()
+        every { billingClient.startConnection(capture(listener)) } answers {
+            listener.captured.onBillingSetupFinished(BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.ERROR).build())
+        }
+        every { availability.isGooglePlayServicesAvailable(any()) } returns 0
+        val promise = mockk<Promise>(relaxed = true)
 
-   @Test
-   fun `initConnection start new connection fails`() {
-      every { billingClient.isReady } returns false
-      val listener =  slot<BillingClientStateListener>()
-      every { billingClient.startConnection(capture(listener))} answers {
-         listener.captured.onBillingSetupFinished(BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.ERROR).build())
-      }
-      every { availability.isGooglePlayServicesAvailable(any()) } returns 0
-      val promise = mockk<Promise>(relaxed = true)
+        module.initConnection(promise)
+        verify { promise.reject(any(), any<String>()) }
+        verify(exactly = 0) { promise.resolve(any()) }
+    }
 
-      module.initConnection(promise)
-      verify { promise.reject(any(),any<String>()) }
-      verify(exactly = 0) { promise.resolve(any())  }
-   }
+    @Test
+    fun endConnection() {
+    }
 
-   @Test
-   fun endConnection() {
-   }
+    @Test
+    fun flushFailedPurchasesCachedAsPending() {
+    }
 
-   @Test
-   fun flushFailedPurchasesCachedAsPending() {
-   }
+    @Test
+    fun getItemsByType() {
+    }
 
-   @Test
-   fun getItemsByType() {
-   }
+    @Test
+    fun getAvailableItemsByType() {
+    }
 
-   @Test
-   fun getAvailableItemsByType() {
-   }
+    @Test
+    fun getPurchaseHistoryByType() {
+    }
 
-   @Test
-   fun getPurchaseHistoryByType() {
-   }
+    @Test
+    fun buyItemByType() {
+    }
 
-   @Test
-   fun buyItemByType() {
-   }
+    @Test
+    fun acknowledgePurchase() {
+    }
 
-   @Test
-   fun acknowledgePurchase() {
-   }
+    @Test
+    fun consumeProduct() {
+    }
 
-   @Test
-   fun consumeProduct() {
-   }
-
-   @Test
-   fun onPurchasesUpdated() {
-   }
+    @Test
+    fun onPurchasesUpdated() {
+    }
 }
