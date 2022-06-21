@@ -5,6 +5,7 @@ import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
+import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -49,7 +50,7 @@ class RNIapModuleTest {
     @Test
     fun `initConnection Play Services not available on device should reject`() {
         every { billingClient.isReady } returns false
-        every { availability.isGooglePlayServicesAvailable(any()) } returns 1
+        every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.DEVELOPER_ERROR
         val promise = mockk<Promise>(relaxed = true)
 
         module.initConnection(promise)
@@ -64,7 +65,7 @@ class RNIapModuleTest {
         every { billingClient.startConnection(capture(listener)) } answers {
             listener.captured.onBillingSetupFinished(BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.OK).build())
         }
-        every { availability.isGooglePlayServicesAvailable(any()) } returns 0
+        every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
         val promise = mockk<Promise>(relaxed = true)
 
         module.initConnection(promise)
@@ -79,7 +80,7 @@ class RNIapModuleTest {
         every { billingClient.startConnection(capture(listener)) } answers {
             listener.captured.onBillingSetupFinished(BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.ERROR).build())
         }
-        every { availability.isGooglePlayServicesAvailable(any()) } returns 0
+        every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
         val promise = mockk<Promise>(relaxed = true)
 
         module.initConnection(promise)
@@ -88,7 +89,14 @@ class RNIapModuleTest {
     }
 
     @Test
-    fun endConnection() {
+    fun `endConnection resolves`() {
+        val promise = mockk<Promise>(relaxed = true)
+
+        module.endConnection(promise)
+
+        verify { billingClient.endConnection() }
+        verify(exactly = 0) { promise.reject(any(), any<String>()) }
+        verify { promise.resolve(true) }
     }
 
     @Test
