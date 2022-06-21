@@ -3,6 +3,7 @@ package com.dooboolab.RNIap
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PurchasesResponseListener
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.google.android.gms.common.ConnectionResult
@@ -100,7 +101,17 @@ class RNIapModuleTest {
     }
 
     @Test
-    fun flushFailedPurchasesCachedAsPending() {
+    fun `flushFailedPurchasesCachedAsPending resolves to false if no pending purchases`() {
+        every { billingClient.isReady } returns true
+        val promise = mockk<Promise>(relaxed = true)
+        val listener= slot<PurchasesResponseListener>()
+        every { billingClient.queryPurchasesAsync(any(),capture(listener)) } answers {
+            listener.captured.onQueryPurchasesResponse(BillingResult.newBuilder().build(), listOf())
+        }
+        module.flushFailedPurchasesCachedAsPending(promise)
+
+        verify(exactly = 0) { promise.reject(any(), any<String>()) }
+        verify { promise.resolve(false) } //empty list
     }
 
     @Test

@@ -158,7 +158,6 @@ class RNIapModule(
         ensureConnection(
             promise
         ) {
-            val array = WritableNativeArray()
             billingClient.queryPurchasesAsync(
                 BillingClient.SkuType.INAPP
             ) { _: BillingResult?, list: List<Purchase>? ->
@@ -167,16 +166,11 @@ class RNIapModule(
                     promise.resolve(false)
                     return@queryPurchasesAsync
                 }
-                val pendingPurchases: MutableList<Purchase> = ArrayList()
-                for (purchase in list) {
-                    // we only want to try to consume PENDING items, in order to force cache-refresh
-                    // for
-                    // them
-                    if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
-                        pendingPurchases.add(purchase)
-                    }
-                }
-                if (pendingPurchases.size == 0) {
+                // we only want to try to consume PENDING items, in order to force cache-refresh
+                // for  them
+                val pendingPurchases= list.filter { it.purchaseState  == Purchase.PurchaseState.PENDING}
+
+                if (pendingPurchases.isEmpty()) {
                     promise.resolve(false)
                     return@queryPurchasesAsync
                 }
