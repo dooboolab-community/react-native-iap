@@ -104,14 +104,14 @@ class RNIapModuleTest {
     fun `flushFailedPurchasesCachedAsPending resolves to false if no pending purchases`() {
         every { billingClient.isReady } returns true
         val promise = mockk<Promise>(relaxed = true)
-        val listener= slot<PurchasesResponseListener>()
-        every { billingClient.queryPurchasesAsync(any(),capture(listener)) } answers {
+        val listener = slot<PurchasesResponseListener>()
+        every { billingClient.queryPurchasesAsync(any(), capture(listener)) } answers {
             listener.captured.onQueryPurchasesResponse(BillingResult.newBuilder().build(), listOf())
         }
         module.flushFailedPurchasesCachedAsPending(promise)
 
         verify(exactly = 0) { promise.reject(any(), any<String>()) }
-        verify { promise.resolve(false) } //empty list
+        verify { promise.resolve(false) } // empty list
     }
 
     @Test

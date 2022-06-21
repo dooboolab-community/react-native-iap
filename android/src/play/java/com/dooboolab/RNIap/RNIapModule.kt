@@ -168,7 +168,7 @@ class RNIapModule(
                 }
                 // we only want to try to consume PENDING items, in order to force cache-refresh
                 // for  them
-                val pendingPurchases= list.filter { it.purchaseState  == Purchase.PurchaseState.PENDING}
+                val pendingPurchases = list.filter { it.purchaseState == Purchase.PurchaseState.PENDING }
 
                 if (pendingPurchases.isEmpty()) {
                     promise.resolve(false)
