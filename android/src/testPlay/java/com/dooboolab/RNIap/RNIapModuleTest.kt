@@ -1,6 +1,11 @@
 package com.dooboolab.RNIap
 
-import com.android.billingclient.api.*
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ConsumeResponseListener
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesResponseListener
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.google.android.gms.common.ConnectionResult
@@ -117,18 +122,21 @@ class RNIapModuleTest {
         val promise = mockk<Promise>(relaxed = true)
         val listener = slot<PurchasesResponseListener>()
         every { billingClient.queryPurchasesAsync(any(), capture(listener)) } answers {
-            listener.captured.onQueryPurchasesResponse(BillingResult.newBuilder().build(), listOf(
-                // 4 = Pending
-                mockk<Purchase>{
-                    every{purchaseState} returns 2
-                    every { purchaseToken } returns "token"
-                               },
-                Purchase("","1")
-            ))
+            listener.captured.onQueryPurchasesResponse(
+                BillingResult.newBuilder().build(),
+                listOf(
+                    // 4 = Pending
+                    mockk<Purchase> {
+                        every { purchaseState } returns 2
+                        every { purchaseToken } returns "token"
+                    },
+                    Purchase("", "1")
+                )
+            )
         }
         val consumeListener = slot<ConsumeResponseListener>()
         every { billingClient.consumeAsync(any(), capture(consumeListener)) } answers {
-            consumeListener.captured.onConsumeResponse(BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.ITEM_NOT_OWNED).build(),"")
+            consumeListener.captured.onConsumeResponse(BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.ITEM_NOT_OWNED).build(), "")
         }
 
         module.flushFailedPurchasesCachedAsPending(promise)
