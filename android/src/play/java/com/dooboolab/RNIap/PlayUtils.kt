@@ -49,7 +49,7 @@ class PlayUtils {
             }
             BillingClient.BillingResponseCode.ERROR -> {
                 errorData[0] = DoobooUtils.E_UNKNOWN
-                errorData[1] = "An unknown or unexpected error has occured. Please try again later."
+                errorData[1] = "An unknown or unexpected error has occurred. Please try again later."
             }
             BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
                 errorData[0] = DoobooUtils.E_ALREADY_OWNED

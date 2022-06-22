@@ -32,11 +32,15 @@ import com.google.android.gms.common.GoogleApiAvailability
 import java.math.BigDecimal
 import java.util.ArrayList
 
-class RNIapModule(private val reactContext: ReactApplicationContext) :
+class RNIapModule(
+    private val reactContext: ReactApplicationContext,
+    builder: BillingClient.Builder = BillingClient.newBuilder(reactContext).enablePendingPurchases(),
+    private val googleApiAvailability: GoogleApiAvailability = GoogleApiAvailability.getInstance()
+) :
     ReactContextBaseJavaModule(reactContext),
     PurchasesUpdatedListener {
 
-    private val billingClient: BillingClient = BillingClient.newBuilder(reactContext).enablePendingPurchases().setListener(this)
+    private val billingClient: BillingClient = builder.setListener(this)
         .build()
     private val skus: MutableMap<String, SkuDetails> = mutableMapOf()
     override fun getName(): String {
@@ -80,7 +84,7 @@ class RNIapModule(private val reactContext: ReactApplicationContext) :
             promise.resolve(true)
             return
         }
-        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(reactContext)
+        if (googleApiAvailability.isGooglePlayServicesAvailable(reactContext)
             != ConnectionResult.SUCCESS
         ) {
             Log.i(TAG, "Google Play Services are not available on this device")
@@ -154,7 +158,6 @@ class RNIapModule(private val reactContext: ReactApplicationContext) :
         ensureConnection(
             promise
         ) {
-            val array = WritableNativeArray()
             billingClient.queryPurchasesAsync(
                 BillingClient.SkuType.INAPP
             ) { _: BillingResult?, list: List<Purchase>? ->
@@ -163,16 +166,11 @@ class RNIapModule(private val reactContext: ReactApplicationContext) :
                     promise.resolve(false)
                     return@queryPurchasesAsync
                 }
-                val pendingPurchases: MutableList<Purchase> = ArrayList()
-                for (purchase in list) {
-                    // we only want to try to consume PENDING items, in order to force cache-refresh
-                    // for
-                    // them
-                    if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
-                        pendingPurchases.add(purchase)
-                    }
-                }
-                if (pendingPurchases.size == 0) {
+                // we only want to try to consume PENDING items, in order to force cache-refresh
+                // for  them
+                val pendingPurchases = list.filter { it.purchaseState == Purchase.PurchaseState.PENDING }
+
+                if (pendingPurchases.isEmpty()) {
                     promise.resolve(false)
                     return@queryPurchasesAsync
                 }
