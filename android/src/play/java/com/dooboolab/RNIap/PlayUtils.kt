@@ -7,7 +7,7 @@ import com.facebook.react.bridge.Promise
 class PlayUtils {
     fun rejectPromiseWithBillingError(promise: Promise, responseCode: Int) {
         val errorData = getBillingResponseData(responseCode)
-        promise.reject(errorData[0], errorData[1])
+        promise.safeReject(errorData[0], errorData[1])
     }
 
     fun getBillingResponseData(responseCode: Int): Array<String?> {

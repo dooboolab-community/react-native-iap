@@ -142,7 +142,7 @@ class RNIapModuleTest {
         module.flushFailedPurchasesCachedAsPending(promise)
 
         verify(exactly = 0) { promise.reject(any(), any<String>()) }
-        verify { promise.resolve(true) } // empty list
+        verify { promise.resolve(true) } // at least one pending transactions
     }
 
     @Test
