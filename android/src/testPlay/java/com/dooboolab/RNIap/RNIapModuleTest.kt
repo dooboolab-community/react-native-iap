@@ -16,7 +16,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import junit.framework.Assert.assertTrue
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -58,7 +58,7 @@ class RNIapModuleTest {
         val promise = mockk<Promise>(relaxed = true)
 
         module.initConnection(promise)
-        verify { promise.reject(any(), any<String>()) }
+        verify { promise.safeReject(any(), any<String>()) }
         verify(exactly = 0) { promise.resolve(any()) }
     }
 
@@ -88,7 +88,7 @@ class RNIapModuleTest {
         val promise = mockk<Promise>(relaxed = true)
 
         module.initConnection(promise)
-        verify { promise.reject(any(), any<String>()) }
+        verify { promise.safeReject(any(), any<String>()) }
         verify(exactly = 0) { promise.resolve(any()) }
     }
 
@@ -153,6 +153,7 @@ class RNIapModuleTest {
         var isCallbackCalled = false
         val callback = {
             isCallbackCalled = true
+            promise.resolve(true)
         }
 
         every { billingClient.isReady } returns false andThen true

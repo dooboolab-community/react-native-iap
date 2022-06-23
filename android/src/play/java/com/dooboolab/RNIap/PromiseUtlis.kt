@@ -17,31 +17,14 @@ fun Promise.safeResolve(value: Any) {
     }
 }
 
-fun Promise.safeReject(code: String?, message: String?) {
-    try {
-        this.reject(code, message)
-    } catch (oce: ObjectAlreadyConsumedException) {
-        Log.d(RNIapModule.TAG, "Already consumed ${oce.message}")
-    }
-}
+fun Promise.safeReject(message: String) = this.safeReject(message, null, null)
 
-fun Promise.safeReject(message: String) {
-    try {
-        this.reject(message)
-    } catch (oce: ObjectAlreadyConsumedException) {
-        Log.d(RNIapModule.TAG, "Already consumed ${oce.message}")
-    }
-}
+fun Promise.safeReject(code: String?, message: String?) = this.safeReject(code, message, null)
 
-fun Promise.safeReject(code: String, throwable: Throwable) {
-    try {
-        this.reject(code, throwable)
-    } catch (oce: ObjectAlreadyConsumedException) {
-        Log.d(RNIapModule.TAG, "Already consumed ${oce.message}")
-    }
-}
+fun Promise.safeReject(code: String?, throwable: Throwable?) =
+    this.safeReject(code, null, throwable)
 
-fun Promise.safeReject(code: String, message: String, throwable: Throwable) {
+fun Promise.safeReject(code: String?, message: String?, throwable: Throwable?) {
     try {
         this.reject(code, message, throwable)
     } catch (oce: ObjectAlreadyConsumedException) {
