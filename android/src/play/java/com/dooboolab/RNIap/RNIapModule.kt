@@ -40,15 +40,15 @@ class RNIapModule(
     ReactContextBaseJavaModule(reactContext),
     PurchasesUpdatedListener {
 
-    private val billingClient: BillingClient = builder.setListener(this)
-        .build()
+    private var billingClient: BillingClient? = null
+
     private val skus: MutableMap<String, SkuDetails> = mutableMapOf()
     override fun getName(): String {
         return "RNIapModule"
     }
 
     private fun ensureConnection(promise: Promise, callback: () -> Unit) {
-        if (billingClient.isReady) {
+        if (billingClient?.isReady == true) {
             callback()
             return
         } else {
@@ -76,7 +76,7 @@ class RNIapModule(
 
     @ReactMethod
     fun initConnection(promise: Promise) {
-        if (billingClient.isReady) {
+        if (billingClient?.isReady == true) {
             Log.i(
                 TAG,
                 "Already initialized, you should only call initConnection() once when your app starts"
@@ -92,7 +92,10 @@ class RNIapModule(
             return
         }
 
-        billingClient.startConnection(
+        billingClient = BillingClient.newBuilder(reactContext).enablePendingPurchases().setListener(this)
+            .build()
+
+        billingClient?.startConnection(
             object : BillingClientStateListener {
                 override fun onBillingSetupFinished(billingResult: BillingResult) {
                     val responseCode = billingResult.responseCode
@@ -109,15 +112,32 @@ class RNIapModule(
                 }
 
                 override fun onBillingServiceDisconnected() {
-                    Log.i(TAG, "Billing service disconnected")
+                    try {
+                        billingClient = null
+                        promise.reject("initConnection", "Billing service disconnected")
+                    } catch (oce: ObjectAlreadyConsumedException) {
+                        Log.e(TAG, oce.message!!)
+                    }
                 }
             })
     }
 
     @ReactMethod
     fun endConnection(promise: Promise) {
-        billingClient.endConnection()
-        promise.resolve(true)
+        if (billingClient != null) {
+            billingClient = try {
+                billingClient!!.endConnection()
+                null
+            } catch (e: Exception) {
+                promise.reject("endConnection", e.message)
+                return
+            }
+        }
+        try {
+            promise.resolve(true)
+        } catch (oce: ObjectAlreadyConsumedException) {
+            Log.e(TAG, oce.message!!)
+        }
     }
 
     private fun consumeItems(
@@ -148,7 +168,7 @@ class RNIapModule(
                             promise.reject(oce.message)
                         }
                     }
-                billingClient.consumeAsync(consumeParams, listener)
+                billingClient?.consumeAsync(consumeParams, listener)
             }
         }
     }
@@ -158,7 +178,7 @@ class RNIapModule(
         ensureConnection(
             promise
         ) {
-            billingClient.queryPurchasesAsync(
+            billingClient?.queryPurchasesAsync(
                 BillingClient.SkuType.INAPP
             ) { _: BillingResult?, list: List<Purchase>? ->
                 if (list == null) {
@@ -197,7 +217,7 @@ class RNIapModule(
             }
             val params = SkuDetailsParams.newBuilder()
             params.setSkusList(skuList).setType(type!!)
-            billingClient.querySkuDetailsAsync(
+            billingClient?.querySkuDetailsAsync(
                 params.build()
             ) { billingResult: BillingResult, skuDetailsList: List<SkuDetails>? ->
                 Log.d(TAG, "responseCode: " + billingResult.responseCode)
@@ -276,7 +296,7 @@ class RNIapModule(
             promise
         ) {
             val items = WritableNativeArray()
-            billingClient.queryPurchasesAsync(
+            billingClient?.queryPurchasesAsync(
                 if (type == "subs") BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
             ) { billingResult: BillingResult?, purchases: List<Purchase>? ->
                 if (purchases != null) {
@@ -322,7 +342,7 @@ class RNIapModule(
         ensureConnection(
             promise
         ) {
-            billingClient.queryPurchaseHistoryAsync(
+            billingClient?.queryPurchaseHistoryAsync(
                 if (type == "subs") BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
             ) { billingResult, purchaseHistoryRecordList ->
                 if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
@@ -453,10 +473,6 @@ class RNIapModule(
                 val subscriptionUpdateParams = subscriptionUpdateParamsBuilder.build()
                 builder.setSubscriptionUpdateParams(subscriptionUpdateParams)
             }
-            val flowParams = builder.build()
-            val billingResult = billingClient.launchBillingFlow(activity, flowParams)
-            val errorData: Array<String?> =
-                PlayUtils.instance.getBillingResponseData(billingResult.responseCode)
         }
     }
 
@@ -473,7 +489,7 @@ class RNIapModule(
                 AcknowledgePurchaseParams.newBuilder().setPurchaseToken(
                     token!!
                 ).build()
-            billingClient.acknowledgePurchase(
+            billingClient?.acknowledgePurchase(
                 acknowledgePurchaseParams
             ) { billingResult: BillingResult ->
                 if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
@@ -506,7 +522,7 @@ class RNIapModule(
         ensureConnection(
             promise
         ) {
-            billingClient.consumeAsync(
+            billingClient?.consumeAsync(
                 params
             ) { billingResult: BillingResult, purchaseToken: String? ->
                 if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
@@ -598,7 +614,7 @@ class RNIapModule(
         ) {
             val types = arrayOf(BillingClient.SkuType.INAPP, BillingClient.SkuType.SUBS)
             for (type in types) {
-                billingClient.queryPurchasesAsync(
+                billingClient?.queryPurchasesAsync(
                     type
                 ) { billingResult: BillingResult, list: List<Purchase>? ->
                     val unacknowledgedPurchases = ArrayList<Purchase>()
@@ -654,7 +670,10 @@ class RNIapModule(
             override fun onHostResume() {}
             override fun onHostPause() {}
             override fun onHostDestroy() {
-                billingClient.endConnection()
+                if (billingClient?.isReady == true) {
+                    billingClient!!.endConnection()
+                    billingClient = null
+                }
             }
         }
         reactContext.addLifecycleEventListener(lifecycleEventListener)
