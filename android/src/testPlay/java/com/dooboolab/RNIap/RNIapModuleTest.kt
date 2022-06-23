@@ -156,10 +156,9 @@ class RNIapModuleTest {
         }
 
         every { billingClient.isReady } returns false andThen true
-        module.ensureConnection(promise,callback)
+        module.ensureConnection(promise, callback)
         verify { promise.resolve(true) } // at least one pending transactions
-        assertTrue("Should call callback",isCallbackCalled)
-
+        assertTrue("Should call callback", isCallbackCalled)
     }
 
     @Test
