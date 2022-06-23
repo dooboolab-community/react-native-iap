@@ -16,6 +16,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import junit.framework.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -143,6 +144,22 @@ class RNIapModuleTest {
 
         verify(exactly = 0) { promise.reject(any(), any<String>()) }
         verify { promise.resolve(true) } // at least one pending transactions
+    }
+
+    @Test
+    fun `ensureConnection should attempt to reconnect, if not in ready state`() {
+        every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
+        val promise = mockk<Promise>(relaxed = true)
+        var isCallbackCalled = false
+        val callback = {
+            isCallbackCalled = true
+        }
+
+        every { billingClient.isReady } returns false andThen true
+        module.ensureConnection(promise,callback)
+        verify { promise.resolve(true) } // at least one pending transactions
+        assertTrue("Should call callback",isCallbackCalled)
+
     }
 
     @Test

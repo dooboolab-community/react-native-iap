@@ -46,7 +46,7 @@ class RNIapModule(
         return "RNIapModule"
     }
 
-    private fun ensureConnection(promise: Promise, callback: () -> Unit) {
+    internal fun ensureConnection(promise: Promise, callback: () -> Unit) {
         if (billingClient.isReady) {
             callback()
             return
