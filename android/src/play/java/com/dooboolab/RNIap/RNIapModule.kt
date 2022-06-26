@@ -34,14 +34,13 @@ import java.util.ArrayList
 
 class RNIapModule(
     private val reactContext: ReactApplicationContext,
-    builder: BillingClient.Builder = BillingClient.newBuilder(reactContext).enablePendingPurchases(),
+    private val builder: BillingClient.Builder = BillingClient.newBuilder(reactContext).enablePendingPurchases(),
     private val googleApiAvailability: GoogleApiAvailability = GoogleApiAvailability.getInstance()
 ) :
     ReactContextBaseJavaModule(reactContext),
     PurchasesUpdatedListener {
 
-    private val billingClient: BillingClient = builder.setListener(this)
-        .build()
+    private var billingClient: BillingClient = builder.setListener(this).build()
     private val skus: MutableMap<String, SkuDetails> = mutableMapOf()
     override fun getName(): String {
         return "RNIapModule"
@@ -91,6 +90,8 @@ class RNIapModule(
             promise.reject(DoobooUtils.E_NOT_PREPARED, "Google Play Services are not available on this device")
             return
         }
+
+        billingClient = builder.setListener(this).build()
 
         billingClient.startConnection(
             object : BillingClientStateListener {
