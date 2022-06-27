@@ -15,7 +15,6 @@ import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
-import com.facebook.react.bridge.ObjectAlreadyConsumedException
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.PromiseImpl
 import com.facebook.react.bridge.ReactApplicationContext
@@ -46,7 +45,7 @@ class RNIapModule(
         return "RNIapModule"
     }
 
-    private fun ensureConnection(promise: Promise, callback: () -> Unit) {
+    internal fun ensureConnection(promise: Promise, callback: () -> Unit) {
         if (billingClient.isReady) {
             callback()
             return
@@ -61,7 +60,7 @@ class RNIapModule(
                 },
                 {
                     if (it.size > 1 && it[0] is String && it[1] is String) {
-                        promise.reject(
+                        promise.safeReject(
                             it[0] as String, it[1] as String
                         )
                     } else {
@@ -80,14 +79,14 @@ class RNIapModule(
                 TAG,
                 "Already initialized, you should only call initConnection() once when your app starts"
             )
-            promise.resolve(true)
+            promise.safeResolve(true)
             return
         }
         if (googleApiAvailability.isGooglePlayServicesAvailable(reactContext)
             != ConnectionResult.SUCCESS
         ) {
             Log.i(TAG, "Google Play Services are not available on this device")
-            promise.reject(DoobooUtils.E_NOT_PREPARED, "Google Play Services are not available on this device")
+            promise.safeReject(DoobooUtils.E_NOT_PREPARED, "Google Play Services are not available on this device")
             return
         }
 
@@ -97,15 +96,12 @@ class RNIapModule(
             object : BillingClientStateListener {
                 override fun onBillingSetupFinished(billingResult: BillingResult) {
                     val responseCode = billingResult.responseCode
-                    try {
-                        if (responseCode == BillingClient.BillingResponseCode.OK) {
-                            promise.resolve(true)
-                        } else {
-                            PlayUtils.instance
-                                .rejectPromiseWithBillingError(promise, responseCode)
-                        }
-                    } catch (oce: ObjectAlreadyConsumedException) {
-                        Log.e(TAG, oce.message!!)
+
+                    if (responseCode == BillingClient.BillingResponseCode.OK) {
+                        promise.safeResolve(true)
+                    } else {
+                        PlayUtils.instance
+                            .rejectPromiseWithBillingError(promise, responseCode)
                     }
                 }
 
@@ -118,7 +114,7 @@ class RNIapModule(
     @ReactMethod
     fun endConnection(promise: Promise) {
         billingClient.endConnection()
-        promise.resolve(true)
+        promise.safeResolve(true)
     }
 
     private fun consumeItems(
@@ -143,11 +139,8 @@ class RNIapModule(
                                 )
                             return@ConsumeResponseListener
                         }
-                        try {
-                            promise.resolve(true)
-                        } catch (oce: ObjectAlreadyConsumedException) {
-                            promise.reject(oce.message)
-                        }
+
+                        promise.safeResolve(true)
                     }
                 billingClient.consumeAsync(consumeParams, listener)
             }
@@ -164,7 +157,7 @@ class RNIapModule(
             ) { _: BillingResult?, list: List<Purchase>? ->
                 if (list == null) {
                     // No purchases found
-                    promise.resolve(false)
+                    promise.safeResolve(false)
                     return@queryPurchasesAsync
                 }
                 // we only want to try to consume PENDING items, in order to force cache-refresh
@@ -172,7 +165,7 @@ class RNIapModule(
                 val pendingPurchases = list.filter { it.purchaseState == Purchase.PurchaseState.PENDING }
 
                 if (pendingPurchases.isEmpty()) {
-                    promise.resolve(false)
+                    promise.safeResolve(false)
                     return@queryPurchasesAsync
                 }
                 consumeItems(
@@ -262,11 +255,7 @@ class RNIapModule(
                     item.putString("originalPrice", originalPrice)
                     items.pushMap(item)
                 }
-                try {
-                    promise.resolve(items)
-                } catch (oce: ObjectAlreadyConsumedException) {
-                    Log.e(TAG, oce.message!!)
-                }
+                promise.safeResolve(items)
             }
         }
     }
@@ -309,11 +298,7 @@ class RNIapModule(
                         items.pushMap(item)
                     }
                 }
-                try {
-                    promise.resolve(items)
-                } catch (oce: ObjectAlreadyConsumedException) {
-                    Log.e(TAG, oce.message!!)
-                }
+                promise.safeResolve(items)
             }
         }
     }
@@ -345,11 +330,7 @@ class RNIapModule(
                     item.putString("developerPayload", purchase.developerPayload)
                     items.pushMap(item)
                 }
-                try {
-                    promise.resolve(items)
-                } catch (oce: ObjectAlreadyConsumedException) {
-                    Log.e(TAG, oce.message!!)
-                }
+                promise.safeResolve(items)
             }
         }
     }
@@ -366,7 +347,7 @@ class RNIapModule(
     ) {
         val activity = currentActivity
         if (activity == null) {
-            promise.reject(DoobooUtils.E_UNKNOWN, "getCurrentActivity returned null")
+            promise.safeReject(DoobooUtils.E_UNKNOWN, "getCurrentActivity returned null")
             return
         }
         ensureConnection(
@@ -386,7 +367,7 @@ class RNIapModule(
                 error.putString("message", debugMessage)
                 error.putString("productId", sku)
                 sendEvent(reactContext, "purchase-error", error)
-                promise.reject(PROMISE_BUY_ITEM, debugMessage)
+                promise.safeReject(PROMISE_BUY_ITEM, debugMessage)
                 return@ensureConnection
             }
             builder.setSkuDetails(selectedSku)
@@ -419,7 +400,7 @@ class RNIapModule(
                         error.putString("message", debugMessage)
                         error.putString("productId", sku)
                         sendEvent(reactContext, "purchase-error", error)
-                        promise.reject(PROMISE_BUY_ITEM, debugMessage)
+                        promise.safeReject(PROMISE_BUY_ITEM, debugMessage)
                         return@ensureConnection
                     }
                 } else if (prorationMode
@@ -481,18 +462,14 @@ class RNIapModule(
                     PlayUtils.instance
                         .rejectPromiseWithBillingError(promise, billingResult.responseCode)
                 }
-                try {
-                    val map = Arguments.createMap()
-                    map.putInt("responseCode", billingResult.responseCode)
-                    map.putString("debugMessage", billingResult.debugMessage)
-                    val errorData: Array<String?> = PlayUtils.instance
-                        .getBillingResponseData(billingResult.responseCode)
-                    map.putString("code", errorData[0])
-                    map.putString("message", errorData[1])
-                    promise.resolve(map)
-                } catch (oce: ObjectAlreadyConsumedException) {
-                    Log.e(TAG, oce.message!!)
-                }
+                val map = Arguments.createMap()
+                map.putInt("responseCode", billingResult.responseCode)
+                map.putString("debugMessage", billingResult.debugMessage)
+                val errorData: Array<String?> = PlayUtils.instance
+                    .getBillingResponseData(billingResult.responseCode)
+                map.putString("code", errorData[0])
+                map.putString("message", errorData[1])
+                promise.safeResolve(map)
             }
         }
     }
@@ -514,18 +491,15 @@ class RNIapModule(
                     PlayUtils.instance
                         .rejectPromiseWithBillingError(promise, billingResult.responseCode)
                 }
-                try {
-                    val map = Arguments.createMap()
-                    map.putInt("responseCode", billingResult.responseCode)
-                    map.putString("debugMessage", billingResult.debugMessage)
-                    val errorData: Array<String?> = PlayUtils.instance
-                        .getBillingResponseData(billingResult.responseCode)
-                    map.putString("code", errorData[0])
-                    map.putString("message", errorData[1])
-                    promise.resolve(map)
-                } catch (oce: ObjectAlreadyConsumedException) {
-                    promise.reject(oce.message)
-                }
+
+                val map = Arguments.createMap()
+                map.putInt("responseCode", billingResult.responseCode)
+                map.putString("debugMessage", billingResult.debugMessage)
+                val errorData: Array<String?> = PlayUtils.instance
+                    .getBillingResponseData(billingResult.responseCode)
+                map.putString("code", errorData[0])
+                map.putString("message", errorData[1])
+                promise.safeResolve(map)
             }
         }
     }
@@ -612,7 +586,7 @@ class RNIapModule(
                     onPurchasesUpdated(billingResult, unacknowledgedPurchases)
                 }
             }
-            promise.resolve(true)
+            promise.safeResolve(true)
         }
     }
 

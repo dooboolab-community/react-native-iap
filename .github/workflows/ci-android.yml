@@ -26,3 +26,8 @@ jobs:
         run: chmod +x android/gradlew
       - name: Build with Library with Gradle and check lints
         run: cd android;./gradlew build test
+      - name: Unit tests results
+        uses: actions/upload-artifact@v2
+        with:
+          name: play-unit-tests-results
+          path: android/build/reports/tests/testPlayDebugUnitTest/index.html
