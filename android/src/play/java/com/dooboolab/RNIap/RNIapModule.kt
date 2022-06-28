@@ -95,7 +95,7 @@ class RNIapModule(
         billingClient.startConnection(
             object : BillingClientStateListener {
                 override fun onBillingSetupFinished(billingResult: BillingResult) {
-                    if(!isValidResult(billingResult,promise)) return
+                    if (!isValidResult(billingResult, promise)) return
 
                     promise.safeResolve(true)
                 }
@@ -443,13 +443,13 @@ class RNIapModule(
             }
             val flowParams = builder.build()
             val billingResult = billingClient.launchBillingFlow(activity, flowParams)
-            if(billingResult.responseCode == BillingClient.BillingResponseCode.OK){
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 promise.safeResolve(true)
                 return@ensureConnection
-            }else {
+            } else {
                 val errorData: Array<String?> =
                     PlayUtils.instance.getBillingResponseData(billingResult.responseCode)
-                promise.safeReject(errorData[0],errorData[1])
+                promise.safeReject(errorData[0], errorData[1])
             }
         }
     }
