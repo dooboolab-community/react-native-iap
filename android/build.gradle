@@ -66,8 +66,10 @@ repositories {
 
 dependencies {
   implementation 'com.facebook.react:react-native:+'
-  testImplementation 'junit:junit:4.12'
+  testImplementation 'junit:junit:4.13.1'
   testImplementation "io.mockk:mockk:1.12.4"
+  testImplementation "org.powermock:powermock-module-junit4:1.6.4"
+  testImplementation "org.powermock:powermock-api-mockito2:2.0.7"
   playImplementation 'com.android.billingclient:billing:4.0.0'
   def playServicesVersion = safeExtGet('playServicesVersion', DEFAULT_PLAY_SERVICES_VERSION)
   playImplementation "com.google.android.gms:play-services-base:$playServicesVersion"

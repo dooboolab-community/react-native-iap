@@ -197,7 +197,7 @@ class RNIapModule(
                         skus[sku.sku] = sku
                     }
                 }
-                val items = WritableNativeArray()
+                val items = Arguments.createArray()
                 for (skuDetails in skuDetailsList!!) {
                     val item = Arguments.createMap()
                     item.putString("productId", skuDetails.sku)
@@ -324,9 +324,8 @@ class RNIapModule(
 
                 Log.d(TAG, purchaseHistoryRecordList.toString())
                 val items = Arguments.createArray()
-                for (i in purchaseHistoryRecordList!!.indices) {
+                purchaseHistoryRecordList?.forEach { purchase ->
                     val item = Arguments.createMap()
-                    val purchase = purchaseHistoryRecordList[i]
                     item.putString("productId", purchase.skus[0])
                     item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
                     item.putString("transactionReceipt", purchase.originalJson)
