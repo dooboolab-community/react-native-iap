@@ -95,14 +95,9 @@ class RNIapModule(
         billingClient.startConnection(
             object : BillingClientStateListener {
                 override fun onBillingSetupFinished(billingResult: BillingResult) {
-                    val responseCode = billingResult.responseCode
+                    if (!isValidResult(billingResult, promise)) return
 
-                    if (responseCode == BillingClient.BillingResponseCode.OK) {
-                        promise.safeResolve(true)
-                    } else {
-                        PlayUtils.instance
-                            .rejectPromiseWithBillingError(promise, responseCode)
-                    }
+                    promise.safeResolve(true)
                 }
 
                 override fun onBillingServiceDisconnected() {
@@ -154,7 +149,8 @@ class RNIapModule(
         ) {
             billingClient.queryPurchasesAsync(
                 BillingClient.SkuType.INAPP
-            ) { _: BillingResult?, list: List<Purchase>? ->
+            ) { billingResult: BillingResult, list: List<Purchase>? ->
+                if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
                 if (list == null) {
                     // No purchases found
                     promise.safeResolve(false)
@@ -178,7 +174,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-    fun getItemsByType(type: String?, skuArr: ReadableArray, promise: Promise) {
+    fun getItemsByType(type: String, skuArr: ReadableArray, promise: Promise) {
         ensureConnection(
             promise
         ) {
@@ -190,22 +186,18 @@ class RNIapModule(
                 }
             }
             val params = SkuDetailsParams.newBuilder()
-            params.setSkusList(skuList).setType(type!!)
+            params.setSkusList(skuList).setType(type)
             billingClient.querySkuDetailsAsync(
                 params.build()
             ) { billingResult: BillingResult, skuDetailsList: List<SkuDetails>? ->
-                Log.d(TAG, "responseCode: " + billingResult.responseCode)
-                if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
-                    PlayUtils.instance
-                        .rejectPromiseWithBillingError(promise, billingResult.responseCode)
-                    return@querySkuDetailsAsync
-                }
+                if (!isValidResult(billingResult, promise)) return@querySkuDetailsAsync
+
                 if (skuDetailsList != null) {
                     for (sku in skuDetailsList) {
                         skus[sku.sku] = sku
                     }
                 }
-                val items = WritableNativeArray()
+                val items = Arguments.createArray()
                 for (skuDetails in skuDetailsList!!) {
                     val item = Arguments.createMap()
                     item.putString("productId", skuDetails.sku)
@@ -260,6 +252,22 @@ class RNIapModule(
         }
     }
 
+    /**
+     * Rejects promise with billing code if BillingResult is not OK
+     */
+    private fun isValidResult(
+        billingResult: BillingResult,
+        promise: Promise
+    ): Boolean {
+        Log.d(TAG, "responseCode: " + billingResult.responseCode)
+        if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+            PlayUtils.instance
+                .rejectPromiseWithBillingError(promise, billingResult.responseCode)
+            return false
+        }
+        return true
+    }
+
     @ReactMethod
     fun getAvailableItemsByType(type: String, promise: Promise) {
         ensureConnection(
@@ -268,7 +276,8 @@ class RNIapModule(
             val items = WritableNativeArray()
             billingClient.queryPurchasesAsync(
                 if (type == "subs") BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
-            ) { billingResult: BillingResult?, purchases: List<Purchase>? ->
+            ) { billingResult: BillingResult, purchases: List<Purchase>? ->
+                if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
                 if (purchases != null) {
                     for (i in purchases.indices) {
                         val purchase = purchases[i]
@@ -311,16 +320,12 @@ class RNIapModule(
             billingClient.queryPurchaseHistoryAsync(
                 if (type == "subs") BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
             ) { billingResult, purchaseHistoryRecordList ->
-                if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
-                    PlayUtils.instance
-                        .rejectPromiseWithBillingError(promise, billingResult.responseCode)
-                    return@queryPurchaseHistoryAsync
-                }
+                if (!isValidResult(billingResult, promise)) return@queryPurchaseHistoryAsync
+
                 Log.d(TAG, purchaseHistoryRecordList.toString())
                 val items = Arguments.createArray()
-                for (i in purchaseHistoryRecordList!!.indices) {
+                purchaseHistoryRecordList?.forEach { purchase ->
                     val item = Arguments.createMap()
-                    val purchase = purchaseHistoryRecordList[i]
                     item.putString("productId", purchase.skus[0])
                     item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
                     item.putString("transactionReceipt", purchase.originalJson)
@@ -437,8 +442,14 @@ class RNIapModule(
             }
             val flowParams = builder.build()
             val billingResult = billingClient.launchBillingFlow(activity, flowParams)
-            val errorData: Array<String?> =
-                PlayUtils.instance.getBillingResponseData(billingResult.responseCode)
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                promise.safeResolve(true)
+                return@ensureConnection
+            } else {
+                val errorData: Array<String?> =
+                    PlayUtils.instance.getBillingResponseData(billingResult.responseCode)
+                promise.safeReject(errorData[0], errorData[1])
+            }
         }
     }
 
@@ -458,10 +469,8 @@ class RNIapModule(
             billingClient.acknowledgePurchase(
                 acknowledgePurchaseParams
             ) { billingResult: BillingResult ->
-                if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
-                    PlayUtils.instance
-                        .rejectPromiseWithBillingError(promise, billingResult.responseCode)
-                }
+                if (!isValidResult(billingResult, promise)) return@acknowledgePurchase
+
                 val map = Arguments.createMap()
                 map.putInt("responseCode", billingResult.responseCode)
                 map.putString("debugMessage", billingResult.debugMessage)
@@ -487,10 +496,7 @@ class RNIapModule(
             billingClient.consumeAsync(
                 params
             ) { billingResult: BillingResult, purchaseToken: String? ->
-                if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
-                    PlayUtils.instance
-                        .rejectPromiseWithBillingError(promise, billingResult.responseCode)
-                }
+                if (!isValidResult(billingResult, promise)) return@consumeAsync
 
                 val map = Arguments.createMap()
                 map.putInt("responseCode", billingResult.responseCode)
@@ -575,14 +581,10 @@ class RNIapModule(
             for (type in types) {
                 billingClient.queryPurchasesAsync(
                     type
-                ) { billingResult: BillingResult, list: List<Purchase>? ->
-                    val unacknowledgedPurchases = ArrayList<Purchase>()
+                ) { billingResult: BillingResult, list: List<Purchase> ->
+                    if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
 
-                    for (purchase in list!!) {
-                        if (!purchase.isAcknowledged) {
-                            unacknowledgedPurchases.add(purchase)
-                        }
-                    }
+                    val unacknowledgedPurchases = list.filter { !it.isAcknowledged }
                     onPurchasesUpdated(billingResult, unacknowledgedPurchases)
                 }
             }
