@@ -3,7 +3,7 @@
   "version": "8.2.1",
   "packageManager": "yarn@3.2.0",
   "description": "React Native In App Purchase Module.",
-  "main": "index.js",
+  "main": "index.ts",
   "types": "index.d.ts",
   "postinstall": "dooboolab-welcome postinstall",
   "scripts": {
