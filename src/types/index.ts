@@ -45,6 +45,7 @@ export interface ProductCommon {
   price: string;
   currency: string;
   localizedPrice: string;
+  localizedPrice12: string;
   countryCode?: string;
 }
 
