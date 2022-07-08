@@ -238,6 +238,17 @@ android {
         }
     }
 
+    flavorDimensions "appstore"
+    productFlavors{
+        googlePlay{
+            dimension "appstore"
+            missingDimensionStrategy "store", "play"
+        }
+        amazon{
+            dimension "appstore"
+            missingDimensionStrategy "store", "amazon"
+        }
+    }
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
