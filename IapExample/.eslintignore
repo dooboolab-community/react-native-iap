@@ -1,9 +1,0 @@
-__tests__
-node_modules
-ios
-android
-
-*.js
-*.d.ts
-*.flow
-*.json
