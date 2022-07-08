@@ -4,7 +4,8 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View,
+  View, 
+  Button as NativeButton
 } from 'react-native';
 import RNIap, {
   InAppPurchase,
@@ -19,7 +20,7 @@ import RNIap, {
 } from 'react-native-iap';
 import React, {Component} from 'react';
 
-import NativeButton from 'apsl-react-native-button';
+//import NativeButton from 'apsl-react-native-button';
 
 // App Bundle > com.dooboolab.test
 
@@ -251,9 +252,7 @@ class Page extends Component {
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
-            >
-              Get available purchases
-            </NativeButton>
+              title= 'Get available purchases'/>
 
             <Text style={{margin: 5, fontSize: 15, alignSelf: 'center'}}>
               {availableItemsMessage}
@@ -268,9 +267,7 @@ class Page extends Component {
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
-            >
-              Get Products ({productList.length})
-            </NativeButton>
+              title={`Get Products (${productList.length})`}/>
             {productList.map((product, i) => {
               return (
                 <View
