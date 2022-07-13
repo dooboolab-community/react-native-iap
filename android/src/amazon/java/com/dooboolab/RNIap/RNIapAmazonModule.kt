@@ -2,6 +2,7 @@ package com.dooboolab.RNIap
 
 import com.amazon.device.iap.PurchasingService
 import com.amazon.device.iap.model.FulfillmentResult
+import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -10,9 +11,8 @@ import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.WritableNativeArray
 import java.util.HashSet
 
-class RNIapAmazonModule(reactContext: ReactApplicationContext?) :
+class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
-    val TAG = "RNIapAmazonModule"
     override fun getName(): String {
         return TAG
     }
@@ -127,5 +127,23 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext?) :
         const val PROMISE_QUERY_PURCHASES = "PROMISE_QUERY_PURCHASES"
         const val PROMISE_QUERY_AVAILABLE_ITEMS = "PROMISE_QUERY_AVAILABLE_ITEMS"
         const val PROMISE_GET_USER_DATA = "PROMISE_GET_USER_DATA"
+
+        const val TAG = "RNIapAmazonModule"
+    }
+    init {
+        val lifecycleEventListener: LifecycleEventListener = object : LifecycleEventListener {
+            /**
+             * From https://developer.amazon.com/docs/in-app-purchasing/iap-implement-iap.html#getpurchaseupdates-responses
+             * We should fetch updates on resume
+             */
+            override fun onHostResume() {
+                PurchasingService.getUserData()
+                PurchasingService.getPurchaseUpdates(false)
+            }
+            override fun onHostPause() {}
+            override fun onHostDestroy() {
+            }
+        }
+        reactContext.addLifecycleEventListener(lifecycleEventListener)
     }
 }

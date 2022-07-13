@@ -42,7 +42,7 @@ class RNIapModule(
     private var billingClient: BillingClient = builder.setListener(this).build()
     private val skus: MutableMap<String, SkuDetails> = mutableMapOf()
     override fun getName(): String {
-        return "RNIapModule"
+        return TAG
     }
 
     internal fun ensureConnection(promise: Promise, callback: () -> Unit) {
