@@ -609,7 +609,7 @@ class RNIapModule(
 
     @get:ReactMethod
     val packageName: String
-        get() = reactApplicationContext.packageName()
+        get() = reactApplicationContext.getPackageName()
 
     private fun sendEvent(
         reactContext: ReactContext,
