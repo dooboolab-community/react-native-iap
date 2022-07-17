@@ -426,7 +426,9 @@ export const acknowledgePurchaseAndroid = (
  * @param {string} sku The product's SKU (on Android)
  * @returns {Promise<void>}
  */
-export const deepLinkToSubscriptionsAndroid = async(sku: string): Promise<void> => {
+export const deepLinkToSubscriptionsAndroid = async (
+  sku: string,
+): Promise<void> => {
   checkNativeAndroidAvailable();
 
   return Linking.openURL(
