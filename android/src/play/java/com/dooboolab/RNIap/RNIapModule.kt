@@ -22,6 +22,7 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.ReadableType
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
@@ -39,14 +40,14 @@ class RNIapModule(
     ReactContextBaseJavaModule(reactContext),
     PurchasesUpdatedListener {
 
-    private var billingClient: BillingClient = builder.setListener(this).build()
+    private var billingClient: BillingClient? = null
     private val skus: MutableMap<String, SkuDetails> = mutableMapOf()
     override fun getName(): String {
         return "RNIapModule"
     }
 
     internal fun ensureConnection(promise: Promise, callback: () -> Unit) {
-        if (billingClient.isReady) {
+        if (billingClient?.isReady == true) {
             callback()
             return
         } else {
@@ -74,14 +75,6 @@ class RNIapModule(
 
     @ReactMethod
     fun initConnection(promise: Promise) {
-        if (billingClient.isReady) {
-            Log.i(
-                TAG,
-                "Already initialized, you should only call initConnection() once when your app starts"
-            )
-            promise.safeResolve(true)
-            return
-        }
         if (googleApiAvailability.isGooglePlayServicesAvailable(reactContext)
             != ConnectionResult.SUCCESS
         ) {
@@ -90,9 +83,17 @@ class RNIapModule(
             return
         }
 
+        if (billingClient?.isReady == true) {
+            Log.i(
+                TAG,
+                "Already initialized, you should only call initConnection() once when your app starts"
+            )
+            promise.safeResolve(true)
+            return
+        }
         billingClient = builder.setListener(this).build()
 
-        billingClient.startConnection(
+        billingClient?.startConnection(
             object : BillingClientStateListener {
                 override fun onBillingSetupFinished(billingResult: BillingResult) {
                     if (!isValidResult(billingResult, promise)) return
@@ -108,7 +109,7 @@ class RNIapModule(
 
     @ReactMethod
     fun endConnection(promise: Promise) {
-        billingClient.endConnection()
+        billingClient?.endConnection()
         promise.safeResolve(true)
     }
 
@@ -137,7 +138,7 @@ class RNIapModule(
 
                         promise.safeResolve(true)
                     }
-                billingClient.consumeAsync(consumeParams, listener)
+                billingClient?.consumeAsync(consumeParams, listener)
             }
         }
     }
@@ -147,7 +148,7 @@ class RNIapModule(
         ensureConnection(
             promise
         ) {
-            billingClient.queryPurchasesAsync(
+            billingClient?.queryPurchasesAsync(
                 BillingClient.SkuType.INAPP
             ) { billingResult: BillingResult, list: List<Purchase>? ->
                 if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
@@ -180,72 +181,73 @@ class RNIapModule(
         ) {
             val skuList = ArrayList<String>()
             for (i in 0 until skuArr.size()) {
-                val sku = skuArr.getString(i)
-                if (sku is String) {
+                if(skuArr.getType(i) == ReadableType.String) {
+                    val sku = skuArr.getString(i)
                     skuList.add(sku)
                 }
             }
             val params = SkuDetailsParams.newBuilder()
             params.setSkusList(skuList).setType(type)
-            billingClient.querySkuDetailsAsync(
+            billingClient?.querySkuDetailsAsync(
                 params.build()
             ) { billingResult: BillingResult, skuDetailsList: List<SkuDetails>? ->
                 if (!isValidResult(billingResult, promise)) return@querySkuDetailsAsync
 
+                val items = Arguments.createArray()
                 if (skuDetailsList != null) {
                     for (sku in skuDetailsList) {
                         skus[sku.sku] = sku
                     }
-                }
-                val items = Arguments.createArray()
-                for (skuDetails in skuDetailsList!!) {
-                    val item = Arguments.createMap()
-                    item.putString("productId", skuDetails.sku)
-                    val introductoryPriceMicros = skuDetails.introductoryPriceAmountMicros
-                    val priceAmountMicros = skuDetails.priceAmountMicros
-                    // Use valueOf instead of constructors.
-                    // See:
-                    // https://www.javaworld.com/article/2073176/caution--double-to-bigdecimal-in-java.html
-                    val priceAmount = BigDecimal.valueOf(priceAmountMicros)
-                    val introductoryPriceAmount =
-                        BigDecimal.valueOf(introductoryPriceMicros)
-                    val microUnitsDivisor = BigDecimal.valueOf(1000000)
-                    val price = priceAmount.divide(microUnitsDivisor).toString()
-                    val introductoryPriceAsAmountAndroid =
-                        introductoryPriceAmount.divide(microUnitsDivisor).toString()
-                    item.putString("price", price)
-                    item.putString("currency", skuDetails.priceCurrencyCode)
-                    item.putString("type", skuDetails.type)
-                    item.putString("localizedPrice", skuDetails.price)
-                    item.putString("title", skuDetails.title)
-                    item.putString("description", skuDetails.description)
-                    item.putString("introductoryPrice", skuDetails.introductoryPrice)
-                    item.putString("typeAndroid", skuDetails.type)
-                    item.putString("packageNameAndroid", skuDetails.zzc())
-                    item.putString("originalPriceAndroid", skuDetails.originalPrice)
-                    item.putString(
-                        "subscriptionPeriodAndroid",
-                        skuDetails.subscriptionPeriod
-                    )
-                    item.putString("freeTrialPeriodAndroid", skuDetails.freeTrialPeriod)
-                    item.putString(
-                        "introductoryPriceCyclesAndroid",
-                        skuDetails.introductoryPriceCycles.toString()
-                    )
-                    item.putString(
-                        "introductoryPricePeriodAndroid", skuDetails.introductoryPricePeriod
-                    )
-                    item.putString(
-                        "introductoryPriceAsAmountAndroid", introductoryPriceAsAmountAndroid
-                    )
-                    item.putString("iconUrl", skuDetails.iconUrl)
-                    item.putString("originalJson", skuDetails.originalJson)
-                    val originalPriceAmountMicros =
-                        BigDecimal.valueOf(skuDetails.originalPriceAmountMicros)
-                    val originalPrice =
-                        originalPriceAmountMicros.divide(microUnitsDivisor).toString()
-                    item.putString("originalPrice", originalPrice)
-                    items.pushMap(item)
+
+                    for (skuDetails in skuDetailsList) {
+                        val item = Arguments.createMap()
+                        item.putString("productId", skuDetails.sku)
+                        val introductoryPriceMicros = skuDetails.introductoryPriceAmountMicros
+                        val priceAmountMicros = skuDetails.priceAmountMicros
+                        // Use valueOf instead of constructors.
+                        // See:
+                        // https://www.javaworld.com/article/2073176/caution--double-to-bigdecimal-in-java.html
+                        val priceAmount = BigDecimal.valueOf(priceAmountMicros)
+                        val introductoryPriceAmount =
+                            BigDecimal.valueOf(introductoryPriceMicros)
+                        val microUnitsDivisor = BigDecimal.valueOf(1000000)
+                        val price = priceAmount.divide(microUnitsDivisor).toString()
+                        val introductoryPriceAsAmountAndroid =
+                            introductoryPriceAmount.divide(microUnitsDivisor).toString()
+                        item.putString("price", price)
+                        item.putString("currency", skuDetails.priceCurrencyCode)
+                        item.putString("type", skuDetails.type)
+                        item.putString("localizedPrice", skuDetails.price)
+                        item.putString("title", skuDetails.title)
+                        item.putString("description", skuDetails.description)
+                        item.putString("introductoryPrice", skuDetails.introductoryPrice)
+                        item.putString("typeAndroid", skuDetails.type)
+                        item.putString("packageNameAndroid", skuDetails.zzc())
+                        item.putString("originalPriceAndroid", skuDetails.originalPrice)
+                        item.putString(
+                            "subscriptionPeriodAndroid",
+                            skuDetails.subscriptionPeriod
+                        )
+                        item.putString("freeTrialPeriodAndroid", skuDetails.freeTrialPeriod)
+                        item.putString(
+                            "introductoryPriceCyclesAndroid",
+                            skuDetails.introductoryPriceCycles.toString()
+                        )
+                        item.putString(
+                            "introductoryPricePeriodAndroid", skuDetails.introductoryPricePeriod
+                        )
+                        item.putString(
+                            "introductoryPriceAsAmountAndroid", introductoryPriceAsAmountAndroid
+                        )
+                        item.putString("iconUrl", skuDetails.iconUrl)
+                        item.putString("originalJson", skuDetails.originalJson)
+                        val originalPriceAmountMicros =
+                            BigDecimal.valueOf(skuDetails.originalPriceAmountMicros)
+                        val originalPrice =
+                            originalPriceAmountMicros.divide(microUnitsDivisor).toString()
+                        item.putString("originalPrice", originalPrice)
+                        items.pushMap(item)
+                    }
                 }
                 promise.safeResolve(items)
             }
@@ -274,7 +276,7 @@ class RNIapModule(
             promise
         ) {
             val items = WritableNativeArray()
-            billingClient.queryPurchasesAsync(
+            billingClient?.queryPurchasesAsync(
                 if (type == "subs") BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
             ) { billingResult: BillingResult, purchases: List<Purchase>? ->
                 if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
@@ -295,11 +297,11 @@ class RNIapModule(
                         item.putString("packageNameAndroid", purchase.packageName)
                         item.putString(
                             "obfuscatedAccountIdAndroid",
-                            purchase.accountIdentifiers!!.obfuscatedAccountId
+                            purchase.accountIdentifiers?.obfuscatedAccountId
                         )
                         item.putString(
                             "obfuscatedProfileIdAndroid",
-                            purchase.accountIdentifiers!!.obfuscatedProfileId
+                            purchase.accountIdentifiers?.obfuscatedProfileId
                         )
                         if (type == BillingClient.SkuType.SUBS) {
                             item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing)
@@ -317,7 +319,7 @@ class RNIapModule(
         ensureConnection(
             promise
         ) {
-            billingClient.queryPurchaseHistoryAsync(
+            billingClient?.queryPurchaseHistoryAsync(
                 if (type == "subs") BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
             ) { billingResult, purchaseHistoryRecordList ->
                 if (!isValidResult(billingResult, promise)) return@queryPurchaseHistoryAsync
@@ -441,13 +443,13 @@ class RNIapModule(
                 builder.setSubscriptionUpdateParams(subscriptionUpdateParams)
             }
             val flowParams = builder.build()
-            val billingResult = billingClient.launchBillingFlow(activity, flowParams)
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+            val billingResultCode = billingClient?.launchBillingFlow(activity, flowParams)?.responseCode ?: BillingClient.BillingResponseCode.ERROR
+            if (billingResultCode == BillingClient.BillingResponseCode.OK) {
                 promise.safeResolve(true)
                 return@ensureConnection
             } else {
                 val errorData: Array<String?> =
-                    PlayUtils.instance.getBillingResponseData(billingResult.responseCode)
+                    PlayUtils.instance.getBillingResponseData(billingResultCode)
                 promise.safeReject(errorData[0], errorData[1])
             }
         }
@@ -455,7 +457,7 @@ class RNIapModule(
 
     @ReactMethod
     fun acknowledgePurchase(
-        token: String?,
+        token: String,
         developerPayLoad: String?,
         promise: Promise
     ) {
@@ -464,9 +466,9 @@ class RNIapModule(
         ) {
             val acknowledgePurchaseParams =
                 AcknowledgePurchaseParams.newBuilder().setPurchaseToken(
-                    token!!
+                    token
                 ).build()
-            billingClient.acknowledgePurchase(
+            billingClient?.acknowledgePurchase(
                 acknowledgePurchaseParams
             ) { billingResult: BillingResult ->
                 if (!isValidResult(billingResult, promise)) return@acknowledgePurchase
@@ -485,15 +487,15 @@ class RNIapModule(
 
     @ReactMethod
     fun consumeProduct(
-        token: String?,
+        token: String,
         developerPayLoad: String?,
         promise: Promise
     ) {
-        val params = ConsumeParams.newBuilder().setPurchaseToken(token!!).build()
+        val params = ConsumeParams.newBuilder().setPurchaseToken(token).build()
         ensureConnection(
             promise
         ) {
-            billingClient.consumeAsync(
+            billingClient?.consumeAsync(
                 params
             ) { billingResult: BillingResult, purchaseToken: String? ->
                 if (!isValidResult(billingResult, promise)) return@consumeAsync
@@ -579,7 +581,7 @@ class RNIapModule(
         ) {
             val types = arrayOf(BillingClient.SkuType.INAPP, BillingClient.SkuType.SUBS)
             for (type in types) {
-                billingClient.queryPurchasesAsync(
+                billingClient?.queryPurchasesAsync(
                     type
                 ) { billingResult: BillingResult, list: List<Purchase> ->
                     if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
@@ -631,7 +633,7 @@ class RNIapModule(
             override fun onHostResume() {}
             override fun onHostPause() {}
             override fun onHostDestroy() {
-                billingClient.endConnection()
+                billingClient?.endConnection()
             }
         }
         reactContext.addLifecycleEventListener(lifecycleEventListener)
