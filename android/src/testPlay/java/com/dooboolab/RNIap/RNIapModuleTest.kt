@@ -62,7 +62,7 @@ class RNIapModuleTest {
         every { billingClient.isReady } returns true
 
         val promise = mockk<Promise>(relaxed = true)
-        //already connected
+        // Already connected
         module.initConnection(promise)
         verify(exactly = 0) { promise.reject(any(), any<String>()) }
         verify { promise.resolve(true) }
