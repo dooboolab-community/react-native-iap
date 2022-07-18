@@ -195,11 +195,9 @@ class RNIapModule(
 
                 val items = Arguments.createArray()
                 if (skuDetailsList != null) {
-                    for (sku in skuDetailsList) {
-                        skus[sku.sku] = sku
-                    }
-
                     for (skuDetails in skuDetailsList) {
+                        skus[skuDetails.sku] = skuDetails
+
                         val item = Arguments.createMap()
                         item.putString("productId", skuDetails.sku)
                         val introductoryPriceMicros = skuDetails.introductoryPriceAmountMicros
