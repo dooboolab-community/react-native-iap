@@ -119,7 +119,7 @@ class RNIapModule(
     @ReactMethod
     fun endConnection(promise: Promise) {
         billingClientCache?.endConnection()
-
+        billingClientCache = null
         promise.safeResolve(true)
     }
 
