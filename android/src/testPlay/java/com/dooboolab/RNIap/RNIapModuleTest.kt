@@ -183,7 +183,7 @@ class RNIapModuleTest {
         every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
         val promise = mockk<Promise>(relaxed = true)
         var isCallbackCalled = false
-        val callback = {
+        val callback = { _: BillingClient ->
             isCallbackCalled = true
             promise.resolve(true)
         }

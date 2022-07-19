@@ -40,21 +40,30 @@ class RNIapModule(
     ReactContextBaseJavaModule(reactContext),
     PurchasesUpdatedListener {
 
-    private var billingClient: BillingClient? = null
+    private var billingClientCache: BillingClient? = null
     private val skus: MutableMap<String, SkuDetails> = mutableMapOf()
     override fun getName(): String {
         return "RNIapModule"
     }
 
-    internal fun ensureConnection(promise: Promise, callback: () -> Unit) {
+    internal fun ensureConnection(
+        promise: Promise,
+        callback: (billingClient: BillingClient) -> Unit
+    ) {
+        val billingClient = billingClientCache
         if (billingClient?.isReady == true) {
-            callback()
+            callback(billingClient)
             return
         } else {
             val nested = PromiseImpl(
                 {
                     if (it.isNotEmpty() && it[0] is Boolean && it[0] as Boolean) {
-                        callback()
+                        val billingClient = billingClientCache
+                        if (billingClient != null) {
+                            callback(billingClient)
+                        } else {
+                            promise.safeReject(DoobooUtils.E_NOT_PREPARED, "Unable to auto-initialize connection")
+                        }
                     } else {
                         Log.i(TAG, "Incorrect parameter in resolve")
                     }
@@ -83,7 +92,7 @@ class RNIapModule(
             return
         }
 
-        if (billingClient?.isReady == true) {
+        if (billingClientCache?.isReady == true) {
             Log.i(
                 TAG,
                 "Already initialized, you should only call initConnection() once when your app starts"
@@ -91,9 +100,9 @@ class RNIapModule(
             promise.safeResolve(true)
             return
         }
-        billingClient = builder.setListener(this).build()
+        billingClientCache = builder.setListener(this).build()
 
-        billingClient?.startConnection(
+        billingClientCache?.startConnection(
             object : BillingClientStateListener {
                 override fun onBillingSetupFinished(billingResult: BillingResult) {
                     if (!isValidResult(billingResult, promise)) return
@@ -109,7 +118,8 @@ class RNIapModule(
 
     @ReactMethod
     fun endConnection(promise: Promise) {
-        billingClient?.endConnection()
+        billingClientCache?.endConnection()
+
         promise.safeResolve(true)
     }
 
@@ -121,7 +131,7 @@ class RNIapModule(
         for (purchase in purchases) {
             ensureConnection(
                 promise
-            ) {
+            ) { billingClient ->
                 val consumeParams =
                     ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken)
                         .build()
@@ -138,7 +148,7 @@ class RNIapModule(
 
                         promise.safeResolve(true)
                     }
-                billingClient?.consumeAsync(consumeParams, listener)
+                billingClient.consumeAsync(consumeParams, listener)
             }
         }
     }
@@ -147,8 +157,8 @@ class RNIapModule(
     fun flushFailedPurchasesCachedAsPending(promise: Promise) {
         ensureConnection(
             promise
-        ) {
-            billingClient?.queryPurchasesAsync(
+        ) { billingClient ->
+            billingClient.queryPurchasesAsync(
                 BillingClient.SkuType.INAPP
             ) { billingResult: BillingResult, list: List<Purchase>? ->
                 if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
@@ -178,7 +188,7 @@ class RNIapModule(
     fun getItemsByType(type: String, skuArr: ReadableArray, promise: Promise) {
         ensureConnection(
             promise
-        ) {
+        ) { billingClient ->
             val skuList = ArrayList<String>()
             for (i in 0 until skuArr.size()) {
                 if (skuArr.getType(i) == ReadableType.String) {
@@ -188,7 +198,7 @@ class RNIapModule(
             }
             val params = SkuDetailsParams.newBuilder()
             params.setSkusList(skuList).setType(type)
-            billingClient?.querySkuDetailsAsync(
+            billingClient.querySkuDetailsAsync(
                 params.build()
             ) { billingResult: BillingResult, skuDetailsList: List<SkuDetails>? ->
                 if (!isValidResult(billingResult, promise)) return@querySkuDetailsAsync
@@ -272,9 +282,9 @@ class RNIapModule(
     fun getAvailableItemsByType(type: String, promise: Promise) {
         ensureConnection(
             promise
-        ) {
+        ) { billingClient ->
             val items = WritableNativeArray()
-            billingClient?.queryPurchasesAsync(
+            billingClient.queryPurchasesAsync(
                 if (type == "subs") BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
             ) { billingResult: BillingResult, purchases: List<Purchase>? ->
                 if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
@@ -316,8 +326,8 @@ class RNIapModule(
     fun getPurchaseHistoryByType(type: String, promise: Promise) {
         ensureConnection(
             promise
-        ) {
-            billingClient?.queryPurchaseHistoryAsync(
+        ) { billingClient ->
+            billingClient.queryPurchaseHistoryAsync(
                 if (type == "subs") BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
             ) { billingResult, purchaseHistoryRecordList ->
                 if (!isValidResult(billingResult, promise)) return@queryPurchaseHistoryAsync
@@ -357,7 +367,7 @@ class RNIapModule(
         }
         ensureConnection(
             promise
-        ) {
+        ) { billingClient ->
             DoobooUtils.instance.addPromiseForKey(
                 PROMISE_BUY_ITEM, promise
             )
@@ -441,7 +451,7 @@ class RNIapModule(
                 builder.setSubscriptionUpdateParams(subscriptionUpdateParams)
             }
             val flowParams = builder.build()
-            val billingResultCode = billingClient?.launchBillingFlow(activity, flowParams)?.responseCode ?: BillingClient.BillingResponseCode.ERROR
+            val billingResultCode = billingClient.launchBillingFlow(activity, flowParams)?.responseCode ?: BillingClient.BillingResponseCode.ERROR
             if (billingResultCode == BillingClient.BillingResponseCode.OK) {
                 promise.safeResolve(true)
                 return@ensureConnection
@@ -461,12 +471,12 @@ class RNIapModule(
     ) {
         ensureConnection(
             promise
-        ) {
+        ) { billingClient ->
             val acknowledgePurchaseParams =
                 AcknowledgePurchaseParams.newBuilder().setPurchaseToken(
                     token
                 ).build()
-            billingClient?.acknowledgePurchase(
+            billingClient.acknowledgePurchase(
                 acknowledgePurchaseParams
             ) { billingResult: BillingResult ->
                 if (!isValidResult(billingResult, promise)) return@acknowledgePurchase
@@ -492,8 +502,8 @@ class RNIapModule(
         val params = ConsumeParams.newBuilder().setPurchaseToken(token).build()
         ensureConnection(
             promise
-        ) {
-            billingClient?.consumeAsync(
+        ) { billingClient ->
+            billingClient.consumeAsync(
                 params
             ) { billingResult: BillingResult, purchaseToken: String? ->
                 if (!isValidResult(billingResult, promise)) return@consumeAsync
@@ -576,10 +586,10 @@ class RNIapModule(
     private fun sendUnconsumedPurchases(promise: Promise) {
         ensureConnection(
             promise
-        ) {
+        ) { billingClient ->
             val types = arrayOf(BillingClient.SkuType.INAPP, BillingClient.SkuType.SUBS)
             for (type in types) {
-                billingClient?.queryPurchasesAsync(
+                billingClient.queryPurchasesAsync(
                     type
                 ) { billingResult: BillingResult, list: List<Purchase> ->
                     if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
@@ -631,7 +641,7 @@ class RNIapModule(
             override fun onHostResume() {}
             override fun onHostPause() {}
             override fun onHostDestroy() {
-                billingClient?.endConnection()
+                billingClientCache?.endConnection()
             }
         }
         reactContext.addLifecycleEventListener(lifecycleEventListener)
