@@ -607,9 +607,8 @@ class RNIapModule(
         // Keep: Required for RN built-in Event Emitter Calls.
     }
 
-    @get:ReactMethod
-    val packageName: String
-        get() = reactApplicationContext.packageName
+    @ReactMethod
+    fun getPackageName(promise: Promise) = promise.resolve(reactApplicationContext.packageName)
 
     private fun sendEvent(
         reactContext: ReactContext,

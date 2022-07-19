@@ -426,11 +426,13 @@ export const acknowledgePurchaseAndroid = (
  * @param {string} sku The product's SKU (on Android)
  * @returns {Promise<void>}
  */
-export const deepLinkToSubscriptionsAndroid = (sku: string): Promise<void> => {
+export const deepLinkToSubscriptionsAndroid = async (
+  sku: string,
+): Promise<void> => {
   checkNativeAndroidAvailable();
 
   return Linking.openURL(
-    `https://play.google.com/store/account/subscriptions?package=${RNIapModule.getPackageName()}&sku=${sku}`,
+    `https://play.google.com/store/account/subscriptions?package=${await RNIapModule.getPackageName()}&sku=${sku}`,
   );
 };
 
