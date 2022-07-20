@@ -58,7 +58,10 @@ class RNIapModule(
             val nested = PromiseImpl(
                 {
                     if (it.isNotEmpty() && it[0] is Boolean && it[0] as Boolean) {
-                        billingClientCache?.let(callback) ?: run {
+                        val connectedBillingClient = billingClientCache
+                        if (connectedBillingClient?.isReady == true) {
+                            callback(connectedBillingClient)
+                        } else {
                             promise.safeReject(DoobooUtils.E_NOT_PREPARED, "Unable to auto-initialize connection")
                         }
                     } else {
