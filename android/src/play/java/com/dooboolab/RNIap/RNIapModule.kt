@@ -98,7 +98,7 @@ class RNIapModule(
             return
         }
         billingClientCache = builder.setListener(this).build().also {
-            
+
             it.startConnection(
                 object : BillingClientStateListener {
                     override fun onBillingSetupFinished(billingResult: BillingResult) {
