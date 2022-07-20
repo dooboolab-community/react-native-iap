@@ -58,10 +58,7 @@ class RNIapModule(
             val nested = PromiseImpl(
                 {
                     if (it.isNotEmpty() && it[0] is Boolean && it[0] as Boolean) {
-                        val billingClient = billingClientCache
-                        if (billingClient != null) {
-                            callback(billingClient)
-                        } else {
+                        billingClientCache?.let(callback) ?: run {
                             promise.safeReject(DoobooUtils.E_NOT_PREPARED, "Unable to auto-initialize connection")
                         }
                     } else {
@@ -100,20 +97,21 @@ class RNIapModule(
             promise.safeResolve(true)
             return
         }
-        billingClientCache = builder.setListener(this).build()
+        billingClientCache = builder.setListener(this).build().also {
+            
+            it.startConnection(
+                object : BillingClientStateListener {
+                    override fun onBillingSetupFinished(billingResult: BillingResult) {
+                        if (!isValidResult(billingResult, promise)) return
 
-        billingClientCache?.startConnection(
-            object : BillingClientStateListener {
-                override fun onBillingSetupFinished(billingResult: BillingResult) {
-                    if (!isValidResult(billingResult, promise)) return
+                        promise.safeResolve(true)
+                    }
 
-                    promise.safeResolve(true)
-                }
-
-                override fun onBillingServiceDisconnected() {
-                    Log.i(TAG, "Billing service disconnected")
-                }
-            })
+                    override fun onBillingServiceDisconnected() {
+                        Log.i(TAG, "Billing service disconnected")
+                    }
+                })
+        }
     }
 
     @ReactMethod
