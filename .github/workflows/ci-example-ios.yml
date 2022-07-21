@@ -1,0 +1,35 @@
+name: Example iOS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'IapExample/ios/**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build_ios_example:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup kernel for react native, increase watchers
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Install base modules
+        run: yarn; yarn build
+      - name: Install modules
+        run: cd IapExample;yarn
+      - run: xcode-select -p
+      - run: pod install
+        working-directory: ios
+        name: Install pod dependencies
+      - name: Build iOS (debug)
+        run: "xcodebuild \
+          -workspace ios/IapExample.xcworkspace \
+          -scheme IapExample \
+          clean archive \
+          -sdk iphoneos \
+          -configuration Debug \
+          -UseModernBuildSystem=NO \
+          -archivePath $PWD/IapExample \
+          CODE_SIGNING_ALLOWED=NO"
