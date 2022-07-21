@@ -1,4 +1,4 @@
-name: Example iOS
+name: CI Example App iOS
 
 on:
   push:
@@ -17,10 +17,12 @@ jobs:
         run: yarn; yarn build
       - name: Install modules
         run: cd IapExample;yarn
+      - name: Change to ios folder
+        run: cd ios
+      - name: Xcode select
       - run: xcode-select -p
-      - run: pod install
-        working-directory: ios
-        name: Install pod dependencies
+      - name: Install pod dependencies
+        run: pod install
       - name: Build iOS (debug)
         run: "xcodebuild \
           -workspace ios/IapExample.xcworkspace \

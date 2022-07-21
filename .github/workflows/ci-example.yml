@@ -1,4 +1,4 @@
-name: CI Example
+name: CI Example App Android
 
 on:
   push:
