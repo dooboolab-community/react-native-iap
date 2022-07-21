@@ -100,20 +100,20 @@ class RNIapModule(
             promise.safeResolve(true)
             return
         }
-        billingClientCache = builder.setListener(this).build().also {
-
+        builder.setListener(this).build().also {
+            billingClientCache = it
             it.startConnection(
-                object : BillingClientStateListener {
-                    override fun onBillingSetupFinished(billingResult: BillingResult) {
-                        if (!isValidResult(billingResult, promise)) return
+            object : BillingClientStateListener {
+                override fun onBillingSetupFinished(billingResult: BillingResult) {
+                    if (!isValidResult(billingResult, promise)) return
 
-                        promise.safeResolve(true)
-                    }
+                    promise.safeResolve(true)
+                }
 
-                    override fun onBillingServiceDisconnected() {
-                        Log.i(TAG, "Billing service disconnected")
-                    }
-                })
+                override fun onBillingServiceDisconnected() {
+                    Log.i(TAG, "Billing service disconnected")
+                }
+            })
         }
     }
 
