@@ -72,6 +72,9 @@
 ### How do I handle promoted products in iOS?
 
 - Offical doc is [here](https://developer.apple.com/app-store/promoting-in-app-purchases/).
+
+#### Swift version
+
   Add the following to your `AppDelegate`. This will store the parameters and excecute the logic
 
 ````swift
@@ -92,8 +95,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         SKPaymentQueue.default().remove(RNIapQueue.shared)
     }
                 ....
-}```
+}
+````
 
+#### ObjC version
+
+Add into file AppDelegate.h:
+
+```objc
+@class RNIapQueue;
+````
+
+At the top of file AppDelegate.mm:
+
+```objc
+#import <StoreKit/StoreKit.h>
+#import <RNIap/RNIap-Swift.h>
+````
+
+
+Add into file AppDelegate.mm within your existing `didFinishLaunchingWithOptions` method:
+
+```objc
+[[SKPaymentQueue defaultQueue] addTransactionObserver:RNIapQueue.shared];
+````
+
+#### JavaScript
 
 Somewhere early in your app's lifecycle, add a listener for the `iap-promoted-product` event:
 
