@@ -28,6 +28,4 @@ jobs:
           clean archive \
           -sdk iphoneos \
           -configuration Debug \
-          -UseModernBuildSystem=NO \
-          -archivePath $PWD/IapExample \
           CODE_SIGNING_ALLOWED=NO"
