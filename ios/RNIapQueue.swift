@@ -10,12 +10,13 @@ import StoreKit
 
 // Temporarily stores payment information since it is sent by the OS before RN instantiates the RNModule
 @objc(RNIapQueue)
-class RNIapQueue: NSObject, SKPaymentTransactionObserver {
-    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+public class RNIapQueue: NSObject, SKPaymentTransactionObserver {
+    public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         //No-op
     }
     
-    static let shared = RNIapQueue()
+    @objc
+    public static let shared = RNIapQueue()
     
     var queue: SKPaymentQueue? = nil;
     var payment: SKPayment? = nil;

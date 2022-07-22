@@ -11,6 +11,11 @@ Pod::Spec.new do |s|
   s.platforms     = { :ios => "9.0", :tvos => "9.0" }
   s.source        = { :git => "https://github.com/dooboolab/react-native-iap.git", :tag => "#{s.version}" }
   s.source_files  = "ios/*.{h,m,swift}"
+  s.script_phase = {
+    :name => 'Copy Swift Header',
+    :script => 'ditto "${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h" "${PODS_ROOT}/Headers/Public/${PRODUCT_MODULE_NAME}/${PRODUCT_MODULE_NAME}-Swift.h"',
+    :execution_position => :after_compile 
+  }
   s.swift_version = "4.2"
   s.requires_arc  = true
 
