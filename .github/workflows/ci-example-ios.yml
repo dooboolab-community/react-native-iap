@@ -20,7 +20,7 @@ jobs:
       - name: Change to ios folder
         run: cd ios
       - name: Xcode select
-      - run: xcode-select -p
+        run: xcode-select -p
       - name: Install pod dependencies
         run: pod install
       - name: Build iOS (debug)
