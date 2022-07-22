@@ -11,6 +11,7 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.ReadableType
 import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
 import com.google.android.gms.common.ConnectionResult
@@ -55,9 +56,13 @@ class RNIapModuleTest {
 
     @Test
     fun `initConnection Already connected should resolve to true`() {
-        every { billingClient.isReady } returns true
-        val promise = mockk<Promise>(relaxed = true)
+        every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
+        module.initConnection(mockk())
 
+        every { billingClient.isReady } returns true
+
+        val promise = mockk<Promise>(relaxed = true)
+        // Already connected
         module.initConnection(promise)
         verify(exactly = 0) { promise.reject(any(), any<String>()) }
         verify { promise.resolve(true) }
@@ -112,8 +117,10 @@ class RNIapModuleTest {
 
     @Test
     fun `endConnection resolves`() {
+        every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
         val promise = mockk<Promise>(relaxed = true)
 
+        module.initConnection(mockk())
         module.endConnection(promise)
 
         verify { billingClient.endConnection() }
@@ -123,12 +130,14 @@ class RNIapModuleTest {
 
     @Test
     fun `flushFailedPurchasesCachedAsPending resolves to false if no pending purchases`() {
+        every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
         every { billingClient.isReady } returns true
         val promise = mockk<Promise>(relaxed = true)
         val listener = slot<PurchasesResponseListener>()
         every { billingClient.queryPurchasesAsync(any(), capture(listener)) } answers {
             listener.captured.onQueryPurchasesResponse(BillingResult.newBuilder().build(), listOf())
         }
+        module.initConnection(mockk())
         module.flushFailedPurchasesCachedAsPending(promise)
 
         verify(exactly = 0) { promise.reject(any(), any<String>()) }
@@ -137,6 +146,7 @@ class RNIapModuleTest {
 
     @Test
     fun `flushFailedPurchasesCachedAsPending resolves to true if pending purchases`() {
+        every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
         every { billingClient.isReady } returns true
         val promise = mockk<Promise>(relaxed = true)
         val listener = slot<PurchasesResponseListener>()
@@ -161,7 +171,7 @@ class RNIapModuleTest {
                 ""
             )
         }
-
+        module.initConnection(mockk())
         module.flushFailedPurchasesCachedAsPending(promise)
 
         verify(exactly = 0) { promise.reject(any(), any<String>()) }
@@ -173,12 +183,20 @@ class RNIapModuleTest {
         every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
         val promise = mockk<Promise>(relaxed = true)
         var isCallbackCalled = false
-        val callback = {
+        val callback = { _: BillingClient ->
             isCallbackCalled = true
             promise.resolve(true)
         }
 
-        every { billingClient.isReady } returns false andThen true
+        every { billingClient.isReady } returns true
+        val listener = slot<BillingClientStateListener>()
+        every { billingClient.startConnection(capture(listener)) } answers {
+            listener.captured.onBillingSetupFinished(
+                BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.OK)
+                    .build()
+            )
+        }
+
         module.ensureConnection(promise, callback)
         verify { promise.resolve(true) } // at least one pending transactions
         assertTrue("Should call callback", isCallbackCalled)
@@ -186,6 +204,7 @@ class RNIapModuleTest {
 
     @Test
     fun getItemsByType() {
+        every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
         every { billingClient.isReady } returns true
         val promise = mockk<Promise>(relaxed = true)
         val listener = slot<SkuDetailsResponseListener>()
@@ -219,6 +238,7 @@ class RNIapModuleTest {
         val skus = mockk<ReadableArray>() {
             every { size() } returns 1
             every { getString(0) } returns "sku0"
+            every { getType(0) } returns ReadableType.String
         }
         mockkStatic(Arguments::class)
 
@@ -231,7 +251,7 @@ class RNIapModuleTest {
         every { itemsArr.pushMap(any()) } answers {
             itemsSize++
         }
-
+        module.initConnection(mockk())
         module.getItemsByType("subs", skus, promise)
         verify { promise.resolve(any()) }
         assertEquals(itemsSize, 1)
