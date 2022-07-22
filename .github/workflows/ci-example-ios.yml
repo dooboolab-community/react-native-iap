@@ -22,8 +22,8 @@ jobs:
       - name: Install pod dependencies
         run: cd IapExample/ios && pod install
       - name: Build iOS (debug)
-        run: "xcodebuild \
-          -workspace ios/IapExample.xcworkspace \
+        run: "cd IapExample/ios && xcodebuild \
+          -workspace IapExample.xcworkspace \
           -scheme IapExample \
           clean archive \
           -sdk iphoneos \
