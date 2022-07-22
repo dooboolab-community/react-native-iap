@@ -18,7 +18,7 @@ jobs:
       - name: Install modules
         run: cd IapExample;yarn
       - name: Change to ios folder
-        run: cd ios
+        run: cd IapExample/ios
       - name: Xcode select
         run: xcode-select -p
       - name: Install pod dependencies
