@@ -1,0 +1,31 @@
+name: CI Example App iOS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'IapExample/ios/**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build_ios_example:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install base modules
+        run: yarn; yarn build
+      - name: Install modules
+        run: cd IapExample;yarn
+      - name: Xcode select
+        run: xcode-select -p
+      - name: Install pod dependencies
+        run: cd IapExample/ios && pod install
+      - name: Build iOS (debug)
+        run: "cd IapExample/ios && xcodebuild \
+          -workspace IapExample.xcworkspace \
+          -scheme IapExample \
+          clean archive \
+          -sdk iphoneos \
+          -configuration Debug \
+          CODE_SIGNING_ALLOWED=NO"

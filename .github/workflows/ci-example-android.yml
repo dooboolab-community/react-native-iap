@@ -1,10 +1,10 @@
-name: CI Example
+name: CI Example App Android
 
 on:
   push:
     branches: [main]
     paths:
-      - 'IapExample/**'
+      - 'IapExample/android/**'
   pull_request:
     types: [opened, synchronize, reopened]
 
