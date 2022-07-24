@@ -1,13 +1,52 @@
 package com.dooboolab.RNIap
 
-import android.util.Log
-import com.android.billingclient.api.BillingClient
 import com.facebook.react.bridge.Promise
+import com.android.billingclient.api.BillingClient
+import com.dooboolab.RNIap.DoobooUtils
+import android.util.Log
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContextBaseJavaModule
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.facebook.react.bridge.ReactContext
+import com.android.billingclient.api.SkuDetails
+import com.facebook.react.bridge.ReactMethod
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.common.ConnectionResult
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingResult
+import com.facebook.react.bridge.ObjectAlreadyConsumedException
+import java.lang.Exception
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.ConsumeParams
+import com.android.billingclient.api.ConsumeResponseListener
+import com.facebook.react.bridge.WritableNativeArray
+import com.android.billingclient.api.PurchasesResponseListener
+import java.util.ArrayList
+import com.facebook.react.bridge.ReadableArray
+import com.android.billingclient.api.SkuDetailsParams
+import com.android.billingclient.api.SkuDetailsResponseListener
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.WritableNativeMap
+import com.android.billingclient.api.PurchaseHistoryResponseListener
+import com.android.billingclient.api.PurchaseHistoryRecord
+import com.facebook.react.bridge.WritableArray
+import android.app.Activity
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams
+import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener
+import com.android.billingclient.api.AccountIdentifiers
+import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
+import com.facebook.react.bridge.LifecycleEventListener
+import com.facebook.react.ReactPackage
+import com.facebook.react.bridge.JavaScriptModule
+import com.facebook.react.bridge.NativeModule
 
 class PlayUtils {
     fun rejectPromiseWithBillingError(promise: Promise, responseCode: Int) {
         val errorData = getBillingResponseData(responseCode)
-        promise.safeReject(errorData[0], errorData[1])
+        promise.reject(errorData[0], errorData[1])
     }
 
     fun getBillingResponseData(responseCode: Int): Array<String?> {
@@ -49,7 +88,7 @@ class PlayUtils {
             }
             BillingClient.BillingResponseCode.ERROR -> {
                 errorData[0] = DoobooUtils.E_UNKNOWN
-                errorData[1] = "An unknown or unexpected error has occurred. Please try again later."
+                errorData[1] = "An unknown or unexpected error has occured. Please try again later."
             }
             BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
                 errorData[0] = DoobooUtils.E_ALREADY_OWNED

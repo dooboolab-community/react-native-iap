@@ -1,127 +1,134 @@
 package com.dooboolab.RNIap
 
-import android.util.Log
-import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.facebook.react.bridge.Promise
 import com.android.billingclient.api.BillingClient
+import com.dooboolab.RNIap.DoobooUtils
+import android.util.Log
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContextBaseJavaModule
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.facebook.react.bridge.ReactContext
+import com.android.billingclient.api.SkuDetails
+import com.facebook.react.bridge.ReactMethod
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.common.ConnectionResult
 import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams
 import com.android.billingclient.api.BillingResult
+import com.facebook.react.bridge.ObjectAlreadyConsumedException
+import java.lang.Exception
+import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.ConsumeResponseListener
-import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.SkuDetails
-import com.android.billingclient.api.SkuDetailsParams
-import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.LifecycleEventListener
-import com.facebook.react.bridge.Promise
-import com.facebook.react.bridge.PromiseImpl
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.ReadableType
-import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeArray
-import com.facebook.react.bridge.WritableNativeMap
-import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
-import java.math.BigDecimal
+import com.android.billingclient.api.PurchasesResponseListener
 import java.util.ArrayList
+import com.facebook.react.bridge.ReadableArray
+import com.android.billingclient.api.SkuDetailsParams
+import com.android.billingclient.api.SkuDetailsResponseListener
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.WritableNativeMap
+import com.android.billingclient.api.PurchaseHistoryResponseListener
+import com.android.billingclient.api.PurchaseHistoryRecord
+import com.facebook.react.bridge.WritableArray
+import android.app.Activity
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams
+import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener
+import com.android.billingclient.api.AccountIdentifiers
+import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
+import com.facebook.react.bridge.LifecycleEventListener
+import com.facebook.react.ReactPackage
+import com.facebook.react.bridge.JavaScriptModule
+import com.facebook.react.bridge.NativeModule
+import java.math.BigDecimal
 
-class RNIapModule(
-    private val reactContext: ReactApplicationContext,
-    private val builder: BillingClient.Builder = BillingClient.newBuilder(reactContext).enablePendingPurchases(),
-    private val googleApiAvailability: GoogleApiAvailability = GoogleApiAvailability.getInstance()
-) :
-    ReactContextBaseJavaModule(reactContext),
+class RNIapModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext),
     PurchasesUpdatedListener {
-
+    val TAG = "RNIapModule"
+    private val reactContext: ReactContext
     private var billingClientCache: BillingClient? = null
-    private val skus: MutableMap<String, SkuDetails> = mutableMapOf()
+    private val skus: MutableList<SkuDetails>
     override fun getName(): String {
-        return TAG
+        return "RNIapModule"
     }
 
-    internal fun ensureConnection(
-        promise: Promise,
-        callback: (billingClient: BillingClient) -> Unit
-    ) {
+    private interface EnsureConnectionCallback {
+        fun run(billingClient: BillingClient)
+    }
+
+    private fun ensureConnection(promise: Promise, callback: EnsureConnectionCallback) {
         val billingClient = billingClientCache
-        if (billingClient?.isReady == true) {
-            callback(billingClient)
+        if (billingClient != null && billingClient.isReady) {
+            callback.run(billingClient)
             return
-        } else {
-            val nested = PromiseImpl(
-                {
-                    if (it.isNotEmpty() && it[0] is Boolean && it[0] as Boolean) {
-                        val connectedBillingClient = billingClientCache
-                        if (connectedBillingClient?.isReady == true) {
-                            callback(connectedBillingClient)
-                        } else {
-                            promise.safeReject(DoobooUtils.E_NOT_PREPARED, "Unable to auto-initialize connection")
-                        }
-                    } else {
-                        Log.i(TAG, "Incorrect parameter in resolve")
-                    }
-                },
-                {
-                    if (it.size > 1 && it[0] is String && it[1] is String) {
-                        promise.safeReject(
-                            it[0] as String, it[1] as String
-                        )
-                    } else {
-                        Log.i(TAG, "Incorrect parameters in reject")
-                    }
-                }
-            )
-            initConnection(nested)
         }
+        promise.reject(DoobooUtils.E_NOT_PREPARED, "Not initialized, Please call initConnection()")
     }
 
     @ReactMethod
     fun initConnection(promise: Promise) {
-        if (googleApiAvailability.isGooglePlayServicesAvailable(reactContext)
-            != ConnectionResult.SUCCESS
-        ) {
-            Log.i(TAG, "Google Play Services are not available on this device")
-            promise.safeReject(DoobooUtils.E_NOT_PREPARED, "Google Play Services are not available on this device")
-            return
-        }
-
-        if (billingClientCache?.isReady == true) {
+        if (billingClientCache != null) {
             Log.i(
                 TAG,
                 "Already initialized, you should only call initConnection() once when your app starts"
             )
-            promise.safeResolve(true)
+            promise.resolve(true)
             return
         }
-        builder.setListener(this).build().also {
-            billingClientCache = it
-            it.startConnection(
-                object : BillingClientStateListener {
-                    override fun onBillingSetupFinished(billingResult: BillingResult) {
-                        if (!isValidResult(billingResult, promise)) return
-
-                        promise.safeResolve(true)
-                    }
-
-                    override fun onBillingServiceDisconnected() {
-                        Log.i(TAG, "Billing service disconnected")
-                    }
-                })
+        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(reactContext)
+            != ConnectionResult.SUCCESS
+        ) {
+            Log.i(TAG, "Google Play Services are not available on this device")
+            promise.resolve(false)
+            return
         }
+        billingClientCache =
+            BillingClient.newBuilder(reactContext).enablePendingPurchases().setListener(this)
+                .build()
+        billingClientCache!!.startConnection(
+            object : BillingClientStateListener {
+                override fun onBillingSetupFinished(billingResult: BillingResult) {
+                    val responseCode = billingResult.responseCode
+                    try {
+                        if (responseCode == BillingClient.BillingResponseCode.OK) {
+                            promise.resolve(true)
+                        } else {
+                            PlayUtils.instance
+                                .rejectPromiseWithBillingError(promise, responseCode)
+                        }
+                    } catch (oce: ObjectAlreadyConsumedException) {
+                        Log.e(TAG, oce.message!!)
+                    }
+                }
+
+                override fun onBillingServiceDisconnected() {
+                    try {
+                        promise.reject("initConnection", "Billing service disconnected")
+                    } catch (oce: ObjectAlreadyConsumedException) {
+                        Log.e(TAG, oce.message!!)
+                    }
+                }
+            })
     }
 
     @ReactMethod
     fun endConnection(promise: Promise) {
-        billingClientCache?.endConnection()
-        billingClientCache = null
-        promise.safeResolve(true)
+        if (billingClientCache != null) {
+            billingClientCache = try {
+                billingClientCache!!.endConnection()
+                null
+            } catch (e: Exception) {
+                promise.reject("endConnection", e.message)
+                return
+            }
+        }
+        try {
+            promise.resolve(true)
+        } catch (oce: ObjectAlreadyConsumedException) {
+            Log.e(TAG, oce.message!!)
+        }
     }
 
     private fun consumeItems(
@@ -131,224 +138,245 @@ class RNIapModule(
     ) {
         for (purchase in purchases) {
             ensureConnection(
-                promise
-            ) { billingClient ->
-                val consumeParams =
-                    ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken)
-                        .build()
-                val listener =
-                    ConsumeResponseListener { billingResult: BillingResult, outToken: String? ->
-                        if (billingResult.responseCode != expectedResponseCode) {
-                            PlayUtils.instance
-                                .rejectPromiseWithBillingError(
-                                    promise,
-                                    billingResult.responseCode
-                                )
-                            return@ConsumeResponseListener
-                        }
-
-                        promise.safeResolve(true)
+                promise,
+                object : EnsureConnectionCallback {
+                    override fun run(billingClient: BillingClient) {
+                        val consumeParams =
+                            ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken)
+                                .build()
+                        val listener =
+                            ConsumeResponseListener { billingResult: BillingResult, outToken: String? ->
+                                if (billingResult.responseCode != expectedResponseCode) {
+                                    PlayUtils.instance
+                                        .rejectPromiseWithBillingError(
+                                            promise,
+                                            billingResult.responseCode
+                                        )
+                                    return@ConsumeResponseListener
+                                }
+                                try {
+                                    promise.resolve(true)
+                                } catch (oce: ObjectAlreadyConsumedException) {
+                                    promise.reject(oce.message)
+                                }
+                            }
+                        billingClient.consumeAsync(consumeParams, listener)
                     }
-                billingClient.consumeAsync(consumeParams, listener)
-            }
+                })
         }
     }
 
     @ReactMethod
     fun flushFailedPurchasesCachedAsPending(promise: Promise) {
         ensureConnection(
-            promise
-        ) { billingClient ->
-            billingClient.queryPurchasesAsync(
-                BillingClient.SkuType.INAPP
-            ) { billingResult: BillingResult, list: List<Purchase>? ->
-                if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
-                if (list == null) {
-                    // No purchases found
-                    promise.safeResolve(false)
-                    return@queryPurchasesAsync
+            promise,
+            object : EnsureConnectionCallback {
+                override fun run(billingClient: BillingClient) {
+                    val array = WritableNativeArray()
+                    billingClient.queryPurchasesAsync(
+                        BillingClient.SkuType.INAPP
+                    ) { billingResult: BillingResult?, list: List<Purchase>? ->
+                        if (list == null) {
+                            // No purchases found
+                            promise.resolve(false)
+                            return@queryPurchasesAsync
+                        }
+                        val pendingPurchases: MutableList<Purchase> = ArrayList()
+                        for (purchase in list) {
+                            // we only want to try to consume PENDING items, in order to force cache-refresh
+                            // for
+                            // them
+                            if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
+                                pendingPurchases.add(purchase)
+                            }
+                        }
+                        if (pendingPurchases.size == 0) {
+                            promise.resolve(false)
+                            return@queryPurchasesAsync
+                        }
+                        consumeItems(
+                            pendingPurchases,
+                            promise,
+                            BillingClient.BillingResponseCode.ITEM_NOT_OWNED
+                        )
+                    }
                 }
-                // we only want to try to consume PENDING items, in order to force cache-refresh
-                // for  them
-                val pendingPurchases = list.filter { it.purchaseState == Purchase.PurchaseState.PENDING }
-
-                if (pendingPurchases.isEmpty()) {
-                    promise.safeResolve(false)
-                    return@queryPurchasesAsync
-                }
-                consumeItems(
-                    pendingPurchases,
-                    promise,
-                    BillingClient.BillingResponseCode.ITEM_NOT_OWNED
-                )
-            }
-        }
+            })
     }
 
     @ReactMethod
-    fun getItemsByType(type: String, skuArr: ReadableArray, promise: Promise) {
+    fun getItemsByType(type: String?, skuArr: ReadableArray, promise: Promise) {
         ensureConnection(
-            promise
-        ) { billingClient ->
-            val skuList = ArrayList<String>()
-            for (i in 0 until skuArr.size()) {
-                if (skuArr.getType(i) == ReadableType.String) {
-                    val sku = skuArr.getString(i)
-                    skuList.add(sku)
-                }
-            }
-            val params = SkuDetailsParams.newBuilder()
-            params.setSkusList(skuList).setType(type)
-            billingClient.querySkuDetailsAsync(
-                params.build()
-            ) { billingResult: BillingResult, skuDetailsList: List<SkuDetails>? ->
-                if (!isValidResult(billingResult, promise)) return@querySkuDetailsAsync
-
-                val items = Arguments.createArray()
-                if (skuDetailsList != null) {
-                    for (skuDetails in skuDetailsList) {
-                        skus[skuDetails.sku] = skuDetails
-
-                        val item = Arguments.createMap()
-                        item.putString("productId", skuDetails.sku)
-                        val introductoryPriceMicros = skuDetails.introductoryPriceAmountMicros
-                        val priceAmountMicros = skuDetails.priceAmountMicros
-                        // Use valueOf instead of constructors.
-                        // See:
-                        // https://www.javaworld.com/article/2073176/caution--double-to-bigdecimal-in-java.html
-                        val priceAmount = BigDecimal.valueOf(priceAmountMicros)
-                        val introductoryPriceAmount =
-                            BigDecimal.valueOf(introductoryPriceMicros)
-                        val microUnitsDivisor = BigDecimal.valueOf(1000000)
-                        val price = priceAmount.divide(microUnitsDivisor).toString()
-                        val introductoryPriceAsAmountAndroid =
-                            introductoryPriceAmount.divide(microUnitsDivisor).toString()
-                        item.putString("price", price)
-                        item.putString("currency", skuDetails.priceCurrencyCode)
-                        item.putString("type", skuDetails.type)
-                        item.putString("localizedPrice", skuDetails.price)
-                        item.putString("title", skuDetails.title)
-                        item.putString("description", skuDetails.description)
-                        item.putString("introductoryPrice", skuDetails.introductoryPrice)
-                        item.putString("typeAndroid", skuDetails.type)
-                        item.putString("packageNameAndroid", skuDetails.zzc())
-                        item.putString("originalPriceAndroid", skuDetails.originalPrice)
-                        item.putString(
-                            "subscriptionPeriodAndroid",
-                            skuDetails.subscriptionPeriod
-                        )
-                        item.putString("freeTrialPeriodAndroid", skuDetails.freeTrialPeriod)
-                        item.putString(
-                            "introductoryPriceCyclesAndroid",
-                            skuDetails.introductoryPriceCycles.toString()
-                        )
-                        item.putString(
-                            "introductoryPricePeriodAndroid", skuDetails.introductoryPricePeriod
-                        )
-                        item.putString(
-                            "introductoryPriceAsAmountAndroid", introductoryPriceAsAmountAndroid
-                        )
-                        item.putString("iconUrl", skuDetails.iconUrl)
-                        item.putString("originalJson", skuDetails.originalJson)
-                        val originalPriceAmountMicros =
-                            BigDecimal.valueOf(skuDetails.originalPriceAmountMicros)
-                        val originalPrice =
-                            originalPriceAmountMicros.divide(microUnitsDivisor).toString()
-                        item.putString("originalPrice", originalPrice)
-                        items.pushMap(item)
+            promise,
+            object : EnsureConnectionCallback {
+                override fun run(billingClient: BillingClient) {
+                    val skuList = ArrayList<String?>()
+                    for (i in 0 until skuArr.size()) {
+                        skuList.add(skuArr.getString(i))
+                    }
+                    val params = SkuDetailsParams.newBuilder()
+                    params.setSkusList(skuList).setType(type!!)
+                    billingClient.querySkuDetailsAsync(
+                        params.build()
+                    ) { billingResult: BillingResult, skuDetailsList: List<SkuDetails>? ->
+                        Log.d(TAG, "responseCode: " + billingResult.responseCode)
+                        if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+                            PlayUtils.instance
+                                .rejectPromiseWithBillingError(promise, billingResult.responseCode)
+                            return@querySkuDetailsAsync
+                        }
+                        if (skuDetailsList != null) {
+                            for (sku in skuDetailsList) {
+                                if (!skus.contains(sku)) {
+                                    skus.add(sku)
+                                }
+                            }
+                        }
+                        val items = WritableNativeArray()
+                        for (skuDetails in skuDetailsList!!) {
+                            val item = Arguments.createMap()
+                            item.putString("productId", skuDetails.sku)
+                            val introductoryPriceMicros = skuDetails.introductoryPriceAmountMicros
+                            val priceAmountMicros = skuDetails.priceAmountMicros
+                            // Use valueOf instead of constructors.
+                            // See:
+                            // https://www.javaworld.com/article/2073176/caution--double-to-bigdecimal-in-java.html
+                            val priceAmount = BigDecimal.valueOf(priceAmountMicros)
+                            val introductoryPriceAmount =
+                                BigDecimal.valueOf(introductoryPriceMicros)
+                            val microUnitsDivisor = BigDecimal.valueOf(1000000)
+                            val price = priceAmount.divide(microUnitsDivisor).toString()
+                            val introductoryPriceAsAmountAndroid =
+                                introductoryPriceAmount.divide(microUnitsDivisor).toString()
+                            item.putString("price", price)
+                            item.putString("currency", skuDetails.priceCurrencyCode)
+                            item.putString("type", skuDetails.type)
+                            item.putString("localizedPrice", skuDetails.price)
+                            item.putString("title", skuDetails.title)
+                            item.putString("description", skuDetails.description)
+                            item.putString("introductoryPrice", skuDetails.introductoryPrice)
+                            item.putString("typeAndroid", skuDetails.type)
+                            item.putString("packageNameAndroid", skuDetails.zzc())
+                            item.putString("originalPriceAndroid", skuDetails.originalPrice)
+                            item.putString(
+                                "subscriptionPeriodAndroid",
+                                skuDetails.subscriptionPeriod
+                            )
+                            item.putString("freeTrialPeriodAndroid", skuDetails.freeTrialPeriod)
+                            item.putString(
+                                "introductoryPriceCyclesAndroid",
+                                skuDetails.introductoryPriceCycles.toString()
+                            )
+                            item.putString(
+                                "introductoryPricePeriodAndroid", skuDetails.introductoryPricePeriod
+                            )
+                            item.putString(
+                                "introductoryPriceAsAmountAndroid", introductoryPriceAsAmountAndroid
+                            )
+                            item.putString("iconUrl", skuDetails.iconUrl)
+                            item.putString("originalJson", skuDetails.originalJson)
+                            val originalPriceAmountMicros =
+                                BigDecimal.valueOf(skuDetails.originalPriceAmountMicros)
+                            val originalPrice =
+                                originalPriceAmountMicros.divide(microUnitsDivisor).toString()
+                            item.putString("originalPrice", originalPrice)
+                            items.pushMap(item)
+                        }
+                        try {
+                            promise.resolve(items)
+                        } catch (oce: ObjectAlreadyConsumedException) {
+                            Log.e(TAG, oce.message!!)
+                        }
                     }
                 }
-                promise.safeResolve(items)
-            }
-        }
-    }
-
-    /**
-     * Rejects promise with billing code if BillingResult is not OK
-     */
-    private fun isValidResult(
-        billingResult: BillingResult,
-        promise: Promise
-    ): Boolean {
-        Log.d(TAG, "responseCode: " + billingResult.responseCode)
-        if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
-            PlayUtils.instance
-                .rejectPromiseWithBillingError(promise, billingResult.responseCode)
-            return false
-        }
-        return true
+            })
     }
 
     @ReactMethod
     fun getAvailableItemsByType(type: String, promise: Promise) {
         ensureConnection(
-            promise
-        ) { billingClient ->
-            val items = WritableNativeArray()
-            billingClient.queryPurchasesAsync(
-                if (type == "subs") BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
-            ) { billingResult: BillingResult, purchases: List<Purchase>? ->
-                if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
-                if (purchases != null) {
-                    for (i in purchases.indices) {
-                        val purchase = purchases[i]
-                        val item = WritableNativeMap()
-                        item.putString("productId", purchase.skus[0])
-                        item.putString("transactionId", purchase.orderId)
-                        item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
-                        item.putString("transactionReceipt", purchase.originalJson)
-                        item.putString("orderId", purchase.orderId)
-                        item.putString("purchaseToken", purchase.purchaseToken)
-                        item.putString("developerPayloadAndroid", purchase.developerPayload)
-                        item.putString("signatureAndroid", purchase.signature)
-                        item.putInt("purchaseStateAndroid", purchase.purchaseState)
-                        item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged)
-                        item.putString("packageNameAndroid", purchase.packageName)
-                        item.putString(
-                            "obfuscatedAccountIdAndroid",
-                            purchase.accountIdentifiers?.obfuscatedAccountId
-                        )
-                        item.putString(
-                            "obfuscatedProfileIdAndroid",
-                            purchase.accountIdentifiers?.obfuscatedProfileId
-                        )
-                        if (type == BillingClient.SkuType.SUBS) {
-                            item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing)
+            promise,
+            object : EnsureConnectionCallback {
+                override fun run(billingClient: BillingClient) {
+                    val items = WritableNativeArray()
+                    billingClient.queryPurchasesAsync(
+                        if (type == "subs") BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
+                    ) { billingResult: BillingResult?, purchases: List<Purchase>? ->
+                        if (purchases != null) {
+                            for (i in purchases.indices) {
+                                val purchase = purchases[i]
+                                val item = WritableNativeMap()
+                                item.putString("productId", purchase.skus[0])
+                                item.putString("transactionId", purchase.orderId)
+                                item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
+                                item.putString("transactionReceipt", purchase.originalJson)
+                                item.putString("orderId", purchase.orderId)
+                                item.putString("purchaseToken", purchase.purchaseToken)
+                                item.putString("developerPayloadAndroid", purchase.developerPayload)
+                                item.putString("signatureAndroid", purchase.signature)
+                                item.putInt("purchaseStateAndroid", purchase.purchaseState)
+                                item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged)
+                                item.putString("packageNameAndroid", purchase.packageName)
+                                item.putString(
+                                    "obfuscatedAccountIdAndroid",
+                                    purchase.accountIdentifiers!!.obfuscatedAccountId
+                                )
+                                item.putString(
+                                    "obfuscatedProfileIdAndroid",
+                                    purchase.accountIdentifiers!!.obfuscatedProfileId
+                                )
+                                if (type == BillingClient.SkuType.SUBS) {
+                                    item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing)
+                                }
+                                items.pushMap(item)
+                            }
                         }
-                        items.pushMap(item)
+                        try {
+                            promise.resolve(items)
+                        } catch (oce: ObjectAlreadyConsumedException) {
+                            Log.e(TAG, oce.message!!)
+                        }
                     }
                 }
-                promise.safeResolve(items)
-            }
-        }
+            })
     }
 
     @ReactMethod
     fun getPurchaseHistoryByType(type: String, promise: Promise) {
         ensureConnection(
-            promise
-        ) { billingClient ->
-            billingClient.queryPurchaseHistoryAsync(
-                if (type == "subs") BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
-            ) { billingResult, purchaseHistoryRecordList ->
-                if (!isValidResult(billingResult, promise)) return@queryPurchaseHistoryAsync
-
-                Log.d(TAG, purchaseHistoryRecordList.toString())
-                val items = Arguments.createArray()
-                purchaseHistoryRecordList?.forEach { purchase ->
-                    val item = Arguments.createMap()
-                    item.putString("productId", purchase.skus[0])
-                    item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
-                    item.putString("transactionReceipt", purchase.originalJson)
-                    item.putString("purchaseToken", purchase.purchaseToken)
-                    item.putString("dataAndroid", purchase.originalJson)
-                    item.putString("signatureAndroid", purchase.signature)
-                    item.putString("developerPayload", purchase.developerPayload)
-                    items.pushMap(item)
+            promise,
+            object : EnsureConnectionCallback {
+                override fun run(billingClient: BillingClient) {
+                    billingClient.queryPurchaseHistoryAsync(
+                        if (type == "subs") BillingClient.SkuType.SUBS else BillingClient.SkuType.INAPP
+                    ) { billingResult, purchaseHistoryRecordList ->
+                        if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+                            PlayUtils.instance
+                                .rejectPromiseWithBillingError(promise, billingResult.responseCode)
+                            return@queryPurchaseHistoryAsync
+                        }
+                        Log.d(TAG, purchaseHistoryRecordList.toString())
+                        val items = Arguments.createArray()
+                        for (i in purchaseHistoryRecordList!!.indices) {
+                            val item = Arguments.createMap()
+                            val purchase = purchaseHistoryRecordList[i]
+                            item.putString("productId", purchase.skus[0])
+                            item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
+                            item.putString("transactionReceipt", purchase.originalJson)
+                            item.putString("purchaseToken", purchase.purchaseToken)
+                            item.putString("dataAndroid", purchase.originalJson)
+                            item.putString("signatureAndroid", purchase.signature)
+                            item.putString("developerPayload", purchase.developerPayload)
+                            items.pushMap(item)
+                        }
+                        try {
+                            promise.resolve(items)
+                        } catch (oce: ObjectAlreadyConsumedException) {
+                            Log.e(TAG, oce.message!!)
+                        }
+                    }
                 }
-                promise.safeResolve(items)
-            }
-        }
+            })
     }
 
     @ReactMethod
@@ -363,162 +391,174 @@ class RNIapModule(
     ) {
         val activity = currentActivity
         if (activity == null) {
-            promise.safeReject(DoobooUtils.E_UNKNOWN, "getCurrentActivity returned null")
+            promise.reject(DoobooUtils.E_UNKNOWN, "getCurrentActivity returned null")
             return
         }
         ensureConnection(
-            promise
-        ) { billingClient ->
-            DoobooUtils.instance.addPromiseForKey(
-                PROMISE_BUY_ITEM, promise
-            )
-            val builder = BillingFlowParams.newBuilder()
-            val selectedSku: SkuDetails? = skus[sku]
-            if (selectedSku == null) {
-                val debugMessage =
-                    "The sku was not found. Please fetch products first by calling getItems"
-                val error = Arguments.createMap()
-                error.putString("debugMessage", debugMessage)
-                error.putString("code", PROMISE_BUY_ITEM)
-                error.putString("message", debugMessage)
-                error.putString("productId", sku)
-                sendEvent(reactContext, "purchase-error", error)
-                promise.safeReject(PROMISE_BUY_ITEM, debugMessage)
-                return@ensureConnection
-            }
-            builder.setSkuDetails(selectedSku)
-            val subscriptionUpdateParamsBuilder = SubscriptionUpdateParams.newBuilder()
-            if (purchaseToken != null) {
-                subscriptionUpdateParamsBuilder.setOldSkuPurchaseToken(purchaseToken)
-            }
-            if (obfuscatedAccountId != null) {
-                builder.setObfuscatedAccountId(obfuscatedAccountId)
-            }
-            if (obfuscatedProfileId != null) {
-                builder.setObfuscatedProfileId(obfuscatedProfileId)
-            }
-            if (prorationMode != null && prorationMode != -1) {
-                if (prorationMode
-                    == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE
-                ) {
-                    subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
-                        BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE
+            promise,
+            object : EnsureConnectionCallback {
+                override fun run(billingClient: BillingClient) {
+                    DoobooUtils.instance.addPromiseForKey(
+                        PROMISE_BUY_ITEM, promise
                     )
-                    if (type != BillingClient.SkuType.SUBS) {
+                    val builder = BillingFlowParams.newBuilder()
+                    var selectedSku: SkuDetails? = null
+                    for (skuDetail in skus) {
+                        if (skuDetail.sku == sku) {
+                            selectedSku = skuDetail
+                            break
+                        }
+                    }
+                    if (selectedSku == null) {
                         val debugMessage =
-                            (
-                                "IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in" +
-                                    " subscription purchase."
-                                )
+                            "The sku was not found. Please fetch products first by calling getItems"
                         val error = Arguments.createMap()
                         error.putString("debugMessage", debugMessage)
                         error.putString("code", PROMISE_BUY_ITEM)
                         error.putString("message", debugMessage)
                         error.putString("productId", sku)
                         sendEvent(reactContext, "purchase-error", error)
-                        promise.safeReject(PROMISE_BUY_ITEM, debugMessage)
-                        return@ensureConnection
+                        promise.reject(PROMISE_BUY_ITEM, debugMessage)
+                        return
                     }
-                } else if (prorationMode
-                    == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION
-                ) {
-                    subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
-                        BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION
-                    )
-                } else if (prorationMode == BillingFlowParams.ProrationMode.DEFERRED) {
-                    subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
-                        BillingFlowParams.ProrationMode.DEFERRED
-                    )
-                } else if (prorationMode
-                    == BillingFlowParams.ProrationMode.IMMEDIATE_WITH_TIME_PRORATION
-                ) {
-                    subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
-                        BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION
-                    )
-                } else if (prorationMode
-                    == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE
-                ) {
-                    subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
-                        BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE
-                    )
-                } else {
-                    subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
-                        BillingFlowParams.ProrationMode.UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY
-                    )
+                    builder.setSkuDetails(selectedSku)
+                    val subscriptionUpdateParamsBuilder = SubscriptionUpdateParams.newBuilder()
+                    if (purchaseToken != null) {
+                        subscriptionUpdateParamsBuilder.setOldSkuPurchaseToken(purchaseToken)
+                    }
+                    if (obfuscatedAccountId != null) {
+                        builder.setObfuscatedAccountId(obfuscatedAccountId)
+                    }
+                    if (obfuscatedProfileId != null) {
+                        builder.setObfuscatedProfileId(obfuscatedProfileId)
+                    }
+                    if (prorationMode != null && prorationMode != -1) {
+                        if (prorationMode
+                            == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE
+                        ) {
+                            subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
+                                BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE
+                            )
+                            if (type != BillingClient.SkuType.SUBS) {
+                                val debugMessage =
+                                    ("IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in"
+                                            + " subscription purchase.")
+                                val error = Arguments.createMap()
+                                error.putString("debugMessage", debugMessage)
+                                error.putString("code", PROMISE_BUY_ITEM)
+                                error.putString("message", debugMessage)
+                                error.putString("productId", sku)
+                                sendEvent(reactContext, "purchase-error", error)
+                                promise.reject(PROMISE_BUY_ITEM, debugMessage)
+                                return
+                            }
+                        } else if (prorationMode
+                            == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION
+                        ) {
+                            subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
+                                BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION
+                            )
+                        } else if (prorationMode == BillingFlowParams.ProrationMode.DEFERRED) {
+                            subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
+                                BillingFlowParams.ProrationMode.DEFERRED
+                            )
+                        } else if (prorationMode
+                            == BillingFlowParams.ProrationMode.IMMEDIATE_WITH_TIME_PRORATION
+                        ) {
+                            subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
+                                BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION
+                            )
+                        } else if (prorationMode
+                            == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE
+                        ) {
+                            subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
+                                BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE
+                            )
+                        } else {
+                            subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
+                                BillingFlowParams.ProrationMode.UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY
+                            )
+                        }
+                    }
+                    if (purchaseToken != null) {
+                        val subscriptionUpdateParams = subscriptionUpdateParamsBuilder.build()
+                        builder.setSubscriptionUpdateParams(subscriptionUpdateParams)
+                    }
+                    val flowParams = builder.build()
+                    val billingResult = billingClient.launchBillingFlow(activity, flowParams)
+                    val errorData: Array<String?> =
+                        PlayUtils.instance.getBillingResponseData(billingResult.responseCode)
                 }
-            }
-            if (purchaseToken != null) {
-                val subscriptionUpdateParams = subscriptionUpdateParamsBuilder.build()
-                builder.setSubscriptionUpdateParams(subscriptionUpdateParams)
-            }
-            val flowParams = builder.build()
-            val billingResultCode = billingClient.launchBillingFlow(activity, flowParams)?.responseCode ?: BillingClient.BillingResponseCode.ERROR
-            if (billingResultCode == BillingClient.BillingResponseCode.OK) {
-                promise.safeResolve(true)
-                return@ensureConnection
-            } else {
-                val errorData: Array<String?> =
-                    PlayUtils.instance.getBillingResponseData(billingResultCode)
-                promise.safeReject(errorData[0], errorData[1])
-            }
-        }
+            })
     }
 
     @ReactMethod
     fun acknowledgePurchase(
-        token: String,
-        developerPayLoad: String?,
-        promise: Promise
+        token: String?, developerPayLoad: String?, promise: Promise
     ) {
         ensureConnection(
-            promise
-        ) { billingClient ->
-            val acknowledgePurchaseParams =
-                AcknowledgePurchaseParams.newBuilder().setPurchaseToken(
-                    token
-                ).build()
-            billingClient.acknowledgePurchase(
-                acknowledgePurchaseParams
-            ) { billingResult: BillingResult ->
-                if (!isValidResult(billingResult, promise)) return@acknowledgePurchase
-
-                val map = Arguments.createMap()
-                map.putInt("responseCode", billingResult.responseCode)
-                map.putString("debugMessage", billingResult.debugMessage)
-                val errorData: Array<String?> = PlayUtils.instance
-                    .getBillingResponseData(billingResult.responseCode)
-                map.putString("code", errorData[0])
-                map.putString("message", errorData[1])
-                promise.safeResolve(map)
-            }
-        }
+            promise,
+            object : EnsureConnectionCallback {
+                override fun run(billingClient: BillingClient) {
+                    val acknowledgePurchaseParams =
+                        AcknowledgePurchaseParams.newBuilder().setPurchaseToken(
+                            token!!
+                        ).build()
+                    billingClient.acknowledgePurchase(
+                        acknowledgePurchaseParams
+                    ) { billingResult: BillingResult ->
+                        if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+                            PlayUtils.instance
+                                .rejectPromiseWithBillingError(promise, billingResult.responseCode)
+                        }
+                        try {
+                            val map = Arguments.createMap()
+                            map.putInt("responseCode", billingResult.responseCode)
+                            map.putString("debugMessage", billingResult.debugMessage)
+                            val errorData: Array<String?> = PlayUtils.instance
+                                .getBillingResponseData(billingResult.responseCode)
+                            map.putString("code", errorData[0])
+                            map.putString("message", errorData[1])
+                            promise.resolve(map)
+                        } catch (oce: ObjectAlreadyConsumedException) {
+                            Log.e(TAG, oce.message!!)
+                        }
+                    }
+                }
+            })
     }
 
     @ReactMethod
     fun consumeProduct(
-        token: String,
-        developerPayLoad: String?,
-        promise: Promise
+        token: String?, developerPayLoad: String?, promise: Promise
     ) {
-        val params = ConsumeParams.newBuilder().setPurchaseToken(token).build()
+        val params = ConsumeParams.newBuilder().setPurchaseToken(token!!).build()
         ensureConnection(
-            promise
-        ) { billingClient ->
-            billingClient.consumeAsync(
-                params
-            ) { billingResult: BillingResult, purchaseToken: String? ->
-                if (!isValidResult(billingResult, promise)) return@consumeAsync
-
-                val map = Arguments.createMap()
-                map.putInt("responseCode", billingResult.responseCode)
-                map.putString("debugMessage", billingResult.debugMessage)
-                val errorData: Array<String?> = PlayUtils.instance
-                    .getBillingResponseData(billingResult.responseCode)
-                map.putString("code", errorData[0])
-                map.putString("message", errorData[1])
-                promise.safeResolve(map)
-            }
-        }
+            promise,
+            object : EnsureConnectionCallback {
+                override fun run(billingClient: BillingClient) {
+                    billingClient.consumeAsync(
+                        params
+                    ) { billingResult: BillingResult, purchaseToken: String? ->
+                        if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+                            PlayUtils.instance
+                                .rejectPromiseWithBillingError(promise, billingResult.responseCode)
+                        }
+                        try {
+                            val map = Arguments.createMap()
+                            map.putInt("responseCode", billingResult.responseCode)
+                            map.putString("debugMessage", billingResult.debugMessage)
+                            val errorData: Array<String?> = PlayUtils.instance
+                                .getBillingResponseData(billingResult.responseCode)
+                            map.putString("code", errorData[0])
+                            map.putString("message", errorData[1])
+                            promise.resolve(map)
+                        } catch (oce: ObjectAlreadyConsumedException) {
+                            promise.reject(oce.message)
+                        }
+                    }
+                }
+            })
     }
 
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
@@ -576,8 +616,8 @@ class RNIapModule(
             result.putString("debugMessage", billingResult.debugMessage)
             result.putString(
                 "extraMessage",
-                "The purchases are null. This is a normal behavior if you have requested DEFERRED" +
-                    " proration. If not please report an issue."
+                "The purchases are null. This is a normal behavior if you have requested DEFERRED"
+                        + " proration. If not please report an issue."
             )
             sendEvent(reactContext, "purchase-updated", result)
             DoobooUtils.instance.resolvePromisesForKey(PROMISE_BUY_ITEM, null)
@@ -586,21 +626,29 @@ class RNIapModule(
 
     private fun sendUnconsumedPurchases(promise: Promise) {
         ensureConnection(
-            promise
-        ) { billingClient ->
-            val types = arrayOf(BillingClient.SkuType.INAPP, BillingClient.SkuType.SUBS)
-            for (type in types) {
-                billingClient.queryPurchasesAsync(
-                    type
-                ) { billingResult: BillingResult, list: List<Purchase> ->
-                    if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
-
-                    val unacknowledgedPurchases = list.filter { !it.isAcknowledged }
-                    onPurchasesUpdated(billingResult, unacknowledgedPurchases)
+            promise,
+            object : EnsureConnectionCallback {
+                override fun run(billingClient: BillingClient) {
+                    val types = arrayOf(BillingClient.SkuType.INAPP, BillingClient.SkuType.SUBS)
+                    for (type in types) {
+                        billingClient.queryPurchasesAsync(
+                            type
+                        ) { billingResult: BillingResult, list: List<Purchase>? ->
+                            val unacknowledgedPurchases = ArrayList<Purchase>()
+                            if (list == null || list.size == 0) {
+                                //                    continue;
+                            }
+                            for (purchase in list!!) {
+                                if (!purchase.isAcknowledged) {
+                                    unacknowledgedPurchases.add(purchase)
+                                }
+                            }
+                            onPurchasesUpdated(billingResult, unacknowledgedPurchases)
+                        }
+                    }
+                    promise.resolve(true)
                 }
-            }
-            promise.safeResolve(true)
-        }
+            })
     }
 
     @ReactMethod
@@ -608,23 +656,12 @@ class RNIapModule(
         sendUnconsumedPurchases(promise)
     }
 
-    @ReactMethod
-    fun addListener(eventName: String) {
-        // Keep: Required for RN built-in Event Emitter Calls.
-    }
-
-    @ReactMethod
-    fun removeListeners(count: Double) {
-        // Keep: Required for RN built-in Event Emitter Calls.
-    }
-
-    @ReactMethod
-    fun getPackageName(promise: Promise) = promise.resolve(reactApplicationContext.packageName)
+    @get:ReactMethod
+    val packageName: String
+        get() = reactApplicationContext.packageName
 
     private fun sendEvent(
-        reactContext: ReactContext,
-        eventName: String,
-        params: WritableMap?
+        reactContext: ReactContext, eventName: String, params: WritableMap?
     ) {
         reactContext
             .getJSModule(RCTDeviceEventEmitter::class.java)
@@ -633,15 +670,19 @@ class RNIapModule(
 
     companion object {
         private const val PROMISE_BUY_ITEM = "PROMISE_BUY_ITEM"
-        const val TAG = "RNIapModule"
     }
 
     init {
+        this.reactContext = reactContext
+        skus = ArrayList()
         val lifecycleEventListener: LifecycleEventListener = object : LifecycleEventListener {
             override fun onHostResume() {}
             override fun onHostPause() {}
             override fun onHostDestroy() {
-                billingClientCache?.endConnection()
+                if (billingClientCache != null) {
+                    billingClientCache!!.endConnection()
+                    billingClientCache = null
+                }
             }
         }
         reactContext.addLifecycleEventListener(lifecycleEventListener)

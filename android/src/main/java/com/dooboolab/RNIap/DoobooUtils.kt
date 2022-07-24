@@ -1,22 +1,24 @@
 package com.dooboolab.RNIap
 
-import android.util.Log
-import com.facebook.react.bridge.ObjectAlreadyConsumedException
+import java.util.HashMap
+import java.util.ArrayList
 import com.facebook.react.bridge.Promise
-import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.bridge.ReadableType
-import com.facebook.react.bridge.WritableArray
-import com.facebook.react.bridge.WritableMap
-import com.facebook.react.bridge.WritableNativeArray
-import com.facebook.react.bridge.WritableNativeMap
-import org.json.JSONArray
+import com.facebook.react.bridge.ObjectAlreadyConsumedException
+import android.util.Log
+import com.dooboolab.RNIap.DoobooUtils
+import java.lang.Exception
+import kotlin.Throws
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.Exception
-import java.util.ArrayList
-import java.util.HashMap
-import kotlin.Throws
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeMap
+import org.json.JSONArray
+import com.facebook.react.bridge.WritableArray
+import com.facebook.react.bridge.WritableNativeArray
+import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.ReadableMapKeySetIterator
+import com.facebook.react.bridge.ReadableType
+import com.facebook.react.bridge.ReadableArray
 
 class DoobooUtils {
     private val promises = HashMap<String, ArrayList<Promise>>()
@@ -27,9 +29,9 @@ class DoobooUtils {
                 list = promises[key]!!
             } else {
                 list = ArrayList()
+                promises[key] = list
             }
             list.add(promise)
-            promises[key] = list
         } catch (oce: ObjectAlreadyConsumedException) {
             Log.e(TAG, oce.message!!)
         }
@@ -50,10 +52,7 @@ class DoobooUtils {
     }
 
     fun rejectPromisesForKey(
-        key: String,
-        code: String?,
-        message: String?,
-        err: Exception?
+        key: String, code: String?, message: String?, err: Exception?
     ) {
         try {
             if (promises.containsKey(key)) {

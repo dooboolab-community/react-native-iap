@@ -1,8 +1,9 @@
 # ![image](https://user-images.githubusercontent.com/27461460/75094417-20321b00-55ce-11ea-8de7-a1df42a4b7df.png)
 
 [![Version](http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
-<!-- [![Next](https://img.shields.io/npm/v/react-native-iap/next.svg?style=flat-square)](https://npmjs.org/package/react-native-iap) -->
+[![Next](https://img.shields.io/npm/v/react-native-iap/next.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
 [![Download](http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
+[![Build Status](https://travis-ci.com/dooboolab/react-native-iap.svg?branch=master)](https://travis-ci.com/dooboolab/react-native-iap)
 [![CI](https://github.com/dooboolab/react-native-iap/actions/workflows/ci.yml/badge.svg)](https://github.com/dooboolab/react-native-iap/actions/workflows/ci.yml)
 [![document](https://github.com/dooboolab/react-native-iap/actions/workflows/deploy-document.yml/badge.svg)](https://github.com/dooboolab/react-native-iap/actions/workflows/deploy-document.yml)
 [![License](https://img.shields.io/npm/l/react-native-iap.svg)](https://npmjs.org/package/react-native-iap)
@@ -20,10 +21,6 @@ Published in [website](https://react-native-iap.dooboolab.com).
 
 ## Announcement
 
-- Current module is ported to [expo-iap](https://www.npmjs.com/package/expo-iap) which share the same codebase but different environment. This is currently experimental but you can use it in expo managed workflow. The source code is maintained in branch [expo](https://github.com/dooboolab/react-native-iap/tree/expo).
-
-- Version `8.0.0` has finally landed in Jan 28th. Since this is early release, please use it with caution 🚧. We recommend user to use `>=8.0.0` with react-native `>=0.65.1`. The `next` package is no longer updated until we organize the roadmap for `9.0.0`.
-
 - Version `8.0.0` is currently in release candidate. The module is completely rewritten with `Kotlin` and `Swift` for maintenenance issue by [andresesfm](https://github.com/andresesfm) 🔆. You may install this for early preview.
 
   ```
@@ -34,7 +31,7 @@ Published in [website](https://react-native-iap.dooboolab.com).
 
 - The `react-native-iap` module hasn't been maintained well recently. We are thinking of participating again and make the module healthier. Please refer to [2021 Maintenance plan](https://github.com/dooboolab/react-native-iap/issues/1241) and share with us how you or your organization is using it. Happy new year 🎉
 
-  - The sample code is out in [Sponsor page](https://github.com/hyochan/dooboolab.com/blob/main/src/components/pages/Sponsor.tsx) in [dooboolab.com](https://github.com/hyochan/dooboolab.com) repository which sadly is rejected by Apple because of lacking product features. I will work on another example project to support this module. More information in [#1241 commment](https://github.com/dooboolab/react-native-iap/issues/1241#issuecomment-798540785).
+  - The sample code is out in [Sponsor page](https://github.com/hyochan/dooboolab.com/blob/master/src/components/pages/Sponsor.tsx) in [dooboolab.com](https://github.com/hyochan/dooboolab.com) repository which sadly is rejected by Apple because of lacking product features. I will work on another example project to support this module. More information in [#1241 commment](https://github.com/dooboolab/react-native-iap/issues/1241#issuecomment-798540785).
 
 ## Introduction
 
@@ -68,8 +65,8 @@ If you're looking for a module going further than react-native-iap, we recommend
 
 <!-- Internals -->
 
-[contribute]: https://github.com/dooboolab/react-native-iap/blob/main/CONTRIBUTING.md
-[example]: https://github.com/dooboolab/react-native-iap/tree/main/IapExample
+[contribute]: https://github.com/dooboolab/react-native-iap/blob/master/CONTRIBUTING.md
+[example]: https://github.com/dooboolab/react-native-iap/tree/master/IapExample
 [issue-126-c1]: https://github.com/dooboolab/react-native-iap/issues/126#issuecomment-439084872
 [issue-174]: https://github.com/dooboolab/react-native-iap/issues/174
 [issue-203]: https://github.com/dooboolab/react-native-iap/issues/203
@@ -82,7 +79,7 @@ If you're looking for a module going further than react-native-iap, we recommend
 [open-collective-backer]: https://opencollective.com/react-native-iap#backer
 [open-collective-sponsor]: https://opencollective.com/react-native-iap#sponsor
 [open-collective]: https://opencollective.com/react-native-iap
-[readme-deprecated]: https://github.com/dooboolab/react-native-iap/blob/main/README_DEPRECATED.md
+[readme-deprecated]: https://github.com/dooboolab/react-native-iap/blob/master/README_DEPRECATED.md
 
 <!-- Externals -->
 
@@ -154,7 +151,7 @@ where `MY_VARIANT` is `PlayDebug` or `AmazonDebug`
 
 Below is basic implementation which is also provided in `RNIapExample` project.
 
-If you want more advanced one please refer to [dooboolab.com/sponsor.tsx](https://github.com/hyochan/dooboolab.com/blob/main/src/components/pages/Sponsor.tsx)
+If you want more advanced one please refer to [dooboolab.com/sponsor.tsx](https://github.com/hyochan/dooboolab.com/blob/master/src/components/pages/Sponsor.tsx)
 
 ## Sponsoring
 
