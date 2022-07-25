@@ -341,7 +341,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         print("\n\n\n  ***  get promoted product. \n\n.")
-        resolve(promotedProduct )
+        resolve((promotedProduct != nil) ? getProductObject(promotedProduct!) : nil)
     }
     
     @objc public func  buyPromotedProduct(
