@@ -24,6 +24,7 @@ type IAPContextType = {
   availablePurchases: Purchase[];
   currentPurchase?: Purchase;
   currentPurchaseError?: PurchaseError;
+  initConnectionError?: Error;
   setProducts: (products: Product[]) => void;
   setSubscriptions: (subscriptions: Subscription[]) => void;
   setPurchaseHistories: (purchaseHistories: Purchase[]) => void;
@@ -51,7 +52,7 @@ export function useIAPContext(): IAPContextType {
 
 export function withIAPContext<T>(Component: React.ComponentType<T>) {
   return function WrapperComponent(props: T) {
-    const [connected, setConnected] = useState<boolean>(false);
+    const [connected, setConnected] = useState(false);
     const [products, setProducts] = useState<Product[]>([]);
 
     const [promotedProductsIOS, setPromotedProductsIOS] = useState<Product[]>(
@@ -68,6 +69,8 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
     const [currentPurchaseError, setCurrentPurchaseError] =
       useState<PurchaseError>();
 
+    const [initConnectionError, setInitConnectionError] = useState<Error>();
+
     const context = useMemo(
       () => ({
         connected,
@@ -78,6 +81,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         availablePurchases,
         currentPurchase,
         currentPurchaseError,
+        initConnectionError,
         setProducts,
         setSubscriptions,
         setPurchaseHistories,
@@ -94,6 +98,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         availablePurchases,
         currentPurchase,
         currentPurchaseError,
+        initConnectionError,
         setProducts,
         setSubscriptions,
         setPurchaseHistories,
@@ -104,7 +109,12 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
     );
 
     useEffect(() => {
-      initConnection().then(setConnected);
+      initConnection()
+        .then((value) => {
+          setInitConnectionError(undefined);
+          setConnected(value);
+        })
+        .catch(setInitConnectionError);
     }, []);
 
     useEffect(() => {

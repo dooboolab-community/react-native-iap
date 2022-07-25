@@ -20,6 +20,7 @@ type IAP_STATUS = {
   availablePurchases: Purchase[];
   currentPurchase?: Purchase;
   currentPurchaseError?: PurchaseError;
+  initConnectionError?: Error;
   finishTransaction: (
     purchase: Purchase,
     isConsumable?: boolean,
@@ -43,6 +44,7 @@ export function useIAP(): IAP_STATUS {
     availablePurchases,
     currentPurchase,
     currentPurchaseError,
+    initConnectionError,
     setProducts,
     setSubscriptions,
     setAvailablePurchases,
@@ -114,6 +116,7 @@ export function useIAP(): IAP_STATUS {
     availablePurchases,
     currentPurchase,
     currentPurchaseError,
+    initConnectionError,
     finishTransaction,
     getProducts,
     getSubscriptions,

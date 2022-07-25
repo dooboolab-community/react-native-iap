@@ -5,6 +5,7 @@ sidebar_position: 6
 # Using hooks
 
 ## How to use hooks
+
 1. You have to wrap your app with the `withIAPContext` HOC
 
 ```jsx
@@ -30,6 +31,7 @@ const YourComponent = () => {
     availablePurchases,
     currentPurchase,
     currentPurchaseError,
+    initConnectionError,
     finishTransaction,
     getProducts,
     getSubscriptions,
