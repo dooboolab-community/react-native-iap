@@ -134,7 +134,7 @@ class RNIapModuleTest {
         every { billingClient.isReady } returns true
         val promise = mockk<Promise>(relaxed = true)
         val listener = slot<PurchasesResponseListener>()
-        every { billingClient.queryPurchasesAsync(any(), capture(listener)) } answers {
+        every { billingClient.queryPurchasesAsync(any<String>(), capture(listener)) } answers {
             listener.captured.onQueryPurchasesResponse(BillingResult.newBuilder().build(), listOf())
         }
         module.initConnection(mockk())
@@ -150,7 +150,7 @@ class RNIapModuleTest {
         every { billingClient.isReady } returns true
         val promise = mockk<Promise>(relaxed = true)
         val listener = slot<PurchasesResponseListener>()
-        every { billingClient.queryPurchasesAsync(any(), capture(listener)) } answers {
+        every { billingClient.queryPurchasesAsync(any<String>(), capture(listener)) } answers {
             listener.captured.onQueryPurchasesResponse(
                 BillingResult.newBuilder().build(),
                 listOf(
