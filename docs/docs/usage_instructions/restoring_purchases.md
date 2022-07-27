@@ -28,7 +28,7 @@ If for debugging you want to consume all items, you have to iterate over the pur
           break
 
         case 'com.example.coins100':
-          await RNIap.consumePurchaseAndroid(purchase.purchaseToken);
+          await RNIap.finishTransaction(purchase.purchaseToken);
           CoinStore.addCoins(100);
         }
       })
