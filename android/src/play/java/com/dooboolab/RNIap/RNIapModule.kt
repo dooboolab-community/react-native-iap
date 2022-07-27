@@ -12,13 +12,10 @@ import com.android.billingclient.api.ConsumeResponseListener
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchaseHistoryRecord
-import com.android.billingclient.api.PurchaseHistoryResponseListener
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.QueryPurchasesParams
-import com.android.billingclient.api.SkuDetails
-import com.android.billingclient.api.SkuDetailsParams
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.Promise
@@ -35,7 +32,6 @@ import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import java.math.BigDecimal
 import java.util.ArrayList
 
 class RNIapModule(
@@ -44,7 +40,7 @@ class RNIapModule(
     private val googleApiAvailability: GoogleApiAvailability = GoogleApiAvailability.getInstance()
 ) :
     ReactContextBaseJavaModule(reactContext),
-    PurchasesUpdatedListener {
+    PurchasesUpdatedListener, RNIapModuleInterface {
 
     private var billingClientCache: BillingClient? = null
     private val skus: MutableMap<String, ProductDetails> = mutableMapOf()
@@ -89,7 +85,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-    fun initConnection(promise: Promise) {
+    override fun initConnection(promise: Promise) {
         if (googleApiAvailability.isGooglePlayServicesAvailable(reactContext)
             != ConnectionResult.SUCCESS
         ) {
@@ -124,7 +120,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-    fun endConnection(promise: Promise) {
+    override fun endConnection(promise: Promise) {
         billingClientCache?.endConnection()
         billingClientCache = null
         promise.safeResolve(true)
@@ -161,7 +157,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-    fun flushFailedPurchasesCachedAsPending(promise: Promise) {
+    override fun flushFailedPurchasesCachedAsPending(promise: Promise) {
         ensureConnection(
             promise
         ) { billingClient ->
@@ -192,7 +188,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-    fun getItemsByType(type: String, skuArr: ReadableArray, promise: Promise) {
+    override fun getItemsByType(type: String, skuArr: ReadableArray, promise: Promise) {
         ensureConnection(
             promise
         ) { billingClient ->
@@ -222,7 +218,6 @@ class RNIapModule(
                     item.putString("description", skuDetails.description)
                     item.putString("productType", skuDetails.productType)
                     item.putString("name", skuDetails.name)
-
                     val oneTimePurchaseOfferDetails = Arguments.createMap()
                     skuDetails.oneTimePurchaseOfferDetails?.let {
                         oneTimePurchaseOfferDetails.putString(
@@ -275,11 +270,11 @@ class RNIapModule(
                             pricingPhasesList.pushMap(pricingPhase)
                         }
                         val pricingPhases = Arguments.createMap()
-                        pricingPhases.putArray("pricingPhaseList",pricingPhasesList)
-                        offerDetails.putMap("pricingPhases",pricingPhases)
+                        pricingPhases.putArray("pricingPhaseList", pricingPhasesList)
+                        offerDetails.putMap("pricingPhases", pricingPhases)
                         subscriptionOfferDetails.pushMap(offerDetails)
                     }
-                    item.putArray("subscriptionOfferDetails",subscriptionOfferDetails)
+                    item.putArray("subscriptionOfferDetails", subscriptionOfferDetails)
                     items.pushMap(item)
                 }
                 promise.safeResolve(items)
@@ -304,7 +299,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-    fun getAvailableItemsByType(type: String, promise: Promise) {
+    override fun getAvailableItemsByType(type: String, promise: Promise) {
         ensureConnection(
             promise
         ) { billingClient ->
@@ -317,7 +312,7 @@ class RNIapModule(
                     for (i in purchases.indices) {
                         val purchase = purchases[i]
                         val item = WritableNativeMap()
-                        item.putString("productId", purchase.skus[0])
+                        item.putString("productId", purchase.products[0]) // TODO: should be a list
                         item.putString("transactionId", purchase.orderId)
                         item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
                         item.putString("transactionReceipt", purchase.originalJson)
@@ -348,7 +343,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-    fun getPurchaseHistoryByType(type: String, promise: Promise) {
+    override fun getPurchaseHistoryByType(type: String, promise: Promise) {
         ensureConnection(
             promise
         ) { billingClient ->
@@ -378,7 +373,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-    fun buyItemByType(
+    override fun buyItemByType(
         type: String,
         sku: String, // TODO: should this now be an array?
         purchaseToken: String?,
@@ -414,12 +409,12 @@ class RNIapModule(
                 return@ensureConnection
             }
             var productParams = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(selectedSku)
-            if(selectedOfferIndex != null && (selectedSku.subscriptionOfferDetails?.size
+            if (selectedOfferIndex != null && (selectedSku.subscriptionOfferDetails?.size
                     ?: 0) > selectedOfferIndex
-            ){
+            ) {
                 val offerToken =
                     selectedSku.subscriptionOfferDetails?.get(selectedOfferIndex)?.offerToken
-                offerToken?.let {  productParams = productParams.setOfferToken(offerToken)}
+                offerToken?.let { productParams = productParams.setOfferToken(offerToken) }
             }
 
             builder.setProductDetailsParamsList(listOf(productParams.build()))
@@ -437,7 +432,7 @@ class RNIapModule(
                 if (prorationMode
                     == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE
                 ) {
-                    subscriptionUpdateParamsBuilder.setReplaceSkusProrationMode(
+                    subscriptionUpdateParamsBuilder.setReplaceProrationMode(
                         BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE
                     )
                     if (type != BillingClient.SkuType.SUBS) {
@@ -501,7 +496,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-    fun acknowledgePurchase(
+    override fun acknowledgePurchase(
         token: String,
         developerPayLoad: String?,
         promise: Promise
@@ -531,7 +526,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-    fun consumeProduct(
+    override fun consumeProduct(
         token: String,
         developerPayLoad: String?,
         promise: Promise
@@ -576,7 +571,7 @@ class RNIapModule(
             for (i in purchases.indices) {
                 val item = Arguments.createMap()
                 val purchase = purchases[i]
-                item.putString("productId", purchase.skus[0])
+                item.putString("productId", purchase.products[0])
                 item.putString("transactionId", purchase.orderId)
                 item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
                 item.putString("transactionReceipt", purchase.originalJson)
@@ -640,22 +635,22 @@ class RNIapModule(
     }
 
     @ReactMethod
-    fun startListening(promise: Promise) {
+    override fun startListening(promise: Promise) {
         sendUnconsumedPurchases(promise)
     }
 
     @ReactMethod
-    fun addListener(eventName: String) {
+    override fun addListener(eventName: String) {
         // Keep: Required for RN built-in Event Emitter Calls.
     }
 
     @ReactMethod
-    fun removeListeners(count: Double) {
+    override fun removeListeners(count: Double) {
         // Keep: Required for RN built-in Event Emitter Calls.
     }
 
     @ReactMethod
-    fun getPackageName(promise: Promise) = promise.resolve(reactApplicationContext.packageName)
+    override fun getPackageName(promise: Promise) = promise.resolve(reactApplicationContext.packageName)
 
     private fun sendEvent(
         reactContext: ReactContext,

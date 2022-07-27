@@ -38,7 +38,7 @@ class RNIapModuleV4(
     private val googleApiAvailability: GoogleApiAvailability = GoogleApiAvailability.getInstance()
 ) :
     ReactContextBaseJavaModule(reactContext),
-    PurchasesUpdatedListener {
+    PurchasesUpdatedListener, RNIapModuleInterface {
 
     private var billingClientCache: BillingClient? = null
     private val skus: MutableMap<String, SkuDetails> = mutableMapOf()
@@ -46,7 +46,7 @@ class RNIapModuleV4(
         return TAG
     }
 
-    internal fun ensureConnection(
+    fun ensureConnection(
         promise: Promise,
         callback: (billingClient: BillingClient) -> Unit
     ) {
@@ -83,7 +83,7 @@ class RNIapModuleV4(
     }
 
     @ReactMethod
-    fun initConnection(promise: Promise) {
+    override fun initConnection(promise: Promise) {
         if (googleApiAvailability.isGooglePlayServicesAvailable(reactContext)
             != ConnectionResult.SUCCESS
         ) {
@@ -118,7 +118,7 @@ class RNIapModuleV4(
     }
 
     @ReactMethod
-    fun endConnection(promise: Promise) {
+    override fun endConnection(promise: Promise) {
         billingClientCache?.endConnection()
         billingClientCache = null
         promise.safeResolve(true)
@@ -155,7 +155,7 @@ class RNIapModuleV4(
     }
 
     @ReactMethod
-    fun flushFailedPurchasesCachedAsPending(promise: Promise) {
+    override fun flushFailedPurchasesCachedAsPending(promise: Promise) {
         ensureConnection(
             promise
         ) { billingClient ->
@@ -186,7 +186,7 @@ class RNIapModuleV4(
     }
 
     @ReactMethod
-    fun getItemsByType(type: String, skuArr: ReadableArray, promise: Promise) {
+    override fun getItemsByType(type: String, skuArr: ReadableArray, promise: Promise) {
         ensureConnection(
             promise
         ) { billingClient ->
@@ -280,7 +280,7 @@ class RNIapModuleV4(
     }
 
     @ReactMethod
-    fun getAvailableItemsByType(type: String, promise: Promise) {
+    override fun getAvailableItemsByType(type: String, promise: Promise) {
         ensureConnection(
             promise
         ) { billingClient ->
@@ -324,7 +324,7 @@ class RNIapModuleV4(
     }
 
     @ReactMethod
-    fun getPurchaseHistoryByType(type: String, promise: Promise) {
+    override fun getPurchaseHistoryByType(type: String, promise: Promise) {
         ensureConnection(
             promise
         ) { billingClient ->
@@ -352,7 +352,7 @@ class RNIapModuleV4(
     }
 
     @ReactMethod
-    fun buyItemByType(
+    override fun buyItemByType(
         type: String,
         sku: String,
         purchaseToken: String?,
@@ -466,7 +466,7 @@ class RNIapModuleV4(
     }
 
     @ReactMethod
-    fun acknowledgePurchase(
+    override fun acknowledgePurchase(
         token: String,
         developerPayLoad: String?,
         promise: Promise
@@ -496,7 +496,7 @@ class RNIapModuleV4(
     }
 
     @ReactMethod
-    fun consumeProduct(
+    override fun consumeProduct(
         token: String,
         developerPayLoad: String?,
         promise: Promise
@@ -605,22 +605,22 @@ class RNIapModuleV4(
     }
 
     @ReactMethod
-    fun startListening(promise: Promise) {
+    override fun startListening(promise: Promise) {
         sendUnconsumedPurchases(promise)
     }
 
     @ReactMethod
-    fun addListener(eventName: String) {
+    override fun addListener(eventName: String) {
         // Keep: Required for RN built-in Event Emitter Calls.
     }
 
     @ReactMethod
-    fun removeListeners(count: Double) {
+    override fun removeListeners(count: Double) {
         // Keep: Required for RN built-in Event Emitter Calls.
     }
 
     @ReactMethod
-    fun getPackageName(promise: Promise) = promise.resolve(reactApplicationContext.packageName)
+    override fun getPackageName(promise: Promise) = promise.resolve(reactApplicationContext.packageName)
 
     private fun sendEvent(
         reactContext: ReactContext,
@@ -634,7 +634,7 @@ class RNIapModuleV4(
 
     companion object {
         private const val PROMISE_BUY_ITEM = "PROMISE_BUY_ITEM"
-        const val TAG = "RNIapModule"
+        const val TAG = "RNIapModuleV4"
     }
 
     init {
