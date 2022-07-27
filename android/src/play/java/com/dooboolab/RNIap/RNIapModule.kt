@@ -40,7 +40,8 @@ class RNIapModule(
     private val googleApiAvailability: GoogleApiAvailability = GoogleApiAvailability.getInstance()
 ) :
     ReactContextBaseJavaModule(reactContext),
-    PurchasesUpdatedListener, RNIapModuleInterface {
+    PurchasesUpdatedListener,
+    RNIapModuleInterface {
 
     private var billingClientCache: BillingClient? = null
     private val skus: MutableMap<String, ProductDetails> = mutableMapOf()
@@ -73,7 +74,8 @@ class RNIapModule(
                 {
                     if (it.size > 1 && it[0] is String && it[1] is String) {
                         promise.safeReject(
-                            it[0] as String, it[1] as String
+                            it[0] as String,
+                            it[1] as String
                         )
                     } else {
                         Log.i(TAG, "Incorrect parameters in reject")
@@ -115,7 +117,8 @@ class RNIapModule(
                     override fun onBillingServiceDisconnected() {
                         Log.i(TAG, "Billing service disconnected")
                     }
-                })
+                }
+            )
         }
     }
 
@@ -161,8 +164,10 @@ class RNIapModule(
         ensureConnection(
             promise
         ) { billingClient ->
-            billingClient.queryPurchasesAsync(QueryPurchasesParams.newBuilder().setProductType(
-                BillingClient.ProductType.INAPP).build()
+            billingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder().setProductType(
+                    BillingClient.ProductType.INAPP
+                ).build()
             ) { billingResult: BillingResult, list: List<Purchase>? ->
                 if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
                 if (list == null) {
@@ -304,8 +309,10 @@ class RNIapModule(
             promise
         ) { billingClient ->
             val items = WritableNativeArray()
-            billingClient.queryPurchasesAsync(QueryPurchasesParams.newBuilder().setProductType(
-                if (type == "subs") BillingClient.ProductType.SUBS else BillingClient.ProductType.INAPP).build()
+            billingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder().setProductType(
+                    if (type == "subs") BillingClient.ProductType.SUBS else BillingClient.ProductType.INAPP
+                ).build()
             ) { billingResult: BillingResult, purchases: List<Purchase>? ->
                 if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
                 if (purchases != null) {
@@ -349,7 +356,9 @@ class RNIapModule(
         ) { billingClient ->
             billingClient.queryPurchaseHistoryAsync(
                 QueryPurchaseHistoryParams.newBuilder().setProductType(
-                if (type == "subs") BillingClient.ProductType.SUBS else BillingClient.ProductType.INAPP).build()) {
+                    if (type == "subs") BillingClient.ProductType.SUBS else BillingClient.ProductType.INAPP
+                ).build()
+            ) {
                     billingResult: BillingResult, purchaseHistoryRecordList: MutableList<PurchaseHistoryRecord>? ->
 
                 if (!isValidResult(billingResult, promise)) return@queryPurchaseHistoryAsync
@@ -392,7 +401,8 @@ class RNIapModule(
             promise
         ) { billingClient ->
             DoobooUtils.instance.addPromiseForKey(
-                PROMISE_BUY_ITEM, promise
+                PROMISE_BUY_ITEM,
+                promise
             )
             val builder = BillingFlowParams.newBuilder()
             val selectedSku: ProductDetails? = skus[sku]
@@ -409,8 +419,10 @@ class RNIapModule(
                 return@ensureConnection
             }
             var productParams = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(selectedSku)
-            if (selectedOfferIndex != null && (selectedSku.subscriptionOfferDetails?.size
-                    ?: 0) > selectedOfferIndex
+            if (selectedOfferIndex != null && (
+                selectedSku.subscriptionOfferDetails?.size
+                    ?: 0
+                ) > selectedOfferIndex
             ) {
                 val offerToken =
                     selectedSku.subscriptionOfferDetails?.get(selectedOfferIndex)?.offerToken
@@ -621,8 +633,10 @@ class RNIapModule(
         ) { billingClient ->
             val types = arrayOf(BillingClient.ProductType.INAPP, BillingClient.ProductType.SUBS)
             for (type in types) {
-                billingClient.queryPurchasesAsync(QueryPurchasesParams.newBuilder().setProductType(
-                    type).build()
+                billingClient.queryPurchasesAsync(
+                    QueryPurchasesParams.newBuilder().setProductType(
+                        type
+                    ).build()
                 ) { billingResult: BillingResult, list: List<Purchase> ->
                     if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
 

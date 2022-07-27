@@ -38,7 +38,8 @@ class RNIapModuleV4(
     private val googleApiAvailability: GoogleApiAvailability = GoogleApiAvailability.getInstance()
 ) :
     ReactContextBaseJavaModule(reactContext),
-    PurchasesUpdatedListener, RNIapModuleInterface {
+    PurchasesUpdatedListener,
+    RNIapModuleInterface {
 
     private var billingClientCache: BillingClient? = null
     private val skus: MutableMap<String, SkuDetails> = mutableMapOf()
@@ -71,7 +72,8 @@ class RNIapModuleV4(
                 {
                     if (it.size > 1 && it[0] is String && it[1] is String) {
                         promise.safeReject(
-                            it[0] as String, it[1] as String
+                            it[0] as String,
+                            it[1] as String
                         )
                     } else {
                         Log.i(TAG, "Incorrect parameters in reject")
@@ -113,7 +115,8 @@ class RNIapModuleV4(
                     override fun onBillingServiceDisconnected() {
                         Log.i(TAG, "Billing service disconnected")
                     }
-                })
+                }
+            )
         }
     }
 
@@ -243,10 +246,12 @@ class RNIapModuleV4(
                             skuDetails.introductoryPriceCycles.toString()
                         )
                         item.putString(
-                            "introductoryPricePeriodAndroid", skuDetails.introductoryPricePeriod
+                            "introductoryPricePeriodAndroid",
+                            skuDetails.introductoryPricePeriod
                         )
                         item.putString(
-                            "introductoryPriceAsAmountAndroid", introductoryPriceAsAmountAndroid
+                            "introductoryPriceAsAmountAndroid",
+                            introductoryPriceAsAmountAndroid
                         )
                         item.putString("iconUrl", skuDetails.iconUrl)
                         item.putString("originalJson", skuDetails.originalJson)
@@ -371,7 +376,8 @@ class RNIapModuleV4(
             promise
         ) { billingClient ->
             DoobooUtils.instance.addPromiseForKey(
-                PROMISE_BUY_ITEM, promise
+                PROMISE_BUY_ITEM,
+                promise
             )
             val builder = BillingFlowParams.newBuilder()
             val selectedSku: SkuDetails? = skus[sku]
@@ -408,9 +414,9 @@ class RNIapModuleV4(
                     if (type != BillingClient.SkuType.SUBS) {
                         val debugMessage =
                             (
-                                    "IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in" +
-                                            " subscription purchase."
-                                    )
+                                "IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in" +
+                                    " subscription purchase."
+                                )
                         val error = Arguments.createMap()
                         error.putString("debugMessage", debugMessage)
                         error.putString("code", PROMISE_BUY_ITEM)
@@ -578,7 +584,7 @@ class RNIapModuleV4(
             result.putString(
                 "extraMessage",
                 "The purchases are null. This is a normal behavior if you have requested DEFERRED" +
-                        " proration. If not please report an issue."
+                    " proration. If not please report an issue."
             )
             sendEvent(reactContext, "purchase-updated", result)
             DoobooUtils.instance.resolvePromisesForKey(PROMISE_BUY_ITEM, null)
