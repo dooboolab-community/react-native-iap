@@ -4660,7 +4660,7 @@ __metadata:
     metro-react-native-babel-preset: ^0.70.3
     react: 18.0.0
     react-native: 0.69.1
-    react-native-iap: ^8.2.1
+    react-native-iap: ^8.3.0
     react-test-renderer: 18.0.0
   languageName: unknown
   linkType: soft
@@ -7603,15 +7603,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-iap@npm:^8.2.1":
-  version: 8.2.1
-  resolution: "react-native-iap@npm:8.2.1"
+"react-native-iap@npm:^8.3.0":
+  version: 8.3.0
+  resolution: "react-native-iap@npm:8.3.0"
   dependencies:
     dooboolab-welcome: 1.3.2
   peerDependencies:
     react: ">=16.13.1"
     react-native: ">=0.65.1"
-  checksum: e04546d4a1ecf4b4f9efbd61e745a9014d9f6b7b0256df043fc1592fa7f4dab2076960028e54f92cb02b649cffec38af1e91e285f0f359dd209f4383a9a0b665
+  checksum: c7ca9cbb2f012cdd21168e7c0456f8722f43f235c28dc39e9dd11293f32f8ea4d8f8b20c2f14e9f25db303c0a04481d0db6824ad71933a41609d138a007fd473
   languageName: node
   linkType: hard
 

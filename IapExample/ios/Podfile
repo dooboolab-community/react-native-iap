@@ -6,7 +6,8 @@ install! 'cocoapods', :deterministic_uuids => false
 
 target 'IapExample' do
   config = use_native_modules!
-
+  # Point to local library, in conjunction with react-native-config.js 
+  pod 'RNIap', path: '../../'
   # Flags change depending on the env values.
   flags = get_default_flags()
 
