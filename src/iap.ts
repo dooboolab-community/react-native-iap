@@ -244,6 +244,7 @@ export const getAvailablePurchases = (): Promise<
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
+ * @param {string} [appAccountToken] The purchaser's user ID
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
@@ -251,6 +252,7 @@ export const getAvailablePurchases = (): Promise<
  */
 export const requestPurchase = (
   sku: string,
+  appAccountToken: string,
   andDangerouslyFinishTransactionAutomaticallyIOS: boolean = false,
   obfuscatedAccountIdAndroid: string | undefined = undefined,
   obfuscatedProfileIdAndroid: string | undefined = undefined,
@@ -268,6 +270,7 @@ export const requestPurchase = (
 
         return getIosModule().buyProduct(
           sku,
+          appAccountToken,
           andDangerouslyFinishTransactionAutomaticallyIOS,
         );
       },
