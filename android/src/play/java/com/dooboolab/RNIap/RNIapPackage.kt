@@ -15,6 +15,7 @@ class RNIapPackage : ReactPackage {
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
         val modules: MutableList<NativeModule> = ArrayList()
         modules.add(RNIapModule(reactContext))
+        modules.add(RNIapModuleV4(reactContext))
         return modules
     }
 }

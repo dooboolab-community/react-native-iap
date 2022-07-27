@@ -24,7 +24,7 @@ import {
   SubscriptionPurchase,
 } from './types';
 
-const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
+const {RNIapIos, RNIapModule, RNIapModuleV4, RNIapAmazonModule} = NativeModules;
 
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
@@ -35,16 +35,34 @@ export const getInstallSourceAndroid = (): InstallSourceAndroid => {
     : InstallSourceAndroid.AMAZON;
 };
 
+/**
+ * Defaulting to V4 to minimize migration, it'll eventually be changed to default to V5
+ */
+let androidNativeModule = RNIapModuleV4;
+
+const setAndroidNativeModule = (
+  nativeModule: typeof RNIapModule | typeof RNIapModuleV4,
+): void => {
+  androidNativeModule = nativeModule;
+};
+
 const checkNativeAndroidAvailable = (): void => {
-  if (!RNIapModule && !RNIapAmazonModule) {
+  if (!RNIapModule && !RNIapModuleV4 && !RNIapAmazonModule) {
     throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
   }
 };
 
-const getAndroidModule = (): typeof RNIapModule | typeof RNIapAmazonModule => {
+const getAndroidModule = ():
+  | typeof RNIapModule
+  | typeof RNIapModuleV4
+  | typeof RNIapAmazonModule => {
   checkNativeAndroidAvailable();
 
-  return RNIapModule ? RNIapModule : RNIapAmazonModule;
+  return androidNativeModule
+    ? androidNativeModule
+    : RNIapModule
+    ? RNIapModule
+    : RNIapAmazonModule;
 };
 
 const checkNativeiOSAvailable = (): void => {
@@ -63,7 +81,9 @@ const getNativeModule = ():
   | typeof RNIapModule
   | typeof RNIapAmazonModule
   | typeof RNIapIos => {
-  return RNIapModule
+  return androidNativeModule
+    ? androidNativeModule
+    : RNIapModule
     ? RNIapModule
     : RNIapAmazonModule
     ? RNIapAmazonModule
@@ -256,6 +276,7 @@ export const requestPurchase = (
   andDangerouslyFinishTransactionAutomaticallyIOS: boolean = false,
   obfuscatedAccountIdAndroid: string | undefined = undefined,
   obfuscatedProfileIdAndroid: string | undefined = undefined,
+  selectedOfferIndex: number | undefined = undefined,
 ): Promise<InAppPurchase> =>
   (
     Platform.select({
@@ -282,6 +303,7 @@ export const requestPurchase = (
           0,
           obfuscatedAccountIdAndroid,
           obfuscatedProfileIdAndroid,
+          selectedOfferIndex,
         );
       },
     }) || Promise.resolve
