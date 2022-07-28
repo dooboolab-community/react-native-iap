@@ -178,7 +178,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     @objc public func buyProduct(
         _ sku:String,
-        appAccountToken:String,
         andDangerouslyFinishTransactionAutomatically: Bool,
         applicationUsername:String?,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
