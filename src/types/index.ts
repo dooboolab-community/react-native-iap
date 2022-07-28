@@ -175,5 +175,14 @@ export interface RequestPurchase {
   applicationUsername?: string;
   obfuscatedAccountIdAndroid: string | undefined;
   obfuscatedProfileIdAndroid: string | undefined;
-  selectedOfferIndex: number;
+}
+
+export interface RequestSubscription {
+  sku: string;
+  andDangerouslyFinishTransactionAutomaticallyIOS: boolean;
+  purchaseTokenAndroid: string | undefined;
+  prorationModeAndroid: ProrationModesAndroid;
+  obfuscatedAccountIdAndroid: string | undefined;
+  obfuscatedProfileIdAndroid: string | undefined;
+  selectedOfferIndex?: number | undefined;
 }
