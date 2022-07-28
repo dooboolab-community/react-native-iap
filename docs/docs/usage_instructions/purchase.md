@@ -92,7 +92,7 @@ Then define the method like below and call it when user press the button.
 ```javascript
   requestPurchase = async (sku: string) => {
     try {
-      await RNIap.requestPurchase(sku, false);
+      await RNIap.requestPurchase({ sku: sku, andDangerouslyFinishTransactionAutomaticallyIOS: false });
     } catch (err) {
       console.warn(err.code, err.message);
     }
