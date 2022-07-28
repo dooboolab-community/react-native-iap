@@ -160,7 +160,7 @@ export const getProducts = (skus: string[]): Promise<Array<Product>> =>
   (
     Platform.select({
       ios: async () => {
-        const products =  await getIosModule().getItems(skus);
+        const products = await getIosModule().getItems(skus);
 
         return products.filter((item: ProductCommon) => {
           return skus.includes(item.productId) && item.type === 'iap';
@@ -190,7 +190,7 @@ export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
 
         return subscriptions.filter((item: ProductCommon) => {
           return skus.includes(item.productId) && item.type === 'subs';
-        })
+        });
       },
       android: async () => {
         const subscriptions = await getAndroidModule().getItemsByType(
