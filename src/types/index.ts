@@ -168,3 +168,12 @@ export interface Subscription extends ProductCommon {
   subscriptionPeriodAndroid?: string;
   freeTrialPeriodAndroid?: string;
 }
+
+export interface RequestPurchase {
+  sku: string;
+  andDangerouslyFinishTransactionAutomaticallyIOS: boolean;
+  applicationUsername?: string;
+  obfuscatedAccountIdAndroid: string | undefined;
+  obfuscatedProfileIdAndroid: string | undefined;
+  selectedOfferIndex: number;
+}

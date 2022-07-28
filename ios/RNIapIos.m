@@ -20,6 +20,7 @@ RCT_EXTERN_METHOD(buyProduct:
                   (NSString*)sku
                   appAccountToken:(NSString*)appAccountToken
                   andDangerouslyFinishTransactionAutomatically:(BOOL)andDangerouslyFinishTransactionAutomatically
+                  applicationUsername:(NSString)applicationUsername
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(buyProductWithOffer:
