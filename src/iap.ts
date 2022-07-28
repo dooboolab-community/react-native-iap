@@ -187,7 +187,7 @@ export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
     Platform.select({
       ios: async () => {
         const items = await getIosModule().getItems(skus);
-        
+
         return items
           .filter((item: ProductCommon) => skus.includes(item.productId))
           .filter((item: ProductCommon) => item.type === 'subs');
