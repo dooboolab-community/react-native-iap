@@ -161,11 +161,11 @@ export const getProducts = (skus: string[]): Promise<Array<Product>> =>
   (
     Platform.select({
       ios: async () => {
-        const items = await getIosModule().getItems(skus);
+        const products = await getIosModule().getItems(skus);
 
-        return items
-          .filter((item: ProductCommon) => skus.includes(item.productId))
-          .filter((item: ProductCommon) => item.type === 'iap');
+        return products.filter((item: ProductCommon) => {
+          return skus.includes(item.productId) && item.type === 'iap';
+        });
       },
       android: async () => {
         const products = await getAndroidModule().getItemsByType(
@@ -187,11 +187,11 @@ export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
   (
     Platform.select({
       ios: async () => {
-        const items = await getIosModule().getItems(skus);
+        const subscriptions = await getIosModule().getItems(skus);
 
-        return items
-          .filter((item: ProductCommon) => skus.includes(item.productId))
-          .filter((item: ProductCommon) => item.type === 'subs');
+        return subscriptions.filter((item: ProductCommon) => {
+          return skus.includes(item.productId) && item.type === 'subs';
+        });
       },
       android: async () => {
         const subscriptions = await getAndroidModule().getItemsByType(
