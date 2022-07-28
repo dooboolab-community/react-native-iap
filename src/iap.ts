@@ -277,7 +277,7 @@ export const requestPurchase = ({
   applicationUsername,
   obfuscatedAccountIdAndroid = undefined,
   obfuscatedProfileIdAndroid = undefined,
-  selectedOfferIndex
+  selectedOfferIndex,
 }: RequestPurchase): Promise<InAppPurchase> =>
   (
     Platform.select({
