@@ -161,7 +161,7 @@ export const getProducts = (skus: string[]): Promise<Array<Product>> =>
     Platform.select({
       ios: async () => {
         const items = await getIosModule().getItems(skus);
-        
+
         return items
           .filter((item: ProductCommon) => skus.includes(item.productId))
           .filter((item: ProductCommon) => item.type === 'iap');
