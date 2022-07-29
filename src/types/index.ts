@@ -60,7 +60,7 @@ export interface ProductPurchase {
   quantityIOS?: number;
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;
-  //Android
+  //Android V4
   dataAndroid?: string;
   signatureAndroid?: string;
   autoRenewingAndroid?: boolean;
@@ -70,6 +70,29 @@ export interface ProductPurchase {
   developerPayloadAndroid?: string;
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
+  //Android V5
+  title?: string;
+  description?: string;
+  productType?: string;
+  name?: string;
+  oneTimePurchaseOfferDetails?: {
+    priceCurrencyCode?: string;
+    formattedPrice?: string;
+    priceAmountMicros?: string;
+  }[];
+  subscriptionOfferDetails?: {
+    offerToken?: string[];
+    pricingPhases: {
+      pricingPhaseList: {
+        formattedPrice?: string;
+        priceCurrencyCode?: string;
+        billingPeriod?: string;
+        billingCycleCount?: number;
+        priceAmountMicros?: string;
+        recurrenceMode?: number;
+      };
+    };
+  }[];
   //Amazon
   userIdAmazon?: string;
   userMarketplaceAmazon?: string;
@@ -144,27 +167,6 @@ export interface Subscription extends ProductCommon {
   introductoryPricePeriodAndroid?: string;
   subscriptionPeriodAndroid?: string;
   freeTrialPeriodAndroid?: string;
-  //Android V5
-  productType?: string;
-  name?: string;
-  oneTimePurchaseOfferDetails?: {
-    priceCurrencyCode?: string;
-    formattedPrice?: string;
-    priceAmountMicros?: string;
-  }[];
-  subscriptionOfferDetails?: {
-    offerToken?: string[];
-    pricingPhases: {
-      pricingPhaseList: {
-        formattedPrice?: string;
-        priceCurrencyCode?: string;
-        billingPeriod?: string;
-        billingCycleCount?: number;
-        priceAmountMicros?: string;
-        recurrenceMode?: number;
-      };
-    };
-  }[];
 }
 
 export interface RequestPurchase {
