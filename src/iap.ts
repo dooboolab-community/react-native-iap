@@ -16,11 +16,11 @@ import {
   Product,
   ProductCommon,
   ProductPurchase,
+  ProrationModesAndroid,
   PurchaseError,
   PurchaseResult,
   PurchaseStateAndroid,
   RequestPurchase,
-  RequestSubscription,
   Subscription,
   SubscriptionPurchase,
 } from './types';
@@ -41,7 +41,7 @@ export const getInstallSourceAndroid = (): InstallSourceAndroid => {
  */
 let androidNativeModule = RNIapModuleV4;
 
-export const setAndroidNativeModule = (
+const setAndroidNativeModule = (
   nativeModule: typeof RNIapModule | typeof RNIapModuleV4,
 ): void => {
   androidNativeModule = nativeModule;
@@ -279,6 +279,7 @@ export const requestPurchase = ({
   applicationUsername,
   obfuscatedAccountIdAndroid = undefined,
   obfuscatedProfileIdAndroid = undefined,
+  selectedOfferIndex,
 }: RequestPurchase): Promise<InAppPurchase> =>
   (
     Platform.select({
@@ -305,7 +306,7 @@ export const requestPurchase = ({
           0,
           obfuscatedAccountIdAndroid,
           obfuscatedProfileIdAndroid,
-          undefined,
+          selectedOfferIndex,
         );
       },
     }) || Promise.resolve
@@ -319,18 +320,16 @@ export const requestPurchase = ({
  * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
  * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
- * @param {string} [selectedOfferIndex] Selected Offer index from the list returned by get products
  * @returns {Promise<SubscriptionPurchase | null>} Promise resolves to null when using proratioModesAndroid=DEFERRED, and to a SubscriptionPurchase otherwise
  */
-export const requestSubscription = ({
-  sku,
-  andDangerouslyFinishTransactionAutomaticallyIOS = false,
-  purchaseTokenAndroid = undefined,
-  prorationModeAndroid = -1,
-  obfuscatedAccountIdAndroid = undefined,
-  obfuscatedProfileIdAndroid = undefined,
-  selectedOfferIndex = undefined,
-}: RequestSubscription): Promise<SubscriptionPurchase | null> =>
+export const requestSubscription = (
+  sku: string,
+  andDangerouslyFinishTransactionAutomaticallyIOS: boolean = false,
+  purchaseTokenAndroid: string | undefined = undefined,
+  prorationModeAndroid: ProrationModesAndroid = -1,
+  obfuscatedAccountIdAndroid: string | undefined = undefined,
+  obfuscatedProfileIdAndroid: string | undefined = undefined,
+): Promise<SubscriptionPurchase | null> =>
   (
     Platform.select({
       ios: async () => {
@@ -355,7 +354,6 @@ export const requestSubscription = ({
           prorationModeAndroid,
           obfuscatedAccountIdAndroid,
           obfuscatedProfileIdAndroid,
-          selectedOfferIndex,
         );
       },
     }) || Promise.resolve
