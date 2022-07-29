@@ -221,7 +221,7 @@ class Page extends Component {
   // Version 3 apis
   requestPurchase = async (sku): void => {
     try {
-      RNIap.requestPurchase(sku);
+      RNIap.requestPurchase({sku});
     } catch (err) {
       console.warn(err.code, err.message);
     }
@@ -229,7 +229,7 @@ class Page extends Component {
 
   requestSubscription = async (sku): void => {
     try {
-      RNIap.requestSubscription(sku);
+      RNIap.requestSubscription({sku, selectedOfferIndex:8});
     } catch (err) {
       Alert.alert(err.message);
     }
@@ -289,16 +289,15 @@ class Page extends Component {
                     {JSON.stringify(product)}
                   </Text>
                   <NativeButton
-                    // onPress={(): void => this.requestPurchase(product.productId)}
                     onPress={(): void =>
                       this.requestSubscription(product.productId)
                     }
                     activeOpacity={0.5}
                     style={styles.btn}
                     textStyle={styles.txt}
-                  >
-                    Request purchase for above product
-                  </NativeButton>
+                    title="Request purchase for above product"
+                  />
+                  
                 </View>
               );
             })}

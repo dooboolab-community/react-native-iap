@@ -363,10 +363,10 @@ class RNIapModuleV4(
         type: String,
         sku: String,
         purchaseToken: String?,
-        prorationMode: Int?,
+        prorationMode: Int,
         obfuscatedAccountId: String?,
         obfuscatedProfileId: String?,
-        selectedOfferIndex: Int?, // New optional parameter in V5 (added to maintain interface consistency)
+        selectedOfferIndex: Int, // New optional parameter in V5 (added to maintain interface consistency)
         promise: Promise
     ) {
         val activity = currentActivity

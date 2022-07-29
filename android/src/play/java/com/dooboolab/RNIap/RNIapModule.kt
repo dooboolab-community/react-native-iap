@@ -388,10 +388,10 @@ class RNIapModule(
         type: String,
         sku: String, // TODO: should this now be an array?
         purchaseToken: String?,
-        prorationMode: Int?,
+        prorationMode: Int,
         obfuscatedAccountId: String?,
         obfuscatedProfileId: String?,
-        selectedOfferIndex: Int?, // New optional parameter in V5, TODO: should it be an array?
+        selectedOfferIndex: Int, // New optional parameter in V5, TODO: should it be an array?
         promise: Promise
     ) {
         val activity = currentActivity
@@ -421,7 +421,7 @@ class RNIapModule(
                 return@ensureConnection
             }
             var productParams = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(selectedSku)
-            if (selectedOfferIndex != null && (
+            if (selectedOfferIndex >-1 && (
                 selectedSku.subscriptionOfferDetails?.size
                     ?: 0
                 ) > selectedOfferIndex
