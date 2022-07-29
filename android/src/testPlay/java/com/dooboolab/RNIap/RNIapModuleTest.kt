@@ -30,7 +30,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class RNIapModuleTestV4 {
+class RNIapModuleTest {
 
     @MockK
     lateinit var context: ReactApplicationContext
@@ -44,14 +44,14 @@ class RNIapModuleTestV4 {
     @MockK
     lateinit var availability: GoogleApiAvailability
 
-    private lateinit var module: RNIapModuleV4
+    private lateinit var module: RNIapModule
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
         every { builder.setListener(any()) } returns builder
         every { builder.build() } returns billingClient
-        module = RNIapModuleV4(context, builder, availability)
+        module = RNIapModule(context, builder, availability)
     }
 
     @Test
@@ -134,7 +134,7 @@ class RNIapModuleTestV4 {
         every { billingClient.isReady } returns true
         val promise = mockk<Promise>(relaxed = true)
         val listener = slot<PurchasesResponseListener>()
-        every { billingClient.queryPurchasesAsync(any<String>(), capture(listener)) } answers {
+        every { billingClient.queryPurchasesAsync(any(), capture(listener)) } answers {
             listener.captured.onQueryPurchasesResponse(BillingResult.newBuilder().build(), listOf())
         }
         module.initConnection(mockk())
@@ -150,7 +150,7 @@ class RNIapModuleTestV4 {
         every { billingClient.isReady } returns true
         val promise = mockk<Promise>(relaxed = true)
         val listener = slot<PurchasesResponseListener>()
-        every { billingClient.queryPurchasesAsync(any<String>(), capture(listener)) } answers {
+        every { billingClient.queryPurchasesAsync(any(), capture(listener)) } answers {
             listener.captured.onQueryPurchasesResponse(
                 BillingResult.newBuilder().build(),
                 listOf(

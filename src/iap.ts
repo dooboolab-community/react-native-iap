@@ -25,7 +25,7 @@ import {
   SubscriptionPurchase,
 } from './types';
 
-const {RNIapIos, RNIapModule, RNIapModuleV4, RNIapAmazonModule} = NativeModules;
+const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
 
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
@@ -36,34 +36,16 @@ export const getInstallSourceAndroid = (): InstallSourceAndroid => {
     : InstallSourceAndroid.AMAZON;
 };
 
-/**
- * Defaulting to V4 to minimize migration, it'll eventually be changed to default to V5
- */
-let androidNativeModule = RNIapModuleV4;
-
-const setAndroidNativeModule = (
-  nativeModule: typeof RNIapModule | typeof RNIapModuleV4,
-): void => {
-  androidNativeModule = nativeModule;
-};
-
 const checkNativeAndroidAvailable = (): void => {
-  if (!RNIapModule && !RNIapModuleV4 && !RNIapAmazonModule) {
+  if (!RNIapModule && !RNIapAmazonModule) {
     throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
   }
 };
 
-const getAndroidModule = ():
-  | typeof RNIapModule
-  | typeof RNIapModuleV4
-  | typeof RNIapAmazonModule => {
+const getAndroidModule = (): typeof RNIapModule | typeof RNIapAmazonModule => {
   checkNativeAndroidAvailable();
 
-  return androidNativeModule
-    ? androidNativeModule
-    : RNIapModule
-    ? RNIapModule
-    : RNIapAmazonModule;
+  return RNIapModule ? RNIapModule : RNIapAmazonModule;
 };
 
 const checkNativeiOSAvailable = (): void => {
@@ -82,9 +64,7 @@ const getNativeModule = ():
   | typeof RNIapModule
   | typeof RNIapAmazonModule
   | typeof RNIapIos => {
-  return androidNativeModule
-    ? androidNativeModule
-    : RNIapModule
+  return RNIapModule
     ? RNIapModule
     : RNIapAmazonModule
     ? RNIapAmazonModule
@@ -273,14 +253,15 @@ export const getAvailablePurchases = (): Promise<
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
  * @returns {Promise<InAppPurchase>}
  */
-export const requestPurchase = ({
-  sku,
-  andDangerouslyFinishTransactionAutomaticallyIOS = false,
-  applicationUsername,
-  obfuscatedAccountIdAndroid = undefined,
-  obfuscatedProfileIdAndroid = undefined,
-  selectedOfferIndex,
-}: RequestPurchase): Promise<InAppPurchase> =>
+
+export const requestPurchase = (
+  sku: string,
+  appAccountToken: string,
+  andDangerouslyFinishTransactionAutomaticallyIOS: boolean = false,
+  obfuscatedAccountIdAndroid: string | undefined = undefined,
+  obfuscatedProfileIdAndroid: string | undefined = undefined,
+  applicationUsername: string | undefined = undefined,
+): Promise<InAppPurchase> =>
   (
     Platform.select({
       ios: async () => {
@@ -306,7 +287,6 @@ export const requestPurchase = ({
           0,
           obfuscatedAccountIdAndroid,
           obfuscatedProfileIdAndroid,
-          selectedOfferIndex,
         );
       },
     }) || Promise.resolve
