@@ -1,6 +1,6 @@
 {
   "name": "react-native-iap",
-  "version": "9.0.0-beta3",
+  "version": "9.0.0-beta4",
   "packageManager": "yarn@3.2.0",
   "description": "React Native In App Purchase Module.",
   "main": "index.js",
