@@ -421,7 +421,7 @@ class RNIapModule(
                 return@ensureConnection
             }
             var productParams = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(selectedSku)
-            if (selectedOfferIndex >-1 && (
+            if (selectedOfferIndex > -1 && (
                 selectedSku.subscriptionOfferDetails?.size
                     ?: 0
                 ) > selectedOfferIndex

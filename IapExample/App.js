@@ -179,8 +179,7 @@ class Page extends Component {
 
   getItems = async (): void => {
     try {
-      //const products = await RNIap.getProducts(itemSkus);
-      const products = await RNIap.getSubscriptions(itemSkus);
+      const products = await RNIap.getProducts(itemSkus);
       console.log('Products', products);
       this.setState({productList: products});
     } catch (err) {
