@@ -179,8 +179,8 @@ class Page extends Component {
 
   getItems = async (): void => {
     try {
-      const products = await RNIap.getProducts(itemSkus);
-      // const products = await RNIap.getSubscriptions(itemSkus);
+      //const products = await RNIap.getProducts(itemSkus);
+      const products = await RNIap.getSubscriptions(itemSkus);
       console.log('Products', products);
       this.setState({productList: products});
     } catch (err) {
@@ -229,7 +229,7 @@ class Page extends Component {
 
   requestSubscription = async (sku): void => {
     try {
-      RNIap.requestSubscription({sku, selectedOfferIndex:8});
+      RNIap.requestSubscription({sku});
     } catch (err) {
       Alert.alert(err.message);
     }
