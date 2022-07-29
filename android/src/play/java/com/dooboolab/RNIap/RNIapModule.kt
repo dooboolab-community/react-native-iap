@@ -200,11 +200,13 @@ class RNIapModule(
             val skuList = ArrayList<QueryProductDetailsParams.Product>()
             for (i in 0 until skuArr.size()) {
                 if (skuArr.getType(i) == ReadableType.String) {
-                    val sku: String = skuArr.getString(i)
-                    skuList.add(
-                        QueryProductDetailsParams.Product.newBuilder().setProductId(sku)
-                            .setProductType(type).build()
-                    )
+                    val sku = skuArr.getString(i)
+                    sku?.let {
+                        skuList.add(
+                            QueryProductDetailsParams.Product.newBuilder().setProductId(sku)
+                                .setProductType(type).build()
+                        )
+                    }
                 }
             }
             val params = QueryProductDetailsParams.newBuilder().setProductList(skuList)

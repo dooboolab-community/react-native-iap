@@ -196,8 +196,10 @@ class RNIapModuleV4(
             val skuList = ArrayList<String>()
             for (i in 0 until skuArr.size()) {
                 if (skuArr.getType(i) == ReadableType.String) {
-                    val sku: String = skuArr.getString(i)
-                    skuList.add(sku)
+                    val sku = skuArr.getString(i)
+                    sku?.let {
+                        skuList.add(sku)
+                    }
                 }
             }
             val params = SkuDetailsParams.newBuilder()
