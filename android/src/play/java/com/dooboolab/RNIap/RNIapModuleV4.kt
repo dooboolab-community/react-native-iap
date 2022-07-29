@@ -196,10 +196,8 @@ class RNIapModuleV4(
             val skuList = ArrayList<String>()
             for (i in 0 until skuArr.size()) {
                 if (skuArr.getType(i) == ReadableType.String) {
-                    val sku = skuArr.getString(i)
-                    sku?.let {
-                        skuList.add(sku)
-                    }
+                    val sku: String = skuArr.getString(i)
+                    skuList.add(sku)
                 }
             }
             val params = SkuDetailsParams.newBuilder()
@@ -363,10 +361,10 @@ class RNIapModuleV4(
         type: String,
         sku: String,
         purchaseToken: String?,
-        prorationMode: Int,
+        prorationMode: Int?,
         obfuscatedAccountId: String?,
         obfuscatedProfileId: String?,
-        selectedOfferIndex: Int, // New optional parameter in V5 (added to maintain interface consistency)
+        selectedOfferIndex: Int?, // New optional parameter in V5 (added to maintain interface consistency)
         promise: Promise
     ) {
         val activity = currentActivity

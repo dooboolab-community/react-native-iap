@@ -200,13 +200,11 @@ class RNIapModule(
             val skuList = ArrayList<QueryProductDetailsParams.Product>()
             for (i in 0 until skuArr.size()) {
                 if (skuArr.getType(i) == ReadableType.String) {
-                    val sku = skuArr.getString(i)
-                    sku?.let {
-                        skuList.add(
-                            QueryProductDetailsParams.Product.newBuilder().setProductId(sku)
-                                .setProductType(type).build()
-                        )
-                    }
+                    val sku: String = skuArr.getString(i)
+                    skuList.add(
+                        QueryProductDetailsParams.Product.newBuilder().setProductId(sku)
+                            .setProductType(type).build()
+                    )
                 }
             }
             val params = QueryProductDetailsParams.newBuilder().setProductList(skuList)
@@ -388,10 +386,10 @@ class RNIapModule(
         type: String,
         sku: String, // TODO: should this now be an array?
         purchaseToken: String?,
-        prorationMode: Int,
+        prorationMode: Int?,
         obfuscatedAccountId: String?,
         obfuscatedProfileId: String?,
-        selectedOfferIndex: Int, // New optional parameter in V5, TODO: should it be an array?
+        selectedOfferIndex: Int?, // New optional parameter in V5, TODO: should it be an array?
         promise: Promise
     ) {
         val activity = currentActivity
@@ -421,7 +419,7 @@ class RNIapModule(
                 return@ensureConnection
             }
             var productParams = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(selectedSku)
-            if (selectedOfferIndex > -1 && (
+            if (selectedOfferIndex != null && (
                 selectedSku.subscriptionOfferDetails?.size
                     ?: 0
                 ) > selectedOfferIndex
