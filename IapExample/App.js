@@ -1,11 +1,11 @@
 import {
   Alert,
-  Button as NativeButton,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View, 
+  Button as NativeButton
 } from 'react-native';
 import RNIap, {
   InAppPurchase,
@@ -19,7 +19,6 @@ import RNIap, {
   purchaseUpdatedListener,
 } from 'react-native-iap';
 import React, {Component} from 'react';
-import {name, version} from './package.json';
 
 //import NativeButton from 'apsl-react-native-button';
 
@@ -181,7 +180,6 @@ class Page extends Component {
   getItems = async (): void => {
     try {
       const products = await RNIap.getProducts(itemSkus);
-      // const products = await RNIap.getSubscriptions(itemSkus);
       console.log('Products', products);
       this.setState({productList: products});
     } catch (err) {
@@ -222,7 +220,7 @@ class Page extends Component {
   // Version 3 apis
   requestPurchase = async (sku): void => {
     try {
-      RNIap.requestPurchase(sku);
+      RNIap.requestPurchase({sku});
     } catch (err) {
       console.warn(err.code, err.message);
     }
@@ -230,7 +228,7 @@ class Page extends Component {
 
   requestSubscription = async (sku): void => {
     try {
-      RNIap.requestSubscription(sku);
+      RNIap.requestSubscription({sku});
     } catch (err) {
       Alert.alert(err.message);
     }
@@ -243,7 +241,7 @@ class Page extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTxt}>{name} {version}</Text>
+          <Text style={styles.headerTxt}>react-native-iap V3</Text>
         </View>
         <View style={styles.content}>
           <ScrollView style={{alignSelf: 'stretch'}}>
@@ -290,16 +288,15 @@ class Page extends Component {
                     {JSON.stringify(product)}
                   </Text>
                   <NativeButton
-                    // onPress={(): void => this.requestPurchase(product.productId)}
                     onPress={(): void =>
                       this.requestSubscription(product.productId)
                     }
                     activeOpacity={0.5}
                     style={styles.btn}
                     textStyle={styles.txt}
-                  >
-                    Request purchase for above product
-                  </NativeButton>
+                    title="Request purchase for above product"
+                  />
+                  
                 </View>
               );
             })}

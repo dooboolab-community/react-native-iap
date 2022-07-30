@@ -144,6 +144,27 @@ export interface Subscription extends ProductCommon {
   introductoryPricePeriodAndroid?: string;
   subscriptionPeriodAndroid?: string;
   freeTrialPeriodAndroid?: string;
+  //Android V5
+  productType?: string;
+  name?: string;
+  oneTimePurchaseOfferDetails?: {
+    priceCurrencyCode?: string;
+    formattedPrice?: string;
+    priceAmountMicros?: string;
+  }[];
+  subscriptionOfferDetails?: {
+    offerToken?: string[];
+    pricingPhases: {
+      pricingPhaseList: {
+        formattedPrice?: string;
+        priceCurrencyCode?: string;
+        billingPeriod?: string;
+        billingCycleCount?: number;
+        priceAmountMicros?: string;
+        recurrenceMode?: number;
+      };
+    };
+  }[];
 }
 
 export interface RequestPurchase {
@@ -152,5 +173,14 @@ export interface RequestPurchase {
   applicationUsername?: string;
   obfuscatedAccountIdAndroid: string | undefined;
   obfuscatedProfileIdAndroid: string | undefined;
-  selectedOfferIndex: number;
+}
+
+export interface RequestSubscription {
+  sku: string;
+  andDangerouslyFinishTransactionAutomaticallyIOS: boolean;
+  purchaseTokenAndroid: string | undefined;
+  prorationModeAndroid: ProrationModesAndroid;
+  obfuscatedAccountIdAndroid: string | undefined;
+  obfuscatedProfileIdAndroid: string | undefined;
+  selectedOfferIndex?: number | undefined;
 }
