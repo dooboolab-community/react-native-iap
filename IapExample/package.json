@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "preinstall": "cd .. && yarn && yarn build && cd IapExample",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
@@ -12,7 +13,7 @@
   "dependencies": {
     "react": "18.0.0",
     "react-native": "0.69.1",
-    "react-native-iap": "9.0.0-beta3"
+    "react-native-iap": "file:../"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
