@@ -16,16 +16,16 @@ import {
   Product,
   ProductCommon,
   ProductPurchase,
+  ProrationModesAndroid,
   PurchaseError,
   PurchaseResult,
   PurchaseStateAndroid,
   RequestPurchase,
-  RequestSubscription,
   Subscription,
   SubscriptionPurchase,
 } from './types';
 
-const {RNIapIos, RNIapModule, RNIapModuleV4, RNIapAmazonModule} = NativeModules;
+const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
 
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
@@ -36,34 +36,16 @@ export const getInstallSourceAndroid = (): InstallSourceAndroid => {
     : InstallSourceAndroid.AMAZON;
 };
 
-/**
- * Defaulting to V4 to minimize migration, it'll eventually be changed to default to V5
- */
-let androidNativeModule = RNIapModuleV4;
-
-export const setAndroidNativeModule = (
-  nativeModule: typeof RNIapModule | typeof RNIapModuleV4,
-): void => {
-  androidNativeModule = nativeModule;
-};
-
 const checkNativeAndroidAvailable = (): void => {
-  if (!RNIapModule && !RNIapModuleV4 && !RNIapAmazonModule) {
+  if (!RNIapModule && !RNIapAmazonModule) {
     throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
   }
 };
 
-const getAndroidModule = ():
-  | typeof RNIapModule
-  | typeof RNIapModuleV4
-  | typeof RNIapAmazonModule => {
+const getAndroidModule = (): typeof RNIapModule | typeof RNIapAmazonModule => {
   checkNativeAndroidAvailable();
 
-  return androidNativeModule
-    ? androidNativeModule
-    : RNIapModule
-    ? RNIapModule
-    : RNIapAmazonModule;
+  return RNIapModule ? RNIapModule : RNIapAmazonModule;
 };
 
 const checkNativeiOSAvailable = (): void => {
@@ -82,9 +64,7 @@ const getNativeModule = ():
   | typeof RNIapModule
   | typeof RNIapAmazonModule
   | typeof RNIapIos => {
-  return androidNativeModule
-    ? androidNativeModule
-    : RNIapModule
+  return RNIapModule
     ? RNIapModule
     : RNIapAmazonModule
     ? RNIapAmazonModule
@@ -273,13 +253,15 @@ export const getAvailablePurchases = (): Promise<
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
  * @returns {Promise<InAppPurchase>}
  */
-export const requestPurchase = ({
-  sku,
-  andDangerouslyFinishTransactionAutomaticallyIOS = false,
-  applicationUsername,
-  obfuscatedAccountIdAndroid = undefined,
-  obfuscatedProfileIdAndroid = undefined,
-}: RequestPurchase): Promise<InAppPurchase> =>
+
+export const requestPurchase = (
+  sku: string,
+  appAccountToken: string,
+  andDangerouslyFinishTransactionAutomaticallyIOS: boolean = false,
+  obfuscatedAccountIdAndroid: string | undefined = undefined,
+  obfuscatedProfileIdAndroid: string | undefined = undefined,
+  applicationUsername: string | undefined = undefined,
+): Promise<InAppPurchase> =>
   (
     Platform.select({
       ios: async () => {
@@ -305,7 +287,6 @@ export const requestPurchase = ({
           0,
           obfuscatedAccountIdAndroid,
           obfuscatedProfileIdAndroid,
-          undefined,
         );
       },
     }) || Promise.resolve
@@ -319,18 +300,16 @@ export const requestPurchase = ({
  * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
  * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
- * @param {string} [selectedOfferIndex] Selected Offer index from the list returned by get products
  * @returns {Promise<SubscriptionPurchase | null>} Promise resolves to null when using proratioModesAndroid=DEFERRED, and to a SubscriptionPurchase otherwise
  */
-export const requestSubscription = ({
-  sku,
-  andDangerouslyFinishTransactionAutomaticallyIOS = false,
-  purchaseTokenAndroid = undefined,
-  prorationModeAndroid = -1,
-  obfuscatedAccountIdAndroid = undefined,
-  obfuscatedProfileIdAndroid = undefined,
-  selectedOfferIndex = -1,
-}: RequestSubscription): Promise<SubscriptionPurchase | null> =>
+export const requestSubscription = (
+  sku: string,
+  andDangerouslyFinishTransactionAutomaticallyIOS: boolean = false,
+  purchaseTokenAndroid: string | undefined = undefined,
+  prorationModeAndroid: ProrationModesAndroid = -1,
+  obfuscatedAccountIdAndroid: string | undefined = undefined,
+  obfuscatedProfileIdAndroid: string | undefined = undefined,
+): Promise<SubscriptionPurchase | null> =>
   (
     Platform.select({
       ios: async () => {
@@ -355,7 +334,6 @@ export const requestSubscription = ({
           prorationModeAndroid,
           obfuscatedAccountIdAndroid,
           obfuscatedProfileIdAndroid,
-          selectedOfferIndex,
         );
       },
     }) || Promise.resolve

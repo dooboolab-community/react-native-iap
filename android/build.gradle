@@ -1,5 +1,5 @@
 buildscript {
-  ext.DEFAULT_KOTLIN_VERSION = '1.7.10'
+  ext.DEFAULT_KOTLIN_VERSION = '1.5.10'
   ext.safeExtGet={prop, fallback-> 
     return rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
   }
@@ -23,7 +23,7 @@ def DEFAULT_COMPILE_SDK_VERSION = 30
 def DEFAULT_BUILD_TOOLS_VERSION = "30.0.2"
 def DEFAULT_MIN_SDK_VERSION = 16
 def DEFAULT_TARGET_SDK_VERSION = 30
-def DEFAULT_PLAY_SERVICES_VERSION = "18.1.0"
+def DEFAULT_PLAY_SERVICES_VERSION = "17.6.0"
 
 android {
   compileSdkVersion safeExtGet("compileSdkVersion", DEFAULT_COMPILE_SDK_VERSION)
@@ -68,7 +68,7 @@ dependencies {
   implementation 'com.facebook.react:react-native:+'
   testImplementation 'junit:junit:4.13.1'
   testImplementation "io.mockk:mockk:1.12.4"
-  playImplementation 'com.android.billingclient:billing:5.0.0'
+  playImplementation 'com.android.billingclient:billing:4.0.0'
   def playServicesVersion = safeExtGet('playServicesVersion', DEFAULT_PLAY_SERVICES_VERSION)
   playImplementation "com.google.android.gms:play-services-base:$playServicesVersion"
   amazonImplementation fileTree(dir: 'libs', include: ['*.jar'])

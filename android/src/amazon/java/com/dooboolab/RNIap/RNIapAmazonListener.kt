@@ -245,10 +245,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                 sendEvent(reactContext, "purchase-error", error)
                 DoobooUtils.instance
                     .rejectPromisesForKey(
-                        RNIapAmazonModule.Companion.PROMISE_BUY_ITEM,
-                        errorCode,
-                        debugMessage,
-                        null
+                        RNIapAmazonModule.Companion.PROMISE_BUY_ITEM, errorCode, debugMessage, null
                     )
             }
             PurchaseResponse.RequestStatus.FAILED -> {
@@ -262,10 +259,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                 sendEvent(reactContext, "purchase-error", error)
                 DoobooUtils.instance
                     .rejectPromisesForKey(
-                        RNIapAmazonModule.Companion.PROMISE_BUY_ITEM,
-                        errorCode,
-                        debugMessage,
-                        null
+                        RNIapAmazonModule.Companion.PROMISE_BUY_ITEM, errorCode, debugMessage, null
                     )
             }
             PurchaseResponse.RequestStatus.INVALID_SKU -> {
@@ -278,10 +272,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                 sendEvent(reactContext, "purchase-error", error)
                 DoobooUtils.instance
                     .rejectPromisesForKey(
-                        RNIapAmazonModule.Companion.PROMISE_BUY_ITEM,
-                        errorCode,
-                        debugMessage,
-                        null
+                        RNIapAmazonModule.Companion.PROMISE_BUY_ITEM, errorCode, debugMessage, null
                     )
             }
             PurchaseResponse.RequestStatus.NOT_SUPPORTED -> {
@@ -294,10 +285,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                 sendEvent(reactContext, "purchase-error", error)
                 DoobooUtils.instance
                     .rejectPromisesForKey(
-                        RNIapAmazonModule.Companion.PROMISE_BUY_ITEM,
-                        errorCode,
-                        debugMessage,
-                        null
+                        RNIapAmazonModule.Companion.PROMISE_BUY_ITEM, errorCode, debugMessage, null
                     )
             }
         }
