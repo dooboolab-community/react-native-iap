@@ -8,7 +8,7 @@
 
 ### Pull request(PR)
 
-- We are currently working on `4.0.0` release on `next` branch. Please make a `PR` to `next` branch.
+- Make a `PR` to `main` branch. For the deployment strategy, please follow [the discussion](https://github.com/dooboolab/react-native-iap/discussions/1777#discussioncomment-3285450).
 
 ### Coding Guidelines
 
