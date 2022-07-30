@@ -1,11 +1,11 @@
 import {
   Alert,
+  Button as NativeButton,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
-  View, 
-  Button as NativeButton
+  View
 } from 'react-native';
 import RNIap, {
   InAppPurchase,
@@ -19,6 +19,7 @@ import RNIap, {
   purchaseUpdatedListener,
 } from 'react-native-iap';
 import React, {Component} from 'react';
+import {name, version} from './package.json';
 
 //import NativeButton from 'apsl-react-native-button';
 
@@ -242,7 +243,7 @@ class Page extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTxt}>react-native-iap V3</Text>
+          <Text style={styles.headerTxt}>{name} {version}</Text>
         </View>
         <View style={styles.content}>
           <ScrollView style={{alignSelf: 'stretch'}}>
