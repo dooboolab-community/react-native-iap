@@ -1,7 +1,8 @@
 # ![image](https://user-images.githubusercontent.com/27461460/75094417-20321b00-55ce-11ea-8de7-a1df42a4b7df.png)
 
 [![Version](http://img.shields.io/npm/v/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
-<!-- [![Next](https://img.shields.io/npm/v/react-native-iap/next.svg?style=flat-square)](https://npmjs.org/package/react-native-iap) -->
+[![Next Version](https://img.shields.io/npm/v/react-native-iap/next)](https://npmjs.org/package/react-native-iap)
+
 [![Download](http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
 [![CI](https://github.com/dooboolab/react-native-iap/actions/workflows/ci.yml/badge.svg)](https://github.com/dooboolab/react-native-iap/actions/workflows/ci.yml)
 [![document](https://github.com/dooboolab/react-native-iap/actions/workflows/deploy-document.yml/badge.svg)](https://github.com/dooboolab/react-native-iap/actions/workflows/deploy-document.yml)
@@ -20,7 +21,11 @@ Published in [website](https://react-native-iap.dooboolab.com).
 
 ## Announcement
 
-- Current module is ported to [expo-iap](https://www.npmjs.com/package/expo-iap) which share the same codebase but different environment. This is currently experimental but you can use it in expo managed workflow. The source code is maintained in branch [expo](https://github.com/dooboolab/react-native-iap/tree/expo).
+- Version `9.0.0` is currently in release candidate. The module migrates android sdk to [play billing library v5](https://qonversion.io/blog/google-play-billing-library-5-0) and iOS sdk to [storekit2](https://developer.apple.com/videos/play/wwdc2021/10114). Our core maintainer [andresesfm](https://github.com/andresesfm) is working hard on this. Please [fund the project](https://opencollective.com/react-native-iap) if you wish to support his effort. The fund goes to maintainers. To try the earlier version please use the `next` package.
+
+  ```
+  yarn add react-native-iap@next
+  ```
 
 - Version `8.0.0` has finally landed in Jan 28th. Since this is early release, please use it with caution 🚧. We recommend user to use `>=8.0.0` with react-native `>=0.65.1`. The `next` package is no longer updated until we organize the roadmap for `9.0.0`.
 
