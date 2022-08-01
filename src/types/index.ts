@@ -180,4 +180,5 @@ export interface RequestPurchase {
 export interface RequestSubscription extends RequestPurchase {
   purchaseTokenAndroid: string | undefined;
   prorationModeAndroid: ProrationModesAndroid;
+  selectedOfferIndex: number | undefined;
 }
