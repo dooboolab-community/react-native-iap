@@ -1,3 +1,3 @@
-## Changelogs
+## Changelog
 
-Check out our [release note](https://github.com/dooboolab/react-native-iap/releases).
+Check out the [release notes](https://github.com/dooboolab/react-native-iap/releases).

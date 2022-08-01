@@ -1,31 +1,79 @@
-name: CI Example App iOS
+name: CI / Example iOS
 
 on:
   push:
     branches: [main]
     paths:
       - 'IapExample/ios/**'
+
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - 'IapExample/ios/**'
 
 jobs:
   build_ios_example:
     runs-on: macos-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Install base modules
-        run: yarn; yarn build
-      - name: Install modules
-        run: cd IapExample;yarn
-      - name: Xcode select
-        run: xcode-select -p
-      - name: Install pod dependencies
-        run: cd IapExample/ios && pod install
-      - name: Build iOS (debug)
-        run: "cd IapExample/ios && xcodebuild \
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Install dependencies for `IapExample/`
+        run: yarn install --immutable
+        working-directory: IapExample
+
+      - name: Restore buildcache
+        uses: mikehardy/buildcache-action@v1
+        continue-on-error: true
+
+      - name: Setup Ruby (bundle)
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: IapExample
+          bundler-cache: true
+
+      - name: SwiftLint
+        run: swiftlint lint --fix --format --path ios/*.swift --config .swiftlint.yml
+
+      - name: Verify no files have changed after auto-fix
+        run: git diff --exit-code HEAD '*.swift'
+
+      - name: Restore Pods cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            IapExample/ios/Pods
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: ${{ runner.os }}-pods-
+
+      - name: Install Pods
+        run: bundle exec pod install
+        working-directory: IapExample/ios
+
+      - name: Install xcpretty
+        run: gem install xcpretty
+        working-directory: IapExample/ios
+
+      - name: Build App
+        run: "set -o pipefail && xcodebuild \
+          CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ \
+          -derivedDataPath build -UseModernBuildSystem=YES \
           -workspace IapExample.xcworkspace \
           -scheme IapExample \
-          clean archive \
-          -sdk iphoneos \
+          -sdk iphonesimulator \
           -configuration Debug \
-          CODE_SIGNING_ALLOWED=NO"
+          -destination 'platform=iOS Simulator,name=iPhone 11 Pro' \
+          build \
+          CODE_SIGNING_ALLOWED=NO | xcpretty"
+        working-directory: IapExample/ios

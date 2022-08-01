@@ -8,7 +8,7 @@ module.exports = {
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'dooboolab',
-  projectName: 'react-native-iap', 
+  projectName: 'react-native-iap',
   themeConfig: {
     navbar: {
       title: 'React Native IAP',

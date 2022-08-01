@@ -31,7 +31,6 @@ const YourComponent = () => {
     availablePurchases,
     currentPurchase,
     currentPurchaseError,
-    initConnectionError,
     finishTransaction,
     getProducts,
     getSubscriptions,

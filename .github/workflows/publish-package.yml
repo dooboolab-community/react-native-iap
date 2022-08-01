@@ -1,4 +1,4 @@
-name: publish-package
+name: Publish / Package
 
 on:
   release:
@@ -7,15 +7,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
-          registry-url: 'https://registry.npmjs.org'
-      - run: yarn
-      - run: yarn build
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

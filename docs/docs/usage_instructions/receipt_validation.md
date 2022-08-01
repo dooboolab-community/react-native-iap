@@ -23,28 +23,29 @@ Further reading is [here](https://stackoverflow.com/questions/35127086) or refer
 
 ### With App Store
 
-#### Local Validation 
+#### Local Validation
 
-Local on-device cryptographic validation is not currently supported. More details are here: https://developer.apple.com/documentation/appstorereceipts/validating_receipts_on_the_device 
+Local on-device cryptographic validation is not currently supported. More details are here: https://developer.apple.com/documentation/appstorereceipts/validating_receipts_on_the_device
 
 #### Validating with the App Store
 
-> WARNING: This method is not recommended for production usage, and Apple explicitly warn against it in their docs: https://developer.apple.com/documentation/storekit/original_api_for_in-app_purchase/validating_receipts_with_the_app_store 
+> WARNING: This method is not recommended for production usage, and Apple explicitly warn against it in their docs: https://developer.apple.com/documentation/storekit/original_api_for_in-app_purchase/validating_receipts_with_the_app_store
 
 This can be used as a convenience method for developing and testing receipt validation through the development lifecycle.
 
 Currently, validating receipts with the App Store is possible locally using `validateReceiptIos()`.
+
 - The first parameter, you should pass `transactionReceipt` which returns after `buyProduct()`.
 - The second parameter, you should pass whether this is `test` environment.
-    If `true`, it will request to `sandbox` and `false` it will request to `production`.
+  If `true`, it will request to `sandbox` and `false` it will request to `production`.
 
-```javascript
-  const receiptBody = {
-    'receipt-data': purchase.transactionReceipt,
-    'password': '******' // app shared secret, can be found in App Store Connect
-  };
-  const result = await RNIap.validateReceiptIos(receiptBody, false);
-  console.log(result);
+```ts
+const receiptBody = {
+  'receipt-data': purchase.transactionReceipt,
+  password: '******', // app shared secret, can be found in App Store Connect
+};
+const result = await RNIap.validateReceiptIos(receiptBody, false);
+console.log(result);
 ```
 
 For further information, please refer to [guide](https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
@@ -57,25 +58,26 @@ For these cases we have a convenience method `getReceiptIOS()` which gets
 the latest receipt for the app at any given time. The response is base64 encoded.
 
 ### iOS Purchasing process right way.
+
 Issue regarding `valid products`
 
 - In iOS, generally you are fetching valid products at App launching process.
 
-    If you fetch again, or fetch valid subscription, the products are added to
-    the array object in iOS side (Objective-C `NSMutableArray`).
+  If you fetch again, or fetch valid subscription, the products are added to
+  the array object in iOS side (Objective-C `NSMutableArray`).
 
-    This makes unexpected behavior when you fetch with a part of product lists.
+  This makes unexpected behavior when you fetch with a part of product lists.
 
-    For example, if you have products of `[A, B, C]`, and you call fetch function
-    with only `[A]`, this module returns `[A, B, C]`).
+  For example, if you have products of `[A, B, C]`, and you call fetch function
+  with only `[A]`, this module returns `[A, B, C]`).
 
-    This is weird, but it works.
+  This is weird, but it works.
 
 - But, weird result is weird, so we made a new method which remove all valid products.
 
-    If you need to clear all products, subscriptions in that array, just call
-    `clearProductsIOS()`, and do the fetching job again, and you will receive what
-    you expected.
+  If you need to clear all products, subscriptions in that array, just call
+  `clearProductsIOS()`, and do the fetching job again, and you will receive what
+  you expected.
 
 ### Example backend (Node.js)
 

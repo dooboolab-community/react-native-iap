@@ -1,4 +1,4 @@
-name: publish-next
+name: Publish / Next
 
 on:
   push:
