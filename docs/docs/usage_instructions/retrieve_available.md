@@ -10,12 +10,8 @@ First thing you should do is to define your product IDs for iOS and Android sepa
 import * as RNIap from 'react-native-iap';
 
 const productIds = Platform.select({
-  ios: [
-    'com.example.coins100'
-  ],
-  android: [
-    'com.example.coins100'
-  ]
+  ios: ['com.example.coins100'],
+  android: ['com.example.coins100'],
 });
 ```
 

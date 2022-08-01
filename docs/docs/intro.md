@@ -15,4 +15,3 @@ To get started right away, follow the instructions on [Installing](installing.md
 **Keep in mind** `react-native-iap` will provide the basic features you need but is not a turnkey solution, implementing In-app purchases in your app will still require quite some work.
 
 Also, implementing the client side is only one side of the coin, you'll have to implement the server side to validate your receipts (which is probably the most time consuming part to do it correctly).
-
