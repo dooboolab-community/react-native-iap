@@ -70,5 +70,8 @@
     "react-native": "0.66.4",
     "ts-jest": "28.0.3",
     "typescript": "4.7.2"
+  },
+  "resolutions": {
+    "@react-native-community/eslint-config": "3.0.1"
   }
 }
