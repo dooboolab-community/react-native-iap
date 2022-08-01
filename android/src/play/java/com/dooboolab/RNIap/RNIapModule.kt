@@ -321,7 +321,10 @@ class RNIapModule(
                     for (i in purchases.indices) {
                         val purchase = purchases[i]
                         val item = WritableNativeMap()
-                        item.putString("productId", purchase.products[0]) // TODO: should be a list
+                        item.putString("productId", purchase.products[0])// kept for convenience/backward-compatibility. productIds has the complete list
+                        val products = Arguments.createArray()
+                        purchase.products.forEach { products.pushString(it) }
+                        item.putArray("productIds", products)
                         item.putString("transactionId", purchase.orderId)
                         item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
                         item.putString("transactionReceipt", purchase.originalJson)
@@ -370,6 +373,9 @@ class RNIapModule(
                 purchaseHistoryRecordList?.forEach { purchase ->
                     val item = Arguments.createMap()
                     item.putString("productId", purchase.products[0])
+                    val products = Arguments.createArray()
+                    purchase.products.forEach { products.pushString(it) }
+                    item.putArray("productIds", products)
                     item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
                     item.putString("transactionReceipt", purchase.originalJson)
                     item.putString("purchaseToken", purchase.purchaseToken)
@@ -442,14 +448,14 @@ class RNIapModule(
             if (obfuscatedProfileId != null) {
                 builder.setObfuscatedProfileId(obfuscatedProfileId)
             }
-            if (prorationMode != null && prorationMode != -1) {
+            if (prorationMode != -1) {
                 if (prorationMode
                     == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE
                 ) {
                     subscriptionUpdateParamsBuilder.setReplaceProrationMode(
                         BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE
                     )
-                    if (type != BillingClient.SkuType.SUBS) {
+                    if (type != BillingClient.ProductType.SUBS) {
                         val debugMessage =
                             (
                                 "IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in" +
@@ -561,6 +567,7 @@ class RNIapModule(
                     .getBillingResponseData(billingResult.responseCode)
                 map.putString("code", errorData[0])
                 map.putString("message", errorData[1])
+                map.putString("purchaseToken",purchaseToken)
                 promise.safeResolve(map)
             }
         }
@@ -586,6 +593,9 @@ class RNIapModule(
                 val item = Arguments.createMap()
                 val purchase = purchases[i]
                 item.putString("productId", purchase.products[0])
+                val products = Arguments.createArray()
+                purchase.products.forEach { products.pushString(it) }
+                item.putArray("productIds", products)
                 item.putString("transactionId", purchase.orderId)
                 item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
                 item.putString("transactionReceipt", purchase.originalJson)

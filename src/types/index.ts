@@ -42,6 +42,7 @@ export enum InstallSourceAndroid {
 export interface ProductCommon {
   type: 'subs' | 'sub' | 'inapp' | 'iap';
   productId: string;
+  productIds?: string[];
   title: string;
   description: string;
   price: string;
@@ -52,6 +53,7 @@ export interface ProductCommon {
 
 export interface ProductPurchase {
   productId: string;
+  productIds?: string[];
   transactionId?: string;
   transactionDate: number;
   transactionReceipt: string;
@@ -175,12 +177,7 @@ export interface RequestPurchase {
   obfuscatedProfileIdAndroid: string | undefined;
 }
 
-export interface RequestSubscription {
-  sku: string;
-  andDangerouslyFinishTransactionAutomaticallyIOS: boolean;
+export interface RequestSubscription extends RequestPurchase {
   purchaseTokenAndroid: string | undefined;
   prorationModeAndroid: ProrationModesAndroid;
-  obfuscatedAccountIdAndroid: string | undefined;
-  obfuscatedProfileIdAndroid: string | undefined;
-  selectedOfferIndex?: number | undefined;
 }
