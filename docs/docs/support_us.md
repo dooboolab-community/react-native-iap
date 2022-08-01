@@ -1,5 +1,7 @@
 # Supporting react-native-iap
----------------------------
+
+---
+
 `react-native-iap` is an open source project with MIT license. We are willing to
 maintain this repository to support devs to monetize around the world.
 

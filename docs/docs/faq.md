@@ -75,9 +75,9 @@
 
 #### Swift version
 
-  Add the following to your `AppDelegate`. This will store the parameters and excecute the logic
+Add the following to your `AppDelegate`. This will store the parameters and excecute the logic
 
-````swift
+```swift
 import UIKit
 import StoreKit
 
@@ -96,7 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
                 ....
 }
-````
+```
 
 #### ObjC version
 
@@ -104,43 +104,43 @@ Add into file AppDelegate.h:
 
 ```objc
 @class RNIapQueue;
-````
+```
 
 At the top of file AppDelegate.mm:
 
 ```objc
 #import <StoreKit/StoreKit.h>
 #import <RNIap/RNIap-Swift.h>
-````
-
+```
 
 Add into file AppDelegate.mm within your existing `didFinishLaunchingWithOptions` method:
 
 ```objc
 [[SKPaymentQueue defaultQueue] addTransactionObserver:RNIapQueue.shared];
-````
+```
 
 #### JavaScript
 
 Somewhere early in your app's lifecycle, add a listener for the `iap-promoted-product` event:
 
-  ```javascript
-  import { NativeModules, NativeEventEmitter } from 'react-native'
-  const { RNIapIos } = NativeModules;
-  const IAPEmitter = new NativeEventEmitter(RNIapIos);
+```javascript
+import {NativeModules, NativeEventEmitter} from 'react-native';
+const {RNIapIos} = NativeModules;
+const IAPEmitter = new NativeEventEmitter(RNIapIos);
 
-  IAPEmitter.addListener('iap-promoted-product', async () => {
-    // Check if there's a persisted promoted product
-    const productId = await RNIap.getPromotedProductIOS();
-    if (productId !== null) { // You may want to validate the product ID against your own SKUs
-      try {
-        await RNIap.buyPromotedProductIOS(); // This will trigger the App Store purchase process
-      } catch(error) {
-        console.warn(error);
-      }
+IAPEmitter.addListener('iap-promoted-product', async () => {
+  // Check if there's a persisted promoted product
+  const productId = await RNIap.getPromotedProductIOS();
+  if (productId !== null) {
+    // You may want to validate the product ID against your own SKUs
+    try {
+      await RNIap.buyPromotedProductIOS(); // This will trigger the App Store purchase process
+    } catch (error) {
+      console.warn(error);
     }
-  });
-````
+  }
+});
+```
 
 Then call `initConnection` (see above)
 
@@ -152,13 +152,12 @@ Then call `initConnection` (see above)
   Please note that in development or TestFlight, it will **NOT** use FaceID/Touch
   to checkout because they are using the Sandbox environment.
 
-
 ### Get products has empty list
 
 Here are some resources you might get help out of.
 
 - For `iOS`, check if you’ve agreed on taxes
-https://github.com/dooboolab/react-native-iap/issues/1272#issuecomment-800131501. Also, you may try to add storekit.
+  https://github.com/dooboolab/react-native-iap/issues/1272#issuecomment-800131501. Also, you may try to add storekit.
 
 - For Android, hope you to check this one.
-https://github.com/dooboolab/react-native-iap/issues/124#issuecomment-386593185
+  https://github.com/dooboolab/react-native-iap/issues/124#issuecomment-386593185
