@@ -254,14 +254,13 @@ export const getAvailablePurchases = (): Promise<
  * @returns {Promise<InAppPurchase>}
  */
 
-export const requestPurchase = (
-  sku: string,
-  appAccountToken: string,
-  andDangerouslyFinishTransactionAutomaticallyIOS: boolean = false,
-  obfuscatedAccountIdAndroid: string | undefined = undefined,
-  obfuscatedProfileIdAndroid: string | undefined = undefined,
-  applicationUsername: string | undefined = undefined,
-): Promise<InAppPurchase> =>
+export const requestPurchase = ({
+  sku,
+  andDangerouslyFinishTransactionAutomaticallyIOS,
+  obfuscatedAccountIdAndroid,
+  obfuscatedProfileIdAndroid,
+  applicationUsername,
+}: RequestPurchase): Promise<InAppPurchase> =>
   (
     Platform.select({
       ios: async () => {
