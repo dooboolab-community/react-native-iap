@@ -154,3 +154,8 @@ export interface RequestPurchase {
   obfuscatedProfileIdAndroid: string | undefined;
   selectedOfferIndex: number;
 }
+
+export interface RequestSubscription extends RequestPurchase {
+  purchaseTokenAndroid: string | undefined;
+  prorationModeAndroid: ProrationModesAndroid;
+}
