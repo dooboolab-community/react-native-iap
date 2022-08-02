@@ -4,11 +4,15 @@ on:
   push:
     branches: [main]
     paths:
+      - 'src/**'
+      - 'ios/**'
       - 'IapExample/ios/**'
 
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
+      - 'src/**'
+      - 'ios/**'
       - 'IapExample/ios/**'
 
 jobs:
