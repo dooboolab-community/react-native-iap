@@ -79,9 +79,7 @@ const getNativeModule = ():
   | typeof RNIapModule
   | typeof RNIapAmazonModule
   | typeof RNIapIos => {
-  return isAndroid
-    ? getAndroidModule()
-    : getIosModule()
+    return isAndroid ? getAndroidModule() : getIosModule();
 };
 
 /**

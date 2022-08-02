@@ -194,7 +194,7 @@ interface RequestSubscriptionIOS extends RequestPurchaseIOS {
   purchaseTokenAndroid?: never;
   prorationModeAndroid?: never;
   selectedOfferIndexArr?: never;
-  skus?:never
+  skus?: never;
 }
 
 interface RequestSubscriptionAndroid extends RequestPurchaseAndroid {

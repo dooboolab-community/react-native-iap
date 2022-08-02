@@ -32,6 +32,7 @@ sidebar_position: 100
    include ':react-native-iap'
    project(':react-native-iap').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-iap/android')
    ```
+
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
 
    ```gradle
