@@ -15,9 +15,10 @@ import type {
   Product,
   ProductCommon,
   ProductPurchase,
-  ProrationModesAndroid,
   PurchaseError,
   PurchaseResult,
+  RequestPurchase,
+  RequestSubscription,
   Subscription,
   SubscriptionPurchase,
 } from './types';
@@ -253,12 +254,14 @@ export const getAvailablePurchases = (): Promise<
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
  * @returns {Promise<InAppPurchase>}
  */
-export const requestPurchase = (
-  sku: string,
-  andDangerouslyFinishTransactionAutomaticallyIOS: boolean = false,
-  obfuscatedAccountIdAndroid: string | undefined = undefined,
-  obfuscatedProfileIdAndroid: string | undefined = undefined,
-): Promise<InAppPurchase> =>
+
+export const requestPurchase = ({
+  sku,
+  andDangerouslyFinishTransactionAutomaticallyIOS = false,
+  obfuscatedAccountIdAndroid = undefined,
+  obfuscatedProfileIdAndroid = undefined,
+  applicationUsername = undefined,
+}: RequestPurchase): Promise<InAppPurchase> =>
   (
     Platform.select({
       ios: async () => {
@@ -289,6 +292,7 @@ export const requestPurchase = (
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} [sku] The product's sku/ID
+ * @param {string} [applicationUsername] The purchaser's user ID
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [purchaseTokenAndroid] purchaseToken that the user is upgrading or downgrading from (Android).
  * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
@@ -296,14 +300,15 @@ export const requestPurchase = (
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
  * @returns {Promise<SubscriptionPurchase | null>} Promise resolves to null when using proratioModesAndroid=DEFERRED, and to a SubscriptionPurchase otherwise
  */
-export const requestSubscription = (
-  sku: string,
-  andDangerouslyFinishTransactionAutomaticallyIOS: boolean = false,
-  purchaseTokenAndroid: string | undefined = undefined,
-  prorationModeAndroid: ProrationModesAndroid = -1,
-  obfuscatedAccountIdAndroid: string | undefined = undefined,
-  obfuscatedProfileIdAndroid: string | undefined = undefined,
-): Promise<SubscriptionPurchase | null> =>
+export const requestSubscription = ({
+  sku,
+  andDangerouslyFinishTransactionAutomaticallyIOS = false,
+  purchaseTokenAndroid = undefined,
+  prorationModeAndroid = -1,
+  obfuscatedAccountIdAndroid = undefined,
+  obfuscatedProfileIdAndroid = undefined,
+  applicationUsername = undefined,
+}: RequestSubscription): Promise<SubscriptionPurchase | null> =>
   (
     Platform.select({
       ios: async () => {
@@ -316,6 +321,7 @@ export const requestSubscription = (
         return getIosModule().buyProduct(
           sku,
           andDangerouslyFinishTransactionAutomaticallyIOS,
+          applicationUsername,
         );
       },
       android: async () => {

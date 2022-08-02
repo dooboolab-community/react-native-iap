@@ -124,17 +124,17 @@ export interface Subscription extends ProductCommon {
   introductoryPrice?: string;
   introductoryPriceAsAmountIOS?: string;
   introductoryPricePaymentModeIOS?:
-    | ''
-    | 'FREETRIAL'
-    | 'PAYASYOUGO'
-    | 'PAYUPFRONT';
+  | ''
+  | 'FREETRIAL'
+  | 'PAYASYOUGO'
+  | 'PAYUPFRONT';
   introductoryPriceNumberOfPeriodsIOS?: string;
   introductoryPriceSubscriptionPeriodIOS?:
-    | 'DAY'
-    | 'WEEK'
-    | 'MONTH'
-    | 'YEAR'
-    | '';
+  | 'DAY'
+  | 'WEEK'
+  | 'MONTH'
+  | 'YEAR'
+  | '';
 
   subscriptionPeriodNumberIOS?: string;
   subscriptionPeriodUnitIOS?: '' | 'YEAR' | 'MONTH' | 'WEEK' | 'DAY';
@@ -144,4 +144,18 @@ export interface Subscription extends ProductCommon {
   introductoryPricePeriodAndroid?: string;
   subscriptionPeriodAndroid?: string;
   freeTrialPeriodAndroid?: string;
+}
+
+export interface RequestPurchase {
+  sku: string;
+  andDangerouslyFinishTransactionAutomaticallyIOS: boolean;
+  applicationUsername?: string;
+  obfuscatedAccountIdAndroid: string | undefined;
+  obfuscatedProfileIdAndroid: string | undefined;
+  selectedOfferIndex: number;
+}
+
+export interface RequestSubscription extends RequestPurchase {
+  purchaseTokenAndroid: string | undefined;
+  prorationModeAndroid: ProrationModesAndroid;
 }
