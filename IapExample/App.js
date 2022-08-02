@@ -6,6 +6,7 @@ import {
   Text,
   View, 
   Button as NativeButton
+  View,
 } from 'react-native';
 import RNIap, {
   InAppPurchase,
@@ -241,7 +242,9 @@ class Page extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTxt}>react-native-iap V3</Text>
+          <Text style={styles.headerTxt}>
+            {name} {version}
+          </Text>
         </View>
         <View style={styles.content}>
           <ScrollView style={{alignSelf: 'stretch'}}>
@@ -251,7 +254,8 @@ class Page extends Component {
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
-              title= 'Get available purchases'/>
+              title="Get available purchases"
+            />
 
             <Text style={{margin: 5, fontSize: 15, alignSelf: 'center'}}>
               {availableItemsMessage}
@@ -266,15 +270,15 @@ class Page extends Component {
               activeOpacity={0.5}
               style={styles.btn}
               textStyle={styles.txt}
-              title={`Get Products (${productList.length})`}/>
+              title={`Get Products (${productList.length})`}
+            />
             {productList.map((product, i) => {
               return (
                 <View
                   key={i}
                   style={{
                     flexDirection: 'column',
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       marginTop: 20,
@@ -283,8 +287,7 @@ class Page extends Component {
                       minHeight: 100,
                       alignSelf: 'center',
                       paddingHorizontal: 20,
-                    }}
-                  >
+                    }}>
                     {JSON.stringify(product)}
                   </Text>
                   <NativeButton
