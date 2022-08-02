@@ -1,3 +1,5 @@
+type Sku = string;
+
 export enum IAPErrorCode {
   E_IAP_NOT_AVAILABLE = 'E_IAP_NOT_AVAILABLE',
   E_UNKNOWN = 'E_UNKNOWN',
@@ -146,16 +148,38 @@ export interface Subscription extends ProductCommon {
   freeTrialPeriodAndroid?: string;
 }
 
-export interface RequestPurchase {
-  sku: string;
+interface RequestPurchaseCommon {
+  sku: Sku;
+}
+
+interface RequestPurchaseIOS extends RequestPurchaseCommon {
   andDangerouslyFinishTransactionAutomaticallyIOS: boolean;
   applicationUsername?: string;
-  obfuscatedAccountIdAndroid: string | undefined;
-  obfuscatedProfileIdAndroid: string | undefined;
+  obfuscatedAccountIdAndroid?: never;
+  obfuscatedProfileIdAndroid?: never;
+  selectedOfferIndex?: never;
+}
+
+interface RequestPurchaseAndroid extends RequestPurchaseCommon {
+  andDangerouslyFinishTransactionAutomaticallyIOS?: never;
+  applicationUsername?: never;
+  obfuscatedAccountIdAndroid?: string;
+  obfuscatedProfileIdAndroid?: string;
   selectedOfferIndex: number;
 }
 
-export interface RequestSubscription extends RequestPurchase {
-  purchaseTokenAndroid: string | undefined;
+export type RequestPurchase = RequestPurchaseIOS | RequestPurchaseAndroid;
+
+interface RequestSubscriptionIOS extends RequestPurchaseIOS {
+  purchaseTokenAndroid?: never;
+  prorationModeAndroid?: never;
+}
+
+interface RequestSubscriptionAndroid extends RequestPurchaseAndroid {
+  purchaseTokenAndroid?: string;
   prorationModeAndroid: ProrationModesAndroid;
 }
+
+export type RequestSubscription =
+  | RequestSubscriptionIOS
+  | RequestSubscriptionAndroid;
