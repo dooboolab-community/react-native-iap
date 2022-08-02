@@ -49,7 +49,7 @@ class RNIapModule(
         return TAG
     }
 
-    internal fun ensureConnection(
+    fun ensureConnection(
         promise: Promise,
         callback: (billingClient: BillingClient) -> Unit
     ) {

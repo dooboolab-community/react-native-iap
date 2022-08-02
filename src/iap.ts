@@ -25,7 +25,7 @@ import {
   SubscriptionPurchase,
 } from './types';
 
-const {RNIapIos, RNIapModule, RNIapModuleV4, RNIapAmazonModule} = NativeModules;
+const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
 
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
@@ -36,27 +36,21 @@ export const getInstallSourceAndroid = (): InstallSourceAndroid => {
     : InstallSourceAndroid.AMAZON;
 };
 
-/**
- * Defaulting to V4 to minimize migration, it'll eventually be changed to default to V5
- */
-let androidNativeModule = RNIapModuleV4;
+let androidNativeModule = RNIapModule;
 
 export const setAndroidNativeModule = (
-  nativeModule: typeof RNIapModule | typeof RNIapModuleV4,
+  nativeModule: typeof RNIapModule,
 ): void => {
   androidNativeModule = nativeModule;
 };
 
 const checkNativeAndroidAvailable = (): void => {
-  if (!RNIapModule && !RNIapModuleV4 && !RNIapAmazonModule) {
+  if (!RNIapModule && !RNIapAmazonModule) {
     throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
   }
 };
 
-const getAndroidModule = ():
-  | typeof RNIapModule
-  | typeof RNIapModuleV4
-  | typeof RNIapAmazonModule => {
+const getAndroidModule = (): typeof RNIapModule | typeof RNIapAmazonModule => {
   checkNativeAndroidAvailable();
 
   return androidNativeModule
