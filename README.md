@@ -74,7 +74,7 @@ If you're looking for a module going further than react-native-iap, we recommend
 <!-- Internals -->
 
 [contribute]: https://github.com/dooboolab/react-native-iap/blob/main/CONTRIBUTING.md
-[iapexample]: https://github.com/dooboolab/react-native-iap/tree/main/IapExample
+[example]: https://github.com/dooboolab/react-native-iap/tree/main/IapExample
 [issue-126-c1]: https://github.com/dooboolab/react-native-iap/issues/126#issuecomment-439084872
 [issue-174]: https://github.com/dooboolab/react-native-iap/issues/174
 [issue-203]: https://github.com/dooboolab/react-native-iap/issues/203

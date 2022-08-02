@@ -110,7 +110,7 @@ At the top of file AppDelegate.mm:
 
 ```objc
 #import <StoreKit/StoreKit.h>
-#import <Iap/Iap-Swift.h>
+#import <RNIap/RNIap-Swift.h>
 ```
 
 Add into file AppDelegate.mm within your existing `didFinishLaunchingWithOptions` method:
@@ -130,7 +130,7 @@ const RNIapEmitter = new NativeEventEmitter(RNIapIos);
 
 RNIapEmitter.addListener('iap-promoted-product', async () => {
   // Check if there's a persisted promoted product
-  const productId = await Iap.getPromotedProductIOS();
+  const productId = await RNIap.getPromotedProductIOS();
   if (productId !== null) {
     // You may want to validate the product ID against your own SKUs
     try {
