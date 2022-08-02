@@ -180,5 +180,6 @@ export interface RequestPurchase {
 export interface RequestSubscription extends RequestPurchase {
   purchaseTokenAndroid: string | undefined;
   prorationModeAndroid: ProrationModesAndroid;
-  selectedOfferIndex: number | undefined;
+  selectedOfferIndexArr: number[] | undefined; //For Android Billing V5
+  skus: string[] | undefined; // For AndroidBilling V5
 }

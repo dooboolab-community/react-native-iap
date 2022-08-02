@@ -294,9 +294,9 @@ export const requestPurchase = ({
       android: async () => {
         return getAndroidModule().buyItemByType(
           ANDROID_ITEM_TYPE_IAP,
-          sku,
+          [sku],
           null,
-          0,
+          -1,
           obfuscatedAccountIdAndroid,
           obfuscatedProfileIdAndroid,
           undefined,
@@ -323,7 +323,8 @@ export const requestSubscription = ({
   prorationModeAndroid = -1,
   obfuscatedAccountIdAndroid = undefined,
   obfuscatedProfileIdAndroid = undefined,
-  selectedOfferIndex = -1,
+  selectedOfferIndexArr = undefined, // Android Billing V5
+  skus = undefined, // Android Billing V5
 }: RequestSubscription): Promise<SubscriptionPurchase | null> =>
   (
     Platform.select({
@@ -344,12 +345,12 @@ export const requestSubscription = ({
       android: async () => {
         return getAndroidModule().buyItemByType(
           ANDROID_ITEM_TYPE_SUBSCRIPTION,
-          sku,
+          sku ? [sku] : skus,
           purchaseTokenAndroid,
           prorationModeAndroid,
           obfuscatedAccountIdAndroid,
           obfuscatedProfileIdAndroid,
-          selectedOfferIndex,
+          selectedOfferIndexArr,
         );
       },
     }) || Promise.resolve
