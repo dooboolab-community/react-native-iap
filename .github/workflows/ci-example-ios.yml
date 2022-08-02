@@ -2,7 +2,7 @@ name: CI Example App iOS
 
 on:
   push:
-    branches: [main]
+    branches: [main, next]
     paths:
       - 'IapExample/ios/**'
   pull_request:

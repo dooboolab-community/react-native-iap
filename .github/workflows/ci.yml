@@ -2,7 +2,18 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, next]
+    paths:
+      - 'src/**'
+      - '*.json'
+      - '*.js'
+      - '*.lock'
+      - 'IapExample/src/**'
+      - 'IapExample/*.json'
+      - 'IapExample/*.js'
+      - 'IapExample/*.lock'
+      - 'IapExample/*.tsx'
+
   pull_request:
     types: [opened, synchronize, reopened]
 

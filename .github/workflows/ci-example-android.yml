@@ -2,7 +2,7 @@ name: CI Example App Android
 
 on:
   push:
-    branches: [main]
+    branches: [main, next]
     paths:
       - 'IapExample/android/**'
   pull_request:
