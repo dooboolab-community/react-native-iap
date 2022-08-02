@@ -2,7 +2,7 @@ name: CI / Example Android
 
 on:
   push:
-    branches: [main]
+    branches: [main, next]
     paths:
       - 'src/**'
       - 'android/**'
