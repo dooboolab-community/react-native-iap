@@ -1,20 +1,28 @@
 {
   "compilerOptions": {
-    "lib": ["es2017"],
-    "jsx": "react-native",
-    "noResolve": false,
-    "noImplicitAny": false,
-    "removeComments": false,
-    "sourceMap": false,
-    "module": "es2015",
+    "baseUrl": "./",
+    "paths": {
+      "react-native-iap": ["./src/index"]
+    },
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "esModuleInterop": true,
+    "importsNotUsedAsValues": "error",
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
+    "lib": ["esnext"],
+    "module": "esnext",
     "moduleResolution": "node",
-    "target": "es5",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "noStrictGenericChecks": false,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "strict": true
-  },
-  "compileOnSave": true,
-  "exclude": ["node_modules"],
-  "include": ["./index.ts", "src/**/*.ts", "src/hooks/withIAPContext.tsx"]
+    "strict": true,
+    "target": "esnext"
+  }
 }

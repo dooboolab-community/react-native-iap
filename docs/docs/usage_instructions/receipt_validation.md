@@ -39,7 +39,7 @@ Currently, validating receipts with the App Store is possible locally using `val
 - The second parameter, you should pass whether this is `test` environment.
   If `true`, it will request to `sandbox` and `false` it will request to `production`.
 
-```javascript
+```ts
 const receiptBody = {
   'receipt-data': purchase.transactionReceipt,
   password: '******', // app shared secret, can be found in App Store Connect

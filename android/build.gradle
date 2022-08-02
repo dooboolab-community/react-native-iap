@@ -1,91 +1,190 @@
 buildscript {
-  ext.DEFAULT_KOTLIN_VERSION = '1.7.10'
-  ext.safeExtGet={prop, fallback-> 
-    return rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
-  }
-    repositories {
+  // Buildscript is evaluated before everything else so we can't use getExtOrDefault
+  def kotlinVersion = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : project.properties["RNIap_kotlinVersion"]
+
+  repositories {
     google()
     mavenCentral()
   }
 
-
   dependencies {
-    classpath 'com.android.tools.build:gradle:4.2.2'
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${safeExtGet('kotlinVersion',DEFAULT_KOTLIN_VERSION)}"
+    classpath "com.android.tools.build:gradle:4.2.2"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
   }
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+def isNewArchitectureEnabled() {
+  return rootProject.hasProperty("newArchEnabled") &&  rootProject.getProperty("newArchEnabled") == "true"
+}
 
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
 
-def DEFAULT_COMPILE_SDK_VERSION = 30
-def DEFAULT_BUILD_TOOLS_VERSION = "30.0.2"
-def DEFAULT_MIN_SDK_VERSION = 16
-def DEFAULT_TARGET_SDK_VERSION = 30
-def DEFAULT_PLAY_SERVICES_VERSION = "18.1.0"
+if (isNewArchitectureEnabled()) {
+  apply plugin: "com.facebook.react"
+}
+
+def getExtOrDefault(name) {
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties["RNIap_" + name]
+}
+
+def getExtOrIntegerDefault(name) {
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["RNIap_" + name]).toInteger()
+}
 
 android {
-  compileSdkVersion safeExtGet("compileSdkVersion", DEFAULT_COMPILE_SDK_VERSION)
+  compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
 
   defaultConfig {
-    minSdkVersion safeExtGet('minSdkVersion', DEFAULT_MIN_SDK_VERSION)
-    targetSdkVersion safeExtGet('targetSdkVersion', DEFAULT_TARGET_SDK_VERSION)
-    versionCode 3
-    versionName "3.0.0"
+    minSdkVersion getExtOrIntegerDefault("minSdkVersion")
+    targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
+    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
   }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+    }
+  }
+
   lintOptions {
     abortOnError false
+    disable "GradleCompatible"
   }
+
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
+
   flavorDimensions "store"
+
   productFlavors {
-    amazon{
+    amazon {
       dimension "store"
     }
-    play{
+
+    play {
       dimension "store"
     }
   }
+
   testOptions {
     unitTests.returnDefaultValues = true
   }
 }
 
 repositories {
-  maven {
-            // All of React Native (JS, Android binaries) is installed from npm
-            url "$rootDir/../node_modules/react-native/android"
-        }
-  google()
   mavenCentral()
+  google()
+
+  def found = false
+  def defaultDir = null
+  def androidSourcesName = "React Native sources"
+
+  if (rootProject.ext.has("reactNativeAndroidRoot")) {
+    defaultDir = rootProject.ext.get("reactNativeAndroidRoot")
+  } else {
+    defaultDir = new File(
+      projectDir,
+      "/../../../node_modules/react-native/android"
+    )
+  }
+
+  if (defaultDir.exists()) {
+    maven {
+      url defaultDir.toString()
+      name androidSourcesName
+    }
+
+    logger.info(":${project.name}:reactNativeAndroidRoot ${defaultDir.canonicalPath}")
+    found = true
+  } else {
+    def parentDir = rootProject.projectDir
+
+    1.upto(5, {
+      if (found) return true
+      parentDir = parentDir.parentFile
+
+      def androidSourcesDir = new File(
+        parentDir,
+        "node_modules/react-native"
+      )
+
+      def androidPrebuiltBinaryDir = new File(
+        parentDir,
+        "node_modules/react-native/android"
+      )
+
+      if (androidPrebuiltBinaryDir.exists()) {
+        maven {
+          url androidPrebuiltBinaryDir.toString()
+          name androidSourcesName
+        }
+
+        logger.info(":${project.name}:reactNativeAndroidRoot ${androidPrebuiltBinaryDir.canonicalPath}")
+        found = true
+      } else if (androidSourcesDir.exists()) {
+        maven {
+          url androidSourcesDir.toString()
+          name androidSourcesName
+        }
+
+        logger.info(":${project.name}:reactNativeAndroidRoot ${androidSourcesDir.canonicalPath}")
+        found = true
+      }
+    })
+  }
+
+  if (!found) {
+    throw new GradleException(
+      "${project.name}: unable to locate React Native android sources. " +
+      "Ensure you have you installed React Native as a dependency in your project and try again."
+    )
+  }
 }
 
-dependencies {
-  implementation 'com.facebook.react:react-native:+'
-  testImplementation 'junit:junit:4.13.2'
-  testImplementation "io.mockk:mockk:1.12.4"
-  playImplementation 'com.android.billingclient:billing-ktx:5.0.0'
-  def playServicesVersion = safeExtGet('playServicesVersion', DEFAULT_PLAY_SERVICES_VERSION)
-  playImplementation "com.google.android.gms:play-services-base:$playServicesVersion"
-  amazonImplementation fileTree(dir: 'libs', include: ['*.jar'])
+def kotlinVersion = getExtOrDefault("kotlinVersion")
+def playServicesVersion = getExtOrDefault("playServicesVersion")
+def supportLibVersion = getExtOrDefault("supportLibVersion")
+def androidXVersion = getExtOrDefault("androidXVersion")
+def androidXAnnotation = getExtOrDefault("androidXAnnotation")
+def androidXBrowser = getExtOrDefault("androidXBrowser")
 
-  def supportLibVersion = safeExtGet('supportLibVersion', safeExtGet('supportVersion', null))
-  def androidXVersion = safeExtGet('androidXVersion', null)
+dependencies {
+  implementation "com.facebook.react:react-native:+"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+  testImplementation "junit:junit:4.13.2"
+  testImplementation "io.mockk:mockk:1.12.4"
+
+  playImplementation "com.android.billingclient:billing-ktx:5.0.0"
+  playImplementation "com.google.android.gms:play-services-base:$playServicesVersion"
+
+  amazonImplementation fileTree(dir: "libs", include: ["*.jar"])
+
   if (supportLibVersion && androidXVersion == null) {
     implementation "com.android.support:support-annotations:$supportLibVersion"
     implementation "com.android.support:customtabs:$supportLibVersion"
   } else {
     def defaultAndroidXVersion = "1.2.0"
+
     if (androidXVersion == null) {
       androidXVersion = defaultAndroidXVersion
     }
-    def androidXAnnotation = safeExtGet('androidXAnnotation', androidXVersion)
-    def androidXBrowser = safeExtGet('androidXBrowser', androidXVersion)
-    implementation "androidx.annotation:annotation:$androidXAnnotation"
-    implementation "androidx.browser:browser:$androidXBrowser"
+
+    def annotationVersion = androidXAnnotation ? androidXAnnotation : androidXVersion
+    def browserVersion = androidXBrowser ? androidXBrowser : androidXVersion
+
+    implementation "androidx.annotation:annotation:$annotationVersion"
+    implementation "androidx.browser:browser:$browserVersion"
+  }
+}
+
+if (isNewArchitectureEnabled()) {
+  react {
+    jsRootDir = file("../src/")
+    libraryName = "RNIap"
+    codegenJavaPackageName = "com.reactnativeiap"
   }
 }

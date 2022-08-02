@@ -1,14 +1,16 @@
-import type {Product, Purchase, PurchaseError, Subscription} from '../types';
+import {useCallback} from 'react';
+
 import {
-  getPurchaseHistory,
   finishTransaction as iapFinishTransaction,
   getAvailablePurchases as iapGetAvailablePurchases,
   getProducts as iapGetProducts,
+  getPurchaseHistory,
   getSubscriptions as iapGetSubscriptions,
   requestPurchase as iapRequestPurchase,
   requestSubscription as iapRequestSubscription,
 } from '../iap';
-import {useCallback} from 'react';
+import type {Product, Purchase, PurchaseError, Subscription} from '../types';
+
 import {useIAPContext} from './withIAPContext';
 
 type IAP_STATUS = {

@@ -1,4 +1,5 @@
-import {NativeModules, Platform} from 'react-native';
+import {NativeModules} from 'react-native';
+
 NativeModules.RNIapModule = {
   ...NativeModules.RNIapModule,
   initConnection: jest.fn(() => Promise.resolve(true)),

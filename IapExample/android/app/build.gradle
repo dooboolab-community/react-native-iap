@@ -78,6 +78,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
+    entryFile: "index.tsx",
     enableHermes: false,  // clean and rebuild if changing
 ]
 
@@ -239,16 +240,19 @@ android {
     }
 
     flavorDimensions "appstore"
-    productFlavors{
-        googlePlay{
+
+    productFlavors {
+        googlePlay {
             dimension "appstore"
             missingDimensionStrategy "store", "play"
         }
-        amazon{
+
+        amazon {
             dimension "appstore"
             missingDimensionStrategy "store", "amazon"
         }
     }
+
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->

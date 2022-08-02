@@ -1,6 +1,13 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {NativeEventEmitter, NativeModules} from 'react-native';
+
 import {
+  getPromotedProductIOS,
+  initConnection,
+  promotedProductListener,
+  purchaseErrorListener,
+  purchaseUpdatedListener,
+} from '../iap';
+import type {
   InAppPurchase,
   Product,
   Purchase,
@@ -8,12 +15,6 @@ import {
   Subscription,
   SubscriptionPurchase,
 } from '../types';
-import {
-  getPromotedProductIOS,
-  initConnection,
-  purchaseErrorListener,
-  purchaseUpdatedListener,
-} from '../iap';
 
 type IAPContextType = {
   connected: boolean;
@@ -35,14 +36,12 @@ type IAPContextType = {
   ) => void;
 };
 
-const {RNIapIos} = NativeModules;
-const IAPEmitter = new NativeEventEmitter(RNIapIos);
-
 // @ts-ignore
 const IAPContext = React.createContext<IAPContextType>(null);
 
 export function useIAPContext(): IAPContextType {
   const ctx = useContext(IAPContext);
+
   if (!ctx) {
     throw new Error('You need wrap your app with withIAPContext HOC');
   }
@@ -136,22 +135,19 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         },
       );
 
-      const promotedProductsSubscription = IAPEmitter.addListener(
-        'iap-promoted-product',
-        async () => {
-          const product = await getPromotedProductIOS();
+      const promotedProductSubscription = promotedProductListener(async () => {
+        const product = await getPromotedProductIOS();
 
-          setPromotedProductsIOS((prevProducts) => [
-            ...prevProducts,
-            ...(product ? [product] : []),
-          ]);
-        },
-      );
+        setPromotedProductsIOS((prevProducts) => [
+          ...prevProducts,
+          ...(product ? [product] : []),
+        ]);
+      });
 
       return () => {
         purchaseUpdateSubscription.remove();
         purchaseErrorSubscription.remove();
-        promotedProductsSubscription.remove();
+        promotedProductSubscription.remove();
       };
     }, [connected]);
 

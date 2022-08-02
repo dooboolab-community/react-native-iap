@@ -5,14 +5,14 @@
 
 [![Download](http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
 [![CI](https://github.com/dooboolab/react-native-iap/actions/workflows/ci.yml/badge.svg)](https://github.com/dooboolab/react-native-iap/actions/workflows/ci.yml)
-[![document](https://github.com/dooboolab/react-native-iap/actions/workflows/deploy-document.yml/badge.svg)](https://github.com/dooboolab/react-native-iap/actions/workflows/deploy-document.yml)
+[![document](https://github.com/dooboolab/react-native-iap/actions/workflows/deploy-documentation.yml/badge.svg)](https://github.com/dooboolab/react-native-iap/actions/workflows/deploy-documentation.yml)
 [![License](https://img.shields.io/npm/l/react-native-iap.svg)](https://npmjs.org/package/react-native-iap)
 [![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap)
 [![Issue Opened](https://img.shields.io/opencollective/all/react-native-iap.svg)](https://opencollective.com/react-native-iap#backers)
 [![Issue Opened](https://img.shields.io/github/issues/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/issues)
 [![Issue Closed](https://img.shields.io/github/issues-closed/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/issues?q=is%3Aissue+is%3Aclosed)
 [![PR Opened](https://img.shields.io/github/issues-pr/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/pulls)
-[![PR Closed](https://img.shields.io/github/issues-pr-closed/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/pulls?q=is%3Apr+is%3Aclosed) [![Greenkeeper badge](https://badges.greenkeeper.io/dooboolab/react-native-iap.svg)](https://greenkeeper.io/)
+[![PR Closed](https://img.shields.io/github/issues-pr-closed/dooboolab/react-native-iap.svg)](https://github.com/dooboolab/react-native-iap/pulls?q=is%3Apr+is%3Aclosed)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap?ref=badge_shield)
 
 ## Documentation
@@ -141,25 +141,9 @@ If you're looking for a module going further than react-native-iap, we recommend
 
 - Please refer to [Blog][blog-config-steps].
 
-## [Deprecated README][readme-deprecated]
+## Example
 
-- If you are using `react-native-iap@^2.*`, please follow the above README.
-
-## Usage
-
-You can look in the [`RNIapExample/`][example] folder to try the example.
-
-NOTE: To run `RNIapExample` on Android use the variant flag as follows:
-
-```
-yarn android --variant=MY_VARIANT
-```
-
-where `MY_VARIANT` is `PlayDebug` or `AmazonDebug`
-
-Below is basic implementation which is also provided in `RNIapExample` project.
-
-If you want more advanced one please refer to [dooboolab.com/sponsor.tsx](https://github.com/hyochan/dooboolab.com/blob/main/src/components/pages/Sponsor.tsx)
+Follow [this guide](./IapExample/README.md) to get the example running.
 
 ## Sponsoring
 

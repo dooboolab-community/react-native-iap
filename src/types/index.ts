@@ -169,17 +169,39 @@ export interface Subscription extends ProductCommon {
   }[];
 }
 
-export interface RequestPurchase {
+interface RequestPurchaseCommon {
   sku: string;
+}
+
+interface RequestPurchaseIOS extends RequestPurchaseCommon {
   andDangerouslyFinishTransactionAutomaticallyIOS: boolean;
   applicationUsername?: string;
   obfuscatedAccountIdAndroid: string | undefined;
   obfuscatedProfileIdAndroid: string | undefined;
 }
 
-export interface RequestSubscription extends RequestPurchase {
-  purchaseTokenAndroid: string | undefined;
+interface RequestPurchaseAndroid extends RequestPurchaseCommon {
+  andDangerouslyFinishTransactionAutomaticallyIOS?: never;
+  applicationUsername?: never;
+  obfuscatedAccountIdAndroid?: string;
+  obfuscatedProfileIdAndroid?: string;
+  selectedOfferIndex: number;
+}
+
+export type RequestPurchase = RequestPurchaseIOS | RequestPurchaseAndroid;
+
+interface RequestSubscriptionIOS extends RequestPurchaseIOS {
+  purchaseTokenAndroid?: never;
+  prorationModeAndroid?: never;
+}
+
+interface RequestSubscriptionAndroid extends RequestPurchaseAndroid {
+  purchaseTokenAndroid?: string;
   prorationModeAndroid: ProrationModesAndroid;
   selectedOfferIndexArr: number[] | undefined; //For Android Billing V5
   skus: string[] | undefined; // For AndroidBilling V5
 }
+
+export type RequestSubscription =
+  | RequestSubscriptionIOS
+  | RequestSubscriptionAndroid;

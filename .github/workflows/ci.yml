@@ -16,19 +16,59 @@ on:
 
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - 'src/**'
+      - '*.json'
+      - '*.js'
+      - '*.lock'
+      - 'IapExample/src/**'
+      - 'IapExample/*.json'
+      - 'IapExample/*.js'
+      - 'IapExample/*.lock'
+      - 'IapExample/*.tsx'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: Install modules
-        run: yarn
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
 
-      - name: Build typescript & flow
-        run: yarn build
+      - name: Install reviewdog
+        uses: reviewdog/action-setup@v1
 
-      - name: Run Validation steps including Linting and Unit Tests
-        run: yarn validate --no-verify
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Install node_modules for `IapExample/`
+        run: yarn install --immutable
+        working-directory: IapExample
+
+      - name: Run TypeScript
+        run: |
+          yarn typescript | reviewdog -name="tsc" -efm="%f(%l,%c): error TS%n: %m" -reporter="github-pr-review" -filter-mode="nofilter" -fail-on-error -tee
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run TypeScript in `IapExample/`
+        run: |
+          cd IapExample && yarn typescript | reviewdog -name="tsc" -efm="%f(%l,%c): error TS%n: %m" -reporter="github-pr-review" -filter-mode="nofilter" -fail-on-error -tee && cd ..
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build typescript
+        run: yarn lint:ci
+
+      - name: Check commit message is valid
+        uses: wagoid/commitlint-github-action@v5
+
+      - name: Verify no files have changed after auto-fix
+        run: git diff --exit-code HEAD

@@ -8,7 +8,7 @@ Here are the additional steps to add Amazon IAP support.
 - Add In-App Items for your app:
 
   1. Create "In-App Items" using Amazon Developer portal for your app. Amazon put up detailed instructions at https://developer.amazon.com/docs/in-app-purchasing/iap-create-and-submit-iap-items.html
-  2. Add new SKU strings to your `RNIap.getProducts` or `RNIap.getSubscriptions` calls
+  2. Add new SKU strings to your `Iap.getProducts` or `Iap.getSubscriptions` calls
 
 - App configuration
   1. The current version of Amazon IAP SDK does not play well with R8 optimization. (https://developer.amazon.com/docs/in-app-purchasing/iap-obfuscate-the-code.html).
