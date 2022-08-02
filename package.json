@@ -2,70 +2,103 @@
   "name": "react-native-iap",
   "version": "8.5.3",
   "description": "React Native In App Purchase Module.",
-  "main": "index.ts",
-  "types": "index.d.ts",
-  "postinstall": "dooboolab-welcome postinstall",
+  "repository": "https://github.com/dooboolab/react-native-iap",
+  "author": "dooboolab <support@dooboolab.com> (https://github.com/dooboolab)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dooboolab/react-native-iap/issues"
+  },
+  "homepage": "https://github.com/dooboolab/react-native-iap#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "contributors": [
+    {
+      "name": "Andres Aguilar",
+      "url": "https://github.com/andresesfm"
+    },
+    {
+      "name": "Jérémy Barbet",
+      "url": "https://github.com/jeremybarbet"
+    }
+  ],
+  "keywords": [
+    "react-native",
+    "react-native-iap",
+    "IAP",
+    "in app purchase",
+    "in-app-purchase",
+    "Billing",
+    "iOS",
+    "Android",
+    "Amazon",
+    "Play"
+  ],
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "types": "lib/typescript/index.d.ts",
+  "react-native": "src/index",
+  "source": "src/index",
+  "files": [
+    "src",
+    "lib",
+    "android",
+    "ios",
+    "cpp",
+    "RNIap.podspec",
+    "!lib/typescript/example",
+    "!android/build",
+    "!ios/build",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
   "scripts": {
+    "prepare": "bob build",
+    "release": "release-it",
+    "example": "yarn --cwd IapExample",
     "test": "jest",
     "lint": "yarn lint:tsc && yarn lint:eslint && yarn lint:prettier",
     "lint:tsc": "tsc -p tsconfig.json --noEmit --skipLibCheck",
     "lint:eslint": "eslint --fix '**/*.{ts,tsx}'",
     "lint:ci": "yarn lint:tsc && yarn lint:eslint -f ./node_modules/@firmnav/eslint-github-actions-formatter/dist/formatter.js && yarn lint:prettier",
     "lint:prettier": "prettier --write \"**/*.{md,js,jsx,ts,tsx}\"",
-    "format": "git ls-files -m | xargs yarn prettier --write --ignore-unknown --no-error-on-unmatched-pattern"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/dooboolab/react-native-iap"
-  },
-  "keywords": [
-    "react-native",
-    "in app purchase",
-    "in-app-purchase",
-    "billing"
-  ],
-  "author": "dooboolab",
-  "contributors": [
-    {
-      "name": "Andres Aguilar",
-      "url": "https://github.com/andresesfm"
-    }
-  ],
-  "license": "MIT",
-  "peerDependencies": {
-    "react": ">=16.13.1",
-    "react-native": ">=0.65.1"
-  },
-  "dependencies": {
-    "dooboolab-welcome": "1.3.2"
+    "format": "git ls-files -m | xargs yarn prettier --write --ignore-unknown --no-error-on-unmatched-pattern",
+    "bootstrap": "yarn example && yarn && yarn example pods"
   },
   "devDependencies": {
-    "@babel/core": "7.18.2",
     "@babel/eslint-parser": "7.18.9",
-    "@babel/plugin-proposal-class-properties": "7.17.12",
-    "@babel/plugin-proposal-private-methods": "7.17.12",
-    "@babel/preset-env": "7.18.2",
-    "@babel/preset-react": "7.17.12",
-    "@babel/preset-typescript": "7.17.12",
     "@firmnav/eslint-github-actions-formatter": "1.0.1",
-    "@react-native-community/eslint-config": "3.0.3",
+    "@react-native-community/eslint-config": "3.1.0",
+    "@release-it/conventional-changelog": "5.0.0",
     "@testing-library/jest-native": "4.0.5",
-    "@testing-library/react-native": "9.1.0",
-    "@types/jest": "27.5.1",
-    "@types/react": "18.0.10",
-    "@types/react-native": "0.67.7",
-    "@typescript-eslint/eslint-plugin": "^5.27.0",
-    "babel-jest": "28.1.0",
+    "@testing-library/react-native": "11.0.0",
+    "@types/jest": "28.1.6",
+    "@types/react": "~17.0.47",
+    "@types/react-native": "0.68.2",
+    "@typescript-eslint/eslint-plugin": "5.32.0",
+    "@typescript-eslint/parser": "5.32.0",
+    "babel-jest": "28.1.3",
     "eslint": "8.20.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-simple-import-sort": "7.0.0",
-    "jest": "28.1.0",
-    "metro-react-native-babel-preset": "0.71.0",
+    "jest": "28.1.3",
     "monolinter": "1.0.4",
+    "pod-install": "0.1.38",
     "prettier": "2.7.1",
-    "react-native": "0.66.4",
-    "ts-jest": "28.0.3",
-    "typescript": "4.7.2"
+    "react": "17.0.2",
+    "react-native": "0.68.2",
+    "react-native-builder-bob": "0.18.3",
+    "release-it": "15.2.0",
+    "ts-jest": "28.0.7",
+    "typescript": "4.7.4"
+  },
+  "resolutions": {
+    "@types/react": "17.0.21"
+  },
+  "peerDependencies": {
+    "react": ">=16.13.1",
+    "react-native": ">=0.65.1"
   }
 }

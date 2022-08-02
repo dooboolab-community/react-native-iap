@@ -1,9 +1,9 @@
+const path = require('path');
+
 module.exports = {
   dependencies: {
     'react-native-iap': {
-      platforms: {
-        ios: null, // disable ios platform, so we can use local filess
-      },
+      root: path.join(__dirname, '..'),
     },
   },
 };

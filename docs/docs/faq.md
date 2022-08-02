@@ -6,13 +6,13 @@
 
 - You can do this on iOS 12 or later (for earlier iOS versions, use [this URL](https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions)):
 
-  ```javascript
+  ```ts
   Linking.openURL('https://apps.apple.com/account/subscriptions');
   ```
 
 - You can do this on Android:
 
-  ```javascript
+  ```ts
   Linking.openURL('https://play.google.com/store/account/subscriptions?package=YOUR_PACKAGE_NAME&sku=YOUR_PRODUCT_ID
   ```
 
@@ -123,12 +123,12 @@ Add into file AppDelegate.mm within your existing `didFinishLaunchingWithOptions
 
 Somewhere early in your app's lifecycle, add a listener for the `iap-promoted-product` event:
 
-```javascript
+```ts
 import {NativeModules, NativeEventEmitter} from 'react-native';
 const {RNIapIos} = NativeModules;
-const IAPEmitter = new NativeEventEmitter(RNIapIos);
+const RNIapEmitter = new NativeEventEmitter(RNIapIos);
 
-IAPEmitter.addListener('iap-promoted-product', async () => {
+RNIapEmitter.addListener('iap-promoted-product', async () => {
   // Check if there's a persisted promoted product
   const productId = await RNIap.getPromotedProductIOS();
   if (productId !== null) {

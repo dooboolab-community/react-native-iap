@@ -1,3 +1,7 @@
 {
-    "include":["package.json","docs/package.json","IapExample/package.json"]
+  "include": [
+    "package.json",
+    "docs/package.json",
+    "IapExample/package.json"
+  ]
 }

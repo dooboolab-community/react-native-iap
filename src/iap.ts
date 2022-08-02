@@ -10,24 +10,26 @@ import type * as Amazon from './types/amazon';
 import type * as Android from './types/android';
 import type * as Apple from './types/apple';
 import {ReceiptValidationStatus} from './types/apple';
-import {
-  IAPErrorCode,
+import type {
   InAppPurchase,
-  InstallSourceAndroid,
   Product,
   ProductCommon,
   ProductPurchase,
   PurchaseError,
   PurchaseResult,
-  PurchaseStateAndroid,
   RequestPurchase,
   RequestSubscription,
   Subscription,
   SubscriptionPurchase,
 } from './types';
+import {
+  IAPErrorCode,
+  InstallSourceAndroid,
+  PurchaseStateAndroid,
+} from './types';
 
 const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
-
+const isAndroid = Platform.OS === 'android';
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
 
@@ -49,14 +51,14 @@ const getAndroidModule = (): typeof RNIapModule | typeof RNIapAmazonModule => {
   return RNIapModule ? RNIapModule : RNIapAmazonModule;
 };
 
-const checkNativeiOSAvailable = (): void => {
+const checkNativeIOSAvailable = (): void => {
   if (!RNIapIos) {
     throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
   }
 };
 
 const getIosModule = (): typeof RNIapIos => {
-  checkNativeiOSAvailable();
+  checkNativeIOSAvailable();
 
   return RNIapIos;
 };
@@ -65,11 +67,11 @@ const getNativeModule = ():
   | typeof RNIapModule
   | typeof RNIapAmazonModule
   | typeof RNIapIos => {
-  return RNIapModule
-    ? RNIapModule
-    : RNIapAmazonModule
-    ? RNIapAmazonModule
-    : RNIapIos;
+  if (isAndroid) {
+    return getAndroidModule();
+  }
+
+  return getIosModule();
 };
 
 /**
@@ -143,11 +145,12 @@ export const getProducts = (skus: string[]): Promise<Array<Product>> =>
   (
     Platform.select({
       ios: async () => {
-        const products = await getIosModule().getItems(skus);
+        const items = await getIosModule().getItems(skus);
 
-        return products.filter((item: ProductCommon) => {
-          return skus.includes(item.productId) && item.type === 'iap';
-        });
+        return items.filter(
+          (item: Product) =>
+            skus.includes(item.productId) && item.type === 'iap',
+        );
       },
       android: async () => {
         const products = await getAndroidModule().getItemsByType(
@@ -169,11 +172,12 @@ export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
   (
     Platform.select({
       ios: async () => {
-        const subscriptions = await getIosModule().getItems(skus);
+        const items = await getIosModule().getItems(skus);
 
-        return subscriptions.filter((item: ProductCommon) => {
-          return skus.includes(item.productId) && item.type === 'subs';
-        });
+        return items.filter(
+          (item: Subscription) =>
+            skus.includes(item.productId) && item.type === 'subs',
+        );
       },
       android: async () => {
         const subscriptions = await getAndroidModule().getItemsByType(
@@ -631,14 +635,11 @@ export const validateReceiptAmazon = async (
 export const purchaseUpdatedListener = (
   listener: (event: InAppPurchase | SubscriptionPurchase) => void,
 ): EmitterSubscription => {
-  const myModuleEvt = new NativeEventEmitter(getNativeModule());
+  const emitterSubscription = new NativeEventEmitter(
+    getNativeModule(),
+  ).addListener('purchase-updated', listener);
 
-  const emitterSubscription = myModuleEvt.addListener(
-    'purchase-updated',
-    listener,
-  );
-
-  if (Platform.OS === 'android') {
+  if (isAndroid) {
     getAndroidModule().startListening();
   }
 
@@ -658,15 +659,20 @@ export const purchaseErrorListener = (
   );
 
 /**
- * Get the current receipt base64 encoded in IOS.
- * @param {forceRefresh?:boolean}
- * @returns {Promise<string>}
+ * Add IAP promoted subscription event
+ * Only available on iOS
  */
-export const getReceiptIOS = async (forceRefresh?: boolean): Promise<string> =>
-  getIosModule().requestReceipt(forceRefresh ?? false);
+export const promotedProductListener = (
+  listener: () => void,
+): EmitterSubscription =>
+  new NativeEventEmitter(getIosModule()).addListener(
+    'iap-promoted-product',
+    listener,
+  );
 
 /**
- * Get the pending purchases in IOS.
+ * Get the current receipt base64 encoded in IOS.
+ * @param {forceRefresh?:boolean}
  * @returns {Promise<ProductPurchase[]>}
  */
 export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> =>

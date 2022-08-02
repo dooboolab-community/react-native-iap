@@ -6,9 +6,7 @@ sidebar_position: 2
 
 First thing you should do is to define your product IDs for iOS and Android separately like defined below.
 
-```javascript
-import * as RNIap from 'react-native-iap';
-
+```ts
 const productIds = Platform.select({
   ios: ['com.example.coins100'],
   android: ['com.example.coins100'],
@@ -23,7 +21,9 @@ Since a user may first start your app with a bad internet connection, then later
 
 Like if the user has no IAPs available when the app first starts, you may want to check again when the user enters your IAP store.
 
-```javascript
+```ts
+import * as RNIap from 'react-native-iap';
+
   async componentDidMount() {
     try {
       const products: Product[] = await RNIap.getProducts(productIds);
