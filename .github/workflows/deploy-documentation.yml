@@ -1,6 +1,8 @@
-name: document
+name: Deploy / Documentation
+
 on:
   workflow_dispatch:
+
   push:
     branches: [main]
     paths:
@@ -9,13 +11,15 @@ on:
 jobs:
   publish-doc:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@main
 
-      - name: Set up Node.js
-        uses: actions/setup-node@main
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          cache: 'yarn'
 
       - name: Install packages and build
         run: |

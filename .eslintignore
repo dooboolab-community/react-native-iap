@@ -2,4 +2,3 @@ __tests__
 node_modules
 *.js
 *.d.ts
-*.flow

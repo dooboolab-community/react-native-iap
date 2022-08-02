@@ -1,7 +1,3 @@
-import * as Amazon from './types/amazon';
-import * as Android from './types/android';
-import * as Apple from './types/apple';
-
 import {
   EmitterSubscription,
   Linking,
@@ -9,6 +5,11 @@ import {
   NativeModules,
   Platform,
 } from 'react-native';
+
+import type * as Amazon from './types/amazon';
+import type * as Android from './types/android';
+import type * as Apple from './types/apple';
+import {ReceiptValidationStatus} from './types/apple';
 import {
   IAPErrorCode,
   InAppPurchase,
@@ -16,7 +17,6 @@ import {
   Product,
   ProductCommon,
   ProductPurchase,
-  ProrationModesAndroid,
   PurchaseError,
   PurchaseResult,
   PurchaseStateAndroid,
@@ -120,7 +120,8 @@ const fillProductsAdditionalData = async (
       FR: 'EUR',
     };
 
-    const currency = currencies[user.userMarketplaceAmazon];
+    const currency =
+      currencies[user.userMarketplaceAmazon as keyof typeof currencies];
 
     // Add currency to products
     products.forEach((product) => {
@@ -266,9 +267,7 @@ export const requestPurchase = ({
     Platform.select({
       ios: async () => {
         if (andDangerouslyFinishTransactionAutomaticallyIOS) {
-          // eslint-disable-next-line no-console
           console.warn(
-            // eslint-disable-next-line max-len
             'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
           );
         }
@@ -316,9 +315,7 @@ export const requestSubscription = ({
     Platform.select({
       ios: async () => {
         if (andDangerouslyFinishTransactionAutomaticallyIOS) {
-          // eslint-disable-next-line no-console
           console.warn(
-            // eslint-disable-next-line max-len
             'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
           );
         }
@@ -495,10 +492,7 @@ const requestAgnosticReceiptValidationIos = async (
 
   // Best practice is to check for test receipt and check sandbox instead
   // https://developer.apple.com/documentation/appstorereceipts/verifyreceipt
-  if (
-    response &&
-    response.status === Apple.ReceiptValidationStatus.TEST_RECEIPT
-  ) {
+  if (response && response.status === ReceiptValidationStatus.TEST_RECEIPT) {
     const testResponse = await fetchJsonOrThrow(
       'https://sandbox.itunes.apple.com/verifyReceipt',
       receiptBody,
