@@ -147,7 +147,10 @@ export const getProducts = (skus: string[]): Promise<Array<Product>> =>
       ios: async () => {
         const items = await getIosModule().getItems(skus);
 
-        return items.filter((item: Product) => skus.includes(item.productId));
+        return items.filter(
+          (item: Product) =>
+            skus.includes(item.productId) && item.type === 'iap',
+        );
       },
       android: async () => {
         const products = await getAndroidModule().getItemsByType(
@@ -171,8 +174,9 @@ export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
       ios: async () => {
         const items = await getIosModule().getItems(skus);
 
-        return items.filter((item: Subscription) =>
-          skus.includes(item.productId),
+        return items.filter(
+          (item: Subscription) =>
+            skus.includes(item.productId) && item.type === 'subs',
         );
       },
       android: async () => {
@@ -249,6 +253,7 @@ export const getAvailablePurchases = (): Promise<
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
+ * @param {string} [applicationUsername] The purchaser's user ID
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
@@ -647,12 +652,11 @@ export const purchaseUpdatedListener = (
  */
 export const purchaseErrorListener = (
   listener: (errorEvent: PurchaseError) => void,
-): EmitterSubscription => {
-  return new NativeEventEmitter(getNativeModule()).addListener(
+): EmitterSubscription =>
+  new NativeEventEmitter(getNativeModule()).addListener(
     'purchase-error',
     listener,
   );
-};
 
 /**
  * Add IAP promoted subscription event
@@ -660,12 +664,11 @@ export const purchaseErrorListener = (
  */
 export const promotedProductListener = (
   listener: () => void,
-): EmitterSubscription => {
-  return new NativeEventEmitter(getIosModule()).addListener(
+): EmitterSubscription =>
+  new NativeEventEmitter(getIosModule()).addListener(
     'iap-promoted-product',
     listener,
   );
-};
 
 /**
  * Get the current receipt base64 encoded in IOS.
