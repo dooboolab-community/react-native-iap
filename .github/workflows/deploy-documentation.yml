@@ -9,7 +9,7 @@ on:
       - 'docs/**'
 
 jobs:
-  publish-doc:
+  publish-documentation:
     runs-on: ubuntu-latest
 
     steps:
