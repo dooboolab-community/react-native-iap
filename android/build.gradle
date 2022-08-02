@@ -1,6 +1,6 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
-  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : project.properties["RNIap_kotlinVersion"]
+  def kotlinVersion = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : project.properties["RNIap_kotlinVersion"]
 
   repositories {
     google()
@@ -9,7 +9,7 @@ buildscript {
 
   dependencies {
     classpath "com.android.tools.build:gradle:4.2.2"
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
   }
 }
 
@@ -144,7 +144,7 @@ repositories {
   }
 }
 
-def kotlin_version = getExtOrDefault("kotlinVersion")
+def kotlinVersion = getExtOrDefault("kotlinVersion")
 def playServicesVersion = getExtOrDefault("playServicesVersion")
 def supportLibVersion = getExtOrDefault("supportLibVersion")
 def androidXVersion = getExtOrDefault("androidXVersion")
@@ -153,7 +153,7 @@ def androidXBrowser = getExtOrDefault("androidXBrowser")
 
 dependencies {
   implementation "com.facebook.react:react-native:+"
-  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
   testImplementation "junit:junit:4.13.1"
   testImplementation "io.mockk:mockk:1.12.4"
@@ -173,8 +173,11 @@ dependencies {
       androidXVersion = defaultAndroidXVersion
     }
 
-    implementation "androidx.annotation:annotation:$androidXAnnotation"
-    implementation "androidx.browser:browser:$androidXBrowser"
+    def annotationVersion = androidXAnnotation ? androidXAnnotation : androidXVersion
+    def browserVersion = androidXBrowser ? androidXBrowser : androidXVersion
+
+    implementation "androidx.annotation:annotation:$annotationVersion"
+    implementation "androidx.browser:browser:$browserVersion"
   }
 }
 
