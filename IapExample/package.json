@@ -7,7 +7,9 @@
     "android:amazon": "react-native run-android --variant=AmazonDebug",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "pods": "pod-install --quiet"
+    "pods": "pod-install --quiet",
+    "test": "jest",
+    "lint": "eslint ."
   },
   "dependencies": {
     "react": "18.0.0",

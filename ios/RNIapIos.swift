@@ -673,7 +673,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
       }
 
       periodNumberIOS = String(format: "%lu", numOfUnits)
-
       if numOfUnits != 0 {
         itemType = "subs"
       }
@@ -820,7 +819,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         }
 
         let discountIdentifier = discount.identifier
-
         switch discount.type {
         case SKProductDiscount.Type.introductory:
           discountType = "INTRODUCTORY"

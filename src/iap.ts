@@ -274,6 +274,7 @@ export const requestPurchase = ({
         return getIosModule().buyProduct(
           sku,
           andDangerouslyFinishTransactionAutomaticallyIOS,
+          applicationUsername,
         );
       },
       android: async () => {
