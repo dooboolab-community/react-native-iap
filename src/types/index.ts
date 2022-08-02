@@ -124,17 +124,17 @@ export interface Subscription extends ProductCommon {
   introductoryPrice?: string;
   introductoryPriceAsAmountIOS?: string;
   introductoryPricePaymentModeIOS?:
-  | ''
-  | 'FREETRIAL'
-  | 'PAYASYOUGO'
-  | 'PAYUPFRONT';
+    | ''
+    | 'FREETRIAL'
+    | 'PAYASYOUGO'
+    | 'PAYUPFRONT';
   introductoryPriceNumberOfPeriodsIOS?: string;
   introductoryPriceSubscriptionPeriodIOS?:
-  | 'DAY'
-  | 'WEEK'
-  | 'MONTH'
-  | 'YEAR'
-  | '';
+    | 'DAY'
+    | 'WEEK'
+    | 'MONTH'
+    | 'YEAR'
+    | '';
 
   subscriptionPeriodNumberIOS?: string;
   subscriptionPeriodUnitIOS?: '' | 'YEAR' | 'MONTH' | 'WEEK' | 'DAY';

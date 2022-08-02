@@ -22,11 +22,11 @@ Since a user may first start your app with a bad internet connection, then later
 Like if the user has no IAPs available when the app first starts, you may want to check again when the user enters your IAP store.
 
 ```ts
-import { getProducts } from 'react-native-iap';
+import * as RNIap from 'react-native-iap';
 
   async componentDidMount() {
     try {
-      const products: Product[] = await getProducts(productIds);
+      const products: Product[] = await RNIap.getProducts(productIds);
       this.setState({ products });
     } catch(err) {
       console.warn(err); // standardized err.code and err.message available

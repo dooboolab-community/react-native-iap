@@ -9,10 +9,10 @@ sidebar_position: 1
 In order to initialize the native modules, call `initConnection()` early in the lifecycle of your application. This should be done at a top-level component as the library caches the native connection. Initializing just before you needed is discouraged as it incurrs on a performance hit. Calling this method multiple times without ending the previous connection will result in an error. Not calling this method will cause other method calls to be rejected as connection needs to be established ahead of time.
 
 ```ts
-import { initConnection } from 'react-native-iap';
+import * as RNIap from 'react-native-iap';
 
 componentDidMount() {
-  initConnection();
+  RNIap.initConnection();
   // ...
 ```
 
@@ -21,11 +21,11 @@ componentDidMount() {
 In order to release the resources, call `endConnection()` when you no longer need any interaction with the library.
 
 ```ts
-import { endConnection } from 'react-native-iap';
+import * as RNIap from 'react-native-iap';
 
 componentWillUnmount() {
   // ...
-  endConnection();
+  RNIap.endConnection();
 }
 ```
 
@@ -36,11 +36,11 @@ You shoud not call `initConnection` and `endConnection` every time you need to i
 ### :white_check_mark: DO:
 
 ```ts
-import { initConnection, getProducts, endConnection } from 'react-native-iap';
+import * as RNIap from 'react-native-iap';
 
 componentDidMount() {
-  await initConnection();
-  await getProducts(productIds)
+  await RNIap.initConnection();
+  await RNIap.getProducts(productIds)
   // ...
 }
 
@@ -54,33 +54,33 @@ subscribeButtonClick() {
 
 componentWillUnmount() {
   // ...
-  endConnection();
+  RNIap.endConnection();
 }
 ```
 
 ### :x: DON'T :
 
 ```ts
-import { initConnection, getProducts, endConnection } from 'react-native-iap';
+import * as RNIap from 'react-native-iap';
 
 componentDidMount() {
   // ...
 }
 
 const buyProductButtonClick = async() => {
-  await initConnection();
-  await getProducts(productIds)
+  await RNIap.initConnection();
+  await RNIap.getProducts(productIds)
   // Purchase IAP Code
   // ...
-  await endConnection();
+  await RNIap.endConnection();
 }
 
 const subscribeButtonClick = async() => {
-  await initConnection();
-  await getProducts(productIds)
+  await RNIap.initConnection();
+  await RNIap.getProducts(productIds)
   // Purchase Subscription Code
   // ...
-  await endConnection();
+  await RNIap.endConnection();
 }
 
 componentWillUnmount() {

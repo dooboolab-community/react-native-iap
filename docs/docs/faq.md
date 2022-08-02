@@ -85,14 +85,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 ....
     // Attach an observer to the payment queue.
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        SKPaymentQueue.default().add(IapQueue.shared)
+        SKPaymentQueue.default().add(RNIapQueue.shared)
         return true
     }
 
     // Called when the application is about to terminate.
     func applicationWillTerminate(_ application: UIApplication) {
         // Remove the observer.
-        SKPaymentQueue.default().remove(IapQueue.shared)
+        SKPaymentQueue.default().remove(RNIapQueue.shared)
     }
                 ....
 }
@@ -103,7 +103,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 Add into file AppDelegate.h:
 
 ```objc
-@class IapQueue;
+@class RNIapQueue;
 ```
 
 At the top of file AppDelegate.mm:
@@ -116,7 +116,7 @@ At the top of file AppDelegate.mm:
 Add into file AppDelegate.mm within your existing `didFinishLaunchingWithOptions` method:
 
 ```objc
-[[SKPaymentQueue defaultQueue] addTransactionObserver:IapQueue.shared];
+[[SKPaymentQueue defaultQueue] addTransactionObserver:RNIapQueue.shared];
 ```
 
 #### JavaScript
@@ -125,16 +125,16 @@ Somewhere early in your app's lifecycle, add a listener for the `iap-promoted-pr
 
 ```ts
 import {NativeModules, NativeEventEmitter} from 'react-native';
-const {IapIos} = NativeModules;
-const IAPEmitter = new NativeEventEmitter(IapIos);
+const {RNIapIos} = NativeModules;
+const RNIapEmitter = new NativeEventEmitter(RNIapIos);
 
-IAPEmitter.addListener('iap-promoted-product', async () => {
+RNIapEmitter.addListener('iap-promoted-product', async () => {
   // Check if there's a persisted promoted product
   const productId = await Iap.getPromotedProductIOS();
   if (productId !== null) {
     // You may want to validate the product ID against your own SKUs
     try {
-      await Iap.buyPromotedProductIOS(); // This will trigger the App Store purchase process
+      await RNIap.buyPromotedProductIOS(); // This will trigger the App Store purchase process
     } catch (error) {
       console.warn(error);
     }

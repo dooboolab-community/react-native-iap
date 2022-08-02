@@ -8,14 +8,14 @@ sidebar_position: 100
 
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
 2. Go to `node_modules` ➜ `react-native-iap` and add `RNIapIos.xcodeproj`
-3. In XCode, in the project navigator, select your project. Add `libIap.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
+3. In XCode, in the project navigator, select your project. Add `libRNIap.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
 
 #### iOS with Podfile
 
 1. Open up `ios/Podfile`
 
-- Add `pod 'Iap', :path => '../node_modules/react-native-iap'`
+- Add `pod 'RNIap', :path => '../node_modules/react-native-iap'`
 
 2. Run `pod install`
 
@@ -24,7 +24,7 @@ sidebar_position: 100
 1. Open up `android/app/src/main/java/[...]/MainApplication.java`
 
    - Add `import com.dooboolab.RNIap.IapPackage;` to the imports at the top of the file
-   - Add `new IapPackage()` to the list returned by the `getPackages()` method
+   - Add `new RNIapPackage()` to the list returned by the `getPackages()` method
 
 2. Append the following lines to `android/settings.gradle`:
 
