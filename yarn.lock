@@ -2398,27 +2398,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/eslint-config@npm:3.0.3":
-  version: 3.0.3
-  resolution: "@react-native-community/eslint-config@npm:3.0.3"
+"@react-native-community/eslint-config@npm:3.1.0":
+  version: 3.1.0
+  resolution: "@react-native-community/eslint-config@npm:3.1.0"
   dependencies:
     "@babel/core": ^7.14.0
     "@babel/eslint-parser": ^7.18.2
     "@react-native-community/eslint-plugin": ^1.1.0
-    "@typescript-eslint/eslint-plugin": ^5.15.0
-    "@typescript-eslint/parser": ^5.15.0
-    eslint-config-prettier: ^8.3.0
+    "@typescript-eslint/eslint-plugin": ^5.30.5
+    "@typescript-eslint/parser": ^5.30.5
+    eslint-config-prettier: ^8.5.0
     eslint-plugin-eslint-comments: ^3.2.0
-    eslint-plugin-flowtype: ^8.0.0
-    eslint-plugin-jest: ^25.2.4
-    eslint-plugin-prettier: ^4.0.0
-    eslint-plugin-react: ^7.26.1
-    eslint-plugin-react-hooks: ^4.2.0
-    eslint-plugin-react-native: ^3.11.0
+    eslint-plugin-ft-flow: ^2.0.1
+    eslint-plugin-jest: ^26.5.3
+    eslint-plugin-prettier: ^4.2.1
+    eslint-plugin-react: ^7.30.1
+    eslint-plugin-react-hooks: ^4.6.0
+    eslint-plugin-react-native: ^4.0.0
   peerDependencies:
-    eslint: ">=7"
+    eslint: ">=8"
     prettier: ">=2"
-  checksum: 5d2f48a9366fd292165265e7f51268ef1e31255b9b08ece023b3d46e42bfe30329760b4175fc1fec312d5b29b99af2c288e2baaf3ac50f5c231289c98b53c548
+  checksum: 789b4f20091d114d5e24c337e9004381f2639eafc05171311b57d81301e4f01965d45d99d7549c7369967f5381bcbd162bfa50c05834a01e27fd5509532e35d4
   languageName: node
   linkType: hard
 
@@ -2831,29 +2831,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^4.28.4":
-  version: 4.33.0
-  resolution: "@typescript-eslint/eslint-plugin@npm:4.33.0"
-  dependencies:
-    "@typescript-eslint/experimental-utils": 4.33.0
-    "@typescript-eslint/scope-manager": 4.33.0
-    debug: ^4.3.1
-    functional-red-black-tree: ^1.0.1
-    ignore: ^5.1.8
-    regexpp: ^3.1.0
-    semver: ^7.3.5
-    tsutils: ^3.21.0
-  peerDependencies:
-    "@typescript-eslint/parser": ^4.0.0
-    eslint: ^5.0.0 || ^6.0.0 || ^7.0.0
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  checksum: d74855d0a5ffe0b2f362ec02fcd9301d39a53fb4155b9bd0cb15a0a31d065143129ebf98df9d86af4b6f74de1d423a4c0d8c0095520844068117453afda5bc4f
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/eslint-plugin@npm:^5.15.0":
+"@typescript-eslint/eslint-plugin@npm:5.32.0, @typescript-eslint/eslint-plugin@npm:^5.30.5":
   version: 5.32.0
   resolution: "@typescript-eslint/eslint-plugin@npm:5.32.0"
   dependencies:
@@ -2876,6 +2854,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/eslint-plugin@npm:^4.28.4":
+  version: 4.33.0
+  resolution: "@typescript-eslint/eslint-plugin@npm:4.33.0"
+  dependencies:
+    "@typescript-eslint/experimental-utils": 4.33.0
+    "@typescript-eslint/scope-manager": 4.33.0
+    debug: ^4.3.1
+    functional-red-black-tree: ^1.0.1
+    ignore: ^5.1.8
+    regexpp: ^3.1.0
+    semver: ^7.3.5
+    tsutils: ^3.21.0
+  peerDependencies:
+    "@typescript-eslint/parser": ^4.0.0
+    eslint: ^5.0.0 || ^6.0.0 || ^7.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: d74855d0a5ffe0b2f362ec02fcd9301d39a53fb4155b9bd0cb15a0a31d065143129ebf98df9d86af4b6f74de1d423a4c0d8c0095520844068117453afda5bc4f
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/experimental-utils@npm:4.33.0":
   version: 4.33.0
   resolution: "@typescript-eslint/experimental-utils@npm:4.33.0"
@@ -2892,14 +2892,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/experimental-utils@npm:^5.0.0":
+"@typescript-eslint/parser@npm:5.32.0, @typescript-eslint/parser@npm:^5.30.5":
   version: 5.32.0
-  resolution: "@typescript-eslint/experimental-utils@npm:5.32.0"
+  resolution: "@typescript-eslint/parser@npm:5.32.0"
   dependencies:
-    "@typescript-eslint/utils": 5.32.0
+    "@typescript-eslint/scope-manager": 5.32.0
+    "@typescript-eslint/types": 5.32.0
+    "@typescript-eslint/typescript-estree": 5.32.0
+    debug: ^4.3.4
   peerDependencies:
     eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
-  checksum: cbeff88d45b56179e5fc5a979e79b132a84566aeec277368c6705e9bc4371b9e867a37d169bbb225f9b7cea6d4f8d431e51d2db64c140b6f704c5de822a7c4d9
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 3fcfa183cad125c3198fd63701c6e13dad1cc984d309e8cd40ec9a2eb857902abfd7e9ee3f030b18eb1c18c795a61ea289ef147a7f9dfac38df905e7514316af
   languageName: node
   linkType: hard
 
@@ -2917,23 +2923,6 @@ __metadata:
     typescript:
       optional: true
   checksum: 102457eae1acd516211098fea081c8a2ed728522bbda7f5a557b6ef23d88970514f9a0f6285d53fca134d3d4d7d17822b5d5e12438d5918df4d1f89cc9e67d57
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/parser@npm:^5.15.0":
-  version: 5.32.0
-  resolution: "@typescript-eslint/parser@npm:5.32.0"
-  dependencies:
-    "@typescript-eslint/scope-manager": 5.32.0
-    "@typescript-eslint/types": 5.32.0
-    "@typescript-eslint/typescript-estree": 5.32.0
-    debug: ^4.3.4
-  peerDependencies:
-    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  checksum: 3fcfa183cad125c3198fd63701c6e13dad1cc984d309e8cd40ec9a2eb857902abfd7e9ee3f030b18eb1c18c795a61ea289ef147a7f9dfac38df905e7514316af
   languageName: node
   linkType: hard
 
@@ -3023,7 +3012,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:5.32.0":
+"@typescript-eslint/utils@npm:5.32.0, @typescript-eslint/utils@npm:^5.10.0":
   version: 5.32.0
   resolution: "@typescript-eslint/utils@npm:5.32.0"
   dependencies:
@@ -5375,7 +5364,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:8.5.0, eslint-config-prettier@npm:^8.3.0":
+"eslint-config-prettier@npm:8.5.0, eslint-config-prettier@npm:^8.5.0":
   version: 8.5.0
   resolution: "eslint-config-prettier@npm:8.5.0"
   peerDependencies:
@@ -5398,38 +5387,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-flowtype@npm:^8.0.0":
-  version: 8.0.3
-  resolution: "eslint-plugin-flowtype@npm:8.0.3"
+"eslint-plugin-ft-flow@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "eslint-plugin-ft-flow@npm:2.0.1"
   dependencies:
     lodash: ^4.17.21
     string-natural-compare: ^3.0.1
   peerDependencies:
-    "@babel/plugin-syntax-flow": ^7.14.5
-    "@babel/plugin-transform-react-jsx": ^7.14.9
+    "@babel/eslint-parser": ^7.12.0
     eslint: ^8.1.0
-  checksum: 30e63c5357b0b5571f39afed51e59c140084f4aa53c106b1fd04f26da42b268908466daa6020b92943e71409bdaee1c67202515ed9012404d027cc92cb03cefa
+  checksum: f9519a9d93c6e883cb1ddf73c18aaff0d40ee555c60fa00f47f24aa73fb255fa6754217fb19a07ec0b1f244f8bc73f539389caa2189a4e9c33a1e8efbe538ec4
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:^25.2.4":
-  version: 25.7.0
-  resolution: "eslint-plugin-jest@npm:25.7.0"
+"eslint-plugin-jest@npm:^26.5.3":
+  version: 26.7.0
+  resolution: "eslint-plugin-jest@npm:26.7.0"
   dependencies:
-    "@typescript-eslint/experimental-utils": ^5.0.0
+    "@typescript-eslint/utils": ^5.10.0
   peerDependencies:
-    "@typescript-eslint/eslint-plugin": ^4.0.0 || ^5.0.0
+    "@typescript-eslint/eslint-plugin": ^5.0.0
     eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
   peerDependenciesMeta:
     "@typescript-eslint/eslint-plugin":
       optional: true
     jest:
       optional: true
-  checksum: fc6da96131f4cbf33d15ef911ec8e600ccd71deb97d73c0ca340427cef7b01ff41a797e2e7d1e351abf97321a46ed0c0acff5ee8eeedac94961dd6dad1f718a9
+  checksum: 21dbeb3820a1640185e0bd3847f65feba98b479812bcaa3f353e725bd0538618b16544b4dfc74ac147b5150afed9cf28760d7aaad54158611403810776fe6353
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:4.2.1, eslint-plugin-prettier@npm:^4.0.0":
+"eslint-plugin-prettier@npm:4.2.1, eslint-plugin-prettier@npm:^4.2.1":
   version: 4.2.1
   resolution: "eslint-plugin-prettier@npm:4.2.1"
   dependencies:
@@ -5444,7 +5432,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react-hooks@npm:^4.2.0":
+"eslint-plugin-react-hooks@npm:^4.6.0":
   version: 4.6.0
   resolution: "eslint-plugin-react-hooks@npm:4.6.0"
   peerDependencies:
@@ -5460,19 +5448,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react-native@npm:^3.11.0":
-  version: 3.11.0
-  resolution: "eslint-plugin-react-native@npm:3.11.0"
+"eslint-plugin-react-native@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "eslint-plugin-react-native@npm:4.0.0"
   dependencies:
     "@babel/traverse": ^7.7.4
     eslint-plugin-react-native-globals: ^0.1.1
   peerDependencies:
-    eslint: ^3.17.0 || ^4 || ^5 || ^6 || ^7
-  checksum: 100006a29c7a47df66764db11560ae51076bcd37dd8aaaf5738675a402404e257caa0a6c1d724fb6979fbc8198545da42e45966a4460a0a52e8b2b29d3c7a901
+    eslint: ^3.17.0 || ^4 || ^5 || ^6 || ^7 || ^8
+  checksum: 69fee2de6bad525b5e747112cd8007861be4ad014b96208f6b7d221eef0bac43b834115e4379d9f719e7aa24a5d41c281bbbd6a76ddfa363f939670a635ab0fa
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:^7.26.1":
+"eslint-plugin-react@npm:^7.30.1":
   version: 7.30.1
   resolution: "eslint-plugin-react@npm:7.30.1"
   dependencies:
@@ -8793,9 +8781,9 @@ __metadata:
   linkType: hard
 
 "lru-cache@npm:^7.7.1":
-  version: 7.13.1
-  resolution: "lru-cache@npm:7.13.1"
-  checksum: f53c7dd098a7afd6342b23f7182629edff206c7665de79445a7f5455440e768a4d1c6ec52e1a16175580c71535c9437dfb6f6bc22ca1a0e4a7454a97cde87329
+  version: 7.13.2
+  resolution: "lru-cache@npm:7.13.2"
+  checksum: dfed24e52bae95edf490d0f28f4f14552319ac7e7dc37ae0b84a72e084949233821b33227271abe81d8361ac079810f9d171a706f316cfdeda135012e4311015
   languageName: node
   linkType: hard
 
@@ -10762,13 +10750,15 @@ __metadata:
   dependencies:
     "@babel/eslint-parser": 7.18.9
     "@firmnav/eslint-github-actions-formatter": 1.0.1
-    "@react-native-community/eslint-config": 3.0.3
+    "@react-native-community/eslint-config": 3.1.0
     "@release-it/conventional-changelog": 5.0.0
     "@testing-library/jest-native": 4.0.5
     "@testing-library/react-native": 11.0.0
     "@types/jest": 28.1.6
     "@types/react": ~17.0.47
     "@types/react-native": 0.68.2
+    "@typescript-eslint/eslint-plugin": 5.32.0
+    "@typescript-eslint/parser": 5.32.0
     babel-jest: 28.1.3
     eslint: 8.20.0
     eslint-config-prettier: 8.5.0
