@@ -114,7 +114,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         let reject = tuple.1
         reject(code, message, error)
       }
-      promisesByKey[key]=nil
+      promisesByKey[key] = nil
     }
   }
 
@@ -234,10 +234,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     if let prod = product {
       addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
 
-      let payment: SKMutablePayment = SKMutablePayment(product: prod)
+      let payment = SKMutablePayment(product: prod)
 
       if #available(iOS 12.2, tvOS 12.2, *) {
-        let discount: SKPaymentDiscount = SKPaymentDiscount(
+        let discount = SKPaymentDiscount(
           identifier: discountOffer["identifier"]!,
           keyIdentifier: discountOffer["keyIdentifier"]!,
           nonce: UUID(uuidString: discountOffer["nonce"]!)!,
@@ -530,7 +530,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
           let nsError = transaction.error as NSError?
 
           if hasListeners {
-            let code =  nsError?.code
+            let code = nsError?.code
             let responseCode = String(code ?? 0)
             let err = [
               "responseCode": responseCode,

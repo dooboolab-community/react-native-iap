@@ -187,7 +187,8 @@ export class App extends Component<Props, State> {
 
   requestPurchase = async (sku: string) => {
     try {
-      RNIap.requestPurchase(sku);
+      // TODO: wait for https://github.com/dooboolab/react-native-iap/pull/1792 to be merged
+      RNIap.requestPurchase({sku} as any);
     } catch (error) {
       if (error instanceof RNIapPurchaseError) {
         console.warn(error.code, error.message);
@@ -197,7 +198,8 @@ export class App extends Component<Props, State> {
 
   requestSubscription = async (sku: string) => {
     try {
-      RNIap.requestSubscription(sku);
+      // TODO: wait for https://github.com/dooboolab/react-native-iap/pull/1792 to be merged
+      RNIap.requestSubscription({sku} as any);
     } catch (error) {
       if (error instanceof RNIapPurchaseError) {
         Alert.alert(error.message ?? '');
