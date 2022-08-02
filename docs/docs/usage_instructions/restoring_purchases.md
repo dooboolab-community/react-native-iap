@@ -28,7 +28,7 @@ getPurchases = async () => {
           break;
 
         case 'com.example.coins100':
-          await RNIap.consumePurchaseAndroid(purchase.purchaseToken);
+          await RNIap.finishTransaction(purchase.purchaseToken);
           CoinStore.addCoins(100);
       }
     });
