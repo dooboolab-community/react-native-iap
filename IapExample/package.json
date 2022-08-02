@@ -3,11 +3,11 @@
   "version": "8.5.0",
   "private": true,
   "scripts": {
-    "preinstall": "cd .. && yarn && yarn build && cd IapExample",
-    "postinstall": "npx pod-install",
-    "android": "react-native run-android",
+    "android:play": "react-native run-android --variant=GooglePlayDebug",
+    "android:amazon": "react-native run-android --variant=AmazonDebug",
     "ios": "react-native run-ios",
     "start": "react-native start",
+    "pods": "pod-install --quiet",
     "test": "jest",
     "lint": "eslint ."
   },
