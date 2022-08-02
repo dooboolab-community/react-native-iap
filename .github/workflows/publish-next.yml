@@ -1,8 +1,8 @@
 name: publish-next
 
 on:
-  push:
-    branches: [next]
+  release:
+    types: [prereleased]
 
 jobs:
   publish-npm-registry:
