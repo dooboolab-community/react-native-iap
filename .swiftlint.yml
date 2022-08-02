@@ -3,6 +3,8 @@ opt_in_rules:
   - vertical_whitespace_closing_braces
   - vertical_whitespace_opening_braces
   - vertical_parameter_alignment_on_call
+  - operator_usage_whitespace
+  - redundant_type_annotation
 
 indentation: 2
 vertical_whitespace_closing_braces: true
