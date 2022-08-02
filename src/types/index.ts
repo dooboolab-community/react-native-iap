@@ -193,13 +193,15 @@ export type RequestPurchase = RequestPurchaseIOS | RequestPurchaseAndroid;
 interface RequestSubscriptionIOS extends RequestPurchaseIOS {
   purchaseTokenAndroid?: never;
   prorationModeAndroid?: never;
+  selectedOfferIndexArr?: never;
+  skus?:never
 }
 
 interface RequestSubscriptionAndroid extends RequestPurchaseAndroid {
   purchaseTokenAndroid?: string;
   prorationModeAndroid: ProrationModesAndroid;
-  selectedOfferIndexArr: number[] | undefined; //For Android Billing V5
-  skus: string[] | undefined; // For AndroidBilling V5
+  selectedOfferIndexArr?: number[] | undefined; //For Android Billing V5
+  skus?: string[] | undefined; // For AndroidBilling V5
 }
 
 export type RequestSubscription =
