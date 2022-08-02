@@ -2,6 +2,7 @@ name: publish-next
 
 on:
   release:
+    branches: [next]
     types: [prereleased]
 
 jobs:
