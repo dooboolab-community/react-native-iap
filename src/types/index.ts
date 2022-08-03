@@ -1,5 +1,3 @@
-type Sku = string;
-
 export enum IAPErrorCode {
   E_IAP_NOT_AVAILABLE = 'E_IAP_NOT_AVAILABLE',
   E_UNKNOWN = 'E_UNKNOWN',
@@ -172,7 +170,7 @@ export interface Subscription extends ProductCommon {
 }
 
 export interface RequestPurchase {
-  sku: Sku;
+  sku: string;
   andDangerouslyFinishTransactionAutomaticallyIOS: boolean;
   applicationUsername?: string;
   obfuscatedAccountIdAndroid?: string;
@@ -183,6 +181,6 @@ export interface RequestPurchase {
 export interface RequestSubscription extends RequestPurchase {
   purchaseTokenAndroid?: string;
   prorationModeAndroid: ProrationModesAndroid;
-  selectedOfferIndexArr?: number[] | undefined; //For Android Billing V5
+  selectedOfferIndices?: number[] | undefined; //For Android Billing V5
   skus?: string[] | undefined; // For AndroidBilling V5
 }

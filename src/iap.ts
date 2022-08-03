@@ -323,7 +323,7 @@ export const requestSubscription = ({
   prorationModeAndroid = -1,
   obfuscatedAccountIdAndroid,
   obfuscatedProfileIdAndroid,
-  selectedOfferIndexArr = undefined, // Android Billing V5
+  selectedOfferIndices = undefined, // Android Billing V5
   skus = undefined, // Android Billing V5
   applicationUsername,
 }: RequestSubscription): Promise<SubscriptionPurchase | null> =>
@@ -350,7 +350,7 @@ export const requestSubscription = ({
           prorationModeAndroid,
           obfuscatedAccountIdAndroid,
           obfuscatedProfileIdAndroid,
-          selectedOfferIndexArr,
+          selectedOfferIndices,
         );
       },
     }) || Promise.resolve
