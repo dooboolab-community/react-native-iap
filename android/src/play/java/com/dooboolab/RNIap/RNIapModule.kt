@@ -317,38 +317,35 @@ class RNIapModule(
                 ).build()
             ) { billingResult: BillingResult, purchases: List<Purchase>? ->
                 if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
-                if (purchases != null) {
-                    for (i in purchases.indices) {
-                        val purchase = purchases[i]
-                        val item = WritableNativeMap()
-                        item.putString("productId", purchase.products[0])// kept for convenience/backward-compatibility. productIds has the complete list
-                        val products = Arguments.createArray()
-                        purchase.products.forEach { products.pushString(it) }
-                        item.putArray("productIds", products)
-                        item.putString("transactionId", purchase.orderId)
-                        item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
-                        item.putString("transactionReceipt", purchase.originalJson)
-                        item.putString("orderId", purchase.orderId)
-                        item.putString("purchaseToken", purchase.purchaseToken)
-                        item.putString("developerPayloadAndroid", purchase.developerPayload)
-                        item.putString("signatureAndroid", purchase.signature)
-                        item.putInt("purchaseStateAndroid", purchase.purchaseState)
-                        item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged)
-                        item.putString("packageNameAndroid", purchase.packageName)
-                        item.putString(
-                            "obfuscatedAccountIdAndroid",
-                            purchase.accountIdentifiers?.obfuscatedAccountId
-                        )
-                        item.putString(
-                            "obfuscatedProfileIdAndroid",
-                            purchase.accountIdentifiers?.obfuscatedProfileId
-                        )
-                        if (type == BillingClient.ProductType.SUBS) {
-                            item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing)
-                        }
-                        items.pushMap(item)
+                purchases?.forEach { purchase ->
+                    val item = WritableNativeMap()
+                    item.putString("productId", purchase.products[0])// kept for convenience/backward-compatibility. productIds has the complete list
+                    val products = Arguments.createArray()
+                    purchase.products.forEach { products.pushString(it) }
+                    item.putArray("productIds", products)
+                    item.putString("transactionId", purchase.orderId)
+                    item.putDouble("transactionDate", purchase.purchaseTime.toDouble())
+                    item.putString("transactionReceipt", purchase.originalJson)
+                    item.putString("orderId", purchase.orderId)
+                    item.putString("purchaseToken", purchase.purchaseToken)
+                    item.putString("developerPayloadAndroid", purchase.developerPayload)
+                    item.putString("signatureAndroid", purchase.signature)
+                    item.putInt("purchaseStateAndroid", purchase.purchaseState)
+                    item.putBoolean("isAcknowledgedAndroid", purchase.isAcknowledged)
+                    item.putString("packageNameAndroid", purchase.packageName)
+                    item.putString(
+                        "obfuscatedAccountIdAndroid",
+                        purchase.accountIdentifiers?.obfuscatedAccountId
+                    )
+                    item.putString(
+                        "obfuscatedProfileIdAndroid",
+                        purchase.accountIdentifiers?.obfuscatedProfileId
+                    )
+                    if (type == BillingClient.ProductType.SUBS) {
+                        item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing)
                     }
-                }
+                    items.pushMap(item)
+                    }
                 promise.safeResolve(items)
             }
         }

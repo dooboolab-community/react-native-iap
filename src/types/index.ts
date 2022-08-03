@@ -53,7 +53,6 @@ export interface ProductCommon {
 
 export interface ProductPurchase {
   productId: string;
-  productIds?: string[];
   transactionId?: string;
   transactionDate: number;
   transactionReceipt: string;
@@ -63,6 +62,7 @@ export interface ProductPurchase {
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;
   //Android
+  productIds?: string[];
   dataAndroid?: string;
   signatureAndroid?: string;
   autoRenewingAndroid?: boolean;
