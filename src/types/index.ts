@@ -171,7 +171,7 @@ export interface Subscription extends ProductCommon {
 
 export interface RequestPurchase {
   sku: string;
-  andDangerouslyFinishTransactionAutomaticallyIOS: boolean;
+  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
   applicationUsername?: string;
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
@@ -179,7 +179,7 @@ export interface RequestPurchase {
 
 export interface RequestSubscription extends RequestPurchase {
   purchaseTokenAndroid?: string;
-  prorationModeAndroid: ProrationModesAndroid;
+  prorationModeAndroid?: ProrationModesAndroid;
   selectedOfferIndices?: number[] | undefined; //For Android Billing V5
   skus?: string[] | undefined; // For AndroidBilling V5
 }
