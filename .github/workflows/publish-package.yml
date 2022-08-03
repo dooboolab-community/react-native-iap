@@ -2,7 +2,6 @@ name: Publish / Package
 
 on:
   release:
-    branches: [main, next]
     types: [created]
 
 jobs:
