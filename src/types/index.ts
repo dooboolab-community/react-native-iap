@@ -152,12 +152,12 @@ export interface RequestPurchase {
   sku: Sku;
   andDangerouslyFinishTransactionAutomaticallyIOS: boolean;
   applicationUsername?: string;
-  obfuscatedAccountIdAndroid: string | undefined;
-  obfuscatedProfileIdAndroid: string | undefined;
+  obfuscatedAccountIdAndroid?: string;
+  obfuscatedProfileIdAndroid?: string;
   selectedOfferIndex: number;
 }
 
 export interface RequestSubscription extends RequestPurchase {
-  purchaseTokenAndroid: string | undefined;
+  purchaseTokenAndroid?: string;
   prorationModeAndroid: ProrationModesAndroid;
 }
