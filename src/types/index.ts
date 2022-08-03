@@ -175,7 +175,6 @@ export interface RequestPurchase {
   applicationUsername?: string;
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
-  selectedOfferIndex: number;
 }
 
 export interface RequestSubscription extends RequestPurchase {
