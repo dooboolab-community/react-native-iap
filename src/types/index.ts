@@ -148,38 +148,16 @@ export interface Subscription extends ProductCommon {
   freeTrialPeriodAndroid?: string;
 }
 
-interface RequestPurchaseCommon {
+export interface RequestPurchase {
   sku: Sku;
-}
-
-interface RequestPurchaseIOS extends RequestPurchaseCommon {
   andDangerouslyFinishTransactionAutomaticallyIOS: boolean;
   applicationUsername?: string;
-  obfuscatedAccountIdAndroid?: never;
-  obfuscatedProfileIdAndroid?: never;
-  selectedOfferIndex?: never;
-}
-
-interface RequestPurchaseAndroid extends RequestPurchaseCommon {
-  andDangerouslyFinishTransactionAutomaticallyIOS?: never;
-  applicationUsername?: never;
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
   selectedOfferIndex: number;
 }
 
-export type RequestPurchase = RequestPurchaseIOS | RequestPurchaseAndroid;
-
-interface RequestSubscriptionIOS extends RequestPurchaseIOS {
-  purchaseTokenAndroid?: never;
-  prorationModeAndroid?: never;
-}
-
-interface RequestSubscriptionAndroid extends RequestPurchaseAndroid {
+export interface RequestSubscription extends RequestPurchase {
   purchaseTokenAndroid?: string;
   prorationModeAndroid: ProrationModesAndroid;
 }
-
-export type RequestSubscription =
-  | RequestSubscriptionIOS
-  | RequestSubscriptionAndroid;
