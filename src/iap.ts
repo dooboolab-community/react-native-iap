@@ -263,9 +263,9 @@ export const getAvailablePurchases = (): Promise<
 export const requestPurchase = ({
   sku,
   andDangerouslyFinishTransactionAutomaticallyIOS = false,
-  obfuscatedAccountIdAndroid,
-  obfuscatedProfileIdAndroid,
-  applicationUsername,
+  obfuscatedAccountIdAndroid = undefined,
+  obfuscatedProfileIdAndroid = undefined,
+  applicationUsername = undefined,
 }: RequestPurchase): Promise<InAppPurchase> =>
   (
     Platform.select({
@@ -309,11 +309,11 @@ export const requestPurchase = ({
 export const requestSubscription = ({
   sku,
   andDangerouslyFinishTransactionAutomaticallyIOS = false,
-  purchaseTokenAndroid,
+  purchaseTokenAndroid = undefined,
   prorationModeAndroid = -1,
-  obfuscatedAccountIdAndroid,
-  obfuscatedProfileIdAndroid,
-  applicationUsername,
+  obfuscatedAccountIdAndroid = undefined,
+  obfuscatedProfileIdAndroid = undefined,
+  applicationUsername = undefined,
 }: RequestSubscription): Promise<SubscriptionPurchase | null> =>
   (
     Platform.select({
