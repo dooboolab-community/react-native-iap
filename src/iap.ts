@@ -30,6 +30,7 @@ import {
 
 const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
 const isAndroid = Platform.OS === 'android';
+const isIos = Platform.OS === 'ios';
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
 
@@ -678,11 +679,15 @@ export const purchaseErrorListener = (
  */
 export const promotedProductListener = (
   listener: () => void,
-): EmitterSubscription =>
-  new NativeEventEmitter(getIosModule()).addListener(
-    'iap-promoted-product',
-    listener,
-  );
+): EmitterSubscription | null => {
+  if (isIos) {
+    return new NativeEventEmitter(getIosModule()).addListener(
+      'iap-promoted-product',
+      listener,
+    );
+  }
+  return null;
+};
 
 /**
  * Get the current receipt base64 encoded in IOS.
