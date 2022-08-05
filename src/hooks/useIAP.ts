@@ -1,6 +1,7 @@
 import {useCallback} from 'react';
 
 import {
+  clearTransactionIOS as iapClearTransactionIOS,
   finishTransaction as iapFinishTransaction,
   getAvailablePurchases as iapGetAvailablePurchases,
   getProducts as iapGetProducts,
@@ -28,6 +29,7 @@ type IAP_STATUS = {
     isConsumable?: boolean,
     developerPayloadAndroid?: string,
   ) => Promise<string | void>;
+  iapClearTransactionIOS: () => Promise<void>;
   getAvailablePurchases: () => Promise<void>;
   getPurchaseHistories: () => Promise<void>;
   getProducts: (skus: string[]) => Promise<void>;
@@ -120,6 +122,7 @@ export function useIAP(): IAP_STATUS {
     currentPurchaseError,
     initConnectionError,
     finishTransaction,
+    iapClearTransactionIOS,
     getProducts,
     getSubscriptions,
     getAvailablePurchases,
