@@ -29,6 +29,7 @@ Please [fund the project](https://opencollective.com/react-native-iap) if you ar
 > The fund goes to maintainers.
 
 ### Supporter
+
 - [hyochan](https://github.com/hyochan)
 
 ## Announcement
