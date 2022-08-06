@@ -34,6 +34,13 @@ const isIos = Platform.OS === 'ios';
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
 
+export class IapError implements PurchaseError {
+  constructor(public code?: string, public message?: string) {
+    this.code = code;
+    this.message = message;
+  }
+}
+
 export const getInstallSourceAndroid = (): InstallSourceAndroid => {
   return RNIapModule
     ? InstallSourceAndroid.GOOGLE_PLAY
@@ -664,7 +671,7 @@ export const purchaseErrorListener = (
  * Only available on iOS
  */
 export const promotedProductListener = (
-  listener: () => void,
+  listener: (productId?: string) => void,
 ): EmitterSubscription | null => {
   if (isIos) {
     return new NativeEventEmitter(getIosModule()).addListener(

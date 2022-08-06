@@ -1,4 +1,4 @@
-type Sku = string;
+export type Sku = string;
 
 export enum IAPErrorCode {
   E_IAP_NOT_AVAILABLE = 'E_IAP_NOT_AVAILABLE',
