@@ -691,6 +691,14 @@ export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> =>
   getIosModule().getPendingTransactions();
 
 /**
+ * Get the current receipt base64 encoded in IOS.
+ * @param {forceRefresh?:boolean}
+ * @returns {Promise<string>}
+ */
+export const getReceiptIOS = async (forceRefresh?: boolean): Promise<string> =>
+  getIosModule().requestReceipt(forceRefresh ?? false);
+
+/**
  * Launches a modal to register the redeem offer code in IOS.
  * @returns {Promise<null>}
  */
