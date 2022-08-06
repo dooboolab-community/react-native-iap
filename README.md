@@ -29,6 +29,7 @@ Please [fund the project](https://opencollective.com/react-native-iap) if you ar
 > The fund goes to maintainers.
 
 ### Supporter
+
 - [hyochan](https://github.com/hyochan)
 
 ## Announcement
@@ -99,7 +100,6 @@ If you're looking for a module going further than react-native-iap, we recommend
 [open-collective-backer]: https://opencollective.com/react-native-iap#backer
 [open-collective-sponsor]: https://opencollective.com/react-native-iap#sponsor
 [open-collective]: https://opencollective.com/react-native-iap
-[readme-deprecated]: https://github.com/dooboolab/react-native-iap/blob/main/README_DEPRECATED.md
 
 <!-- Externals -->
 
