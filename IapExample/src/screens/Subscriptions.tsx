@@ -26,7 +26,7 @@ export const Subscriptions = () => {
       await requestSubscription({
         sku,
         andDangerouslyFinishTransactionAutomaticallyIOS: false,
-        selectedOfferIndex: 0,
+        selectedOfferIndices: [0],
         prorationModeAndroid: ProrationModesAndroid.DEFERRED,
       });
     } catch (error) {
@@ -55,8 +55,7 @@ export const Subscriptions = () => {
                   value: subscription.productId,
                 },
               ]}
-              isLast={subscriptions.length - 1 === index}
-            >
+              isLast={subscriptions.length - 1 === index}>
               <Button
                 title="Buy"
                 onPress={() => handleBuySubscription(subscription.productId)}
