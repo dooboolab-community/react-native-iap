@@ -1,3 +1,5 @@
+export type Sku = string;
+
 export enum IAPErrorCode {
   E_IAP_NOT_AVAILABLE = 'E_IAP_NOT_AVAILABLE',
   E_UNKNOWN = 'E_UNKNOWN',
@@ -170,7 +172,7 @@ export interface SubscriptionIOS extends ProductCommon {
 export type Subscription = SubscriptionAndroid & SubscriptionIOS;
 
 export interface RequestPurchase {
-  sku: string;
+  sku: Sku;
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
   applicationUsername?: string;
   obfuscatedAccountIdAndroid?: string;
