@@ -4142,14 +4142,20 @@ __metadata:
   dependencies:
     "@babel/core": ^7.12.9
     "@babel/runtime": ^7.12.5
-    "@react-native-community/eslint-config": 3.1.0
+    "@react-native-masked-view/masked-view": 0.2.7
+    "@react-navigation/native": 6.0.11
+    "@react-navigation/stack": 6.2.2
+    "@types/lodash": 4.14.182
     babel-jest: ^26.6.3
     babel-plugin-module-resolver: 4.1.0
-    eslint: ^7.32.0
     jest: ^26.6.3
+    lodash: 4.17.21
     metro-react-native-babel-preset: ^0.70.3
     react: 18.0.0
     react-native: 0.69.1
+    react-native-gesture-handler: 2.5.0
+    react-native-safe-area-context: 4.3.1
+    react-native-screens: 3.15.0
     react-test-renderer: 18.0.0
   languageName: unknown
   linkType: soft
@@ -6888,30 +6894,6 @@ __metadata:
   checksum: 959ce3bcbc8362909210fae894e4b414a0afdff39fe1683463214b7feddae6beaf8584ebe62323b1e91ba31de00311e826588e0d807c93a949e445b1770cac27
   languageName: node
   linkType: hard
-
-"react-native-iap-example@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "react-native-iap-example@workspace:."
-  dependencies:
-    "@babel/core": ^7.12.9
-    "@babel/runtime": ^7.12.5
-    "@react-native-masked-view/masked-view": 0.2.7
-    "@react-navigation/native": 6.0.11
-    "@react-navigation/stack": 6.2.2
-    "@types/lodash": 4.14.182
-    babel-jest: ^26.6.3
-    babel-plugin-module-resolver: 4.1.0
-    jest: ^26.6.3
-    lodash: 4.17.21
-    metro-react-native-babel-preset: ^0.70.3
-    react: 18.0.0
-    react-native: 0.69.1
-    react-native-gesture-handler: 2.5.0
-    react-native-safe-area-context: 4.3.1
-    react-native-screens: 3.15.0
-    react-test-renderer: 18.0.0
-  languageName: unknown
-  linkType: soft
 
 "react-native-safe-area-context@npm:4.3.1":
   version: 4.3.1
