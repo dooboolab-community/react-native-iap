@@ -150,14 +150,14 @@ export interface Subscription extends ProductCommon {
 
 export interface RequestPurchase {
   sku: Sku;
-  andDangerouslyFinishTransactionAutomaticallyIOS: boolean;
+  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
   applicationUsername?: string;
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
-  selectedOfferIndex: number;
+  selectedOfferIndex?: number;
 }
 
 export interface RequestSubscription extends RequestPurchase {
   purchaseTokenAndroid?: string;
-  prorationModeAndroid: ProrationModesAndroid;
+  prorationModeAndroid?: ProrationModesAndroid;
 }
