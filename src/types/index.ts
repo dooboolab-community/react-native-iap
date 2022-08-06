@@ -1,3 +1,5 @@
+export type Sku = string;
+
 export enum IAPErrorCode {
   E_IAP_NOT_AVAILABLE = 'E_IAP_NOT_AVAILABLE',
   E_UNKNOWN = 'E_UNKNOWN',
@@ -118,35 +120,10 @@ export interface Product extends ProductCommon {
   type: 'inapp' | 'iap';
 }
 
-export interface Subscription extends ProductCommon {
-  type: 'subs' | 'sub';
+//Android V5
+export interface SubscriptionAndroid extends ProductCommon {
+  type: 'subs';
 
-  discounts?: Discount[];
-
-  introductoryPrice?: string;
-  introductoryPriceAsAmountIOS?: string;
-  introductoryPricePaymentModeIOS?:
-    | ''
-    | 'FREETRIAL'
-    | 'PAYASYOUGO'
-    | 'PAYUPFRONT';
-  introductoryPriceNumberOfPeriodsIOS?: string;
-  introductoryPriceSubscriptionPeriodIOS?:
-    | 'DAY'
-    | 'WEEK'
-    | 'MONTH'
-    | 'YEAR'
-    | '';
-
-  subscriptionPeriodNumberIOS?: string;
-  subscriptionPeriodUnitIOS?: '' | 'YEAR' | 'MONTH' | 'WEEK' | 'DAY';
-
-  introductoryPriceAsAmountAndroid: string;
-  introductoryPriceCyclesAndroid?: string;
-  introductoryPricePeriodAndroid?: string;
-  subscriptionPeriodAndroid?: string;
-  freeTrialPeriodAndroid?: string;
-  //Android V5
   productType?: string;
   name?: string;
   oneTimePurchaseOfferDetails?: {
@@ -169,8 +146,33 @@ export interface Subscription extends ProductCommon {
   }[];
 }
 
+export interface SubscriptionIOS extends ProductCommon {
+  type: 'subs';
+
+  discounts?: Discount[];
+  introductoryPrice?: string;
+  introductoryPriceAsAmountIOS?: string;
+  introductoryPricePaymentModeIOS?:
+    | ''
+    | 'FREETRIAL'
+    | 'PAYASYOUGO'
+    | 'PAYUPFRONT';
+  introductoryPriceNumberOfPeriodsIOS?: string;
+  introductoryPriceSubscriptionPeriodIOS?:
+    | 'DAY'
+    | 'WEEK'
+    | 'MONTH'
+    | 'YEAR'
+    | '';
+
+  subscriptionPeriodNumberIOS?: string;
+  subscriptionPeriodUnitIOS?: '' | 'YEAR' | 'MONTH' | 'WEEK' | 'DAY';
+}
+
+export type Subscription = SubscriptionAndroid & SubscriptionIOS;
+
 export interface RequestPurchase {
-  sku: string;
+  sku: Sku;
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
   applicationUsername?: string;
   obfuscatedAccountIdAndroid?: string;
