@@ -43,7 +43,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   private var promotedPayment: SKPayment?
   private var promotedProduct: SKProduct?
   private var productsRequest: SKProductsRequest?
-  private var countPendingTransaction: Int?
+  private var countPendingTransaction: Int = 0
+  private var hasTransactionObserver = false
 
   override init() {
     promisesByKey = [String: [RNIapIosPromise]]()
@@ -51,15 +52,29 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     myQueue = DispatchQueue(label: "reject")
     validProducts = [SKProduct]()
     super.init()
-    SKPaymentQueue.default().add(self)
+    addTransactionObserver()
   }
 
   deinit {
-    SKPaymentQueue.default().remove(self)
+    removeTransactionObserver()
   }
 
   override class func requiresMainQueueSetup() -> Bool {
     return true
+  }
+
+  func addTransactionObserver() {
+    if !hasTransactionObserver {
+      hasTransactionObserver = true
+      SKPaymentQueue.default().add(self)
+    }
+  }
+
+  func removeTransactionObserver() {
+    if hasTransactionObserver {
+      hasTransactionObserver = false
+      SKPaymentQueue.default().remove(self)
+    }
   }
 
   func flushUnheardEvents() {
@@ -99,8 +114,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
     if let promises = promises {
       for tuple in promises {
-        let resolveBlck = tuple.0
-        resolveBlck(value)
+        let resolveBlock = tuple.0
+        resolveBlock(value)
       }
       promisesByKey[key ?? ""] = nil
     }
@@ -136,6 +151,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
+    addTransactionObserver()
     let canMakePayments = SKPaymentQueue.canMakePayments()
     resolve(NSNumber(value: canMakePayments))
   }
@@ -144,7 +160,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
-    SKPaymentQueue.default().remove(self)
+    removeTransactionObserver()
     resolve(true)
   }
 
@@ -303,19 +319,19 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
-    debugMessage("clear remaining Transactions. Call this before make a new transaction")
-
     let pendingTrans = SKPaymentQueue.default().transactions
-    let countPendingTransaction = pendingTrans.count
+    countPendingTransaction = pendingTrans.count
+
+    debugMessage("clear remaining Transactions (\(countPendingTransaction)). Call this before make a new transaction")
 
     if countPendingTransaction > 0 {
       addPromise(forKey: "cleaningTransactions", resolve: resolve, reject: reject)
       for transaction in pendingTrans {
         SKPaymentQueue.default().finishTransaction(transaction)
       }
+    } else {
+      resolve(nil)
     }
-
-    resolve(nil)
   }
 
   @objc public func clearProducts(
@@ -940,18 +956,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   }
 
   func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]) {
-    debugMessage("removedTransactions")
+    debugMessage("removedTransactions - countPendingTransactions \(countPendingTransaction)")
 
-    guard var unwrappedCount = countPendingTransaction else {
-      return
-    }
+    if countPendingTransaction > 0 {
+      countPendingTransaction -= transactions.count
 
-    if unwrappedCount > 0 {
-      unwrappedCount -= transactions.count
-
-      if unwrappedCount == 0 {
+      if countPendingTransaction <= 0 {
         resolvePromises(forKey: "cleaningTransactions", value: nil)
-        countPendingTransaction = nil
+        countPendingTransaction = 0
       }
     }
   }
