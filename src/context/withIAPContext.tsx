@@ -1,34 +1,27 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
+import type {PurchaseError} from '../error';
 import {
-  getPromotedProductIOS,
-  initConnection,
   promotedProductListener,
   purchaseErrorListener,
   purchaseUpdatedListener,
-} from '../iap';
-import type {
-  InAppPurchase,
-  Product,
-  Purchase,
-  PurchaseError,
-  Subscription,
-  SubscriptionPurchase,
-} from '../types';
+} from '../eventEmitter';
+import {getPromotedProductIOS, initConnection} from '../methods';
+import type {ProductProduct, Purchase, SubscriptionProduct} from '../types';
 
 type IAPContextType = {
   connected: boolean;
-  products: Product[];
-  promotedProductsIOS: Product[];
-  subscriptions: Subscription[];
-  purchaseHistories: Purchase[];
+  products: ProductProduct[];
+  promotedProductsIOS: ProductProduct[];
+  subscriptions: SubscriptionProduct[];
+  purchaseHistory: Purchase[];
   availablePurchases: Purchase[];
   currentPurchase?: Purchase;
   currentPurchaseError?: PurchaseError;
   initConnectionError?: Error;
-  setProducts: (products: Product[]) => void;
-  setSubscriptions: (subscriptions: Subscription[]) => void;
-  setPurchaseHistories: (purchaseHistories: Purchase[]) => void;
+  setProducts: (products: ProductProduct[]) => void;
+  setSubscriptions: (subscriptions: SubscriptionProduct[]) => void;
+  setPurchaseHistory: (purchaseHistory: Purchase[]) => void;
   setAvailablePurchases: (availablePurchases: Purchase[]) => void;
   setCurrentPurchase: (currentPurchase: Purchase | undefined) => void;
   setCurrentPurchaseError: (
@@ -52,22 +45,20 @@ export function useIAPContext(): IAPContextType {
 export function withIAPContext<T>(Component: React.ComponentType<T>) {
   return function WrapperComponent(props: T) {
     const [connected, setConnected] = useState(false);
-    const [products, setProducts] = useState<Product[]>([]);
-
-    const [promotedProductsIOS, setPromotedProductsIOS] = useState<Product[]>(
+    const [products, setProducts] = useState<ProductProduct[]>([]);
+    const [promotedProductsIOS, setPromotedProductsIOS] = useState<
+      ProductProduct[]
+    >([]);
+    const [subscriptions, setSubscriptions] = useState<SubscriptionProduct[]>(
       [],
     );
-    const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-    const [purchaseHistories, setPurchaseHistories] = useState<Purchase[]>([]);
-
+    const [purchaseHistory, setPurchaseHistory] = useState<Purchase[]>([]);
     const [availablePurchases, setAvailablePurchases] = useState<Purchase[]>(
       [],
     );
     const [currentPurchase, setCurrentPurchase] = useState<Purchase>();
-
     const [currentPurchaseError, setCurrentPurchaseError] =
       useState<PurchaseError>();
-
     const [initConnectionError, setInitConnectionError] = useState<Error>();
 
     const context = useMemo(
@@ -76,14 +67,14 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         products,
         subscriptions,
         promotedProductsIOS,
-        purchaseHistories,
+        purchaseHistory,
         availablePurchases,
         currentPurchase,
         currentPurchaseError,
         initConnectionError,
         setProducts,
         setSubscriptions,
-        setPurchaseHistories,
+        setPurchaseHistory,
         setAvailablePurchases,
         setCurrentPurchase,
         setCurrentPurchaseError,
@@ -93,14 +84,14 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         products,
         subscriptions,
         promotedProductsIOS,
-        purchaseHistories,
+        purchaseHistory,
         availablePurchases,
         currentPurchase,
         currentPurchaseError,
         initConnectionError,
         setProducts,
         setSubscriptions,
-        setPurchaseHistories,
+        setPurchaseHistory,
         setAvailablePurchases,
         setCurrentPurchase,
         setCurrentPurchaseError,
@@ -122,7 +113,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
       }
 
       const purchaseUpdateSubscription = purchaseUpdatedListener(
-        async (purchase: InAppPurchase | SubscriptionPurchase) => {
+        async (purchase: Purchase) => {
           setCurrentPurchaseError(undefined);
           setCurrentPurchase(purchase);
         },

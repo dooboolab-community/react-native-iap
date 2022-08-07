@@ -1,37 +1,44 @@
 import {useCallback} from 'react';
 
+import {useIAPContext} from '../context';
+import type {PurchaseError} from '../error';
 import {
   finishTransaction as iapFinishTransaction,
   getAvailablePurchases as iapGetAvailablePurchases,
   getProducts as iapGetProducts,
-  getPurchaseHistory,
+  getPurchaseHistory as iapGetPurchaseHistory,
   getSubscriptions as iapGetSubscriptions,
   requestPurchase as iapRequestPurchase,
   requestSubscription as iapRequestSubscription,
-} from '../iap';
-import type {Product, Purchase, PurchaseError, Subscription} from '../types';
-
-import {useIAPContext} from './withIAPContext';
+} from '../methods';
+import type {PurchaseResult} from '../modules';
+import type {Product, Purchase, SubscriptionProduct} from '../types';
 
 type IAP_STATUS = {
   connected: boolean;
   products: Product[];
   promotedProductsIOS: Product[];
-  subscriptions: Subscription[];
-  purchaseHistories: Purchase[];
+  subscriptions: SubscriptionProduct[];
+  purchaseHistory: Purchase[];
   availablePurchases: Purchase[];
   currentPurchase?: Purchase;
   currentPurchaseError?: PurchaseError;
   initConnectionError?: Error;
+
   finishTransaction: (
-    purchase: Purchase,
-    isConsumable?: boolean,
-    developerPayloadAndroid?: string,
-  ) => Promise<string | void>;
+    purchase: Parameters<typeof iapFinishTransaction>[0],
+    isConsumable?: Parameters<typeof iapFinishTransaction>[1],
+    developerPayloadAndroid?: Parameters<typeof iapFinishTransaction>[2],
+  ) => Promise<PurchaseResult | string | void>;
+
   getAvailablePurchases: () => Promise<void>;
-  getPurchaseHistories: () => Promise<void>;
-  getProducts: (skus: string[]) => Promise<void>;
-  getSubscriptions: (skus: string[]) => Promise<void>;
+  getPurchaseHistory: () => Promise<void>;
+  getProducts: (skus: Parameters<typeof iapGetProducts>[0]) => Promise<void>;
+
+  getSubscriptions: (
+    skus: Parameters<typeof iapGetSubscriptions>[0],
+  ) => Promise<void>;
+
   requestPurchase: typeof iapRequestPurchase;
   requestSubscription: typeof iapRequestSubscription;
 };
@@ -42,7 +49,7 @@ export function useIAP(): IAP_STATUS {
     products,
     promotedProductsIOS,
     subscriptions,
-    purchaseHistories,
+    purchaseHistory,
     availablePurchases,
     currentPurchase,
     currentPurchaseError,
@@ -50,47 +57,47 @@ export function useIAP(): IAP_STATUS {
     setProducts,
     setSubscriptions,
     setAvailablePurchases,
-    setPurchaseHistories,
+    setPurchaseHistory,
     setCurrentPurchase,
     setCurrentPurchaseError,
   } = useIAPContext();
 
   const getProducts = useCallback(
-    async (skus: string[]): Promise<void> => {
+    async (skus: Parameters<typeof iapGetProducts>[0]) => {
       setProducts(await iapGetProducts(skus));
     },
     [setProducts],
   );
 
   const getSubscriptions = useCallback(
-    async (skus: string[]): Promise<void> => {
+    async (skus: Parameters<typeof iapGetSubscriptions>[0]) => {
       setSubscriptions(await iapGetSubscriptions(skus));
     },
     [setSubscriptions],
   );
 
-  const getAvailablePurchases = useCallback(async (): Promise<void> => {
+  const getAvailablePurchases = useCallback(async () => {
     setAvailablePurchases(await iapGetAvailablePurchases());
   }, [setAvailablePurchases]);
 
-  const getPurchaseHistories = useCallback(async (): Promise<void> => {
-    setPurchaseHistories(await getPurchaseHistory());
-  }, [setPurchaseHistories]);
+  const getPurchaseHistory = useCallback(async () => {
+    setPurchaseHistory(await iapGetPurchaseHistory());
+  }, [setPurchaseHistory]);
 
   const finishTransaction = useCallback(
     async (
       purchase: Purchase,
       isConsumable?: boolean,
       developerPayloadAndroid?: string,
-    ): Promise<string | void> => {
+    ) => {
       try {
         return await iapFinishTransaction(
           purchase,
           isConsumable,
           developerPayloadAndroid,
         );
-      } catch (err) {
-        throw err;
+      } catch (error) {
+        throw error;
       } finally {
         if (purchase.productId === currentPurchase?.productId) {
           setCurrentPurchase(undefined);
@@ -114,7 +121,7 @@ export function useIAP(): IAP_STATUS {
     products,
     promotedProductsIOS,
     subscriptions,
-    purchaseHistories,
+    purchaseHistory,
     availablePurchases,
     currentPurchase,
     currentPurchaseError,
@@ -123,7 +130,7 @@ export function useIAP(): IAP_STATUS {
     getProducts,
     getSubscriptions,
     getAvailablePurchases,
-    getPurchaseHistories,
+    getPurchaseHistory,
     requestPurchase: iapRequestPurchase,
     requestSubscription: iapRequestSubscription,
   };

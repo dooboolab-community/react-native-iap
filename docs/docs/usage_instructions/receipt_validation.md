@@ -33,7 +33,7 @@ Local on-device cryptographic validation is not currently supported. More detail
 
 This can be used as a convenience method for developing and testing receipt validation through the development lifecycle.
 
-Currently, validating receipts with the App Store is possible locally using `validateReceiptIos()`.
+Currently, validating receipts with the App Store is possible locally using `validateReceiptIOS()`.
 
 - The first parameter, you should pass `transactionReceipt` which returns after `buyProduct()`.
 - The second parameter, you should pass whether this is `test` environment.
@@ -44,7 +44,7 @@ const receiptBody = {
   'receipt-data': purchase.transactionReceipt,
   password: '******', // app shared secret, can be found in App Store Connect
 };
-const result = await RNIap.validateReceiptIos(receiptBody, false);
+const result = await RNIap.validateReceiptIOS(receiptBody, false);
 console.log(result);
 ```
 

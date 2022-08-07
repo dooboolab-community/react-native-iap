@@ -1,6 +1,6 @@
 import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import RNIap, {ProrationModesAndroid, Sku, useIAP} from 'react-native-iap';
+import {IAPPurchaseError, Sku, useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {constants, contentContainerStyle, errorLog} from '../utils';
@@ -13,24 +13,15 @@ export const Subscriptions = () => {
     try {
       await getSubscriptions(constants.subscriptionSkus);
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
-        errorLog({message: `[${error.code}]: ${error.message}`, error});
-      } else {
-        errorLog({message: 'handleGetSubscriptions', error});
-      }
+      errorLog({message: 'handleGetSubscriptions', error});
     }
   };
 
   const handleBuySubscription = async (sku: Sku) => {
     try {
-      await requestSubscription({
-        sku,
-        andDangerouslyFinishTransactionAutomaticallyIOS: false,
-        selectedOfferIndex: 0,
-        prorationModeAndroid: ProrationModesAndroid.DEFERRED,
-      });
+      await requestSubscription({sku});
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
+      if (error instanceof IAPPurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'handleBuySubscription', error});

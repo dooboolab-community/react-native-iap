@@ -38,9 +38,9 @@ getPurchases = async () => {
       'You successfully restored the following purchases: ' +
         restoredTitles.join(', '),
     );
-  } catch (err) {
-    console.warn(err); // standardized err.code and err.message available
-    Alert.alert(err.message);
+  } catch (error) {
+    console.warn(error); // standardized error.code and error.message available
+    Alert.alert(error.message);
   }
 };
 ```

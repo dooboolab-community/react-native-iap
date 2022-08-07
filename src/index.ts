@@ -1,7 +1,7 @@
-import * as iap from './iap';
-
+export * from './context';
+export * from './hooks';
+export * from './modules';
 export * from './types';
-export * from './hooks/useIAP';
-export * from './hooks/withIAPContext';
-
-export default iap;
+export * from './error';
+export * from './eventEmitter';
+export * from './methods';

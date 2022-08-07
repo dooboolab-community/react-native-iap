@@ -139,13 +139,15 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     let canMakePayments = SKPaymentQueue.canMakePayments()
     resolve(NSNumber(value: canMakePayments))
   }
+
   @objc public func endConnection(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
     SKPaymentQueue.default().remove(self)
-    resolve(nil)
+    resolve(true)
   }
+
   @objc public func getItems(
     _ skus: [String],
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
@@ -162,6 +164,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
       }
     }
   }
+
   @objc public func getAvailableItems(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
@@ -261,13 +264,13 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
   }
 
-  @objc public func buyProductWithQuantityIOS(
+  @objc public func buyProductWithQuantity(
     _ sku: String,
     quantity: Int,
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
-    debugMessage("buyProductWithQuantityIOS")
+    debugMessage("buyProductWithQuantity")
     var product: SKProduct?
     let lockQueue = DispatchQueue(label: "validProducts")
     lockQueue.sync {
@@ -311,6 +314,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         SKPaymentQueue.default().finishTransaction(transaction)
       }
     }
+
     resolve(nil)
   }
 
@@ -329,7 +333,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     resolve(nil)
   }
 
-  @objc public func  promotedProduct(
+  @objc public func promotedProduct(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
@@ -337,7 +341,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     resolve((promotedProduct != nil) ? getProductObject(promotedProduct!) : nil)
   }
 
-  @objc public func  buyPromotedProduct(
+  @objc public func buyPromotedProduct(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
@@ -349,7 +353,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
   }
 
-  @objc public func  requestReceipt(
+  @objc public func requestReceipt(
     _ refresh: Bool,
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
@@ -363,7 +367,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
   }
 
-  @objc public func  finishTransaction(
+  @objc public func finishTransaction(
     _ transactionIdentifier: String,
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
@@ -400,7 +404,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
   }
 
-  @objc public func  presentCodeRedemptionSheet(
+  @objc public func presentCodeRedemptionSheet(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {

@@ -1,6 +1,6 @@
 import {NativeModules} from 'react-native';
 
-import {initConnection} from '../iap';
+import {initConnection} from '../methods';
 
 const rnLib = '../../node_modules/react-native/Libraries';
 

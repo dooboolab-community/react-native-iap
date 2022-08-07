@@ -44,16 +44,12 @@ class RootComponent extends Component<*> {
         })
         .then(() => {
           this.purchaseUpdateSubscription = purchaseUpdatedListener(
-            (
-              purchase: InAppPurchase | SubscriptionPurchase | ProductPurchase,
-            ) => {
+            (purchase: SubscriptionPurchase | ProductPurchase) => {
               console.log('purchaseUpdatedListener', purchase);
               const receipt = purchase.transactionReceipt;
               if (receipt) {
                 yourAPI
-                  .deliverOrDownloadFancyInAppPurchase(
-                    purchase.transactionReceipt,
-                  )
+                  .deliverOrDownloadFancyPurchase(purchase.transactionReceipt)
                   .then(async (deliveryResult) => {
                     if (isSuccess(deliveryResult)) {
                       // Tell the store that you have delivered what has been paid for.
@@ -107,16 +103,16 @@ Then define the method like below and call it when user press the button.
         sku,
         andDangerouslyFinishTransactionAutomaticallyIOS: false,
       });
-    } catch (err) {
-      console.warn(err.code, err.message);
+    } catch (error) {
+      console.warn(error.code, error.message);
     }
   }
 
   requestSubscription = async (sku: string) => {
     try {
       await RNIap.requestSubscription({ sku });
-    } catch (err) {
-      console.warn(err.code, err.message);
+    } catch (error) {
+      console.warn(error.code, error.message);
     }
   }
 

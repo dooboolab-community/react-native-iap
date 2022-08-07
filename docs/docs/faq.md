@@ -131,6 +131,7 @@ const RNIapEmitter = new NativeEventEmitter(RNIapIos);
 RNIapEmitter.addListener('iap-promoted-product', async () => {
   // Check if there's a persisted promoted product
   const productId = await RNIap.getPromotedProductIOS();
+
   if (productId !== null) {
     // You may want to validate the product ID against your own SKUs
     try {

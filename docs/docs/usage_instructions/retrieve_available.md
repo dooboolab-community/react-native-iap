@@ -28,8 +28,8 @@ import * as RNIap from 'react-native-iap';
     try {
       const products: Product[] = await RNIap.getProducts(productIds);
       this.setState({ products });
-    } catch(err) {
-      console.warn(err); // standardized err.code and err.message available
+    } catch(error) {
+      console.warn(error); // standardized error.code and error.message available
     }
   }
 ```

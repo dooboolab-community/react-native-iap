@@ -1,7 +1,7 @@
-/**
- * From: https://developer.amazon.com/es/docs/in-app-purchasing/iap-rvs-examples.html
- */
-export type ReceiptType = {
+import type {Sku} from './index';
+
+/** @link https://developer.amazon.com/es/docs/in-app-purchasing/iap-rvs-examples.html */
+export interface ReceiptType {
   autoRenewing: boolean;
   betaProduct: boolean;
   cancelDate: number | null;
@@ -18,6 +18,6 @@ export type ReceiptType = {
   receiptId: string;
   renewalDate: number;
   term: string;
-  termSku: string;
+  termSku: Sku;
   testTransaction: boolean;
-} & Record<string, unknown>;
+}

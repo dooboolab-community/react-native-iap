@@ -1,6 +1,6 @@
 import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import RNIap, {useIAP} from 'react-native-iap';
+import {useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {contentContainerStyle, errorLog} from '../utils';
@@ -12,11 +12,7 @@ export const AvailablePurchases = () => {
     try {
       await getAvailablePurchases();
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
-        errorLog({message: `[${error.code}]: ${error.message}`, error});
-      } else {
-        errorLog({message: 'handleGetAvailablePurchases', error});
-      }
+      errorLog({message: 'handleGetAvailablePurchases', error});
     }
   };
 
