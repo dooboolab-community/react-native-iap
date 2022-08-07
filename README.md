@@ -185,3 +185,5 @@ Thank you to all the people who helped to maintain and upgrade this project!
 <hr>
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap?ref=badge_large)
+
+breaking change here
