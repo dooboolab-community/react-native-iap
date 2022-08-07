@@ -955,7 +955,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]) {
     debugMessage("removedTransactions - countPendingTransactions \(countPendingTransaction)")
 
-    if (countPendingTransaction > 0) {
+    if countPendingTransaction > 0 {
       countPendingTransaction -= transactions.count
 
       if countPendingTransaction <= 0 {
