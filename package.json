@@ -1,5 +1,5 @@
 {
-  "name": "react-native-iap",
+  "name": "@jeremybarbet/react-native-iap",
   "version": "8.6.4",
   "description": "React Native In App Purchase Module.",
   "repository": "https://github.com/dooboolab/react-native-iap",

@@ -11,7 +11,31 @@ module.exports = {
   },
   plugins: {
     '@release-it/conventional-changelog': {
-      preset: 'angular',
+      preset: {
+        name: 'conventionalcommits',
+        types: [
+          {
+            type: 'feat',
+            section: '✨ Features',
+          },
+          {
+            type: 'fix',
+            section: '🐛 Bug fixes',
+          },
+          {
+            type: 'chore',
+            section: '🛠️ Misc chores',
+          },
+          {
+            type: 'docs',
+            section: '📚 Documentation',
+          },
+          {
+            type: 'refactor',
+            section: '🚧 Refactoring',
+          },
+        ],
+      },
     },
   },
 };
