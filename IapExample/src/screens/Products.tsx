@@ -39,11 +39,7 @@ export const Products = () => {
 
   const handleBuyProduct = async (sku: Sku) => {
     try {
-      await requestPurchase({
-        sku,
-        andDangerouslyFinishTransactionAutomaticallyIOS: false,
-        selectedOfferIndex: 0,
-      });
+      await requestPurchase({sku});
     } catch (error) {
       if (error instanceof RNIap.IapError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
