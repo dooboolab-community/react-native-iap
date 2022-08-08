@@ -18,6 +18,9 @@ jobs:
           cache: 'yarn'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Remove example code
+        run: rm -rf IapExample
+
       - name: Install dependencies
         run: yarn install --immutable
 
