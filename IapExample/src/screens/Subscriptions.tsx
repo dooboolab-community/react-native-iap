@@ -21,9 +21,9 @@ export const Subscriptions = () => {
     }
   };
 
-  const handleBuySubscription = async (sku: Sku) => {
+  const handleBuySubscription = async (sku: Sku, offerToken: string) => {
     try {
-      await requestSubscription({sku});
+      await requestSubscription({subscriptionOffers: [{sku, offerToken}]});
     } catch (error) {
       if (error instanceof RNIap.IapError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
@@ -50,11 +50,23 @@ export const Subscriptions = () => {
                   value: subscription.productId,
                 },
               ]}
-              isLast={subscriptions.length - 1 === index}
-            >
+              isLast={subscriptions.length - 1 === index}>
               <Button
-                title="Buy"
-                onPress={() => handleBuySubscription(subscription.productId)}
+                title="Subscribe"
+                onPress={() => {
+                  const firstOfferToken =
+                    subscription.subscriptionOfferDetails?.[0]?.offerToken;
+                  if (firstOfferToken) {
+                    handleBuySubscription(
+                      subscription.productId,
+                      firstOfferToken,
+                    );
+                  } else {
+                    console.warn(
+                      `There are no subscription Offers for selected product: ${subscription.productId}`,
+                    );
+                  }
+                }}
               />
             </Row>
           ))}

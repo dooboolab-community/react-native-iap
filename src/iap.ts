@@ -30,6 +30,7 @@ import {
 
 const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
 const isAndroid = Platform.OS === 'android';
+const isAmazon = isAndroid && !!RNIapAmazonModule;
 const isIos = Platform.OS === 'ios';
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
@@ -321,8 +322,7 @@ export const requestPurchase = ({
  * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
  * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
- * @param {string[]} [selectedOfferIndices] Array of Selected Offer indices from the list returned by get products
- * @param {string[]} [skus] Skus to purchase, if more than one, otherwise it'll default to sku
+ * @param {SubscriptionOffers[]} [subscriptionOffers] Array of SubscriptionOffers. Every sky must be paired with a corresponding offerToken
  * @returns {Promise<SubscriptionPurchase | null>} Promise resolves to null when using proratioModesAndroid=DEFERRED, and to a SubscriptionPurchase otherwise
  */
 export const requestSubscription = ({
@@ -332,8 +332,8 @@ export const requestSubscription = ({
   prorationModeAndroid = -1,
   obfuscatedAccountIdAndroid,
   obfuscatedProfileIdAndroid,
-  selectedOfferIndices = undefined, // Android Billing V5
-  skus = undefined, // Android Billing V5
+  subscriptionOffers = undefined, // Android Billing V5
+  isOfferPersonalized = undefined, // Android Billing V5
   applicationUsername,
 }: RequestSubscription): Promise<SubscriptionPurchase | null> =>
   (
@@ -352,15 +352,26 @@ export const requestSubscription = ({
         );
       },
       android: async () => {
-        return getAndroidModule().buyItemByType(
-          ANDROID_ITEM_TYPE_SUBSCRIPTION,
-          skus ? skus : [sku],
-          purchaseTokenAndroid,
-          prorationModeAndroid,
-          obfuscatedAccountIdAndroid,
-          obfuscatedProfileIdAndroid,
-          selectedOfferIndices,
-        );
+        if (isAmazon) {
+          return RNIapAmazonModule.buyItemByType(sku);
+        } else {
+          if (!subscriptionOffers?.length) {
+            Promise.reject(
+              'subscriptionOffers are required for Google Play Subscriptions',
+            );
+            return;
+          }
+          return RNIapModule.buyItemByType(
+            ANDROID_ITEM_TYPE_SUBSCRIPTION,
+            subscriptionOffers?.map((so) => so.sku),
+            purchaseTokenAndroid,
+            prorationModeAndroid,
+            obfuscatedAccountIdAndroid,
+            obfuscatedProfileIdAndroid,
+            subscriptionOffers?.map((so) => so.offerToken),
+            isOfferPersonalized ?? false,
+          );
+        }
       },
     }) || Promise.resolve
   )();

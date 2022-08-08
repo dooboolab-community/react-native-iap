@@ -394,7 +394,8 @@ class RNIapModule(
         prorationMode: Int,
         obfuscatedAccountId: String?,
         obfuscatedProfileId: String?,
-        selectedOfferIndices: ReadableArray, // New optional parameter in V5
+        offerTokenArr: ReadableArray, // New parameter in V5
+        isOfferPersonalized: Boolean, // New parameter in V5
         promise: Promise
     ) {
         val activity = currentActivity
@@ -409,6 +410,17 @@ class RNIapModule(
                 PROMISE_BUY_ITEM,
                 promise
             )
+            if(skuArr.size()!=offerTokenArr.size()){
+                val debugMessage =
+                    "The number of skus (${skuArr.size()}) must match: the number of offerTokens (${offerTokenArr.size()})"
+                val error = Arguments.createMap()
+                error.putString("debugMessage", debugMessage)
+                error.putString("code", PROMISE_BUY_ITEM)
+                error.putString("message", debugMessage)
+                sendEvent(reactContext, "purchase-error", error)
+                promise.safeReject(PROMISE_BUY_ITEM, debugMessage)
+                return@ensureConnection
+            }
             val productParamsList =
             skuArr.toArrayList().map { it.toString() }.mapIndexed{ index,sku ->
                 val selectedSku: ProductDetails? = skus[sku]
@@ -424,21 +436,12 @@ class RNIapModule(
                     promise.safeReject(PROMISE_BUY_ITEM, debugMessage)
                     return@ensureConnection
                 }
-                var productParams = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(selectedSku)
-                val selectedOfferIndex = selectedOfferIndices.getInt(index)
-                if (selectedOfferIndex > -1 && (
-                    selectedSku.subscriptionOfferDetails?.size
-                        ?: 0
-                    ) > selectedOfferIndex
-                ) {
-                    val offerToken =
-                        selectedSku.subscriptionOfferDetails?.get(selectedOfferIndex)?.offerToken
-                    offerToken?.let { productParams = productParams.setOfferToken(offerToken) }
-                }
-                productParams.build()
+                val offerToken = offerTokenArr.getString(index)
+                BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(selectedSku).setOfferToken(offerToken).build()
             }
             val builder = BillingFlowParams.newBuilder()
-            builder.setProductDetailsParamsList(productParamsList)
+            builder.setProductDetailsParamsList(productParamsList).setIsOfferPersonalized(isOfferPersonalized)
+
             val subscriptionUpdateParamsBuilder = SubscriptionUpdateParams.newBuilder()
             if (purchaseToken != null) {
                 subscriptionUpdateParamsBuilder.setOldPurchaseToken(purchaseToken)

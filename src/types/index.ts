@@ -132,7 +132,7 @@ export interface SubscriptionAndroid extends ProductCommon {
     priceAmountMicros?: string;
   }[];
   subscriptionOfferDetails?: {
-    offerToken?: string[];
+    offerToken?: string;
     pricingPhases: {
       pricingPhaseList: {
         formattedPrice?: string;
@@ -172,16 +172,23 @@ export interface SubscriptionIOS extends ProductCommon {
 export type Subscription = SubscriptionAndroid & SubscriptionIOS;
 
 export interface RequestPurchase {
-  sku: Sku;
+  sku?: Sku;
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
   applicationUsername?: string;
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
 }
-
+/**
+ * In order to purchase a new subscription, every sku must have a selected offerToken
+ * @see SubscriptionAndroid.subscriptionOfferDetails.offerToken
+ */
+export interface SubscriptionOffer {
+  sku: Sku;
+  offerToken: string;
+}
 export interface RequestSubscription extends RequestPurchase {
   purchaseTokenAndroid?: string;
   prorationModeAndroid?: ProrationModesAndroid;
-  selectedOfferIndices?: number[] | undefined; //For Android Billing V5
-  skus?: string[] | undefined; // For AndroidBilling V5
+  subscriptionOffers?: SubscriptionOffer[] | undefined; // For AndroidBilling V5
+  isOfferPersonalized?: boolean | undefined; // For AndroidBilling V5
 }
