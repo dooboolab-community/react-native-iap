@@ -1,8 +1,8 @@
 import {EmitterSubscription, NativeEventEmitter} from 'react-native';
 
-import {isAndroid, isIos} from './utils/platform';
-import type {PurchaseError} from './error';
+import {isAndroid, isIos} from './internal';
 import {AndroidModule, IosModule, NativeModule} from './modules';
+import type {PurchaseError} from './purchaseError';
 import type {Purchase} from './types';
 
 const eventEmitter = new NativeEventEmitter(NativeModule);
@@ -34,7 +34,8 @@ export const purchaseErrorListener = (
 
 /**
  * Add IAP promoted subscription event
- * Only available on iOS
+ *
+ * @platform iOS
  */
 export const promotedProductListener = (listener: () => void) => {
   if (isIos) {

@@ -1,4 +1,4 @@
-export enum IAPErrorCode {
+export enum ErrorCode {
   E_UNKNOWN = 'E_UNKNOWN',
   E_USER_CANCELLED = 'E_USER_CANCELLED',
   E_USER_ERROR = 'E_USER_ERROR',
@@ -16,21 +16,13 @@ export enum IAPErrorCode {
   E_DEFERRED_PAYMENT = 'E_DEFERRED_PAYMENT',
 }
 
-export interface PurchaseError {
-  responseCode?: number;
-  debugMessage?: string;
-  code?: IAPErrorCode;
-  message?: string;
-  productId?: string;
-}
-
-export class IAPPurchaseError implements PurchaseError {
+export class PurchaseError {
   constructor(
-    public responseCode?: PurchaseError['responseCode'],
-    public debugMessage?: PurchaseError['debugMessage'],
-    public code?: PurchaseError['code'],
-    public message?: PurchaseError['message'],
-    public productId?: PurchaseError['productId'],
+    public responseCode?: number,
+    public debugMessage?: string,
+    public code?: ErrorCode,
+    public message?: string,
+    public productId?: string,
   ) {
     this.responseCode = responseCode;
     this.debugMessage = debugMessage;

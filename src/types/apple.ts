@@ -1,4 +1,7 @@
-/** Payment discount interface @link https://developer.apple.com/documentation/storekit/skpaymentdiscount?language=objc */
+/**
+ * Payment discount interface
+ * @see {@link https://developer.apple.com/documentation/storekit/skpaymentdiscount?language=objc}
+ **/
 export interface PaymentDiscount {
   /** A string used to uniquely identify a discount offer for a product */
   identifier: string;

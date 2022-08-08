@@ -1,3 +1,3 @@
 export * from './amazon';
 export * from './apple';
-export * from './methods';
+export * from './common.d';

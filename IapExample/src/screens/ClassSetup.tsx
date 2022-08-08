@@ -15,11 +15,11 @@ import {
   getAvailablePurchases,
   getProducts,
   getSubscriptions,
-  IAPPurchaseError,
   initConnection,
   Product,
   promotedProductListener,
   Purchase,
+  PurchaseError,
   purchaseErrorListener,
   purchaseUpdatedListener,
   requestPurchase,
@@ -91,7 +91,7 @@ export class ClassSetup extends Component<{}, State> {
 
             console.info('acknowledgeResult', acknowledgeResult);
           } catch (error) {
-            if (error instanceof IAPPurchaseError) {
+            if (error instanceof PurchaseError) {
               errorLog({message: `[${error.code}]: ${error.message}`, error});
             } else {
               errorLog({message: 'finishTransaction', error});
@@ -103,7 +103,7 @@ export class ClassSetup extends Component<{}, State> {
       },
     );
 
-    this.purchaseError = purchaseErrorListener((error: IAPPurchaseError) => {
+    this.purchaseError = purchaseErrorListener((error: PurchaseError) => {
       Alert.alert('purchase error', JSON.stringify(error));
     });
 
@@ -163,7 +163,7 @@ export class ClassSetup extends Component<{}, State> {
     try {
       requestPurchase({sku});
     } catch (error) {
-      if (error instanceof IAPPurchaseError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'requestPurchase', error});
@@ -175,7 +175,7 @@ export class ClassSetup extends Component<{}, State> {
     try {
       requestSubscription({sku});
     } catch (error) {
-      if (error instanceof IAPPurchaseError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'requestSubscription', error});

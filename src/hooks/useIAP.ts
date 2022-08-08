@@ -1,7 +1,7 @@
 import {useCallback} from 'react';
 
 import {useIAPContext} from '../context';
-import type {PurchaseError} from '../error';
+import type {PurchaseResult} from '../modules';
 import {
   finishTransaction as iapFinishTransaction,
   getAvailablePurchases as iapGetAvailablePurchases,
@@ -10,8 +10,8 @@ import {
   getSubscriptions as iapGetSubscriptions,
   requestPurchase as iapRequestPurchase,
   requestSubscription as iapRequestSubscription,
-} from '../methods';
-import type {PurchaseResult} from '../modules';
+} from '../modules';
+import type {PurchaseError} from '../purchaseError';
 import type {Product, Purchase, SubscriptionProduct} from '../types';
 
 type IAP_STATUS = {

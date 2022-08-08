@@ -1,24 +1,30 @@
 import type {
-  BuyItemByTypeAndroid,
-  BuyProductIos,
+  IosModuleProps,
+  AndroidModuleProps,
+  AmazonModuleProps,
+  BuyItemByType,
+  BuyProduct,
   UserDataAmazon,
 } from '../modules';
 
 /** Sku is a string that uniquely identifies a product/subscription */
 export type Sku = string;
 
+/** Token for Android purchases (Play Store and Amazon) */
+export type PurchaseToken = string | null | undefined;
+
 export enum ProductType {
   /** Subscription */
-  'subs' = 'subs',
+  subs = 'subs',
 
   /** Subscription */
-  'sub' = 'sub',
+  sub = 'sub',
 
   /** Consumable */
-  'inapp' = 'inapp',
+  inapp = 'inapp',
 
   /** Consumable */
-  'iap' = 'iap',
+  iap = 'iap',
 }
 
 enum PaymentMethodIOS {
@@ -41,7 +47,7 @@ export enum PurchaseStateAndroid {
 }
 
 /**
- * Common interface for all modules.
+ * Common interface for all native modules (iOS — AppStore, Android — PlayStore and Amazon).
  */
 export interface NativeModuleProps {
   /** Required method to start a payment provider connection */
@@ -108,16 +114,16 @@ export type Product = ProductProduct | SubscriptionProduct;
 /** Interface when purchasing a product */
 export interface RequestPurchase {
   sku: Sku;
-  andDangerouslyFinishTransactionAutomaticallyIOS?: Parameters<BuyProductIos>[1];
-  applicationUsername?: Parameters<BuyProductIos>[2];
-  obfuscatedAccountIdAndroid?: Parameters<BuyItemByTypeAndroid>[4];
-  obfuscatedProfileIdAndroid?: Parameters<BuyItemByTypeAndroid>[5];
+  andDangerouslyFinishTransactionAutomaticallyIOS?: Parameters<BuyProduct>[1];
+  applicationUsername?: Parameters<BuyProduct>[2];
+  obfuscatedAccountIdAndroid?: Parameters<BuyItemByType>[4];
+  obfuscatedProfileIdAndroid?: Parameters<BuyItemByType>[5];
 }
 
 /** Interface when purchasing a subscription */
 export interface RequestSubscription extends RequestPurchase {
-  purchaseTokenAndroid?: Parameters<BuyItemByTypeAndroid>[2];
-  prorationModeAndroid?: Parameters<BuyItemByTypeAndroid>[3];
+  purchaseTokenAndroid?: Parameters<BuyItemByType>[2];
+  prorationModeAndroid?: Parameters<BuyItemByType>[3];
 }
 
 /**
@@ -167,3 +173,11 @@ export interface SubscriptionPurchase extends ProductPurchase {
 
 /** Union type for products (consumable, non-consumable) and subscriptions purchases responses */
 export type Purchase = ProductPurchase | SubscriptionPurchase;
+
+declare module 'react-native' {
+  interface NativeModulesStatic {
+    RNIapIos: IosModuleProps;
+    RNIapModule: AndroidModuleProps;
+    RNIapAmazonModule: AmazonModuleProps;
+  }
+}

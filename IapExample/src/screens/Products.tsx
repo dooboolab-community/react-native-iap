@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {IAPPurchaseError, Sku, useIAP} from 'react-native-iap';
+import {PurchaseError, Sku, useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {
@@ -37,7 +37,7 @@ export const Products = () => {
     try {
       await requestPurchase({sku});
     } catch (error) {
-      if (error instanceof IAPPurchaseError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'handleBuyProduct', error});
@@ -53,7 +53,7 @@ export const Products = () => {
           setSuccess(true);
         }
       } catch (error) {
-        if (error instanceof IAPPurchaseError) {
+        if (error instanceof PurchaseError) {
           errorLog({message: `[${error.code}]: ${error.message}`, error});
         } else {
           errorLog({message: 'handleBuyProduct', error});

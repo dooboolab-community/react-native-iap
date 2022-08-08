@@ -1,6 +1,8 @@
 import type {Sku} from './index';
 
-/** @link https://developer.amazon.com/es/docs/in-app-purchasing/iap-rvs-examples.html */
+/**
+ * @see {@link https://developer.amazon.com/es/docs/in-app-purchasing/iap-rvs-examples.html}
+ **/
 export interface ReceiptType {
   autoRenewing: boolean;
   betaProduct: boolean;

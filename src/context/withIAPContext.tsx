@@ -1,15 +1,22 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, {
+  ComponentType,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
-import type {PurchaseError} from '../error';
 import {
   promotedProductListener,
   purchaseErrorListener,
   purchaseUpdatedListener,
 } from '../eventEmitter';
-import {getPromotedProductIOS, initConnection} from '../methods';
+import {getPromotedProductIOS, initConnection} from '../modules';
+import type {PurchaseError} from '../purchaseError';
 import type {ProductProduct, Purchase, SubscriptionProduct} from '../types';
 
-type IAPContextType = {
+interface IAPContextType {
   connected: boolean;
   products: ProductProduct[];
   promotedProductsIOS: ProductProduct[];
@@ -27,23 +34,22 @@ type IAPContextType = {
   setCurrentPurchaseError: (
     currentPurchaseError: PurchaseError | undefined,
   ) => void;
-};
+}
 
-// @ts-ignore
-const IAPContext = React.createContext<IAPContextType>(null);
+const IAPContext = createContext<IAPContextType>({} as IAPContextType);
 
-export function useIAPContext(): IAPContextType {
-  const ctx = useContext(IAPContext);
+export const useIAPContext = () => {
+  const context = useContext(IAPContext);
 
-  if (!ctx) {
+  if (!context) {
     throw new Error('You need wrap your app with withIAPContext HOC');
   }
 
-  return ctx;
-}
+  return context;
+};
 
-export function withIAPContext<T>(Component: React.ComponentType<T>) {
-  return function WrapperComponent(props: T) {
+export const withIAPContext = <T,>(Component: ComponentType<T>) => {
+  return (props: T) => {
     const [connected, setConnected] = useState(false);
     const [products, setProducts] = useState<ProductProduct[]>([]);
     const [promotedProductsIOS, setPromotedProductsIOS] = useState<
@@ -148,4 +154,4 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
       </IAPContext.Provider>
     );
   };
-}
+};

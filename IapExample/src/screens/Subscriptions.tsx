@@ -1,6 +1,6 @@
 import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import {IAPPurchaseError, Sku, useIAP} from 'react-native-iap';
+import {PurchaseError, Sku, useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {constants, contentContainerStyle, errorLog} from '../utils';
@@ -21,7 +21,7 @@ export const Subscriptions = () => {
     try {
       await requestSubscription({sku});
     } catch (error) {
-      if (error instanceof IAPPurchaseError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'handleBuySubscription', error});
