@@ -110,7 +110,8 @@ export const Products = () => {
                   value: product.productId,
                 },
               ]}
-              isLast={products.length - 1 === index}>
+              isLast={products.length - 1 === index}
+            >
               <Button
                 title="Buy"
                 onPress={() => handleBuyProduct(product.productId)}
@@ -134,7 +135,8 @@ export const Products = () => {
                 value: product.productId,
               },
             ]}
-            isLast={promotedProductsIOS.length - 1 === index}>
+            isLast={promotedProductsIOS.length - 1 === index}
+          >
             <Button
               title="Buy a product"
               onPress={() => handleBuyProduct(product.productId)}
