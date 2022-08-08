@@ -21,6 +21,10 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Install node_modules for `IapExample/`
+        run: yarn install --immutable
+        working-directory: IapExample
+
       - name: Build typescript
         run: yarn lint:ci
 
