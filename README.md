@@ -19,9 +19,22 @@
 
 Published in [website](https://react-native-iap.dooboolab.com).
 
+## Our maintainers
+
+Please [fund the project](https://opencollective.com/react-native-iap) if you are willing the maintainers to make the repository sustainable.
+
+- [andresesfm](https://github.com/andresesfm)
+- [jeremybarbet](https://github.com/jeremybarbet)
+
+> The fund goes to maintainers.
+
+### Supporter
+
+- [hyochan](https://github.com/hyochan)
+
 ## Announcement
 
-- Version `9.0.0` is currently in release candidate. The module migrates android sdk to [play billing library v5](https://qonversion.io/blog/google-play-billing-library-5-0) and iOS sdk to [storekit2](https://developer.apple.com/videos/play/wwdc2021/10114). Our core maintainer [andresesfm](https://github.com/andresesfm) is working hard on this. Please [fund the project](https://opencollective.com/react-native-iap) if you wish to support his effort. The fund goes to maintainers. To try the earlier version please use the `next` package.
+- Version `9.0.0` is currently in release candidate. The module migrates android sdk to [play billing library v5](https://qonversion.io/blog/google-play-billing-library-5-0) and iOS sdk to [storekit2](https://developer.apple.com/videos/play/wwdc2021/10114). Our core maintainers [andresesfm](https://github.com/andresesfm) and [jeremybarbet](https://github.com/jeremybarbet) are working hard on this.
 
   ```
   yarn add react-native-iap@next

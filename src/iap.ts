@@ -34,6 +34,13 @@ const isIos = Platform.OS === 'ios';
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
 
+export class IapError implements PurchaseError {
+  constructor(public code?: string, public message?: string) {
+    this.code = code;
+    this.message = message;
+  }
+}
+
 export const getInstallSourceAndroid = (): InstallSourceAndroid => {
   return RNIapModule
     ? InstallSourceAndroid.GOOGLE_PLAY
@@ -678,7 +685,7 @@ export const purchaseErrorListener = (
  * Only available on iOS
  */
 export const promotedProductListener = (
-  listener: () => void,
+  listener: (productId?: string) => void,
 ): EmitterSubscription | null => {
   if (isIos) {
     return new NativeEventEmitter(getIosModule()).addListener(
@@ -696,6 +703,14 @@ export const promotedProductListener = (
  */
 export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> =>
   getIosModule().getPendingTransactions();
+
+/**
+ * Get the current receipt base64 encoded in IOS.
+ * @param {forceRefresh?:boolean}
+ * @returns {Promise<string>}
+ */
+export const getReceiptIOS = async (forceRefresh?: boolean): Promise<string> =>
+  getIosModule().requestReceipt(forceRefresh ?? false);
 
 /**
  * Launches a modal to register the redeem offer code in IOS.
