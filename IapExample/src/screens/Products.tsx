@@ -39,10 +39,7 @@ export const Products = () => {
 
   const handleBuyProduct = async (sku: Sku) => {
     try {
-      await requestPurchase({
-        sku,
-        andDangerouslyFinishTransactionAutomaticallyIOS: false,
-      });
+      await requestPurchase({sku});
     } catch (error) {
       if (error instanceof RNIap.IapError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
@@ -113,7 +110,8 @@ export const Products = () => {
                   value: product.productId,
                 },
               ]}
-              isLast={products.length - 1 === index}>
+              isLast={products.length - 1 === index}
+            >
               <Button
                 title="Buy"
                 onPress={() => handleBuyProduct(product.productId)}
@@ -137,7 +135,8 @@ export const Products = () => {
                 value: product.productId,
               },
             ]}
-            isLast={promotedProductsIOS.length - 1 === index}>
+            isLast={promotedProductsIOS.length - 1 === index}
+          >
             <Button
               title="Buy a product"
               onPress={() => handleBuyProduct(product.productId)}
