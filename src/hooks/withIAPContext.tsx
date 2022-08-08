@@ -147,7 +147,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
       return () => {
         purchaseUpdateSubscription.remove();
         purchaseErrorSubscription.remove();
-        promotedProductSubscription.remove();
+        promotedProductSubscription?.remove();
       };
     }, [connected]);
 
