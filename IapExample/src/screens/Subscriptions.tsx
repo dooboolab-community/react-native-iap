@@ -50,7 +50,8 @@ export const Subscriptions = () => {
                   value: subscription.productId,
                 },
               ]}
-              isLast={subscriptions.length - 1 === index}>
+              isLast={subscriptions.length - 1 === index}
+            >
               <Button
                 title="Subscribe"
                 onPress={() => {
