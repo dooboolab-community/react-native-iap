@@ -18,6 +18,9 @@ jobs:
           cache: 'yarn'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Remove example code
+        run: rm -rf IapExample
+
       - name: Install dependencies
         run: yarn install --immutable
 
@@ -25,7 +28,7 @@ jobs:
         run: yarn lint:ci
 
       - name: Verify no files have changed after auto-fix
-        run: git diff --exit-code HEAD
+        run: git diff -- ":(exclude)IapExample/*" --exit-code HEAD
 
       - run: npm publish --tag next
         env:
