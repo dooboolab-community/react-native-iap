@@ -141,7 +141,7 @@ export interface SubscriptionAndroid extends ProductCommon {
         billingCycleCount?: number;
         priceAmountMicros?: string;
         recurrenceMode?: number;
-      };
+      }[];
     };
   }[];
 }
