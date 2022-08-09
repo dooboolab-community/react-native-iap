@@ -356,11 +356,11 @@ PODS:
     - React-jsi (= 0.69.1)
     - React-logger (= 0.69.1)
     - React-perflogger (= 0.69.1)
-  - RNIap (8.6.0):
+  - RNCMaskedView (0.2.7):
     - React-Core
   - RNGestureHandler (2.5.0):
     - React-Core
-  - RNIap (8.6.3):
+  - RNIap (8.6.5):
     - React-Core
   - RNScreens (3.15.0):
     - React-Core
@@ -573,7 +573,10 @@ SPEC CHECKSUMS:
   React-RCTVibration: e8b7dd6635cc95689b5db643b5a3848f1e05b30b
   React-runtimeexecutor: 27f468c5576eaf05ffb7a907528e44c75a3fcbae
   ReactCommon: e30ec17dfb1d4c4f3419eac254350d6abca6d5a2
-  RNIap: d93268f0a0e1f5b6bf8e122f5402f55428a8d160
+  RNCMaskedView: cb9670ea9239998340eaab21df13fa12a1f9de15
+  RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
+  RNIap: 467d59e72d1e26736af41cc5466fbf2c8283555c
+  RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: 7ab6e3ee4ce47d7b789d1cb520163833e515f452
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
