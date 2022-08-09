@@ -87,7 +87,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-     fun initConnection(promise: Promise) {
+    fun initConnection(promise: Promise) {
         if (googleApiAvailability.isGooglePlayServicesAvailable(reactContext)
             != ConnectionResult.SUCCESS
         ) {
@@ -108,13 +108,13 @@ class RNIapModule(
             billingClientCache = it
             it.startConnection(
                 object : BillingClientStateListener {
-                     override fun onBillingSetupFinished(billingResult: BillingResult) {
+                    override fun onBillingSetupFinished(billingResult: BillingResult) {
                         if (!isValidResult(billingResult, promise)) return
 
                         promise.safeResolve(true)
                     }
 
-                     override fun onBillingServiceDisconnected() {
+                    override fun onBillingServiceDisconnected() {
                         Log.i(TAG, "Billing service disconnected")
                     }
                 }
@@ -123,7 +123,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-     fun endConnection(promise: Promise) {
+    fun endConnection(promise: Promise) {
         billingClientCache?.endConnection()
         billingClientCache = null
         promise.safeResolve(true)
@@ -160,7 +160,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-     fun flushFailedPurchasesCachedAsPending(promise: Promise) {
+    fun flushFailedPurchasesCachedAsPending(promise: Promise) {
         ensureConnection(
             promise
         ) { billingClient ->
@@ -193,7 +193,7 @@ class RNIapModule(
     }
 
     @ReactMethod
-     fun getItemsByType(type: String, skuArr: ReadableArray, promise: Promise) {
+    fun getItemsByType(type: String, skuArr: ReadableArray, promise: Promise) {
         ensureConnection(
             promise
         ) { billingClient ->
@@ -319,7 +319,7 @@ class RNIapModule(
                 if (!isValidResult(billingResult, promise)) return@queryPurchasesAsync
                 purchases?.forEach { purchase ->
                     val item = WritableNativeMap()
-                    item.putString("productId", purchase.products[0])// kept for convenience/backward-compatibility. productIds has the complete list
+                    item.putString("productId", purchase.products[0]) // kept for convenience/backward-compatibility. productIds has the complete list
                     val products = Arguments.createArray()
                     purchase.products.forEach { products.pushString(it) }
                     item.putArray("productIds", products)
@@ -345,7 +345,7 @@ class RNIapModule(
                         item.putBoolean("autoRenewingAndroid", purchase.isAutoRenewing)
                     }
                     items.pushMap(item)
-                    }
+                }
                 promise.safeResolve(items)
             }
         }
@@ -394,7 +394,8 @@ class RNIapModule(
         prorationMode: Int,
         obfuscatedAccountId: String?,
         obfuscatedProfileId: String?,
-        selectedOfferIndices: ReadableArray, // New optional parameter in V5
+        offerTokenArr: ReadableArray, // New parameter in V5
+        isOfferPersonalized: Boolean, // New parameter in V5
         promise: Promise
     ) {
         val activity = currentActivity
@@ -409,36 +410,42 @@ class RNIapModule(
                 PROMISE_BUY_ITEM,
                 promise
             )
-            val productParamsList =
-            skuArr.toArrayList().map { it.toString() }.mapIndexed{ index,sku ->
-                val selectedSku: ProductDetails? = skus[sku]
-                if (selectedSku == null) {
-                    val debugMessage =
-                        "The sku was not found. Please fetch products first by calling getItems"
-                    val error = Arguments.createMap()
-                    error.putString("debugMessage", debugMessage)
-                    error.putString("code", PROMISE_BUY_ITEM)
-                    error.putString("message", debugMessage)
-                    error.putString("productId", sku)
-                    sendEvent(reactContext, "purchase-error", error)
-                    promise.safeReject(PROMISE_BUY_ITEM, debugMessage)
-                    return@ensureConnection
-                }
-                var productParams = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(selectedSku)
-                val selectedOfferIndex = selectedOfferIndices.getInt(index)
-                if (selectedOfferIndex > -1 && (
-                    selectedSku.subscriptionOfferDetails?.size
-                        ?: 0
-                    ) > selectedOfferIndex
-                ) {
-                    val offerToken =
-                        selectedSku.subscriptionOfferDetails?.get(selectedOfferIndex)?.offerToken
-                    offerToken?.let { productParams = productParams.setOfferToken(offerToken) }
-                }
-                productParams.build()
+            if (type == BillingClient.ProductType.SUBS && skuArr.size() != offerTokenArr.size()) {
+                val debugMessage =
+                    "The number of skus (${skuArr.size()}) must match: the number of offerTokens (${offerTokenArr.size()}) for Subscriptions"
+                val error = Arguments.createMap()
+                error.putString("debugMessage", debugMessage)
+                error.putString("code", PROMISE_BUY_ITEM)
+                error.putString("message", debugMessage)
+                sendEvent(reactContext, "purchase-error", error)
+                promise.safeReject(PROMISE_BUY_ITEM, debugMessage)
+                return@ensureConnection
             }
+            val productParamsList =
+                skuArr.toArrayList().map { it.toString() }.mapIndexed { index, sku ->
+                    val selectedSku: ProductDetails? = skus[sku]
+                    if (selectedSku == null) {
+                        val debugMessage =
+                            "The sku was not found. Please fetch products first by calling getItems"
+                        val error = Arguments.createMap()
+                        error.putString("debugMessage", debugMessage)
+                        error.putString("code", PROMISE_BUY_ITEM)
+                        error.putString("message", debugMessage)
+                        error.putString("productId", sku)
+                        sendEvent(reactContext, "purchase-error", error)
+                        promise.safeReject(PROMISE_BUY_ITEM, debugMessage)
+                        return@ensureConnection
+                    }
+                    var productDetailParams = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(selectedSku)
+                    if (type == BillingClient.ProductType.SUBS) {
+                        val offerToken = offerTokenArr.getString(index)
+                        productDetailParams = productDetailParams.setOfferToken(offerToken)
+                    }
+                    productDetailParams.build()
+                }
             val builder = BillingFlowParams.newBuilder()
-            builder.setProductDetailsParamsList(productParamsList)
+            builder.setProductDetailsParamsList(productParamsList).setIsOfferPersonalized(isOfferPersonalized)
+
             val subscriptionUpdateParamsBuilder = SubscriptionUpdateParams.newBuilder()
             if (purchaseToken != null) {
                 subscriptionUpdateParamsBuilder.setOldPurchaseToken(purchaseToken)
@@ -568,7 +575,7 @@ class RNIapModule(
                     .getBillingResponseData(billingResult.responseCode)
                 map.putString("code", errorData[0])
                 map.putString("message", errorData[1])
-                map.putString("purchaseToken",purchaseToken)
+                map.putString("purchaseToken", purchaseToken)
                 promise.safeResolve(map)
             }
         }
