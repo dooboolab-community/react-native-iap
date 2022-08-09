@@ -410,9 +410,9 @@ class RNIapModule(
                 PROMISE_BUY_ITEM,
                 promise
             )
-            if (skuArr.size() != offerTokenArr.size()) {
+            if (type == BillingClient.ProductType.SUBS && skuArr.size() != offerTokenArr.size()) {
                 val debugMessage =
-                    "The number of skus (${skuArr.size()}) must match: the number of offerTokens (${offerTokenArr.size()})"
+                    "The number of skus (${skuArr.size()}) must match: the number of offerTokens (${offerTokenArr.size()}) for Subscriptions"
                 val error = Arguments.createMap()
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", PROMISE_BUY_ITEM)
@@ -436,8 +436,12 @@ class RNIapModule(
                         promise.safeReject(PROMISE_BUY_ITEM, debugMessage)
                         return@ensureConnection
                     }
-                    val offerToken = offerTokenArr.getString(index)
-                    BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(selectedSku).setOfferToken(offerToken).build()
+                    var productDetailParams = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(selectedSku)
+                    if (type == BillingClient.ProductType.SUBS) {
+                        val offerToken = offerTokenArr.getString(index)
+                        productDetailParams = productDetailParams.setOfferToken(offerToken)
+                    }
+                    productDetailParams.build()
                 }
             val builder = BillingFlowParams.newBuilder()
             builder.setProductDetailsParamsList(productParamsList).setIsOfferPersonalized(isOfferPersonalized)

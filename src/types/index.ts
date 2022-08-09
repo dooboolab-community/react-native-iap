@@ -171,14 +171,23 @@ export interface SubscriptionIOS extends ProductCommon {
 
 export type Subscription = SubscriptionAndroid & SubscriptionIOS;
 
-export interface RequestPurchase {
+export interface RequestPurchaseBaseAndroid {
+  obfuscatedAccountIdAndroid?: string;
+  obfuscatedProfileIdAndroid?: string;
+  isOfferPersonalized?: boolean; // For AndroidBilling V5 https://developer.android.com/google/play/billing/integrate#personalized-price
+}
+
+export interface RequestPurchaseAndroid extends RequestPurchaseBaseAndroid {
+  skus?: Sku[];
+}
+
+export interface RequestPurchaseIOS {
   sku?: Sku;
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
   applicationUsername?: string;
-  obfuscatedAccountIdAndroid?: string;
-  obfuscatedProfileIdAndroid?: string;
-  isOfferPersonalized?: boolean | undefined; // For AndroidBilling V5 https://developer.android.com/google/play/billing/integrate#personalized-price
 }
+
+export type RequestPurchase = RequestPurchaseAndroid & RequestPurchaseIOS;
 /**
  * In order to purchase a new subscription, every sku must have a selected offerToken
  * @see SubscriptionAndroid.subscriptionOfferDetails.offerToken
@@ -187,8 +196,13 @@ export interface SubscriptionOffer {
   sku: Sku;
   offerToken: string;
 }
-export interface RequestSubscription extends RequestPurchase {
+export interface RequestSubscriptionAndroid extends RequestPurchaseBaseAndroid {
   purchaseTokenAndroid?: string;
   prorationModeAndroid?: ProrationModesAndroid;
-  subscriptionOffers?: SubscriptionOffer[] | undefined; // For AndroidBilling V5
+  subscriptionOffers?: SubscriptionOffer[]; // For AndroidBilling V5
 }
+
+export type RequestSubscriptionIOS = RequestPurchaseIOS;
+
+export type RequestSubscription = RequestSubscriptionAndroid &
+  RequestSubscriptionIOS;
