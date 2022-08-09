@@ -16,18 +16,20 @@ export enum ErrorCode {
   E_DEFERRED_PAYMENT = 'E_DEFERRED_PAYMENT',
 }
 
-export class PurchaseError {
+export class PurchaseError implements Error {
   constructor(
+    public name: string,
+    public message: string,
     public responseCode?: number,
     public debugMessage?: string,
     public code?: ErrorCode,
-    public message?: string,
     public productId?: string,
   ) {
+    this.name = '[react-native-iap]: PurchaseError';
+    this.message = message;
     this.responseCode = responseCode;
     this.debugMessage = debugMessage;
     this.code = code;
-    this.message = message;
     this.productId = productId;
   }
 }
