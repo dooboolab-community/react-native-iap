@@ -625,7 +625,7 @@ class RNIapModule(
                         accountIdentifiers.obfuscatedProfileId
                     )
                 }
-                promiseItems.pushMap(item)
+                promiseItems.pushMap(item.copy())
                 sendEvent(reactContext, "purchase-updated", item)
             }
             DoobooUtils.instance.resolvePromisesForKey(PROMISE_BUY_ITEM, promiseItems)
