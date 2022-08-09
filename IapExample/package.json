@@ -1,6 +1,6 @@
 {
-  "name": "iapexample",
-  "version": "0.0.1",
+  "name": "react-native-iap-example",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "android:play": "react-native run-android --variant=GooglePlayDebug",

@@ -1,5 +1,3 @@
-// main under
-
 export type Sku = string;
 
 export enum IAPErrorCode {
@@ -122,18 +120,17 @@ export interface Product extends ProductCommon {
   type: 'inapp' | 'iap';
 }
 
+// Android V5
 export interface SubscriptionAndroid extends ProductCommon {
   type: 'subs';
 
   productType?: string;
   name?: string;
-
   oneTimePurchaseOfferDetails?: {
     priceCurrencyCode?: string;
     formattedPrice?: string;
     priceAmountMicros?: string;
   }[];
-
   subscriptionOfferDetails?: {
     offerToken?: string;
     pricingPhases: {
@@ -174,11 +171,14 @@ export interface SubscriptionIOS extends ProductCommon {
 
 export type Subscription = SubscriptionAndroid & SubscriptionIOS;
 
-export interface RequestPurchaseAndroid {
-  skus?: Sku[];
+export interface RequestPurchaseBaseAndroid {
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
   isOfferPersonalized?: boolean; // For AndroidBilling V5 https://developer.android.com/google/play/billing/integrate#personalized-price
+}
+
+export interface RequestPurchaseAndroid extends RequestPurchaseBaseAndroid {
+  skus?: Sku[];
 }
 
 export interface RequestPurchaseIOS {
@@ -198,7 +198,7 @@ export interface SubscriptionOffer {
   offerToken: string;
 }
 
-export interface RequestSubscriptionAndroid extends RequestPurchaseAndroid {
+export interface RequestSubscriptionAndroid extends RequestPurchaseBaseAndroid {
   purchaseTokenAndroid?: string;
   prorationModeAndroid?: ProrationModesAndroid;
   subscriptionOffers?: SubscriptionOffer[]; // For AndroidBilling V5
