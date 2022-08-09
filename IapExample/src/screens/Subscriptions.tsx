@@ -1,6 +1,6 @@
 import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import RNIap, {Sku, useIAP} from 'react-native-iap';
+import RNIap, {Subscription, useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {constants, contentContainerStyle, errorLog} from '../utils';
@@ -21,9 +21,23 @@ export const Subscriptions = () => {
     }
   };
 
-  const handleBuySubscription = async (sku: Sku, offerToken: string) => {
+  const handleBuySubscription = async (subscription: Subscription) => {
+    const firstOfferToken =
+      subscription.subscriptionOfferDetails?.[0]?.offerToken;
+    if (!firstOfferToken) {
+      console.warn(
+        `There are no subscription Offers for selected product (Only requiered for Google Play purchases): ${subscription.productId}`,
+      );
+    }
     try {
-      await requestSubscription({subscriptionOffers: [{sku, offerToken}]});
+      await requestSubscription({
+        sku: subscription.productId,
+        ...(firstOfferToken && {
+          subscriptionOffers: [
+            {sku: subscription.productId, offerToken: firstOfferToken},
+          ],
+        }),
+      });
     } catch (error) {
       if (error instanceof RNIap.IapError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
@@ -50,23 +64,11 @@ export const Subscriptions = () => {
                   value: subscription.productId,
                 },
               ]}
-              isLast={subscriptions.length - 1 === index}
-            >
+              isLast={subscriptions.length - 1 === index}>
               <Button
                 title="Subscribe"
                 onPress={() => {
-                  const firstOfferToken =
-                    subscription.subscriptionOfferDetails?.[0]?.offerToken;
-                  if (firstOfferToken) {
-                    handleBuySubscription(
-                      subscription.productId,
-                      firstOfferToken,
-                    );
-                  } else {
-                    console.warn(
-                      `There are no subscription Offers for selected product: ${subscription.productId}`,
-                    );
-                  }
+                  handleBuySubscription(subscription);
                 }}
               />
             </Row>
