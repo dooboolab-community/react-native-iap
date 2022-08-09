@@ -1,6 +1,6 @@
 import {NativeModules} from 'react-native';
 
-import {enhancedFetch, linkingError} from '../internal';
+import {enhancedFetch, errorProxy, isAndroid, linkingError} from '../internal';
 import type {
   NativeModuleProps,
   Product,
@@ -45,8 +45,13 @@ export interface AmazonModuleProps extends NativeModuleProps {
   startListening: StartListening;
 }
 
-export const AmazonModule = (NativeModules.RNIapAmazonModule ??
-  linkingError) as AmazonModuleProps;
+export const AmazonModule = (
+  !isAndroid
+    ? {}
+    : !NativeModules.RNIapModule && !NativeModules.RNIapAmazonModule
+    ? errorProxy(linkingError)
+    : NativeModules.RNIapAmazonModule
+) as AmazonModuleProps;
 
 /**
  * Validate receipt.

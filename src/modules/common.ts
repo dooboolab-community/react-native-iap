@@ -13,7 +13,9 @@ import {
   SubscriptionPurchase,
 } from '../types';
 
-import {AmazonModule, AndroidModule, IosModule} from './index';
+import {AmazonModule} from './amazon';
+import {AndroidModule} from './android';
+import {IosModule} from './ios';
 
 export const NativeModule = isAndroid ? AndroidModule : IosModule;
 

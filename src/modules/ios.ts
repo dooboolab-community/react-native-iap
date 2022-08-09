@@ -1,7 +1,7 @@
 import {NativeModules} from 'react-native';
 import type {ResponseBody} from '@jeremybarbet/apple-api-types';
 
-import {enhancedFetch, linkingError} from '../internal';
+import {enhancedFetch, errorProxy, isIos, linkingError} from '../internal';
 import type {
   NativeModuleProps,
   PaymentDiscount,
@@ -64,7 +64,11 @@ export interface IosModuleProps extends NativeModuleProps {
 const TEST_RECEIPT = 21007;
 
 export const IosModule = (
-  NativeModules.RNIapIos ? NativeModules.RNIapIos : linkingError
+  !isIos
+    ? {}
+    : !NativeModules.RNIapIos
+    ? errorProxy(linkingError)
+    : NativeModules.RNIapIos
 ) as IosModuleProps;
 
 /**

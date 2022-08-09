@@ -4,7 +4,7 @@ import type {
   SubscriptionPurchase,
 } from '@jeremybarbet/google-api-types';
 
-import {enhancedFetch, linkingError} from '../internal';
+import {enhancedFetch, errorProxy, isAndroid, linkingError} from '../internal';
 import type {
   NativeModuleProps,
   Product,
@@ -13,8 +13,6 @@ import type {
   PurchaseToken,
   Sku,
 } from '../types';
-
-import {AmazonModule} from './amazon';
 
 export enum ProrationModesAndroid {
   UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY = 0,
@@ -81,11 +79,11 @@ export interface AndroidModuleProps extends NativeModuleProps {
 }
 
 export const AndroidModule = (
-  NativeModules.RNIapModule
-    ? NativeModules.RNIapModule
-    : AmazonModule
-    ? AmazonModule
-    : linkingError
+  !isAndroid
+    ? {}
+    : !NativeModules.RNIapModule && !NativeModules.RNIapAmazonModule
+    ? errorProxy(linkingError)
+    : NativeModules.RNIapAmazonModule ?? NativeModules.RNIapModule
 ) as AndroidModuleProps;
 
 /**
