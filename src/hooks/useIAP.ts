@@ -8,8 +8,6 @@ import {
   getProducts as iapGetProducts,
   getPurchaseHistory as iapGetPurchaseHistory,
   getSubscriptions as iapGetSubscriptions,
-  requestPurchase as iapRequestPurchase,
-  requestSubscription as iapRequestSubscription,
 } from '../modules';
 import type {PurchaseError} from '../purchaseError';
 import type {Product, Purchase, SubscriptionProduct} from '../types';
@@ -38,12 +36,9 @@ type IAP_STATUS = {
   getSubscriptions: (
     skus: Parameters<typeof iapGetSubscriptions>[0],
   ) => Promise<void>;
-
-  requestPurchase: typeof iapRequestPurchase;
-  requestSubscription: typeof iapRequestSubscription;
 };
 
-export function useIAP(): IAP_STATUS {
+export const useIAP = (): IAP_STATUS => {
   const {
     connected,
     products,
@@ -131,7 +126,5 @@ export function useIAP(): IAP_STATUS {
     getSubscriptions,
     getAvailablePurchases,
     getPurchaseHistory,
-    requestPurchase: iapRequestPurchase,
-    requestSubscription: iapRequestSubscription,
   };
-}
+};

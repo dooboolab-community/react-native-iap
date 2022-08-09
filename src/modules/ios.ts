@@ -72,28 +72,26 @@ export const IosModule = (
 ) as IosModuleProps;
 
 /**
- * Clear Transaction
- *
- * Finish remaining transactions. Related to issue #257 and #801
- *
- * @platform iOS
+ * Clear the remaining transactions.
  *
  * @see {@link https://github.com/dooboolab/react-native-iap/issues/257}
  * @see {@link https://github.com/dooboolab/react-native-iap/issues/801}
+ *
+ * @platform iOS
  */
 export const clearTransactionIOS = () => IosModule.clearTransaction();
 
 /**
- * Clear valid Products
- *
- * @platform iOS
+ * Clear valid products.
  *
  * Remove all products which are validated by Apple server.
+ *
+ * @platform iOS
  */
 export const clearProductsIOS = () => IosModule.clearProducts();
 
 /**
- * Should Add Store Payment
+ * Should get products promoted on the App Store.
  *
  * Indicates the the App Store purchase should continue from the app instead of the App Store.
  *
@@ -117,7 +115,7 @@ export const requestPurchaseWithQuantityIOS = (
 ) => IosModule.buyProductWithQuantity(sku, quantity);
 
 /**
- * Buy the currently selected promoted product
+ * Buy the currently selected promoted product.
  *
  * Initiates the payment process for a promoted product. Should only be called in response to the `iap-promoted-product` event.
  *
@@ -137,7 +135,7 @@ const requestAgnosticReceiptValidationIOS = async (
   );
 
   /**
-   * Best practice is to check for test receipt and check sandbox instead
+   * Best practice is to check for test receipt and check sandbox instead.
    *
    * @see {@link https://developer.apple.com/documentation/appstorereceipts/verifyreceipt}
    */
@@ -157,7 +155,7 @@ const requestAgnosticReceiptValidationIOS = async (
 };
 
 /**
- * Validate receipt
+ * Validate receipt.
  *
  * @platform iOS
  */
@@ -183,7 +181,7 @@ export const validateReceiptIOS = async (
 };
 
 /**
- * Buy products or subscriptions with offers
+ * Buy products or subscriptions with offers.
  *
  * Runs the payment process with some info you must fetch
  * from your server.
