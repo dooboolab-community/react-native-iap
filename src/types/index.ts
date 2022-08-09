@@ -177,6 +177,7 @@ export interface RequestPurchase {
   applicationUsername?: string;
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
+  isOfferPersonalized?: boolean | undefined; // For AndroidBilling V5 https://developer.android.com/google/play/billing/integrate#personalized-price
 }
 /**
  * In order to purchase a new subscription, every sku must have a selected offerToken
@@ -190,5 +191,4 @@ export interface RequestSubscription extends RequestPurchase {
   purchaseTokenAndroid?: string;
   prorationModeAndroid?: ProrationModesAndroid;
   subscriptionOffers?: SubscriptionOffer[] | undefined; // For AndroidBilling V5
-  isOfferPersonalized?: boolean | undefined; // For AndroidBilling V5
 }

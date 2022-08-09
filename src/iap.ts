@@ -283,6 +283,7 @@ export const requestPurchase = ({
   obfuscatedAccountIdAndroid,
   obfuscatedProfileIdAndroid,
   applicationUsername,
+  isOfferPersonalized = undefined, // Android Billing V5
 }: RequestPurchase): Promise<InAppPurchase> =>
   (
     Platform.select({
@@ -308,6 +309,7 @@ export const requestPurchase = ({
           obfuscatedAccountIdAndroid,
           obfuscatedProfileIdAndroid,
           undefined,
+          isOfferPersonalized ?? false,
         );
       },
     }) || Promise.resolve
