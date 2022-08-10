@@ -30,6 +30,7 @@ import {
 
 const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
 const isAndroid = Platform.OS === 'android';
+const isAmazon = isAndroid && !!RNIapAmazonModule;
 const isIos = Platform.OS === 'ios';
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
@@ -47,6 +48,14 @@ export const getInstallSourceAndroid = (): InstallSourceAndroid => {
     : InstallSourceAndroid.AMAZON;
 };
 
+let androidNativeModule = RNIapModule;
+
+export const setAndroidNativeModule = (
+  nativeModule: typeof RNIapModule,
+): void => {
+  androidNativeModule = nativeModule;
+};
+
 const checkNativeAndroidAvailable = (): void => {
   if (!RNIapModule && !RNIapAmazonModule) {
     throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
@@ -56,7 +65,11 @@ const checkNativeAndroidAvailable = (): void => {
 const getAndroidModule = (): typeof RNIapModule | typeof RNIapAmazonModule => {
   checkNativeAndroidAvailable();
 
-  return RNIapModule ? RNIapModule : RNIapAmazonModule;
+  return androidNativeModule
+    ? androidNativeModule
+    : RNIapModule
+    ? RNIapModule
+    : RNIapAmazonModule;
 };
 
 const checkNativeIOSAvailable = (): void => {
@@ -75,11 +88,7 @@ const getNativeModule = ():
   | typeof RNIapModule
   | typeof RNIapAmazonModule
   | typeof RNIapIos => {
-  if (isAndroid) {
-    return getAndroidModule();
-  }
-
-  return getIosModule();
+  return isAndroid ? getAndroidModule() : getIosModule();
 };
 
 /**
@@ -265,6 +274,8 @@ export const getAvailablePurchases = (): Promise<
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
+ * @param {string[]} [skus] Product Ids to purchase. Note that this is only for Android. iOS only uses a single SKU. If not provided, it'll default to using [sku] for backward-compatibility
+ * @param {boolean} [isOfferPersonalized] Defaults to false, Only for Android V5
  * @returns {Promise<InAppPurchase>}
  */
 
@@ -274,6 +285,8 @@ export const requestPurchase = ({
   obfuscatedAccountIdAndroid,
   obfuscatedProfileIdAndroid,
   applicationUsername,
+  skus, // Android Billing V5
+  isOfferPersonalized = undefined, // Android Billing V5
 }: RequestPurchase): Promise<InAppPurchase> =>
   (
     Platform.select({
@@ -293,11 +306,13 @@ export const requestPurchase = ({
       android: async () => {
         return getAndroidModule().buyItemByType(
           ANDROID_ITEM_TYPE_IAP,
-          sku,
+          skus?.length ? skus : [sku],
           null,
-          0,
+          -1,
           obfuscatedAccountIdAndroid,
           obfuscatedProfileIdAndroid,
+          undefined,
+          isOfferPersonalized ?? false,
         );
       },
     }) || Promise.resolve
@@ -312,6 +327,7 @@ export const requestPurchase = ({
  * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
  * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
+ * @param {SubscriptionOffers[]} [subscriptionOffers] Array of SubscriptionOffers. Every sku must be paired with a corresponding offerToken
  * @returns {Promise<SubscriptionPurchase | null>} Promise resolves to null when using proratioModesAndroid=DEFERRED, and to a SubscriptionPurchase otherwise
  */
 export const requestSubscription = ({
@@ -321,6 +337,8 @@ export const requestSubscription = ({
   prorationModeAndroid = -1,
   obfuscatedAccountIdAndroid,
   obfuscatedProfileIdAndroid,
+  subscriptionOffers = undefined, // Android Billing V5
+  isOfferPersonalized = undefined, // Android Billing V5
   applicationUsername,
 }: RequestSubscription): Promise<SubscriptionPurchase | null> =>
   (
@@ -339,14 +357,26 @@ export const requestSubscription = ({
         );
       },
       android: async () => {
-        return getAndroidModule().buyItemByType(
-          ANDROID_ITEM_TYPE_SUBSCRIPTION,
-          sku,
-          purchaseTokenAndroid,
-          prorationModeAndroid,
-          obfuscatedAccountIdAndroid,
-          obfuscatedProfileIdAndroid,
-        );
+        if (isAmazon) {
+          return RNIapAmazonModule.buyItemByType(sku);
+        } else {
+          if (!subscriptionOffers?.length) {
+            Promise.reject(
+              'subscriptionOffers are required for Google Play Subscriptions',
+            );
+            return;
+          }
+          return RNIapModule.buyItemByType(
+            ANDROID_ITEM_TYPE_SUBSCRIPTION,
+            subscriptionOffers?.map((so) => so.sku),
+            purchaseTokenAndroid,
+            prorationModeAndroid,
+            obfuscatedAccountIdAndroid,
+            obfuscatedProfileIdAndroid,
+            subscriptionOffers?.map((so) => so.offerToken),
+            isOfferPersonalized ?? false,
+          );
+        }
       },
     }) || Promise.resolve
   )();
