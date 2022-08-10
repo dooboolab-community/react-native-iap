@@ -135,18 +135,16 @@ export interface SubscriptionAndroid extends ProductCommon {
   subscriptionOfferDetails?: {
     offerToken: string;
     pricingPhases: {
-      pricingPhaseList: {
-        formattedPrice: string;
-        priceCurrencyCode: string;
-        /**
-         * P1W, P1M, P1Y
-         */
-        billingPeriod: string;
-        billingCycleCount: number;
-        priceAmountMicros: string;
-        recurrenceMode: number;
-      }[];
-    };
+      formattedPrice: string;
+      priceCurrencyCode: string;
+      /**
+       * P1W, P1M, P1Y
+       */
+      billingPeriod: string;
+      billingCycleCount: number;
+      priceAmountMicros: string;
+      recurrenceMode: number;
+    }[];
   }[];
 }
 

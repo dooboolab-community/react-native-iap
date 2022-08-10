@@ -69,7 +69,7 @@ export const Subscriptions = () => {
                 // On Google Play Billing V5 you might have  multiple offers for a single sku
                 subscription?.subscriptionOfferDetails?.map((offer) => (
                   <Button
-                    title={`Subscribe ${offer.pricingPhases.pricingPhaseList
+                    title={`Subscribe ${offer.pricingPhases
                       .map((ppl) => ppl.billingPeriod)
                       .join(',')}`}
                     onPress={() => {

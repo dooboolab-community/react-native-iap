@@ -230,16 +230,14 @@ class RNIapModuleTest {
                         every { subscriptionOfferDetails } returns  listOf( mockk {
                             every { offerToken } returns "sToken"
                             every { offerTags  } returns listOf("offerTag1","offerTag2")
-                            every { pricingPhases} returns mockk{
-                                every { pricingPhaseList } returns listOf(mockk{
-                                    every { formattedPrice } returns "$13.0"
-                                    every { priceCurrencyCode } returns "USD"
-                                    every { billingPeriod } returns "1 week"
-                                    every { billingCycleCount } returns 1
-                                    every { priceAmountMicros } returns 13000
-                                    every { recurrenceMode } returns 2
-                                })
-                            }
+                            every { pricingPhases} returns listOf(mockk{
+                                every { formattedPrice } returns "$13.0"
+                                every { priceCurrencyCode } returns "USD"
+                                every { billingPeriod } returns "1 week"
+                                every { billingCycleCount } returns 1
+                                every { priceAmountMicros } returns 13000
+                                every { recurrenceMode } returns 2
+                            })
                         })
                     }
                 )

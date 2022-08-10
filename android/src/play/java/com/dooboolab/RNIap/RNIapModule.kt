@@ -251,7 +251,7 @@ class RNIapModule(
                             }
                             offerDetails.putArray("offerTags", offerTags)
 
-                            val pricingPhasesList = Arguments.createArray()
+                            val pricingPhases = Arguments.createArray()
                             subscriptionOfferDetailsItem.pricingPhases.pricingPhaseList.forEach { pricingPhaseItem ->
                                 val pricingPhase = Arguments.createMap()
                                 pricingPhase.putString(
@@ -273,11 +273,9 @@ class RNIapModule(
                                 )
                                 pricingPhase.putInt("recurrenceMode", pricingPhaseItem.recurrenceMode)
 
-                                pricingPhasesList.pushMap(pricingPhase)
+                                pricingPhases.pushMap(pricingPhase)
                             }
-                            val pricingPhases = Arguments.createMap()
-                            pricingPhases.putArray("pricingPhaseList", pricingPhasesList)
-                            offerDetails.putMap("pricingPhases", pricingPhases)
+                            offerDetails.putArray("pricingPhases", pricingPhases)
                             subscriptionOfferDetails.pushMap(offerDetails)
                         }
                         item.putArray("subscriptionOfferDetails", subscriptionOfferDetails)
