@@ -25,7 +25,7 @@ export const Subscriptions = () => {
     productId: string,
     offerToken?: string,
   ) => {
-    if (!offerToken) {
+    if (Platform.OS === 'android' && !offerToken) {
       console.warn(
         `There are no subscription Offers for selected product (Only requiered for Google Play purchases): ${productId}`,
       );
