@@ -4,7 +4,14 @@ sidebar_position: 7
 
 # `requestPurchase`
 
-Request a purchase for a product. `purchaseUpdatedListener` will receive the result.
+Request a purchase for a product (consumables or non-consumables).
+
+The response will be received through the `PurchaseUpdatedListener`.
+
+:::note
+`andDangerouslyFinishTransactionAutomatically` defaults to false. We recommend
+always keeping at false, and verifying the transaction receipts on the server-side.
+:::
 
 ## Signature
 

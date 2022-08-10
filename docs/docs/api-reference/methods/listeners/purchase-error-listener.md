@@ -15,16 +15,21 @@ purchaseErrorListener((error: PurchaseError) => {});
 ## Usage
 
 ```tsx
-import {useEffect} from 'react';
+import React, {useEffect} from 'react';
+import {View} from 'react-native';
 import {purchaseErrorListener} from 'react-native-iap';
 
-useEffect(() => {
-  const subscription = purchaseErrorListener((error: PurchaseError) => {
-    console.log(error);
-  });
+const App = () => {
+  useEffect(() => {
+    const subscription = purchaseErrorListener((error: PurchaseError) => {
+      console.log(error);
+    });
 
-  return () => {
-    subscription.remove();
-  };
-}, []);
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  return <View />;
+};
 ```

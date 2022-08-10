@@ -13,9 +13,17 @@ presentCodeRedemptionSheetIOS(): Promise<null>;
 ## Usage
 
 ```tsx
+import React from 'react';
+import {Button} from 'react-native';
 import {presentCodeRedemptionSheetIOS} from 'react-native-iap';
 
-const handleRedemption = async () => {
-  await presentCodeRedemptionSheetIOS();
+const App = () => {
+  const handleRedemption = async () => {
+    await presentCodeRedemptionSheetIOS();
+  }
+
+  return (
+    <Button title="Redeem" onPress={handleRedemption} />
+  )
 }
 ```

@@ -1,6 +1,8 @@
 # `clearProductsIOS`
 
-Clear all products and subscriptions.
+Clear valid products.
+
+Remove all products which are validated by Apple server.
 
 ## Signature
 
@@ -11,10 +13,15 @@ clearProductsIOS(): Promise<void>
 ## Usage
 
 ```tsx
-import {useEffect} from 'react';
+import React, {useEffect} from 'react';
+import {View} from 'react-native';
 import {clearProductsIOS} from 'react-native-iap';
 
-useEffect(() => {
-  void clearProductsIOS();
-}, []);
+const App = () => {
+  useEffect(() => {
+    void clearProductsIOS();
+  }, []);
+
+  return <View />;
+}
 ```

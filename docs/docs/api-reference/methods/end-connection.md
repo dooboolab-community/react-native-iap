@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # `endConnection`
 
-End module for purchase flow.
+End the In-App Purchases module connection.
 
 ## Signature
 
@@ -15,12 +15,17 @@ endConnection(): Promise<boolean>;
 ## Usage
 
 ```tsx
-import {useEffect} from 'react';
+import React, {useEffect} from 'react';
+import {View} from 'react-native';
 import {endConnection} from 'react-native-iap';
 
-useEffect(() => {
-  return () => {
-    void endConnection();
-  };
-}, []);
+const App = () => {
+  useEffect(() => {
+    return () => {
+      void endConnection();
+    };
+  }, []);
+
+  return <View />;
+};
 ```

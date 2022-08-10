@@ -1,10 +1,9 @@
 # `clearTransactionIOS`
 
-Clear up unfinished transactions which sometimes cause problems.
+Clear the remaining transactions.
 
-More context:
-- [#257](https://github.com/dooboolab/react-native-iap/issues/257)
-- [#801](https://github.com/dooboolab/react-native-iap/issues/801)
+See https://github.com/dooboolab/react-native-iap/issues/257
+See https://github.com/dooboolab/react-native-iap/issues/801
 
 ## Signature
 
@@ -15,10 +14,15 @@ clearTransactionIOS(): Promise<void>
 ## Usage
 
 ```tsx
-import {useEffect} from 'react';
+import React, {useEffect} from 'react';
+import {View} from 'react-native';
 import {clearTransactionIOS} from 'react-native-iap';
 
-useEffect(() => {
-  void clearTransactionIOS();
-}, [])
+const App = () => {
+  useEffect(() => {
+    void clearTransactionIOS();
+  }, [])
+
+  return <View />;
+}
 ```

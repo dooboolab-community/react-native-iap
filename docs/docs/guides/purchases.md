@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Making a purchase
+# Purchases
 
 > :warning: **Purchase Flow Redesign** :warning:
 >

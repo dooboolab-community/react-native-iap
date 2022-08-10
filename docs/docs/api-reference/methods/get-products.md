@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # `getProducts`
 
-Get a list of products (consumable and non-consumable items, but not subscriptions).
+Get a list of products (consumable and non-consumable items).
 
 ## Signature
 
@@ -18,7 +18,7 @@ getProducts(
 ## Usage
 
 ```ts
-import React from 'react';
+import React, {useState} from 'react';
 import {Platform} from 'react-native';
 import {getProducts, Product} from 'react-native-iap';
 

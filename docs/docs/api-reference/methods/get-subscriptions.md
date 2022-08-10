@@ -6,10 +6,6 @@ sidebar_position: 4
 
 Get a list of subscriptions.
 
-:::note
-With before `iOS 11.2`, this method _will_ also return products if they are included in your list of SKUs. This is because we cannot differentiate between IAP products and subscriptions prior to `iOS 11.2`.
-:::
-
 ## Signature
 
 ```ts
@@ -22,12 +18,17 @@ getSubscriptions(
 ## Usage
 
 ```tsx
-import {useCallback} from 'react';
+import React, {useCallback} from 'react';
+import {View} from 'react-native';
 import {getSubscriptions} from 'react-native-iap';
 
-const subscriptions = useCallback(
-  async () =>
-    await getSubscriptions(['com.example.product1', 'com.example.product2']),
-  [],
-);
+const App = () => {
+  const subscriptions = useCallback(
+    async () =>
+      await getSubscriptions(['com.example.product1', 'com.example.product2']),
+    [],
+  );
+
+  return <View />;
+};
 ```

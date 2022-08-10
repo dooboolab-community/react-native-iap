@@ -15,15 +15,21 @@ purchaseUpdatedListener((purchase: Purchase) => {});
 ## Usage
 
 ```tsx
+import React, {useEffect} from 'react';
+import {View} from 'react-native';
 import {purchaseUpdatedListener} from 'react-native-iap';
 
-useEffect(() => {
-  const subscription = purchaseUpdatedListener((purchase: Purchase) => {
-    console.log(purchase);
-  });
+const App = () => {
+  useEffect(() => {
+    const subscription = purchaseUpdatedListener((purchase: Purchase) => {
+      console.log(purchase);
+    });
 
-  return () => {
-    subscription.remove();
-  };
-}, []);
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  return <View />;
+};
 ```

@@ -4,9 +4,7 @@ sidebar_position: 5
 
 # `getAvailablePurchases`
 
-Get all purchases made by the user (either non-consumable, or haven't been consumed yet).
-
-On Android, it can be called at app launch, but on iOS, only at restoring purchase is recommended.
+Get all purchases made by the user (either non-consumable, consumable and haven't been consumed yet or subscriptions).
 
 ## Signature
 
@@ -17,13 +15,18 @@ getAvailablePurchases(): Promise<Purchase[]>;
 ## Usage
 
 ```tsx
-import {useCallback} from 'react';
+import React, {useCallback} from 'react';
+import {View} from 'react-native';
 import {getAvailablePurchases} from 'react-native-iap';
 
-const availablePurchases = useCallback(
-  async () => await getAvailablePurchases(),
-  [],
-);
+const App = () => {
+  const availablePurchases = useCallback(
+    async () => await getAvailablePurchases(),
+    [],
+  );
+
+  return <View />;
+};
 ```
 
 ## Restoring purchases

@@ -2,7 +2,7 @@
 sidebar_position: 7
 ---
 
-# Configure Amazon IAP
+# Amazon IAP
 
 The guide assumes that `react-native-iap` is implemented in your app and works with the Play Store without issues. Here are the additional steps to configure Amazon IAP.
 

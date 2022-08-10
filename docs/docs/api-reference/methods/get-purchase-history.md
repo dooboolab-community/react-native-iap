@@ -4,26 +4,31 @@ sidebar_position: 6
 
 # `getPurchaseHistory`
 
-Gets an inventory of purchases made by the user regardless of consumption status (where possible).
+Get a list of purchases made by the user regardless of consumption states.
 
 ## Signature
 
 ```ts
-getPurchaseHistory(
-  /** The item skus */
-  skus: Sku[],
-): Promise<Purchase[]>;
+getPurchaseHistory(): Promise<Purchase[]>;
 ```
 
 ## Usage
 
 ```tsx
-import {useCallback} from 'react';
+import React, {useCallback} from 'react';
+import {View} from 'react-native';
 import {getPurchaseHistory} from 'react-native-iap';
 
-const history = useCallback(
-  async () =>
-    await getPurchaseHistory(['com.example.product1', 'com.example.product2']),
-  [],
-);
+const App = () => {
+  const history = useCallback(
+    async () =>
+      await getPurchaseHistory([
+        'com.example.product1',
+        'com.example.product2',
+      ]),
+    [],
+  );
+
+  return <View />;
+};
 ```

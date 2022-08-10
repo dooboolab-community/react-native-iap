@@ -11,9 +11,16 @@ getPendingPurchasesIOS(): Promise<Purchase[]>;
 ## Usage
 
 ```tsx
-import {useCallback} from 'react';
+import React from 'react';
+import {Button} from 'react-native';
 import {getPendingPurchasesIOS} from 'react-native-iap';
 
-const pendingPurchases = useCallback(async () => await getPendingPurchasesIOS());
+const App = () => {
+  const handlePendingPurchases = async () => await getPendingPurchasesIOS();
+
+  return (
+    <Button title="Pending purchases" onPress={handlePendingPurchases} />
+  )
+}
 ```
 

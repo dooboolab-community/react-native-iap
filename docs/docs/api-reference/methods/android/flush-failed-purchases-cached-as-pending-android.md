@@ -1,6 +1,8 @@
 # `flushFailedPurchasesCachedAsPendingAndroid`
 
-Consume all "ghost" purchases (that is, pending payment that already failed but is still marked as pending in Play Store cache).
+Consume all 'ghost' purchases.
+
+That is, pending payment that already failed but is still marked as pending in Play Store cache.
 
 ## Signature
 
@@ -11,7 +13,7 @@ flushFailedPurchasesCachedAsPendingAndroid(): Promise<void>;
 ## Usage
 
 ```tsx
-import React, {useCallback} from 'react';
+import React from 'react';
 import {Button} from 'react-native';
 import {flushFailedPurchasesCachedAsPendingAndroid} from 'react-native-iap';
 
@@ -21,7 +23,7 @@ const App = () => {
   };
 
   return (
-    <Button title="Flush" onPress={handleFlush} />
+    <Button title="Flush purchases cache" onPress={handleFlush} />
   );
 }
 ```

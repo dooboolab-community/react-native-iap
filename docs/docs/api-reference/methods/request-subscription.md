@@ -4,17 +4,20 @@ sidebar_position: 8
 
 # `requestSubscription`
 
-Request a purchase for a subscription. `purchaseUpdatedListener` will receive the result.
+Request a purchase for a subscription.
+
+The response will be received through the `PurchaseUpdatedListener`.
 
 :::note
-Promise resolves to null when using `ProrationModeAndroid.DEFERRED`, and to a SubscriptionPurchase otherwise.
+`andDangerouslyFinishTransactionAutomatically` defaults to false. We recommend
+always keeping at false, and verifying the transaction receipts on the server-side.
 :::
 
 ## Signature
 
 ```ts
 requestSubscription(
- /** The product's sku/ID */
+  /** The product's sku/ID */
   sku,
 
   /**
