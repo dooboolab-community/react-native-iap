@@ -63,6 +63,7 @@ export interface ProductPurchase {
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;
   //Android
+  productIds?: string[];
   dataAndroid?: string;
   signatureAndroid?: string;
   autoRenewingAndroid?: boolean;
@@ -116,13 +117,42 @@ export interface Discount {
 
 export interface Product extends ProductCommon {
   type: 'inapp' | 'iap';
+  /** Android V5 */
+  oneTimePurchaseOfferDetails?: {
+    priceCurrencyCode: string;
+    formattedPrice: string;
+    priceAmountMicros: string;
+  };
 }
 
-export interface Subscription extends ProductCommon {
-  type: 'subs' | 'sub';
+// Android V5
+export interface SubscriptionAndroid extends ProductCommon {
+  type: 'subs';
+
+  productType?: string;
+  name?: string;
+  subscriptionOfferDetails?: {
+    offerToken: string;
+    pricingPhases: {
+      pricingPhaseList: {
+        formattedPrice: string;
+        priceCurrencyCode: string;
+        /**
+         * P1W, P1M, P1Y
+         */
+        billingPeriod: string;
+        billingCycleCount: number;
+        priceAmountMicros: string;
+        recurrenceMode: number;
+      }[];
+    };
+  }[];
+}
+
+export interface SubscriptionIOS extends ProductCommon {
+  type: 'subs';
 
   discounts?: Discount[];
-
   introductoryPrice?: string;
   introductoryPriceAsAmountIOS?: string;
   introductoryPricePaymentModeIOS?:
@@ -140,23 +170,44 @@ export interface Subscription extends ProductCommon {
 
   subscriptionPeriodNumberIOS?: string;
   subscriptionPeriodUnitIOS?: '' | 'YEAR' | 'MONTH' | 'WEEK' | 'DAY';
-
-  introductoryPriceAsAmountAndroid: string;
-  introductoryPriceCyclesAndroid?: string;
-  introductoryPricePeriodAndroid?: string;
-  subscriptionPeriodAndroid?: string;
-  freeTrialPeriodAndroid?: string;
 }
 
-export interface RequestPurchase {
-  sku: Sku;
-  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
-  applicationUsername?: string;
+export type Subscription = SubscriptionAndroid & SubscriptionIOS;
+
+export interface RequestPurchaseBaseAndroid {
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
+  isOfferPersonalized?: boolean; // For AndroidBilling V5 https://developer.android.com/google/play/billing/integrate#personalized-price
 }
 
-export interface RequestSubscription extends RequestPurchase {
+export interface RequestPurchaseAndroid extends RequestPurchaseBaseAndroid {
+  skus?: Sku[];
+}
+
+export interface RequestPurchaseIOS {
+  sku?: Sku;
+  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
+  applicationUsername?: string;
+}
+
+export type RequestPurchase = RequestPurchaseAndroid & RequestPurchaseIOS;
+
+/**
+ * In order to purchase a new subscription, every sku must have a selected offerToken
+ * @see SubscriptionAndroid.subscriptionOfferDetails.offerToken
+ */
+export interface SubscriptionOffer {
+  sku: Sku;
+  offerToken: string;
+}
+
+export interface RequestSubscriptionAndroid extends RequestPurchaseBaseAndroid {
   purchaseTokenAndroid?: string;
   prorationModeAndroid?: ProrationModesAndroid;
+  subscriptionOffers?: SubscriptionOffer[]; // For AndroidBilling V5
 }
+
+export type RequestSubscriptionIOS = RequestPurchaseIOS;
+
+export type RequestSubscription = RequestSubscriptionAndroid &
+  RequestSubscriptionIOS;

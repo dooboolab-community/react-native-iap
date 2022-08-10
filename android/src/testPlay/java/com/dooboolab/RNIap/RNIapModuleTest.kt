@@ -4,8 +4,10 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ConsumeResponseListener
+import com.android.billingclient.api.ProductDetailsResponseListener
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesResponseListener
+import com.android.billingclient.api.QueryPurchasesParams
 import com.android.billingclient.api.SkuDetailsResponseListener
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
@@ -134,7 +136,7 @@ class RNIapModuleTest {
         every { billingClient.isReady } returns true
         val promise = mockk<Promise>(relaxed = true)
         val listener = slot<PurchasesResponseListener>()
-        every { billingClient.queryPurchasesAsync(any(), capture(listener)) } answers {
+        every { billingClient.queryPurchasesAsync(any<QueryPurchasesParams>(), capture(listener)) } answers {
             listener.captured.onQueryPurchasesResponse(BillingResult.newBuilder().build(), listOf())
         }
         module.initConnection(mockk())
@@ -150,7 +152,7 @@ class RNIapModuleTest {
         every { billingClient.isReady } returns true
         val promise = mockk<Promise>(relaxed = true)
         val listener = slot<PurchasesResponseListener>()
-        every { billingClient.queryPurchasesAsync(any(), capture(listener)) } answers {
+        every { billingClient.queryPurchasesAsync(any<QueryPurchasesParams>(), capture(listener)) } answers {
             listener.captured.onQueryPurchasesResponse(
                 BillingResult.newBuilder().build(),
                 listOf(
@@ -207,30 +209,39 @@ class RNIapModuleTest {
         every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
         every { billingClient.isReady } returns true
         val promise = mockk<Promise>(relaxed = true)
-        val listener = slot<SkuDetailsResponseListener>()
-        every { billingClient.querySkuDetailsAsync(any(), capture(listener)) } answers {
-            listener.captured.onSkuDetailsResponse(
+        val listener = slot<ProductDetailsResponseListener>()
+        every { billingClient.queryProductDetailsAsync(any(), capture(listener)) } answers {
+            listener.captured.onProductDetailsResponse(
                 BillingResult.newBuilder().build(),
                 listOf(
                     mockk {
-                        every { sku } returns "sku1"
-                        every { introductoryPriceAmountMicros } returns 0
-                        every { priceAmountMicros } returns 1
-                        every { priceCurrencyCode } returns "USD"
-                        every { type } returns "sub"
-                        every { price } returns "$10.0"
-                        every { title } returns "My product"
-                        every { description } returns "My desc"
-                        every { introductoryPrice } returns "$5.0"
-                        every { zzc() } returns "com.mypackage"
-                        every { originalPrice } returns "$13.0"
-                        every { subscriptionPeriod } returns "3 months"
-                        every { freeTrialPeriod } returns "1 week"
-                        every { introductoryPriceCycles } returns 1
-                        every { introductoryPricePeriod } returns "1"
-                        every { iconUrl } returns "http://myicon.com/icon"
-                        every { originalJson } returns "{}"
-                        every { originalPriceAmountMicros } returns 2
+                        every { productId } returns "sku1"
+
+                        every { title } returns "title2"
+                        every { description } returns "My product"
+
+                        every { productType } returns "sub"
+                        every { name } returns "name of product"
+                        every { oneTimePurchaseOfferDetails } returns mockk {
+                            every { priceCurrencyCode} returns "my code"
+                            every {formattedPrice} returns "$20.00"
+                            every { priceAmountMicros } returns 20000
+
+                            }
+                        every { subscriptionOfferDetails } returns  listOf( mockk {
+                            every { offerToken } returns "sToken"
+                            every { offerTags  } returns listOf("offerTag1","offerTag2")
+                            every { pricingPhases} returns mockk{
+                                every { pricingPhaseList } returns listOf(mockk{
+                                    every { formattedPrice } returns "$13.0"
+                                    every { priceCurrencyCode } returns "USD"
+                                    every { billingPeriod } returns "1 week"
+                                    every { billingCycleCount } returns 1
+                                    every { priceAmountMicros } returns 13000
+                                    every { recurrenceMode } returns 2
+                                })
+                            }
+                        })
                     }
                 )
             )
@@ -242,19 +253,22 @@ class RNIapModuleTest {
         }
         mockkStatic(Arguments::class)
 
-        val itemsMap = mockk<WritableMap>()
-        val itemsArr = mockk<WritableArray>()
+
+        val itemsMap = mockk<WritableMap>(relaxed = true)
+        var itemsSize = 0
+        val itemsArr = mockk<WritableArray>{
+            every { pushString(any()) } just runs
+            every { pushMap(any()) } answers {
+                itemsSize++
+            }
+        }
         every { Arguments.createMap() } returns itemsMap
         every { Arguments.createArray() } returns itemsArr
-        every { itemsMap.putString(any(), any()) } just runs
-        var itemsSize = 0
-        every { itemsArr.pushMap(any()) } answers {
-            itemsSize++
-        }
+
         module.initConnection(mockk())
         module.getItemsByType("subs", skus, promise)
         verify { promise.resolve(any()) }
-        assertEquals(itemsSize, 1)
+        assertEquals(3, itemsSize)
     }
 
     @Test
