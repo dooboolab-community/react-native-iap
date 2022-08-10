@@ -13,6 +13,7 @@ on:
       - 'IapExample/*.js'
       - 'IapExample/*.lock'
       - 'IapExample/*.tsx'
+      - .github/**
 
   pull_request:
     types: [opened, synchronize, reopened]
@@ -26,6 +27,7 @@ on:
       - 'IapExample/*.js'
       - 'IapExample/*.lock'
       - 'IapExample/*.tsx'
+      - .github/**
 
 jobs:
   build:
@@ -34,8 +36,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -54,21 +54,12 @@ jobs:
 
       - name: Run TypeScript
         run: |
-          yarn typescript | reviewdog -name="tsc" -efm="%f(%l,%c): error TS%n: %m" -reporter="github-pr-review" -filter-mode="nofilter" -fail-on-error -tee
+          yarn lint:tsc | reviewdog -name="tsc" -efm="%f(%l,%c): error TS%n: %m" -reporter="github-pr-review" -filter-mode="nofilter" -fail-on-error -tee
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run TypeScript in `IapExample/`
-        run: |
-          cd IapExample && yarn typescript | reviewdog -name="tsc" -efm="%f(%l,%c): error TS%n: %m" -reporter="github-pr-review" -filter-mode="nofilter" -fail-on-error -tee && cd ..
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build typescript
+      - name: Run lint scripts
         run: yarn lint:ci
-
-      - name: Check commit message is valid
-        uses: wagoid/commitlint-github-action@v5
 
       - name: Verify no files have changed after auto-fix
         run: git diff --exit-code HEAD
