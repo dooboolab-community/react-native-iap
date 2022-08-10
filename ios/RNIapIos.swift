@@ -209,7 +209,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
       let payment = SKMutablePayment(product: prod)
 
-      if applicationUsername != nil {
+      if let applicationUsername = applicationUsername {
         payment.applicationUsername = applicationUsername
       }
       SKPaymentQueue.default().add(payment)
