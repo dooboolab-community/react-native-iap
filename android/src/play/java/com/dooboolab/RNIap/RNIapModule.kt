@@ -200,8 +200,7 @@ class RNIapModule(
             val skuList = ArrayList<QueryProductDetailsParams.Product>()
             for (i in 0 until skuArr.size()) {
                 if (skuArr.getType(i) == ReadableType.String) {
-                    val sku = skuArr.getString(i)
-                    sku?.let {
+                    skuArr.getString(i)?.let { sku -> // null check for older versions of RN
                         skuList.add(
                             QueryProductDetailsParams.Product.newBuilder().setProductId(sku)
                                 .setProductType(type).build()
@@ -236,52 +235,53 @@ class RNIapModule(
                             "priceAmountMicros",
                             it.priceAmountMicros.toString()
                         )
+                        item.putMap("oneTimePurchaseOfferDetails", oneTimePurchaseOfferDetails)
                     }
-                    item.putMap("oneTimePurchaseOfferDetails", oneTimePurchaseOfferDetails)
+                    skuDetails.subscriptionOfferDetails?.let {
+                        val subscriptionOfferDetails = Arguments.createArray()
+                        it.forEach { subscriptionOfferDetailsItem ->
+                            val offerDetails = Arguments.createMap()
+                            offerDetails.putString(
+                                "offerToken",
+                                subscriptionOfferDetailsItem.offerToken
+                            )
+                            val offerTags = Arguments.createArray()
+                            subscriptionOfferDetailsItem.offerTags.forEach { offerTag ->
+                                offerTags.pushString(offerTag)
+                            }
+                            offerDetails.putArray("offerTags", offerTags)
 
-                    val subscriptionOfferDetails = Arguments.createArray()
-                    skuDetails.subscriptionOfferDetails?.forEach { subscriptionOfferDetailsItem ->
-                        val offerDetails = Arguments.createMap()
-                        offerDetails.putString(
-                            "offerToken",
-                            subscriptionOfferDetailsItem.offerToken
-                        )
-                        val offerTags = Arguments.createArray()
-                        subscriptionOfferDetailsItem.offerTags.forEach { offerTag ->
-                            offerTags.pushString(offerTag)
+                            val pricingPhasesList = Arguments.createArray()
+                            subscriptionOfferDetailsItem.pricingPhases.pricingPhaseList.forEach { pricingPhaseItem ->
+                                val pricingPhase = Arguments.createMap()
+                                pricingPhase.putString(
+                                    "formattedPrice",
+                                    pricingPhaseItem.formattedPrice
+                                )
+                                pricingPhase.putString(
+                                    "priceCurrencyCode",
+                                    pricingPhaseItem.priceCurrencyCode
+                                )
+                                pricingPhase.putString("billingPeriod", pricingPhaseItem.billingPeriod)
+                                pricingPhase.putInt(
+                                    "billingCycleCount",
+                                    pricingPhaseItem.billingCycleCount
+                                )
+                                pricingPhase.putString(
+                                    "priceAmountMicros",
+                                    pricingPhaseItem.priceAmountMicros.toString()
+                                )
+                                pricingPhase.putInt("recurrenceMode", pricingPhaseItem.recurrenceMode)
+
+                                pricingPhasesList.pushMap(pricingPhase)
+                            }
+                            val pricingPhases = Arguments.createMap()
+                            pricingPhases.putArray("pricingPhaseList", pricingPhasesList)
+                            offerDetails.putMap("pricingPhases", pricingPhases)
+                            subscriptionOfferDetails.pushMap(offerDetails)
                         }
-                        offerDetails.putArray("offerTags", offerTags)
-
-                        val pricingPhasesList = Arguments.createArray()
-                        subscriptionOfferDetailsItem.pricingPhases.pricingPhaseList.forEach { pricingPhaseItem ->
-                            val pricingPhase = Arguments.createMap()
-                            pricingPhase.putString(
-                                "formattedPrice",
-                                pricingPhaseItem.formattedPrice
-                            )
-                            pricingPhase.putString(
-                                "priceCurrencyCode",
-                                pricingPhaseItem.priceCurrencyCode
-                            )
-                            pricingPhase.putString("billingPeriod", pricingPhaseItem.billingPeriod)
-                            pricingPhase.putInt(
-                                "billingCycleCount",
-                                pricingPhaseItem.billingCycleCount
-                            )
-                            pricingPhase.putString(
-                                "priceAmountMicros",
-                                pricingPhaseItem.priceAmountMicros.toString()
-                            )
-                            pricingPhase.putInt("recurrenceMode", pricingPhaseItem.recurrenceMode)
-
-                            pricingPhasesList.pushMap(pricingPhase)
-                        }
-                        val pricingPhases = Arguments.createMap()
-                        pricingPhases.putArray("pricingPhaseList", pricingPhasesList)
-                        offerDetails.putMap("pricingPhases", pricingPhases)
-                        subscriptionOfferDetails.pushMap(offerDetails)
+                        item.putArray("subscriptionOfferDetails", subscriptionOfferDetails)
                     }
-                    item.putArray("subscriptionOfferDetails", subscriptionOfferDetails)
                     items.pushMap(item)
                 }
                 promise.safeResolve(items)
@@ -438,8 +438,9 @@ class RNIapModule(
                     }
                     var productDetailParams = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(selectedSku)
                     if (type == BillingClient.ProductType.SUBS) {
-                        val offerToken = offerTokenArr.getString(index)
-                        productDetailParams = productDetailParams.setOfferToken(offerToken)
+                        offerTokenArr.getString(index)?.let { offerToken -> // null check for older versions of RN
+                            productDetailParams = productDetailParams.setOfferToken(offerToken)
+                        }
                     }
                     productDetailParams.build()
                 }

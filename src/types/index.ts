@@ -118,6 +118,12 @@ export interface Discount {
 
 export interface Product extends ProductCommon {
   type: 'inapp' | 'iap';
+  // Android V5
+  oneTimePurchaseOfferDetails?: {
+    priceCurrencyCode: string;
+    formattedPrice: string;
+    priceAmountMicros: string;
+  };
 }
 
 //Android V5
@@ -126,21 +132,19 @@ export interface SubscriptionAndroid extends ProductCommon {
 
   productType?: string;
   name?: string;
-  oneTimePurchaseOfferDetails?: {
-    priceCurrencyCode?: string;
-    formattedPrice?: string;
-    priceAmountMicros?: string;
-  }[];
   subscriptionOfferDetails?: {
-    offerToken?: string;
+    offerToken: string;
     pricingPhases: {
       pricingPhaseList: {
-        formattedPrice?: string;
-        priceCurrencyCode?: string;
-        billingPeriod?: string;
-        billingCycleCount?: number;
-        priceAmountMicros?: string;
-        recurrenceMode?: number;
+        formattedPrice: string;
+        priceCurrencyCode: string;
+        /**
+         * P1W, P1M, P1Y
+         */
+        billingPeriod: string;
+        billingCycleCount: number;
+        priceAmountMicros: string;
+        recurrenceMode: number;
       }[];
     };
   }[];
