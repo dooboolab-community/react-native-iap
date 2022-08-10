@@ -126,7 +126,7 @@ export interface Product extends ProductCommon {
   };
 }
 
-//Android V5
+// Android V5
 export interface SubscriptionAndroid extends ProductCommon {
   type: 'subs';
 
@@ -192,6 +192,7 @@ export interface RequestPurchaseIOS {
 }
 
 export type RequestPurchase = RequestPurchaseAndroid & RequestPurchaseIOS;
+
 /**
  * In order to purchase a new subscription, every sku must have a selected offerToken
  * @see SubscriptionAndroid.subscriptionOfferDetails.offerToken
@@ -200,6 +201,7 @@ export interface SubscriptionOffer {
   sku: Sku;
   offerToken: string;
 }
+
 export interface RequestSubscriptionAndroid extends RequestPurchaseBaseAndroid {
   purchaseTokenAndroid?: string;
   prorationModeAndroid?: ProrationModesAndroid;
