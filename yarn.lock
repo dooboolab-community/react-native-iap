@@ -4167,9 +4167,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001370":
-  version: 1.0.30001374
-  resolution: "caniuse-lite@npm:1.0.30001374"
-  checksum: a75656e971d7ef2af4d2f3529a4620ae1a45d09460601fbc34b26f6867f31bbca006f71d8840291c471a2f01fc1994044f319a5660241ffaf35a2d84535af442
+  version: 1.0.30001375
+  resolution: "caniuse-lite@npm:1.0.30001375"
+  checksum: 6ed9cf7a3f80f5880cb021105864b869dddfdda8490559aa623e77feeca5ce8958a3b7c1cf37322e519176dcb488c99e6358b8c2de2aa4a0e08846ac122c4e75
   languageName: node
   linkType: hard
 
@@ -5518,7 +5518,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:^26.5.3":
+"eslint-plugin-jest@npm:26.8.2, eslint-plugin-jest@npm:^26.5.3":
   version: 26.8.2
   resolution: "eslint-plugin-jest@npm:26.8.2"
   dependencies:
@@ -10880,6 +10880,7 @@ __metadata:
     babel-jest: 28.1.3
     eslint: 8.20.0
     eslint-config-prettier: 8.5.0
+    eslint-plugin-jest: 26.8.2
     eslint-plugin-prettier: 4.2.1
     eslint-plugin-simple-import-sort: 7.0.0
     jest: 28.1.3
