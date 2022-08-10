@@ -1,6 +1,6 @@
 import React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
-import RNIap, {Subscription, useIAP} from 'react-native-iap';
+import {Platform, ScrollView, StyleSheet, View} from 'react-native';
+import RNIap, {useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {constants, contentContainerStyle, errorLog} from '../utils';
@@ -21,21 +21,20 @@ export const Subscriptions = () => {
     }
   };
 
-  const handleBuySubscription = async (subscription: Subscription) => {
-    const firstOfferToken =
-      subscription.subscriptionOfferDetails?.[0]?.offerToken;
-    if (!firstOfferToken) {
+  const handleBuySubscription = async (
+    productId: string,
+    offerToken?: string,
+  ) => {
+    if (Platform.OS === 'android' && !offerToken) {
       console.warn(
-        `There are no subscription Offers for selected product (Only requiered for Google Play purchases): ${subscription.productId}`,
+        `There are no subscription Offers for selected product (Only requiered for Google Play purchases): ${productId}`,
       );
     }
     try {
       await requestSubscription({
-        sku: subscription.productId,
-        ...(firstOfferToken && {
-          subscriptionOffers: [
-            {sku: subscription.productId, offerToken: firstOfferToken},
-          ],
+        sku: productId,
+        ...(offerToken && {
+          subscriptionOffers: [{sku: productId, offerToken}],
         }),
       });
     } catch (error) {
@@ -66,12 +65,29 @@ export const Subscriptions = () => {
               ]}
               isLast={subscriptions.length - 1 === index}
             >
-              <Button
-                title="Subscribe"
-                onPress={() => {
-                  handleBuySubscription(subscription);
-                }}
-              />
+              {Platform.OS === 'android' &&
+                // On Google Play Billing V5 you might have  multiple offers for a single sku
+                subscription?.subscriptionOfferDetails?.map((offer) => (
+                  <Button
+                    title={`Subscribe ${offer.pricingPhases.pricingPhaseList
+                      .map((ppl) => ppl.billingPeriod)
+                      .join(',')}`}
+                    onPress={() => {
+                      handleBuySubscription(
+                        subscription.productId,
+                        offer.offerToken,
+                      );
+                    }}
+                  />
+                ))}
+              {Platform.OS === 'ios' && (
+                <Button
+                  title="Subscribe"
+                  onPress={() => {
+                    handleBuySubscription(subscription.productId);
+                  }}
+                />
+              )}
             </Row>
           ))}
         </View>
