@@ -225,15 +225,14 @@ class RNIapModuleTest {
                             every { priceCurrencyCode} returns "my code"
                             every {formattedPrice} returns "$20.00"
                             every { priceAmountMicros } returns 20000
-
-                            }
-                        every { subscriptionOfferDetails } returns  listOf( mockk {
+                        }   
+                        every { subscriptionOfferDetails } returns listOf( mockk {
                             every { offerToken } returns "sToken"
-                            every { offerTags  } returns listOf("offerTag1","offerTag2")
-                            every { pricingPhases} returns listOf(mockk{
+                            every { offerTags } returns listOf("offerTag1","offerTag2")
+                            every { pricingPhases } returns listOf( mockk {
                                 every { formattedPrice } returns "$13.0"
                                 every { priceCurrencyCode } returns "USD"
-                                every { billingPeriod } returns "1 week"
+                                every { billingPeriod } returns "P1W"
                                 every { billingCycleCount } returns 1
                                 every { priceAmountMicros } returns 13000
                                 every { recurrenceMode } returns 2
