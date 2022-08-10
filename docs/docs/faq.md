@@ -73,52 +73,8 @@
 
 - Offical doc is [here](https://developer.apple.com/app-store/promoting-in-app-purchases/).
 
-#### Swift version
-
-Add the following to your `AppDelegate`. This will store the parameters and excecute the logic
-
-```swift
-import UIKit
-import StoreKit
-
-class AppDelegate: UIResponder, UIApplicationDelegate {
-                ....
-    // Attach an observer to the payment queue.
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        SKPaymentQueue.default().add(RNIapQueue.shared)
-        return true
-    }
-
-    // Called when the application is about to terminate.
-    func applicationWillTerminate(_ application: UIApplication) {
-        // Remove the observer.
-        SKPaymentQueue.default().remove(RNIapQueue.shared)
-    }
-                ....
-}
-```
-
-#### ObjC version
-
-Add into file AppDelegate.h:
-
-```objc
-@class RNIapQueue;
-```
-
-At the top of file AppDelegate.mm:
-
-```objc
-#import <StoreKit/StoreKit.h>
-#import <RNIap/RNIap-Swift.h>
-```
-
-Add into file AppDelegate.mm within your existing `didFinishLaunchingWithOptions` method:
-
-```objc
-[[SKPaymentQueue defaultQueue] addTransactionObserver:RNIapQueue.shared];
-```
-
+#### Native
+This is (as of version 8.6.0) handled automatically in the native code. No additional native setup is needed
 #### JavaScript
 
 Somewhere early in your app's lifecycle, add a listener for the `iap-promoted-product` event:
