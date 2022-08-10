@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Build typescript
+      - name: Run lint scripts
         run: yarn lint:ci
 
       - name: Verify no files have changed after auto-fix
