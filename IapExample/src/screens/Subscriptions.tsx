@@ -1,6 +1,6 @@
 import React from 'react';
 import {Platform, ScrollView, StyleSheet, View} from 'react-native';
-import RNIap, {Sku, useIAP} from 'react-native-iap';
+import RNIap, {useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {constants, contentContainerStyle, errorLog} from '../utils';
