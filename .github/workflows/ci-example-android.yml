@@ -7,7 +7,7 @@ on:
       - 'src/**'
       - 'android/**'
       - 'IapExample/android/**'
-      - .github/**
+      - .github/ci-example-android.yml
 
   pull_request:
     types: [opened, synchronize, reopened]
@@ -15,7 +15,7 @@ on:
       - 'src/**'
       - 'android/**'
       - 'IapExample/android/**'
-      - .github/**
+      - .github/ci-example-android.yml
 
 jobs:
   build_android_example:
