@@ -74,7 +74,9 @@
 - Offical doc is [here](https://developer.apple.com/app-store/promoting-in-app-purchases/).
 
 #### Native
+
 This is (as of version 8.6.0) handled automatically in the native code. No additional native setup is needed
+
 #### JavaScript
 
 Somewhere early in your app's lifecycle, add a listener for the `iap-promoted-product` event:
