@@ -1394,12 +1394,12 @@ __metadata:
   linkType: hard
 
 "@jridgewell/trace-mapping@npm:^0.3.9":
-  version: 0.3.14
-  resolution: "@jridgewell/trace-mapping@npm:0.3.14"
+  version: 0.3.15
+  resolution: "@jridgewell/trace-mapping@npm:0.3.15"
   dependencies:
     "@jridgewell/resolve-uri": ^3.0.3
     "@jridgewell/sourcemap-codec": ^1.4.10
-  checksum: b9537b9630ffb631aef9651a085fe361881cde1772cd482c257fe3c78c8fd5388d681f504a9c9fe1081b1c05e8f75edf55ee10fdb58d92bbaa8dbf6a7bd6b18c
+  checksum: 38917e9c2b014d469a9f51c016ed506acbe44dd16ec2f6f99b553ebf3764d22abadbf992f2367b6d2b3511f3eae8ed3a8963f6c1030093fda23efd35ecab2bae
   languageName: node
   linkType: hard
 
@@ -1435,16 +1435,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/cli-config@npm:^8.0.4":
-  version: 8.0.4
-  resolution: "@react-native-community/cli-config@npm:8.0.4"
+"@react-native-community/cli-config@npm:^8.0.6":
+  version: 8.0.6
+  resolution: "@react-native-community/cli-config@npm:8.0.6"
   dependencies:
     "@react-native-community/cli-tools": ^8.0.4
     cosmiconfig: ^5.1.0
     deepmerge: ^3.2.0
     glob: ^7.1.3
     joi: ^17.2.1
-  checksum: 9aad8af54690fc4637f0896ebea4701ef3a264ba59223145b3d29d5eab876d24112c2b8bf5e83f5362df618f3e8d3b95ebba9500bc2bf921940d763f0264750e
+  checksum: 6191c801d49e34a6d5650bc7c44559ce913d2acaf8d5e9b9dd27ced486d2735a74b4b5bfa3c92b7a670536124f95ccdfa85c1e65c329b90674d6b16e3e801e45
   languageName: node
   linkType: hard
 
@@ -1457,12 +1457,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/cli-doctor@npm:^8.0.4":
-  version: 8.0.4
-  resolution: "@react-native-community/cli-doctor@npm:8.0.4"
+"@react-native-community/cli-doctor@npm:^8.0.6":
+  version: 8.0.6
+  resolution: "@react-native-community/cli-doctor@npm:8.0.6"
   dependencies:
-    "@react-native-community/cli-config": ^8.0.4
-    "@react-native-community/cli-platform-ios": ^8.0.4
+    "@react-native-community/cli-config": ^8.0.6
+    "@react-native-community/cli-platform-ios": ^8.0.6
     "@react-native-community/cli-tools": ^8.0.4
     chalk: ^4.1.2
     command-exists: ^1.2.8
@@ -1477,7 +1477,7 @@ __metadata:
     strip-ansi: ^5.2.0
     sudo-prompt: ^9.0.0
     wcwidth: ^1.0.1
-  checksum: bdf2b2c572605043a880ce1dba51aefd0bab96315b442b5c5dde261399e40f7ec143ea396a4d24e27a2d91e253809f28dfa99095ed922a3bbe559a9aa265a0ac
+  checksum: fe33bd8f7d69a4fedc400a9d17556d260144c6b6fc39d7ef4bfeca385c456edd106f9a10f7fd8e58516ee68984762acff062a9050aea14d084a3523390298bb3
   languageName: node
   linkType: hard
 
@@ -1511,9 +1511,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/cli-platform-ios@npm:^8.0.0, @react-native-community/cli-platform-ios@npm:^8.0.4":
-  version: 8.0.4
-  resolution: "@react-native-community/cli-platform-ios@npm:8.0.4"
+"@react-native-community/cli-platform-ios@npm:^8.0.0, @react-native-community/cli-platform-ios@npm:^8.0.6":
+  version: 8.0.6
+  resolution: "@react-native-community/cli-platform-ios@npm:8.0.6"
   dependencies:
     "@react-native-community/cli-tools": ^8.0.4
     chalk: ^4.1.2
@@ -1523,7 +1523,7 @@ __metadata:
     lodash: ^4.17.15
     ora: ^5.4.1
     plist: ^3.0.2
-  checksum: e9bca842a9721dafde037e59b5a9a17a40a203ef4a466ce0978b06c465829bfdd0e143f12c36cbf6e740bbcbe958f5f0dde06c6e8a238b9b11a1fedcf8221387
+  checksum: 3dff6efb4e3f6a486207aefa126de70930032d16c4a395cbc88f6e56640fec24209273b45b93c735a7c604dfb7edb980240a82026f135f4f59a74063cd834221
   languageName: node
   linkType: hard
 
@@ -1590,13 +1590,13 @@ __metadata:
   linkType: hard
 
 "@react-native-community/cli@npm:^8.0.0":
-  version: 8.0.5
-  resolution: "@react-native-community/cli@npm:8.0.5"
+  version: 8.0.6
+  resolution: "@react-native-community/cli@npm:8.0.6"
   dependencies:
     "@react-native-community/cli-clean": ^8.0.4
-    "@react-native-community/cli-config": ^8.0.4
+    "@react-native-community/cli-config": ^8.0.6
     "@react-native-community/cli-debugger-ui": ^8.0.0
-    "@react-native-community/cli-doctor": ^8.0.4
+    "@react-native-community/cli-doctor": ^8.0.6
     "@react-native-community/cli-hermes": ^8.0.5
     "@react-native-community/cli-plugin-metro": ^8.0.4
     "@react-native-community/cli-server-api": ^8.0.4
@@ -1617,7 +1617,7 @@ __metadata:
     react-native: "*"
   bin:
     react-native: build/bin.js
-  checksum: 19bfd94f543c8d0bed992b9ae5592872cbc7efdef6115ece6f11add8a2b520455924a4bf6c73e8af2212c72dd3eadb1f9fdb10a31713226c58cbf30228413e44
+  checksum: 88cb297408e90f5b7f9858014cc74717553ad85f53fd84683dea6b2aa27cfde2203b4c43f89f9a6ead1a8493494d234e6861929c4d7628d1363ea0ec50e9efcb
   languageName: node
   linkType: hard
 
@@ -1866,9 +1866,9 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 18.6.5
-  resolution: "@types/node@npm:18.6.5"
-  checksum: e3e66c9a84b94010a57c1b9dac882c08484278d74f9d120dbe6a3e45d00740d178bd1d34a5deee28197c94b9f4359153b637bab9b305328e865027e9987a0f3d
+  version: 18.7.1
+  resolution: "@types/node@npm:18.7.1"
+  checksum: f1e2b701b107f97be01da4c46845cd23bcdcb2865f9abbb2847546d09587e726ea207daca6f0d1e72196875ef8c62feeeff5f1c1f2070445acd6d1a61d815c7c
   languageName: node
   linkType: hard
 
@@ -2651,9 +2651,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001370":
-  version: 1.0.30001374
-  resolution: "caniuse-lite@npm:1.0.30001374"
-  checksum: a75656e971d7ef2af4d2f3529a4620ae1a45d09460601fbc34b26f6867f31bbca006f71d8840291c471a2f01fc1994044f319a5660241ffaf35a2d84535af442
+  version: 1.0.30001375
+  resolution: "caniuse-lite@npm:1.0.30001375"
+  checksum: 6ed9cf7a3f80f5880cb021105864b869dddfdda8490559aa623e77feeca5ce8958a3b7c1cf37322e519176dcb488c99e6358b8c2de2aa4a0e08846ac122c4e75
   languageName: node
   linkType: hard
 
@@ -3265,9 +3265,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.202":
-  version: 1.4.213
-  resolution: "electron-to-chromium@npm:1.4.213"
-  checksum: 63953b2db5f87ef11caad8c57bba69300cc5ab1bf363d5758c48187fe9e414e971e470bfc961540c954a2f966fadccce29bdbfa60f5bd6c4b5499f16404d0846
+  version: 1.4.216
+  resolution: "electron-to-chromium@npm:1.4.216"
+  checksum: 82f035b58034230ccece7294c8f81d9baa39cbdc8eb4715d06dff21605f3a9353cfb6332dd2c67c5385fd51c775bf1a9d1452974087978eae0ffa9e40aaad984
   languageName: node
   linkType: hard
 
@@ -7448,7 +7448,7 @@ __metadata:
 
 "serialize-error@npm:^2.1.0":
   version: 2.1.0
-  resolut,ion: "serialize-error@npm:2.1.0"
+  resolution: "serialize-error@npm:2.1.0"
   checksum: 28464a6f65e6becd6e49fb782aff06573fdbf3d19f161a20228179842fed05c75a34110e54c3ee020b00240f9e11d8bee9b9fee5d04e0bc0bef1fdbf2baa297e
   languageName: node
   linkType: hard
