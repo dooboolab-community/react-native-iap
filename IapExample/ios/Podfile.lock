@@ -360,7 +360,11 @@ PODS:
     - React-Core
   - RNGestureHandler (2.5.0):
     - React-Core
+<<<<<<< HEAD
   - RNIap (8.6.5):
+=======
+  - RNIap (9.0.0-rc.3):
+>>>>>>> 4abf623212795aa9fb05aa1fe296122237dee1cc
     - React-Core
   - RNScreens (3.15.0):
     - React-Core
@@ -575,7 +579,11 @@ SPEC CHECKSUMS:
   ReactCommon: e30ec17dfb1d4c4f3419eac254350d6abca6d5a2
   RNCMaskedView: cb9670ea9239998340eaab21df13fa12a1f9de15
   RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
+<<<<<<< HEAD
   RNIap: e9f648d00e693913f80bbe5b661a5257fb72fe93
+=======
+  RNIap: aea549e6c96fbe4c1ea8c0603a5e9ab9ceb6544f
+>>>>>>> 4abf623212795aa9fb05aa1fe296122237dee1cc
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: 7ab6e3ee4ce47d7b789d1cb520163833e515f452
