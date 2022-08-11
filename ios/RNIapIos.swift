@@ -792,7 +792,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
       for discount in product.discounts {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        if priceLocale = discount.priceLocale{
+        if priceLocale = discount.priceLocale {
           formatter.locale = priceLocale
         }
         localizedPrice = formatter.string(from: discount.price)
