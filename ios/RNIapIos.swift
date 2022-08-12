@@ -37,9 +37,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   private var promisesByKey: [String: [RNIapIosPromise]]
   private var myQueue: DispatchQueue
   private var hasListeners = false
-  private var pendingTransactionWithAutoFinish = false
   private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
-  private var validProducts: [SKProduct]
+    private var products: [String:Product]
+    private var transactions: [String: Transaction]
   private var promotedPayment: SKPayment?
   private var promotedProduct: SKProduct?
   private var productsRequest: SKProductsRequest?
@@ -48,9 +48,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
   override init() {
     promisesByKey = [String: [RNIapIosPromise]]()
-    pendingTransactionWithAutoFinish = false
     myQueue = DispatchQueue(label: "reject")
-    validProducts = [SKProduct]()
+      products = [String: Product]()
     super.init()
     addTransactionObserver()
   }
@@ -166,17 +165,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     _ skus: [String],
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-  ) {
-    let productIdentifiers = Set<AnyHashable>(skus)
-    if let productIdentifiers = productIdentifiers as? Set<String> {
-      productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
-      if let productsRequest = productsRequest {
-        productsRequest.delegate = self
-        let key: String = productsRequest.key
-        addPromise(forKey: key, resolve: resolve, reject: reject)
-        productsRequest.start()
+  ) async {
+      do{
+    let products = try await Product.products(for: skus)
+    resolve(products)
+      }catch{
+      reject("E_UNKNOWN","Error fetching items",nil)
       }
-    }
+    
   }
   @objc public func getAvailableItems(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
@@ -189,47 +185,65 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   @objc public func buyProduct(
     _ sku: String,
     andDangerouslyFinishTransactionAutomatically: Bool,
-    applicationUsername: String?,
+    applicationUsername: String?, //TODO
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-  ) {
-    pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
-    var product: SKProduct?
-    let lockQueue = DispatchQueue(label: "validProducts")
-    lockQueue.sync {
-      for p in validProducts {
-        if sku == p.productIdentifier {
-          product = p
-          break
+  ) async {
+      let product: Product? = products[sku]
+    
+    if let product = product {
+        do {
+            let result = try await product.purchase()
+            switch result {
+            case .success(let verification):
+                //Check whether the transaction is verified. If it isn't,
+                //this function rethrows the verification error.
+                let transaction = try checkVerified(verification)
+
+                //The transaction is verified. Deliver content to the user.
+                // Do on JS :await updateCustomerProductStatus()
+
+                //Always finish a transaction.
+                let transactionId = String(transaction.id)
+                if(andDangerouslyFinishTransactionAutomatically){
+                    await transaction.finish()
+                    resolve(nil)
+                }else{
+                    transactions[transactionId]=transaction
+                    resolve(transactionId)
+                }
+                return
+            case .userCancelled, .pending:
+                reject()
+                return
+            default:
+                reject()
+                return
+            }
+        }catch{
+            reject()
         }
-      }
-    }
-    if let prod = product {
-      addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
-
-      let payment = SKMutablePayment(product: prod)
-
-      if let applicationUsername = applicationUsername {
-        payment.applicationUsername = applicationUsername
-      }
-      SKPaymentQueue.default().add(payment)
+      
     } else {
-      if hasListeners {
-        let err = [
-          "debugMessage": "Invalid product ID.",
-          "code": "E_DEVELOPER_ERROR",
-          "message": "Invalid product ID.",
-          "productId": sku
-        ]
-
-        sendEvent(withName: "purchase-error", body: err)
-      }
-
       reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
     }
   }
+    public enum StoreError: Error {
+        case failedVerification
+    }
+    func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
+        //Check whether the JWS passes StoreKit verification.
+        switch result {
+        case .unverified:
+            //StoreKit parses the JWS, but it fails verification.
+            throw StoreError.failedVerification
+        case .verified(let safe):
+            //The result is verified. Return the unwrapped value.
+            return safe
+        }
+    }
 
-  @objc public func buyProductWithOffer(
+  @objc public func buyProductWithOffer( // TODO: merge with regular  buy product
     _ sku: String,
     forUser usernameHash: String,
     withOffer discountOffer: [String: String],
@@ -277,7 +291,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
   }
 
-  @objc public func buyProductWithQuantityIOS(
+  @objc public func buyProductWithQuantityIOS( // TODO merge with regular buy
     _ sku: String,
     quantity: Int,
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
@@ -315,16 +329,17 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   @objc public func clearTransaction(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-  ) {
-    let pendingTrans = SKPaymentQueue.default().transactions
-    countPendingTransaction = pendingTrans.count
+  ) async {
+    
+    countPendingTransaction = transactions.count
 
     debugMessage("clear remaining Transactions (\(countPendingTransaction)). Call this before make a new transaction")
 
     if countPendingTransaction > 0 {
       addPromise(forKey: "cleaningTransactions", resolve: resolve, reject: reject)
-      for transaction in pendingTrans {
-        SKPaymentQueue.default().finishTransaction(transaction)
+      for transaction in transactions {
+        await transaction.value.finish()
+        transactions.removeValue(forKey: transaction.key)
       }
     } else {
       resolve(nil)
