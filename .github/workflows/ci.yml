@@ -4,7 +4,11 @@ on:
   push:
     branches: [main, next]
     paths:
+      - 'docs/**'
       - 'src/**'
+      - 'scripts/**'
+      - 'test/**'
+      - '*.md'
       - '*.json'
       - '*.js'
       - '*.lock'
@@ -18,7 +22,11 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
+      - 'docs/**'
       - 'src/**'
+      - 'scripts/**'
+      - 'test/**'
+      - '*.md'
       - '*.json'
       - '*.js'
       - '*.lock'
