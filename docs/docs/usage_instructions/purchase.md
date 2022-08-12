@@ -112,20 +112,40 @@ Then define the method like below and call it when user press the button.
     }
   }
 
-  requestSubscription = async (sku: string) => {
+  requestSubscription = async (sku: string, offerToken: string?) => {
     try {
-      await RNIap.requestSubscription({ sku });
+      await RNIap.requestSubscription({ sku }, ...(offerToken && {subscriptionOfffers:{sku,offerToken}}));
     } catch (err) {
       console.warn(err.code, err.message);
     }
   }
-
+  /**
+   * For one-time products
+   */
   render() {
     return (
       <Pressable onPress={() => this.requestPurchase(product.productId)}>
         {/* ... */}
       </Pressable>
     )
+  }
+  /**
+   * For subscriptions products
+   */
+  render() {
+    if(Platform.OS =='android'){
+      return product.subscriptionOfferDetails.map((offer) =>
+        <Pressable onPress={() => this.requestSubscription(product.productId, offer.offerToken)}>
+          {/* ... */}
+        </Pressable>
+        )
+    }else{
+      return (
+        <Pressable onPress={() => this.requestSubscription(product.productId, null)}>
+          {/* ... */}
+        </Pressable>
+        )
+    }
   }
 ```
 
