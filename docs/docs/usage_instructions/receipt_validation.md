@@ -57,27 +57,6 @@ flow) or unstable internet connections.
 For these cases we have a convenience method `getReceiptIOS()` which gets
 the latest receipt for the app at any given time. The response is base64 encoded.
 
-### iOS Purchasing process right way.
-
-Issue regarding `valid products`
-
-- In iOS, generally you are fetching valid products at App launching process.
-
-  If you fetch again, or fetch valid subscription, the products are added to
-  the array object in iOS side (Objective-C `NSMutableArray`).
-
-  This makes unexpected behavior when you fetch with a part of product lists.
-
-  For example, if you have products of `[A, B, C]`, and you call fetch function
-  with only `[A]`, this module returns `[A, B, C]`).
-
-  This is weird, but it works.
-
-- But, weird result is weird, so we made a new method which remove all valid products.
-
-  If you need to clear all products, subscriptions in that array, just call
-  `clearProductsIOS()`, and do the fetching job again, and you will receive what
-  you expected.
 
 ### Example backend (Node.js)
 

@@ -276,6 +276,7 @@ export const getAvailablePurchases = (): Promise<
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
  * @param {string[]} [skus] Product Ids to purchase. Note that this is only for Android. iOS only uses a single SKU. If not provided, it'll default to using [sku] for backward-compatibility
  * @param {boolean} [isOfferPersonalized] Defaults to false, Only for Android V5
+ *
  * @returns {Promise<InAppPurchase>}
  */
 
@@ -287,6 +288,8 @@ export const requestPurchase = ({
   applicationUsername,
   skus, // Android Billing V5
   isOfferPersonalized = undefined, // Android Billing V5
+  quantity,
+  withOffer,
 }: RequestPurchase): Promise<InAppPurchase> =>
   (
     Platform.select({
@@ -301,6 +304,8 @@ export const requestPurchase = ({
           sku,
           andDangerouslyFinishTransactionAutomaticallyIOS,
           applicationUsername,
+          quantity,
+          withOffer,
         );
       },
       android: async () => {
@@ -382,17 +387,6 @@ export const requestSubscription = ({
   )();
 
 /**
- * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
- * @param {string} sku The product's sku/ID
- * @returns {Promise<void>}
- */
-export const requestPurchaseWithQuantityIOS = (
-  sku: string,
-  quantity: number,
-): Promise<InAppPurchase> =>
-  getIosModule().buyProductWithQuantityIOS(sku, quantity);
-
-/**
  * Finish Transaction (both platforms)
  *   Abstracts  Finish Transaction
  *   iOS: Tells StoreKit that you have delivered the purchase to the user and StoreKit can now let go of the transaction.
@@ -450,14 +444,6 @@ export const finishTransaction = (
  */
 export const clearTransactionIOS = (): Promise<void> =>
   getIosModule().clearTransaction();
-
-/**
- * Clear valid Products (iOS only)
- *   Remove all products which are validated by Apple server.
- * @returns {void}
- */
-export const clearProductsIOS = (): Promise<void> =>
-  getIosModule().clearProducts();
 
 /**
  * Acknowledge a product (on Android.) No-op on iOS.
@@ -545,27 +531,6 @@ const requestAgnosticReceiptValidationIos = async (
 
   return response;
 };
-
-/**
- * Buy products or subscriptions with offers (iOS only)
- *
- * Runs the payment process with some info you must fetch
- * from your server.
- * @param {string} sku The product identifier
- * @param {string} forUser  An user identifier on you system
- * @param {Apple.PaymentDiscount} withOffer The offer information
- * @param {string} withOffer.identifier The offer identifier
- * @param {string} withOffer.keyIdentifier Key identifier that it uses to generate the signature
- * @param {string} withOffer.nonce An UUID returned from the server
- * @param {string} withOffer.signature The actual signature returned from the server
- * @param {number} withOffer.timestamp The timestamp of the signature
- * @returns {Promise<void>}
- */
-export const requestPurchaseWithOfferIOS = (
-  sku: string,
-  forUser: string,
-  withOffer: Apple.PaymentDiscount,
-): Promise<void> => getIosModule().buyProductWithOffer(sku, forUser, withOffer);
 
 /**
  * Validate receipt for iOS.

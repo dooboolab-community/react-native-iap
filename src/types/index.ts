@@ -1,3 +1,4 @@
+import type * as Apple from './apple';
 export type Sku = string;
 
 export enum IAPErrorCode {
@@ -189,6 +190,8 @@ export interface RequestPurchaseIOS {
   sku?: Sku;
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
   applicationUsername?: string;
+  quantity: number;
+  withOffer: Apple.PaymentDiscount;
 }
 
 export type RequestPurchase = RequestPurchaseAndroid & RequestPurchaseIOS;
