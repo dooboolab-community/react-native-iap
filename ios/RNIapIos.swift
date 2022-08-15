@@ -41,7 +41,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     private var transactions: [String: Transaction]
     var updateListenerTask: Task<Void, Error>? = nil
   private var promotedPayment: SKPayment?
-  private var promotedProduct: Product?
+  private var promotedProduct: SKProduct?
   private var productsRequest: SKProductsRequest?
   private var countPendingTransaction: Int = 0
   private var hasTransactionObserver = false
@@ -126,7 +126,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   }
 
   func paymentQueue(_ queue: SKPaymentQueue, shouldAddStorePayment payment: SKPayment, for product: SKProduct) -> Bool {
-      promotedProduct = Product.SubscriptionOffer
+      promotedProduct = products.first?.value //TODO
     promotedPayment = payment
       sendEvent(withName: "iap-promoted-product", body: product.productIdentifier)
     return false
@@ -158,7 +158,18 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) async {
       do{
-    let products = try await Product.products(for: skus)
+          let products: [[String:Any]] = try await Product.products(for: skus).map({ (product: Product) -> [String:Any] in
+              var prod = [String:Any]()
+              prod["displayName"] = product.displayName
+              prod["description"] = product.description
+              prod["id"] = product.id
+              prod["displayPrice"] = product.displayPrice
+              prod["price"] = product.price
+              prod["isFamilyShareable"] = product.isFamilyShareable
+              prod["subscription"] = product.subscription?.subscriptionGroupID
+              return prod
+          
+          })
     resolve(products)
       }catch{
       reject("E_UNKNOWN","Error fetching items",nil)
@@ -207,7 +218,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
               }
           } catch {
               print()
-              reject()
+              reject("","",nil) // TODO
           }
       }
 
@@ -233,9 +244,24 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     
     if let product = product {
         do {
+            var options: Set<Product.PurchaseOption> = []
+            if quantity > -1 {
+                options.insert(.quantity(quantity))
+            }
             
-            let result = try await product.purchase(options: [.quantity(quantity),.promotionalOffer(offerID: discountOffer["identifier"]!, keyID: discountOffer["keyIdentifier"]!, nonce: UUID(uuidString: discountOffer["nonce"]!)!, signature: discountOffer["signature"]!, timestamp: Int(discountOffer["timestamp"]!)),
-                                                              .appAccountToken(UUID(uuidString: applicationUsername))])
+            let offerID = discountOffer["identifier"]
+            let keyID = discountOffer["keyIdentifier"]
+            let nonce = discountOffer["nonce"]
+            let signature = discountOffer["signature"]
+            let timestamp = discountOffer["timestamp"]
+            if let offerID = offerID, let keyID = keyID, let nonce = nonce, let nonce = UUID(uuidString: nonce), let signature = signature, let signature =  signature.data(using: .utf8), let timestamp = timestamp, let timestamp = Int(timestamp){
+                options.insert(.promotionalOffer(offerID: offerID, keyID: keyID, nonce: nonce, signature: signature, timestamp: timestamp ))
+                                }
+                                if let applicationUsername = applicationUsername, let applicationUsername = UUID(uuidString: applicationUsername) {
+                options.insert(.appAccountToken(applicationUsername))
+            }
+            
+            let result = try await product.purchase(options: options)
             switch result {
             case .success(let verification):
                 //Check whether the transaction is verified. If it isn't,
@@ -256,20 +282,28 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 }
                 return
             case .userCancelled, .pending:
-                reject()
+                reject("","",nil) //TODO
                 return
             default:
-                reject()
+                reject("","",nil)// TODO
                 return
             }
         }catch{
-            reject()
+            reject("","",nil)//TODO
         }
       
     } else {
       reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
     }
   }
+    
+    
+    @MainActor
+    func updateCustomerProductStatus() async {
+        
+    }
+    
+    
     public enum StoreError: Error {
         case failedVerification
     }
@@ -381,12 +415,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
     #if !os(tvOS)
-    if #available(iOS 14.0, tvOS 14.0, *) {
       SKPaymentQueue.default().presentCodeRedemptionSheet()
       resolve(nil)
-    } else {
-      reject(standardErrorCode(2), "This method only available above iOS 14", nil)
-    }
     #else
     reject(standardErrorCode(2), "This method is not available on tvOS", nil)
     #endif
@@ -606,7 +636,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     var periodUnitIOS = ""
     var itemType = "iap"
 
-    if #available(iOS 11.2, tvOS 11.2, *) {
+    
       let numOfUnits = UInt(product.subscriptionPeriod?.numberOfUnits ?? 0)
       let unit = product.subscriptionPeriod?.unit
 
@@ -672,24 +702,19 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         introductoryPriceNumberOfPeriods = ""
         introductoryPriceSubscriptionPeriod = ""
       }
-    }
+    
 
-    if #available(iOS 10.0, tvOS 10.0, *) {
+    
       currencyCode = product.priceLocale.currencyCode
-    }
-
-    if #available(iOS 13.0, tvOS 13.0, *) {
+    
       countryCode = SKPaymentQueue.default().storefront?.countryCode
-    } else {
-      countryCode = product.priceLocale.regionCode
-    }
+      //countryCode = product.priceLocale.regionCode
+    
 
     var discounts: [[String: String?]]?
 
-    if #available(iOS 12.2, tvOS 12.2, *) {
       discounts = getDiscountData(product)
-    }
-
+    
     let obj: [String: Any?] = [
       "productId": product.productIdentifier,
       "price": "\(product.price)",
@@ -713,7 +738,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   }
 
   func getDiscountData(_ product: SKProduct) -> [[String: String?]]? {
-    if #available(iOS 12.2, tvOS 12.2, *) {
       var mappedDiscounts: [[String: String?]] = []
       var localizedPrice: String?
       var paymendMode: String?
@@ -798,9 +822,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
       }
 
       return mappedDiscounts
-    }
-
-    return nil
   }
 
   func getPurchaseData(_ transaction: SKPaymentTransaction, withBlock block: @escaping (_ transactionDict: [String: Any]?) -> Void) {
