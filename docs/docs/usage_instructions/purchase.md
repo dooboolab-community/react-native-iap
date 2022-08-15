@@ -20,7 +20,7 @@ Once you have called `getProducts()`, and have a valid response, you can call `r
 
 Before you request any purchase, you should set `purchaseUpdatedListener` from `react-native-iap`. It is recommended that you start listening to updates as soon as your application launches. And don't forget that even at launch you may receive successful purchases that either completed while your app was closed or that failed to be finished, consumed or acknowledged due to network errors or bugs.
 
-```ts
+```tsx
 import RNIap, {
   purchaseErrorListener,
   purchaseUpdatedListener,
@@ -96,7 +96,7 @@ class RootComponent extends Component<*> {
 
 Then define the method like below and call it when user press the button.
 
-```ts
+```tsx
   requestPurchase = async (sku: string) => {
     try {
       await RNIap.requestPurchase({
@@ -108,20 +108,40 @@ Then define the method like below and call it when user press the button.
     }
   }
 
-  requestSubscription = async (sku: string) => {
+  requestSubscription = async (sku: string, offerToken: string?) => {
     try {
-      await RNIap.requestSubscription({ sku });
+      await RNIap.requestSubscription({ sku }, ...(offerToken && { subscriptionOffers: { sku, offerToken } }));
     } catch (error) {
       console.warn(error.code, error.message);
     }
   }
-
+  /**
+   * For one-time products
+   */
   render() {
     return (
       <Pressable onPress={() => this.requestPurchase(product.productId)}>
         {/* ... */}
       </Pressable>
     )
+  }
+  /**
+   * For subscriptions products
+   */
+  render() {
+    if(Platform.OS =='android'){
+      return product.subscriptionOfferDetails.map((offer) =>
+        <Pressable onPress={() => this.requestSubscription(product.productId, offer.offerToken)}>
+          {/* ... */}
+        </Pressable>
+        )
+    }else{
+      return (
+        <Pressable onPress={() => this.requestSubscription(product.productId, null)}>
+          {/* ... */}
+        </Pressable>
+        )
+    }
   }
 ```
 

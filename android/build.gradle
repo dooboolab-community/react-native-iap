@@ -155,10 +155,10 @@ dependencies {
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
-  testImplementation "junit:junit:4.13.1"
+  testImplementation "junit:junit:4.13.2"
   testImplementation "io.mockk:mockk:1.12.4"
 
-  playImplementation "com.android.billingclient:billing:4.0.0"
+  playImplementation "com.android.billingclient:billing-ktx:5.0.0"
   playImplementation "com.google.android.gms:play-services-base:$playServicesVersion"
 
   amazonImplementation fileTree(dir: "libs", include: ["*.jar"])

@@ -212,7 +212,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
       let payment = SKMutablePayment(product: prod)
 
-      if applicationUsername != nil {
+      if let applicationUsername = applicationUsername {
         payment.applicationUsername = applicationUsername
       }
       SKPaymentQueue.default().add(payment)
@@ -795,7 +795,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
       for discount in product.discounts {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.locale = discount.priceLocale
+        let priceLocale: Locale? = discount.priceLocale
+        if let pLocale = priceLocale {
+          formatter.locale = pLocale
+        }
         localizedPrice = formatter.string(from: discount.price)
         var numberOfPeriods: String?
 

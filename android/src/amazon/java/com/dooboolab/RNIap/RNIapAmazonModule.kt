@@ -69,12 +69,7 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun buyItemByType(
-        type: String?,
         sku: String?,
-        purchaseToken: String?,
-        prorationMode: Int?,
-        obfuscatedAccountId: String?,
-        obfuscatedProfileId: String?,
         promise: Promise
     ) {
         DoobooUtils.instance.addPromiseForKey(PROMISE_BUY_ITEM, promise)

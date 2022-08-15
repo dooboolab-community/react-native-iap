@@ -1,14 +1,15 @@
 import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import {
-  PurchaseError,
-  requestSubscription,
-  Sku,
-  useIAP,
-} from 'react-native-iap';
+import {PurchaseError, requestSubscription, useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
-import {constants, contentContainerStyle, errorLog} from '../utils';
+import {
+  constants,
+  contentContainerStyle,
+  errorLog,
+  isAndroid,
+  isIos,
+} from '../utils';
 
 export const Subscriptions = () => {
   const {connected, subscriptions, getSubscriptions} = useIAP();
@@ -21,9 +22,22 @@ export const Subscriptions = () => {
     }
   };
 
-  const handleBuySubscription = async (sku: Sku) => {
+  const handleBuySubscription = async (
+    productId: string,
+    offerToken?: string,
+  ) => {
+    if (isAndroid && !offerToken) {
+      console.warn(
+        `There are no subscription Offers for selected product (Only requiered for Google Play purchases): ${productId}`,
+      );
+    }
     try {
-      await requestSubscription({sku});
+      await requestSubscription({
+        sku: productId,
+        ...(offerToken && {
+          subscriptionOffers: [{sku: productId, offerToken}],
+        }),
+      });
     } catch (error) {
       if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
@@ -52,10 +66,29 @@ export const Subscriptions = () => {
               ]}
               isLast={subscriptions.length - 1 === index}
             >
-              <Button
-                title="Buy"
-                onPress={() => handleBuySubscription(subscription.productId)}
-              />
+              {isAndroid &&
+                // On Google Play Billing V5 you might have  multiple offers for a single sku
+                subscription?.subscriptionOfferDetails?.map((offer) => (
+                  <Button
+                    title={`Subscribe ${offer.pricingPhases.pricingPhaseList
+                      .map((ppl) => ppl.billingPeriod)
+                      .join(',')}`}
+                    onPress={() => {
+                      handleBuySubscription(
+                        subscription.productId,
+                        offer.offerToken,
+                      );
+                    }}
+                  />
+                ))}
+              {isIos && (
+                <Button
+                  title="Subscribe"
+                  onPress={() => {
+                    handleBuySubscription(subscription.productId);
+                  }}
+                />
+              )}
             </Row>
           ))}
         </View>
