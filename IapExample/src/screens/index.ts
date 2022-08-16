@@ -1,5 +1,5 @@
 export * from './ClassSetup';
 export * from './Examples';
 export * from './Products';
-export * from './PurchaseHistories';
+export * from './PurchaseHistory';
 export * from './Subscriptions';
