@@ -1,3 +1,4 @@
+import Foundation
 import React
 import StoreKit
 
@@ -8,7 +9,7 @@ extension SKProductsRequest {
 }
 
 @objc(RNIapIos)
-class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver {
+class RNIapIos: RCTEventEmitter, SKRequestDelegate {
   private var promisesByKey: [String: [RNIapIosPromise]]
   private var hasListeners = false
   private var pendingTransactionWithAutoFinish = false // TODO:
@@ -20,22 +21,33 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   private var promotedProduct: SKProduct?
   private var productsRequest: SKProductsRequest?
   private var countPendingTransaction: Int = 0
-  private var hasTransactionObserver = false
 
   override init() {
     promisesByKey = [String: [RNIapIosPromise]]()
     products = [String: Product]()
     transactions = [String: Transaction]()
     super.init()
-    updateListenerTask = listenForTransactions()
+    addTransactionObserver()
   }
 
   deinit {
-    updateListenerTask?.cancel()
+    removeTransactionObserver()
   }
 
   override class func requiresMainQueueSetup() -> Bool {
     return true
+  }
+  func addTransactionObserver() {
+    if updateListenerTask == nil {
+      updateListenerTask = listenForTransactions()
+    }
+  }
+
+  func removeTransactionObserver() {
+    if updateListenerTask != nil {
+      updateListenerTask?.cancel()
+      updateListenerTask = nil
+    }
   }
 
   func listenForTransactions() -> Task<Void, Error> {
@@ -44,15 +56,29 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
       for await result in Transaction.updates {
         do {
           let transaction = try self.checkVerified(result)
-
           // Deliver products to the user.
           await self.updateCustomerProductStatus()
-
+          let transactionId = String(transaction.id)
           // Always finish a transaction.
-          await transaction.finish()
+          self.transactions[transactionId] = transaction
+          if self.hasListeners {
+            self.sendEvent(withName: "purchase-updated", body: transaction) // TODO: serialize transaction
+          }
+          // await transaction.finish() //TODO: Document
         } catch {
           // StoreKit has a transaction that fails verification. Don't deliver content to the user.
           print("Transaction failed verification")
+          if self.hasListeners {
+            let err = [ // TODO: add info
+              "responseCode": "-1",
+              "debugMessage": error.localizedDescription,
+              "code": "E_RECEIPT_FINISHED_FAILED",
+              "message": error.localizedDescription,
+              "productId": ""
+            ]
+
+            self.sendEvent(withName: "purchase-error", body: err)
+          }
         }
       }
     }
@@ -73,41 +99,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
   }
 
-  func addPromise(forKey key: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-    var promises: [RNIapIosPromise]? = promisesByKey[key]
-
-    if promises == nil {
-      promises = []
-    }
-
-    promises?.append((resolve, reject))
-    promisesByKey[key] = promises
-  }
-
-  func resolvePromises(forKey key: String?, value: Any?) {
-    let promises: [RNIapIosPromise]? = promisesByKey[key ?? ""]
-
-    if let promises = promises {
-      for tuple in promises {
-        let resolveBlck = tuple.0
-        resolveBlck(value)
-      }
-      promisesByKey[key ?? ""] = nil
-    }
-  }
-
-  func rejectPromises(forKey key: String, code: String?, message: String?, error: Error?) {
-    let promises = promisesByKey[key]
-
-    if let promises = promises {
-      for tuple in promises {
-        let reject = tuple.1
-        reject(code, message, error)
-      }
-      promisesByKey[key] = nil
-    }
-  }
-
   func paymentQueue(_ queue: SKPaymentQueue, shouldAddStorePayment payment: SKPayment, for product: SKProduct) -> Bool {
     promotedProduct = product
     promotedPayment = payment
@@ -123,7 +114,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
-    let canMakePayments = SKPaymentQueue.canMakePayments()
+    let canMakePayments = AppStore.canMakePayments
     resolve(NSNumber(value: canMakePayments))
   }
   @objc public func endConnection(
@@ -166,7 +157,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
       do {
         // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
         let transaction = try checkVerified(result)
-
         // Check the `productType` of the transaction and get the corresponding product from the store.
         switch transaction.productType {
         case .nonConsumable:
@@ -260,7 +250,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             await transaction.finish()
             resolve(nil)
           } else {
-            transactions[transactionId] = transaction
+            self.transactions[transactionId] = transaction
             resolve(transactionId)
           }
           return
@@ -416,7 +406,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
       case .purchased:
         debugMessage("Purchase Successful")
-        purchaseProcess(transaction)
+        // purchaseProcess(transaction)
         break
 
       case .restored:
@@ -516,22 +506,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
       error: error)
 
     debugMessage("restoreCompletedTransactionsFailedWithError")
-  }
-
-  func purchaseProcess(_ transaction: SKPaymentTransaction) {
-    if pendingTransactionWithAutoFinish {
-      SKPaymentQueue.default().finishTransaction(transaction)
-      pendingTransactionWithAutoFinish = false
-    }
-
-    getPurchaseData(transaction) { [self] purchase in
-      resolvePromises(forKey: transaction.payment.productIdentifier, value: purchase)
-
-      // additionally send event
-      if hasListeners {
-        sendEvent(withName: "purchase-updated", body: purchase)
-      }
-    }
   }
 
   func standardErrorCode(_ code: Int?) -> String? {

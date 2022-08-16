@@ -193,8 +193,8 @@ export interface RequestPurchaseIOS {
    * UUID representing user account
    */
   appAccountToken?: string;
-  quantity: number;
-  withOffer: Apple.PaymentDiscount;
+  quantity?: number;
+  withOffer?: Apple.PaymentDiscount;
 }
 
 export type RequestPurchase = RequestPurchaseAndroid & RequestPurchaseIOS;
