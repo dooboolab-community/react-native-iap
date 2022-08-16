@@ -1,17 +1,14 @@
-name: Publish / Package
-
+name: publish-next
 on:
   release:
-    types: [created]
+    types: [prereleased]
 
 jobs:
-  build:
+  publish-npm-registry:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -24,12 +21,12 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Run lint scripts
+      - name: Build typescript
         run: yarn lint:ci
 
       - name: Verify no files have changed after auto-fix
         run: git diff -- ":(exclude)IapExample/*" --exit-code HEAD
 
-      - run: npm publish
+      - run: npm publish --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
