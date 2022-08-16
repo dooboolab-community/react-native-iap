@@ -629,4 +629,40 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
       }
     }
   }
+    
+    // Promises:
+    func addPromise(forKey key: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+      var promises: [RNIapIosPromise]? = promisesByKey[key]
+
+      if promises == nil {
+        promises = []
+      }
+
+      promises?.append((resolve, reject))
+      promisesByKey[key] = promises
+    }
+
+    func resolvePromises(forKey key: String?, value: Any?) {
+      let promises: [RNIapIosPromise]? = promisesByKey[key ?? ""]
+
+      if let promises = promises {
+        for tuple in promises {
+          let resolveBlck = tuple.0
+          resolveBlck(value)
+        }
+        promisesByKey[key ?? ""] = nil
+      }
+    }
+
+    func rejectPromises(forKey key: String, code: String?, message: String?, error: Error?) {
+      let promises = promisesByKey[key]
+
+      if let promises = promises {
+        for tuple in promises {
+          let reject = tuple.1
+          reject(code, message, error)
+        }
+        promisesByKey[key] = nil
+      }
+    }
 }
