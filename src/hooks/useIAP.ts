@@ -12,6 +12,7 @@ import {
 import type {PurchaseError} from '../purchaseError';
 import type {Product, Purchase, SubscriptionProduct} from '../types';
 
+// TODO remove
 type IAP_STATUS = {
   connected: boolean;
   products: Product[];

@@ -5,9 +5,7 @@ import {enhancedFetch, errorProxy, isIos, linkingError} from '../internal';
 import type {
   NativeModuleProps,
   Product,
-  ProductCommon,
-  ProductProduct,
-  ProductPurchase,
+  ProductOrSubscription,
   ProductType,
   Purchase,
   Sku,
@@ -56,7 +54,7 @@ interface DiscountIOS {
   subscriptionPeriod: string;
 }
 
-export interface SubscriptionIOS extends ProductCommon {
+export interface SubscriptionIOS {
   type: ProductType.subs | ProductType.sub;
   discounts?: DiscountIOS[];
   introductoryPrice?: string;
@@ -68,26 +66,37 @@ export interface SubscriptionIOS extends ProductCommon {
   subscriptionPeriodUnitIOS?: PeriodUnitIOS | '';
 }
 
-export interface ProductPurchaseIos {
+export interface ProductPurchaseIOS {
   quantityIOS?: number;
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;
 }
 
 export interface RequestPurchaseIOS {
+  sku?: Sku;
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
   applicationUsername?: string;
 }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // ----------
 
-type getItems = (skus: Sku[]) => Promise<Product[]>;
+type getItems = (skus: Sku[]) => Promise<ProductOrSubscription[]>;
+
 type getAvailableItems = () => Promise<Purchase[]>;
 
 export type BuyProduct = (
   sku: Sku,
-  andDangerouslyFinishTransactionAutomaticallyIOS: RequestPurchaseIOS['andDangerouslyFinishTransactionAutomaticallyIOS'],
-  applicationUsername?: RequestPurchaseIOS['applicationUsername'],
+  andDangerouslyFinishTransactionAutomaticallyIOS: boolean,
+  applicationUsername?: string,
 ) => Promise<void>;
 
 type buyProductWithOffer = (
@@ -96,14 +105,10 @@ type buyProductWithOffer = (
   withOffer: PaymentDiscountIOS,
 ) => Promise<void>;
 
-type buyProductWithQuantity = (
-  sku: Sku,
-  quantity: number,
-) => Promise<ProductPurchase>;
-
+type buyProductWithQuantity = (sku: Sku, quantity: number) => Promise<Product>;
 type clearTransaction = () => Promise<void>;
 type clearProducts = () => Promise<void>;
-type promotedProduct = () => Promise<ProductProduct | null>;
+type promotedProduct = () => Promise<Product | null>;
 type buyPromotedProduct = () => Promise<void>;
 type requestReceipt = (refresh: boolean) => Promise<string>;
 
@@ -111,7 +116,7 @@ type finishTransaction = (
   transactionIdentifier: string,
 ) => Promise<string | void>;
 
-type getPendingTransactions = () => Promise<ProductPurchase[]>;
+type getPendingTransactions = () => Promise<Product[]>;
 type presentCodeRedemptionSheet = () => Promise<null>;
 
 export interface IosModuleProps extends NativeModuleProps {
@@ -168,6 +173,14 @@ export const clearProductsIOS = () => IosModule.clearProducts();
  */
 export const getPromotedProductIOS = () => IosModule.promotedProduct();
 
+export interface RequestPurchaseWithQuantityIOSParams {
+  /** The product's sku/ID */
+  sku: Sku;
+
+  /** The quantity to request to buy */
+  quantity: number;
+}
+
 /**
  * Request a purchase for product.
  *
@@ -175,13 +188,11 @@ export const getPromotedProductIOS = () => IosModule.promotedProduct();
  *
  * @platform iOS
  */
-export const requestPurchaseWithQuantityIOS = (
-  /** The product's sku/ID */
-  sku: Sku,
-
-  /** The quantity to request to buy */
-  quantity: number,
-) => IosModule.buyProductWithQuantity(sku, quantity);
+export const requestPurchaseWithQuantityIOS = ({
+  sku,
+  quantity,
+}: RequestPurchaseWithQuantityIOSParams) =>
+  IosModule.buyProductWithQuantity(sku, quantity);
 
 /**
  * Buy the currently selected promoted product.
@@ -223,18 +234,23 @@ const requestAgnosticReceiptValidationIOS = async (
   return response;
 };
 
+export interface ValidateReceiptIOSParams {
+  /** The receipt body to send to apple server. */
+  receiptBody: Record<string, unknown>;
+
+  /** Whether this is in test environment which is sandbox. */
+  isTest?: boolean;
+}
+
 /**
  * Validate receipt.
  *
  * @platform iOS
  */
-export const validateReceiptIOS = async (
-  /** The receipt body to send to apple server. */
-  receiptBody: Record<string, unknown>,
-
-  /** Whether this is in test environment which is sandbox. */
-  isTest?: boolean,
-) => {
+export const validateReceiptIOS = async ({
+  receiptBody,
+  isTest,
+}: ValidateReceiptIOSParams) => {
   if (isTest == null) {
     return await requestAgnosticReceiptValidationIOS(receiptBody);
   }
@@ -249,6 +265,17 @@ export const validateReceiptIOS = async (
   });
 };
 
+export interface RequestPurchaseWithOfferIOSParams {
+  /** The product identifier */
+  sku: Sku;
+
+  /** An user identifier on you system */
+  forUser: string;
+
+  /** The offer information */
+  withOffer: PaymentDiscountIOS;
+}
+
 /**
  * Buy products or subscriptions with offers.
  *
@@ -257,16 +284,12 @@ export const validateReceiptIOS = async (
  *
  * @platform iOS
  */
-export const requestPurchaseWithOfferIOS = (
-  /** The product identifier */
-  sku: Sku,
-
-  /** An user identifier on you system */
-  forUser: string,
-
-  /** The offer information */
-  withOffer: PaymentDiscountIOS,
-) => IosModule.buyProductWithOffer(sku, forUser, withOffer);
+export const requestPurchaseWithOfferIOS = ({
+  sku,
+  forUser,
+  withOffer,
+}: RequestPurchaseWithOfferIOSParams) =>
+  IosModule.buyProductWithOffer(sku, forUser, withOffer);
 
 /**
  * Get the current receipt encoded in base64.

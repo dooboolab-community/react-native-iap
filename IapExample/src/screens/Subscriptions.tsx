@@ -67,7 +67,7 @@ export const Subscriptions = () => {
               isLast={subscriptions.length - 1 === index}
             >
               {isAndroid &&
-                // On Google Play Billing V5 you might have  multiple offers for a single sku
+                // On Google Play Billing Library 5 you might have  multiple offers for a single sku
                 subscription?.subscriptionOfferDetails?.map((offer) => (
                   <Button
                     title={`Subscribe ${offer.pricingPhases.pricingPhaseList

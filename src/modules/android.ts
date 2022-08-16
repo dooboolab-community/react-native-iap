@@ -7,10 +7,7 @@ import type {
 import {enhancedFetch, errorProxy, isAndroid, linkingError} from '../internal';
 import type {
   NativeModuleProps,
-  Product,
-  ProductCommon,
   ProductType,
-  Purchase,
   PurchaseToken,
   Sku,
 } from '../types';
@@ -29,12 +26,7 @@ export enum PurchaseStateAndroid {
   PENDING = 2,
 }
 
-export interface PurchaseResult {
-  responseCode?: number;
-  debugMessage?: string;
-  code?: string;
-  message?: string;
-}
+/* Product response, specific props for Android */
 
 interface OneTimePurchaseOfferDetails {
   priceCurrencyCode: string;
@@ -42,12 +34,41 @@ interface OneTimePurchaseOfferDetails {
   priceAmountMicros: string;
 }
 
+export interface ProductAndroidResponse {
+  oneTimePurchaseOfferDetails?: OneTimePurchaseOfferDetails;
+}
+
+/* Subscription response, specific props for Android */
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+export interface PurchaseResult {
+  responseCode?: number;
+  debugMessage?: string;
+  code?: string;
+  message?: string;
+}
+
 interface PricingPhaseList {
   formattedPrice: string;
   priceCurrencyCode: string;
-  /**
-   * P1W, P1M, P1Y
-   */
+  /** P1W, P1M, P1Y */
   billingPeriod: string;
   billingCycleCount: number;
   priceAmountMicros: string;
@@ -61,15 +82,20 @@ interface SubscriptionOfferDetails {
   };
 }
 
-export interface SubscriptionAndroid extends ProductCommon {
-  type: ProductType.sub | ProductType.subs;
+export interface SubscriptionAndroid {
   productType?: string;
   name?: string;
   subscriptionOfferDetails?: SubscriptionOfferDetails[];
 }
 
-export interface ProductAndroid extends ProductCommon {
-  oneTimePurchaseOfferDetails?: OneTimePurchaseOfferDetails;
+/**
+ * Google Play Billing Library 5
+ * In order to purchase a new subscription, every sku must have a selected offerToken
+ * See {@link SubscriptionAndroid.subscriptionOfferDetails.offerToken}
+ */
+export interface SubscriptionOffer {
+  sku: Sku;
+  offerToken: string;
 }
 
 export interface ProductPurchaseAndroid {
@@ -85,17 +111,26 @@ export interface ProductPurchaseAndroid {
   obfuscatedProfileIdAndroid?: string;
 }
 
-export interface RequestPurchaseAndroid {
+export interface RequestPurchaseBaseAndroid {
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
+
+  /** For Google Play Billing Library 5 @see {@link https://developer.android.com/google/play/billing/integrate#personalized-price} */
+  isOfferPersonalized?: boolean;
+}
+
+/** Interface for the Android arguments for the `requestPurchase` method (defined in `./common.ts`) */
+export interface RequestPurchaseAndroid extends RequestPurchaseBaseAndroid {
+  skus?: Sku[];
 }
 
 export interface RequestSubscriptionAndroid {
   purchaseTokenAndroid?: PurchaseToken;
   prorationModeAndroid?: ProrationModesAndroid;
+  subscriptionOffers?: SubscriptionOffer[];
 }
 
-// -----------
+// Below describes the native methods arguments and responses interfaces and types
 
 type FlushFailedPurchasesCachedAsPending = () => Promise<void>;
 
@@ -112,14 +147,19 @@ type GetPurchaseHistoryByType = <T = Purchase>(
   type: ProductType,
 ) => Promise<T[]>;
 
-export type BuyItemByType = (
-  type: string,
-  sku: Sku,
-  purchaseToken: PurchaseToken,
-  prorationMode: ProrationModesAndroid,
-  obfuscatedAccountId?: string,
-  obfuscatedProfileId?: string,
-) => Promise<void>;
+interface BuyItemByTypeOptionsAndroid {
+  type: string;
+  sku: Sku;
+  purchaseToken: PurchaseToken;
+  prorationMode: ProrationModesAndroid;
+  obfuscatedAccountId?: string;
+  obfuscatedProfileId?: string;
+}
+
+export type BuyItemByType = ({
+  type,
+  sku,
+}: BuyItemByTypeOptionsAndroid) => Promise<void>;
 
 type AcknowledgePurchase = (
   purchaseToken: PurchaseToken,
@@ -164,33 +204,59 @@ export const AndroidModule = (
 export const flushFailedPurchasesCachedAsPendingAndroid = () =>
   AndroidModule.flushFailedPurchasesCachedAsPending();
 
+export interface AcknowledgePurchaseAndroidParams {
+  /** The product's token */
+  token: string;
+
+  /** Android developerPayload */
+  developerPayload?: string;
+}
+
 /**
  * Acknowledge a product.
  *
  * @platform Android
  */
-export const acknowledgePurchaseAndroid = (
-  /** The product's token */
-  token: string,
-
-  /** Android developerPayload */
-  developerPayload?: string,
-) => {
+export const acknowledgePurchaseAndroid = ({
+  token,
+  developerPayload,
+}: AcknowledgePurchaseAndroidParams) => {
   return AndroidModule.acknowledgePurchase(token, developerPayload);
 };
+
+export interface DeepLinkToSubscriptionsAndroidParams {
+  /** The product's SKU */
+  sku: Sku;
+}
 
 /**
  * Deep link to subscriptions screen.
  *
  * @platform Android
  */
-export const deepLinkToSubscriptionsAndroid = async (
-  /** The product's SKU */
-  sku: Sku,
-) =>
+export const deepLinkToSubscriptionsAndroid = async ({
+  sku,
+}: DeepLinkToSubscriptionsAndroidParams) =>
   Linking.openURL(
     `https://play.google.com/store/account/subscriptions?package=${await AndroidModule.getPackageName()}&sku=${sku}`,
   );
+
+interface ValidateReceiptAndroidParams {
+  /** package name of your app. */
+  packageName: string;
+
+  /** product id for your in app product. */
+  productId: string;
+
+  /** token for your purchase. */
+  productToken: string;
+
+  /** accessToken from googleApis. */
+  accessToken: string;
+
+  /** whether this is a subscription or in-app product. `true` for subscription. */
+  isSub?: boolean;
+}
 
 /**
  * Validate receipt.
@@ -202,22 +268,13 @@ export const deepLinkToSubscriptionsAndroid = async (
  *
  * @platform Android
  */
-export const validateReceiptAndroid = async (
-  /** package name of your app. */
-  packageName: string,
-
-  /** product id for your in app product. */
-  productId: string,
-
-  /** token for your purchase. */
-  productToken: string,
-
-  /** accessToken from googleApis. */
-  accessToken: string,
-
-  /** whether this is a subscription or in-app product. `true` for subscription. */
-  isSub?: boolean,
-) => {
+export const validateReceiptAndroid = async ({
+  packageName,
+  productId,
+  productToken,
+  accessToken,
+  isSub,
+}: ValidateReceiptAndroidParams) => {
   const type = isSub ? 'subscriptions' : 'products';
 
   const url =

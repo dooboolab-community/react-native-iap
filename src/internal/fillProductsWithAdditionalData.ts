@@ -1,10 +1,9 @@
 import {AmazonModule} from '../modules';
-import type {ProductCommon} from '../types';
 
 /**
  * Fill products with additional data
  */
-export const fillProductsWithAdditionalData = async <T = ProductCommon>(
+export const fillProductsWithAdditionalData = async <T = unknown>(
   items: T[],
 ) => {
   if (AmazonModule) {
@@ -31,7 +30,7 @@ export const fillProductsWithAdditionalData = async <T = ProductCommon>(
     // Add currency to items
     items.forEach((item) => {
       if (currency) {
-        (item as unknown as ProductCommon).currency = currency;
+        item.currency = currency;
       }
     });
   }

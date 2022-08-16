@@ -16,6 +16,7 @@ import {getPromotedProductIOS, initConnection} from '../modules';
 import type {PurchaseError} from '../purchaseError';
 import type {ProductProduct, Purchase, SubscriptionProduct} from '../types';
 
+// todo: remove
 interface IAPContextType {
   connected: boolean;
   products: ProductProduct[];

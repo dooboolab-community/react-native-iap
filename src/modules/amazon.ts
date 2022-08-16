@@ -82,6 +82,20 @@ export const AmazonModule = (
     : NativeModules.RNIapAmazonModule
 ) as AmazonModuleProps;
 
+export interface ValidateReceiptAmazonParams {
+  /** From the Amazon developer console */
+  developerSecret: string;
+
+  /** Who purchased the item. */
+  userId: string;
+
+  /** Long obfuscated string returned when purchasing the item */
+  receiptId: string;
+
+  /** Defaults to true, use sandbox environment or production. */
+  useSandbox: boolean;
+}
+
 /**
  * Validate receipt.
  *
@@ -92,19 +106,12 @@ export const AmazonModule = (
  *
  * @platform Amazon
  */
-export const validateReceiptAmazon = async (
-  /** From the Amazon developer console */
-  developerSecret: string,
-
-  /** Who purchased the item. */
-  userId: string,
-
-  /** Long obfuscated string returned when purchasing the item */
-  receiptId: string,
-
-  /** Defaults to true, use sandbox environment or production. */
-  useSandbox: boolean = true,
-) => {
+export const validateReceiptAmazon = async ({
+  developerSecret,
+  userId,
+  receiptId,
+  useSandbox = true,
+}: ValidateReceiptAmazonParams) => {
   const sandBoxUrl = useSandbox ? 'sandbox/' : '';
   const url = `https://appstore-sdk.amazon.com/${sandBoxUrl}version/1.0/verifyReceiptId/developer/${developerSecret}/user/${userId}/receiptId/${receiptId}`;
 

@@ -394,8 +394,8 @@ class RNIapModule(
         prorationMode: Int,
         obfuscatedAccountId: String?,
         obfuscatedProfileId: String?,
-        offerTokenArr: ReadableArray, // New parameter in V5
-        isOfferPersonalized: Boolean, // New parameter in V5
+        offerTokenArr: ReadableArray, // Google Play Billing Library 5
+        isOfferPersonalized: Boolean, // Google Play Billing Library 5
         promise: Promise
     ) {
         val activity = currentActivity

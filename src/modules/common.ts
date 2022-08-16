@@ -2,19 +2,25 @@ import {Platform} from 'react-native';
 
 import {fillProductsWithAdditionalData, isAndroid} from '../internal';
 import {
-  ProductProduct,
+  // ProductProduct,
   ProductPurchase,
   ProductType,
-  RequestPurchase,
+  // RequestPurchase,
   RequestSubscription,
   Sku,
-  SubscriptionProduct,
+  // SubscriptionProduct,
   SubscriptionPurchase,
 } from '../types';
 
 import {AmazonModule} from './amazon';
-import {AndroidModule, PurchaseStateAndroid} from './android';
-import {IosModule} from './ios';
+import {
+  AndroidModule,
+  PurchaseStateAndroid,
+  RequestPurchaseAndroid,
+} from './android';
+import {IosModule, RequestPurchaseIOS} from './ios';
+
+export type RequestPurchase = RequestPurchaseAndroid & RequestPurchaseIOS;
 
 export const NativeModule = isAndroid ? AndroidModule : IosModule;
 
@@ -41,7 +47,8 @@ export const getProducts = (
 
       return items.filter(
         (item): item is ProductProduct =>
-          skus.includes(item.productId) && item.type === 'iap',
+          skus.includes(item.productId) &&
+          (item.type === ProductType.iap || item.type === ProductType.inapp),
       );
     },
     android: async () => {
@@ -55,13 +62,15 @@ export const getProducts = (
     default: () => Promise.resolve([]),
   })();
 
+interface GetSubscriptionsParams {
+  /** The item skus */
+  skus: Sku[];
+}
+
 /**
  * Get a list of subscriptions.
  */
-export const getSubscriptions = (
-  /** The item skus */
-  skus: Sku[],
-) =>
+export const getSubscriptions = ({skus}: GetSubscriptionsParams) =>
   Platform.select({
     ios: async () => {
       const items = await IosModule.getItems(skus);
@@ -164,12 +173,12 @@ export const requestPurchase = ({
   applicationUsername,
 
   /**
-   * Android Billing V5
+   * Google Play Billing Library 5
    */
   skus,
 
   /**
-   * Android Billing V5
+   * Google Play Billing Library 5
    */
   isOfferPersonalized,
 }: RequestPurchase) =>
@@ -236,12 +245,12 @@ export const requestSubscription = ({
   applicationUsername,
 
   /**
-   * Android Billing V5
+   * Google Play Billing Library 5
    */
   subscriptionOffers,
 
   /**
-   * Android Billing V5
+   * Google Play Billing Library 5
    */
   isOfferPersonalized,
 }: RequestSubscription) =>

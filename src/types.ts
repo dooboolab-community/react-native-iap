@@ -2,9 +2,11 @@ import type {
   AmazonModuleProps,
   AndroidModuleProps,
   IosModuleProps,
+  ProductAndroid,
+  ProductAndroidResponse,
   ProductPurchaseAmazon,
   ProductPurchaseAndroid,
-  ProductPurchaseIos,
+  ProductPurchaseIOS,
   RequestPurchaseAndroid,
   RequestPurchaseIOS,
   RequestSubscriptionAndroid,
@@ -49,11 +51,9 @@ export interface NativeModuleProps {
   removeListeners(count: number): void;
 }
 
-/**
- * Product or subscription item payload.
- */
-export interface ProductCommon {
-  type: ProductType;
+/* Common properties shared between native modules when getting a product or a subscription response. */
+
+interface ProductCommon {
   productId: string;
   productIds?: string[];
   title: string;
@@ -64,28 +64,42 @@ export interface ProductCommon {
   countryCode?: string;
 }
 
-/**
- * Android V5
- */
-
-export interface ProductProduct extends ProductCommon {
+type ProductCommonResponse = ProductCommon & {
   type: ProductType.inapp | ProductType.iap;
-}
+};
+
+/**
+ * Union of common types for a product response and specific props
+ * for each native platforms defined in their respective modules.
+ */
+export type ProductResponse = ProductCommonResponse & ProductAndroidResponse;
+
+type SubscriptionCommonResponse = ProductCommon & {
+  type: ProductType.sub | ProductType.subs;
+};
+
+/**
+ * Union of common types for a subscription response and specific props for each native platforms
+ */
+export type SubscriptionResponse = SubscriptionCommonResponse &
+  SubscriptionAndroid &
+  SubscriptionIOS;
 
 /** Union type for products (consumable, non-consumable) and subscriptions */
-export type Product = ProductProduct | SubscriptionProduct;
+export type ProductOrSubscriptionResponse =
+  | ProductResponse
+  | SubscriptionResponse;
 
-/** Union type for subscriptions */
-export type SubscriptionProduct = SubscriptionAndroid & SubscriptionIOS;
-
-/** Interface when purchasing a product */
+// TODO
 export interface RequestPurchaseCommon {
   sku: Sku;
 }
 
-export type RequestPurchase = RequestPurchaseCommon &
-  RequestPurchaseAndroid &
-  RequestPurchaseIOS;
+// export type RequestPurchase = RequestPurchaseCommon &
+//   RequestPurchaseAndroid &
+//   RequestPurchaseIOS;
+
+export type RequestPurchase = RequestPurchaseAndroid & RequestPurchaseIOS;
 
 /** Interface when purchasing a subscription */
 export type RequestSubscription = RequestPurchase & RequestSubscriptionAndroid;
@@ -102,19 +116,30 @@ export interface ProductPurchaseCommon {
   purchaseToken?: string;
 }
 
-export type ProductPurchase = ProductPurchaseCommon &
-  ProductPurchaseIos &
+export type ProductPurchaseResponse = ProductPurchaseCommon &
   ProductPurchaseAndroid &
-  ProductPurchaseAmazon;
+  ProductPurchaseAmazon &
+  ProductPurchaseIOS;
 
-export interface SubscriptionPurchase extends ProductPurchase {
+type SubscriptionPurchase = ProductPurchaseCommon;
+
+export interface SubscriptionPurchaseAndroid {
   autoRenewingAndroid?: boolean;
+}
+
+export interface SubscriptionPurchaseIOS {
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;
 }
 
+export type SubscriptionPurchaseResponse = SubscriptionPurchase &
+  SubscriptionPurchaseAndroid &
+  SubscriptionPurchaseIOS;
+
 /** Union type for products (consumable, non-consumable) and subscriptions purchases responses */
-export type Purchase = ProductPurchase | SubscriptionPurchase;
+export type ProductOrSubscriptionPurchaseResponse =
+  | ProductPurchaseResponse
+  | SubscriptionPurchaseResponse;
 
 declare module 'react-native' {
   interface NativeModulesStatic {
