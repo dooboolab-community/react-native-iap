@@ -270,7 +270,7 @@ export const getAvailablePurchases = (): Promise<
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
- * @param {string} [applicationUsername] The purchaser's user ID
+ * @param {string} [appAccountToken] UUID representing the purchaser
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
@@ -285,7 +285,7 @@ export const requestPurchase = ({
   andDangerouslyFinishTransactionAutomaticallyIOS = false,
   obfuscatedAccountIdAndroid,
   obfuscatedProfileIdAndroid,
-  applicationUsername,
+  appAccountToken,
   skus, // Android Billing V5
   isOfferPersonalized = undefined, // Android Billing V5
   quantity,
@@ -303,7 +303,7 @@ export const requestPurchase = ({
         return getIosModule().buyProduct(
           sku,
           andDangerouslyFinishTransactionAutomaticallyIOS,
-          applicationUsername,
+          appAccountToken,
           quantity,
           withOffer,
         );
@@ -326,7 +326,7 @@ export const requestPurchase = ({
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} [sku] The product's sku/ID
- * @param {string} [applicationUsername] The purchaser's user ID
+ * @param {string} [appAccountToken] The purchaser's user ID
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [purchaseTokenAndroid] purchaseToken that the user is upgrading or downgrading from (Android).
  * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
@@ -344,7 +344,7 @@ export const requestSubscription = ({
   obfuscatedProfileIdAndroid,
   subscriptionOffers = undefined, // Android Billing V5
   isOfferPersonalized = undefined, // Android Billing V5
-  applicationUsername,
+  appAccountToken,
 }: RequestSubscription): Promise<SubscriptionPurchase | null> =>
   (
     Platform.select({
@@ -358,7 +358,7 @@ export const requestSubscription = ({
         return getIosModule().buyProduct(
           sku,
           andDangerouslyFinishTransactionAutomaticallyIOS,
-          applicationUsername,
+          appAccountToken,
         );
       },
       android: async () => {

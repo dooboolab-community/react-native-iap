@@ -24,7 +24,7 @@ RCT_EXTERN_METHOD(getAvailableItems:
 RCT_EXTERN_METHOD(buyProduct:
                   (NSString*)sku
                   andDangerouslyFinishTransactionAutomatically:(BOOL)andDangerouslyFinishTransactionAutomatically
-                  applicationUsername:(NSString*)applicationUsername
+                  appAccountToken:(NSString*)appAccountToken
                   quantity:(NSInteger)quantity
                   withOffer:(NSDictionary*)discountOffer
                   resolve:(RCTPromiseResolveBlock)resolve

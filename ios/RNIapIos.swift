@@ -1,31 +1,6 @@
 import React
 import StoreKit
 
-typealias RNIapIosPromise = (RCTPromiseResolveBlock, RCTPromiseRejectBlock)
-
-public func debugMessage(_ object: Any...) {
-  #if DEBUG
-  for item in object {
-    print("[react-native-iap] \(item)")
-  }
-  #endif
-}
-
-// Based on https://stackoverflow.com/a/40135192/570612
-extension Date {
-  var millisecondsSince1970: Int64 {
-    return Int64((self.timeIntervalSince1970 * 1000.0).rounded())
-  }
-
-  var millisecondsSince1970String: String {
-    return String((self.timeIntervalSince1970 * 1000.0).rounded())
-  }
-
-  init(milliseconds: Int64) {
-    self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)
-  }
-}
-
 extension SKProductsRequest {
   var key: String {
     return String(self.hashValue)
@@ -33,13 +8,14 @@ extension SKProductsRequest {
 }
 
 @objc(RNIapIos)
-class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver, SKProductsRequestDelegate {
+class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver {
   private var promisesByKey: [String: [RNIapIosPromise]]
-
+    private var hasListeners = false
+    private var pendingTransactionWithAutoFinish = false // TODO:
   private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
-    private var products: [String:Product]
+    private var products: [String: Product]
     private var transactions: [String: Transaction]
-    var updateListenerTask: Task<Void, Error>? = nil
+    var updateListenerTask: Task<Void, Error>?
   private var promotedPayment: SKPayment?
   private var promotedProduct: SKProduct?
   private var productsRequest: SKProductsRequest?
@@ -49,6 +25,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   override init() {
     promisesByKey = [String: [RNIapIosPromise]]()
     products = [String: Product]()
+      transactions = [String: Transaction]()
     super.init()
       updateListenerTask = listenForTransactions()
   }
@@ -63,25 +40,31 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
     func listenForTransactions() -> Task<Void, Error> {
         return Task.detached {
-            //Iterate through any transactions that don't come from a direct call to `purchase()`.
+            // Iterate through any transactions that don't come from a direct call to `purchase()`.
             for await result in Transaction.updates {
                 do {
                     let transaction = try self.checkVerified(result)
 
-                    //Deliver products to the user.
+                    // Deliver products to the user.
                     await self.updateCustomerProductStatus()
 
-                    //Always finish a transaction.
+                    // Always finish a transaction.
                     await transaction.finish()
                 } catch {
-                    //StoreKit has a transaction that fails verification. Don't deliver content to the user.
+                    // StoreKit has a transaction that fails verification. Don't deliver content to the user.
                     print("Transaction failed verification")
                 }
             }
         }
     }
 
-  
+    override func startObserving() {
+        hasListeners = true
+      }
+
+      override func stopObserving() {
+        hasListeners = false
+      }
   override func addListener(_ eventName: String?) {
     super.addListener(eventName)
 
@@ -126,7 +109,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   }
 
   func paymentQueue(_ queue: SKPaymentQueue, shouldAddStorePayment payment: SKPayment, for product: SKProduct) -> Bool {
-      promotedProduct = products.first?.value //TODO
+      promotedProduct = product
     promotedPayment = payment
       sendEvent(withName: "iap-promoted-product", body: product.productIdentifier)
     return false
@@ -140,7 +123,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
-    
+
     let canMakePayments = SKPaymentQueue.canMakePayments()
     resolve(NSNumber(value: canMakePayments))
   }
@@ -157,9 +140,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) async {
-      do{
-          let products: [[String:Any]] = try await Product.products(for: skus).map({ (product: Product) -> [String:Any] in
-              var prod = [String:Any]()
+      do {
+          let products: [[String: Any]] = try await Product.products(for: skus).map({ (product: Product) -> [String: Any] in
+              var prod = [String: Any]()
               prod["displayName"] = product.displayName
               prod["description"] = product.description
               prod["id"] = product.id
@@ -168,26 +151,26 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
               prod["isFamilyShareable"] = product.isFamilyShareable
               prod["subscription"] = product.subscription?.subscriptionGroupID
               return prod
-          
+
           })
     resolve(products)
-      }catch{
-      reject("E_UNKNOWN","Error fetching items",nil)
+      } catch {
+      reject("E_UNKNOWN", "Error fetching items", nil)
       }
-    
+
   }
   @objc public func getAvailableItems(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) async {
       var purchasedItems: [Product] = []
-      //Iterate through all of the user's purchased products.
+      // Iterate through all of the user's purchased products.
       for await result in Transaction.currentEntitlements {
           do {
-              //Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
+              // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
               let transaction = try checkVerified(result)
 
-              //Check the `productType` of the transaction and get the corresponding product from the store.
+              // Check the `productType` of the transaction and get the corresponding product from the store.
               switch transaction.productType {
               case .nonConsumable:
                   if let product = products[transaction.productID] {
@@ -196,11 +179,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
               case .nonRenewable:
                   if let nonRenewable = products[transaction.productID],
                      transaction.productID == "nonRenewing.standard" {
-                      //Non-renewing subscriptions have no inherent expiration date, so they're always
-                      //contained in `Transaction.currentEntitlements` after the user purchases them.
-                      //This app defines this non-renewing subscription's expiration date to be one year after purchase.
-                      //If the current date is within one year of the `purchaseDate`, the user is still entitled to this
-                      //product.
+                      // Non-renewing subscriptions have no inherent expiration date, so they're always
+                      // contained in `Transaction.currentEntitlements` after the user purchases them.
+                      // This app defines this non-renewing subscription's expiration date to be one year after purchase.
+                      // If the current date is within one year of the `purchaseDate`, the user is still entitled to this
+                      // product.
                       let currentDate = Date()
                       let expirationDate = Calendar(identifier: .gregorian).date(byAdding: DateComponents(year: 1),
                                                                  to: transaction.purchaseDate)!
@@ -218,103 +201,101 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
               }
           } catch {
               print()
-              reject("","",nil) // TODO
+              reject("", "", nil) // TODO
           }
       }
 
-      
-      //Check the `subscriptionGroupStatus` to learn the auto-renewable subscription state to determine whether the customer
-      //is new (never subscribed), active, or inactive (expired subscription). This app has only one subscription
-      //group, so products in the subscriptions array all belong to the same group. The statuses that
-      //`product.subscription.status` returns apply to the entire subscription group.
-      //subscriptionGroupStatus = try? await subscriptions.first?.subscription?.status.first?.state
+      // Check the `subscriptionGroupStatus` to learn the auto-renewable subscription state to determine whether the customer
+      // is new (never subscribed), active, or inactive (expired subscription). This app has only one subscription
+      // group, so products in the subscriptions array all belong to the same group. The statuses that
+      // `product.subscription.status` returns apply to the entire subscription group.
+      // subscriptionGroupStatus = try? await subscriptions.first?.subscription?.status.first?.state
       resolve(purchasedItems)
   }
 
   @objc public func buyProduct(
     _ sku: String,
     andDangerouslyFinishTransactionAutomatically: Bool,
-    applicationUsername: String?, //TODO convert to appAccountToken??
+    appAccountToken: String?,
     quantity: Int,
     withOffer discountOffer: [String: String],
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) async {
+      pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
       let product: Product? = products[sku]
-    
+
     if let product = product {
         do {
             var options: Set<Product.PurchaseOption> = []
             if quantity > -1 {
                 options.insert(.quantity(quantity))
             }
-            
+
             let offerID = discountOffer["identifier"]
             let keyID = discountOffer["keyIdentifier"]
             let nonce = discountOffer["nonce"]
             let signature = discountOffer["signature"]
             let timestamp = discountOffer["timestamp"]
-            if let offerID = offerID, let keyID = keyID, let nonce = nonce, let nonce = UUID(uuidString: nonce), let signature = signature, let signature =  signature.data(using: .utf8), let timestamp = timestamp, let timestamp = Int(timestamp){
+            if let offerID = offerID, let keyID = keyID, let nonce = nonce, let nonce = UUID(uuidString: nonce), let signature = signature, let signature =  signature.data(using: .utf8), let timestamp = timestamp, let timestamp = Int(timestamp) {
                 options.insert(.promotionalOffer(offerID: offerID, keyID: keyID, nonce: nonce, signature: signature, timestamp: timestamp ))
                                 }
-                                if let applicationUsername = applicationUsername, let applicationUsername = UUID(uuidString: applicationUsername) {
-                options.insert(.appAccountToken(applicationUsername))
+                                if let appAccountToken = appAccountToken, let appAccountToken = UUID(uuidString: appAccountToken) {
+                options.insert(.appAccountToken(appAccountToken))
             }
-            
+
             let result = try await product.purchase(options: options)
             switch result {
             case .success(let verification):
-                //Check whether the transaction is verified. If it isn't,
-                //this function rethrows the verification error.
+                // Check whether the transaction is verified. If it isn't,
+                // this function rethrows the verification error.
                 let transaction = try checkVerified(verification)
 
-                //The transaction is verified. Deliver content to the user.
+                // The transaction is verified. Deliver content to the user.
                 // Do on JS :await updateCustomerProductStatus()
 
-                //Always finish a transaction.
+                // Always finish a transaction.
                 let transactionId = String(transaction.id)
-                if(andDangerouslyFinishTransactionAutomatically){
+                if andDangerouslyFinishTransactionAutomatically {
                     await transaction.finish()
                     resolve(nil)
-                }else{
+                } else {
                     transactions[transactionId]=transaction
                     resolve(transactionId)
                 }
                 return
             case .userCancelled, .pending:
-                reject("","",nil) //TODO
+                reject("", "", nil) // TODO
                 return
             default:
-                reject("","",nil)// TODO
+                reject("", "", nil)// TODO
                 return
             }
-        }catch{
-            reject("","",nil)//TODO
+        } catch {
+            reject("", "", nil)// TODO
         }
-      
+
     } else {
       reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
     }
   }
-    
-    
+
     @MainActor
     func updateCustomerProductStatus() async {
-        
+
     }
-    
-    
+
     public enum StoreError: Error {
         case failedVerification
     }
     func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
-        //Check whether the JWS passes StoreKit verification.
+        // Check whether the JWS passes StoreKit verification.
         switch result {
         case .unverified:
-            //StoreKit parses the JWS, but it fails verification.
+            // StoreKit parses the JWS, but it fails verification.
             throw StoreError.failedVerification
         case .verified(let safe):
-            //The result is verified. Return the unwrapped value.
+            // The result is verified. Return the unwrapped value.
             return safe
         }
     }
@@ -323,7 +304,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) async {
-    
+
     countPendingTransaction = transactions.count
 
     debugMessage("clear remaining Transactions (\(countPendingTransaction)). Call this before make a new transaction")
@@ -410,7 +391,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
   }
 
-  @objc public func  presentCodeRedemptionSheet(//TODO
+    /**
+     Should remain the same according to:
+     https://stackoverflow.com/a/72789651/570612
+     */
+  @objc public func  presentCodeRedemptionSheet(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
@@ -420,43 +405,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     #else
     reject(standardErrorCode(2), "This method is not available on tvOS", nil)
     #endif
-  }
-
-  // StoreKitDelegate
-  func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-    for prod in response.products {
-      add(prod)
-    }
-
-    var items: [[String: Any?]] = [[:]]
-    let lockQueue = DispatchQueue(label: "validProducts")
-
-    
-    resolvePromises(forKey: request.key, value: items)
-  }
-
-
-  func request(_ request: SKRequest, didFailWithError error: Error) {
-    let nsError = error as NSError
-
-    if request is SKReceiptRefreshRequest {
-      if let unwrappedReceiptBlock = receiptBlock {
-        let standardError = NSError(domain: nsError.domain, code: 9, userInfo: nsError.userInfo)
-        unwrappedReceiptBlock(nil, standardError)
-        receiptBlock = nil
-        return
-      } else {
-        if let key: String = productsRequest?.key {
-          myQueue.sync(execute: { [self] in
-                        rejectPromises(
-                          forKey: key,
-                          code: standardErrorCode(nsError.code),
-                          message: error.localizedDescription,
-                          error: error)}
-          )
-        }
-      }
-    }
   }
 
   func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
@@ -479,7 +427,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
       case .deferred:
         debugMessage("Deferred (awaiting approval via parental controls, etc.)")
 
-        myQueue.sync(execute: { [self] in
           if hasListeners {
             let err = [
               "debugMessage": "The payment was deferred (awaiting approval via parental controls for instance)",
@@ -497,14 +444,12 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             code: "E_DEFERRED_PAYMENT",
             message: "The payment was deferred (awaiting approval via parental controls for instance)",
             error: nil)
-        })
 
       case .failed:
         debugMessage("Purchase Failed")
 
         SKPaymentQueue.default().finishTransaction(transaction)
 
-        myQueue.sync(execute: { [self] in
           let nsError = transaction.error as NSError?
 
           if hasListeners {
@@ -526,9 +471,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             code: standardErrorCode(nsError?.code),
             message: nsError?.localizedDescription,
             error: nsError)
-        })
 
         break
+      @unknown default:
+          fatalError()
       }
     }
   }
@@ -563,13 +509,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   }
 
   func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
-    myQueue.sync(execute: { [self] in
       rejectPromises(
         forKey: "availableItems",
         code: standardErrorCode((error as NSError).code),
         message: error.localizedDescription,
         error: error)
-    })
 
     debugMessage("restoreCompletedTransactionsFailedWithError")
   }
@@ -614,214 +558,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
 
     return descriptions[code]
-  }
-
-  func getProductObject(_ product: SKProduct) -> [String: Any?] {
-    let formatter = NumberFormatter()
-    formatter.numberStyle = .currency
-    formatter.locale = product.priceLocale
-
-    let localizedPrice = formatter.string(from: product.price)
-    var introductoryPrice = localizedPrice
-    var introductoryPriceAsAmountIOS = "\(product.price)"
-
-    var introductoryPricePaymentMode = ""
-    var introductoryPriceNumberOfPeriods = ""
-
-    var introductoryPriceSubscriptionPeriod = ""
-
-    var currencyCode: String? = ""
-    var countryCode: String? = ""
-    var periodNumberIOS = "0"
-    var periodUnitIOS = ""
-    var itemType = "iap"
-
-    
-      let numOfUnits = UInt(product.subscriptionPeriod?.numberOfUnits ?? 0)
-      let unit = product.subscriptionPeriod?.unit
-
-      if unit == .year {
-        periodUnitIOS = "YEAR"
-      } else if unit == .month {
-        periodUnitIOS = "MONTH"
-      } else if unit == .week {
-        periodUnitIOS = "WEEK"
-      } else if unit == .day {
-        periodUnitIOS = "DAY"
-      }
-
-      periodNumberIOS = String(format: "%lu", numOfUnits)
-      if numOfUnits != 0 {
-        itemType = "subs"
-      }
-
-      // subscriptionPeriod = product.subscriptionPeriod ? [product.subscriptionPeriod stringValue] : @"";
-      // introductoryPrice = product.introductoryPrice != nil ? [NSString stringWithFormat:@"%@", product.introductoryPrice] : @"";
-      if product.introductoryPrice != nil {
-        formatter.locale = product.introductoryPrice?.priceLocale
-
-        if let price = product.introductoryPrice?.price {
-          introductoryPrice = formatter.string(from: price)
-        }
-
-        introductoryPriceAsAmountIOS = product.introductoryPrice?.price.stringValue ?? ""
-
-        switch product.introductoryPrice?.paymentMode {
-        case .freeTrial:
-          introductoryPricePaymentMode = "FREETRIAL"
-          introductoryPriceNumberOfPeriods = NSNumber(value: product.introductoryPrice?.subscriptionPeriod.numberOfUnits ?? 0).stringValue
-
-        case .payAsYouGo:
-          introductoryPricePaymentMode = "PAYASYOUGO"
-          introductoryPriceNumberOfPeriods = NSNumber(value: product.introductoryPrice?.numberOfPeriods ?? 0).stringValue
-
-        case .payUpFront:
-          introductoryPricePaymentMode = "PAYUPFRONT"
-          introductoryPriceNumberOfPeriods = NSNumber(value: product.introductoryPrice?.subscriptionPeriod.numberOfUnits ?? 0).stringValue
-
-        default:
-          introductoryPricePaymentMode = ""
-          introductoryPriceNumberOfPeriods = "0"
-        }
-
-        if product.introductoryPrice?.subscriptionPeriod.unit == .day {
-          introductoryPriceSubscriptionPeriod = "DAY"
-        } else if product.introductoryPrice?.subscriptionPeriod.unit == .week {
-          introductoryPriceSubscriptionPeriod = "WEEK"
-        } else if product.introductoryPrice?.subscriptionPeriod.unit == .month {
-          introductoryPriceSubscriptionPeriod = "MONTH"
-        } else if product.introductoryPrice?.subscriptionPeriod.unit == .year {
-          introductoryPriceSubscriptionPeriod = "YEAR"
-        } else {
-          introductoryPriceSubscriptionPeriod = ""
-        }
-      } else {
-        introductoryPrice = ""
-        introductoryPriceAsAmountIOS = ""
-        introductoryPricePaymentMode = ""
-        introductoryPriceNumberOfPeriods = ""
-        introductoryPriceSubscriptionPeriod = ""
-      }
-    
-
-    
-      currencyCode = product.priceLocale.currencyCode
-    
-      countryCode = SKPaymentQueue.default().storefront?.countryCode
-      //countryCode = product.priceLocale.regionCode
-    
-
-    var discounts: [[String: String?]]?
-
-      discounts = getDiscountData(product)
-    
-    let obj: [String: Any?] = [
-      "productId": product.productIdentifier,
-      "price": "\(product.price)",
-      "currency": currencyCode,
-      "countryCode": countryCode ?? "",
-      "type": itemType,
-      "title": product.localizedTitle != "" ? product.localizedTitle : "",
-      "description": product.localizedDescription != "" ? product.localizedDescription : "",
-      "localizedPrice": localizedPrice,
-      "subscriptionPeriodNumberIOS": periodNumberIOS,
-      "subscriptionPeriodUnitIOS": periodUnitIOS,
-      "introductoryPrice": introductoryPrice,
-      "introductoryPriceAsAmountIOS": introductoryPriceAsAmountIOS,
-      "introductoryPricePaymentModeIOS": introductoryPricePaymentMode,
-      "introductoryPriceNumberOfPeriodsIOS": introductoryPriceNumberOfPeriods,
-      "introductoryPriceSubscriptionPeriodIOS": introductoryPriceSubscriptionPeriod,
-      "discounts": discounts
-    ]
-
-    return obj
-  }
-
-  func getDiscountData(_ product: SKProduct) -> [[String: String?]]? {
-      var mappedDiscounts: [[String: String?]] = []
-      var localizedPrice: String?
-      var paymendMode: String?
-      var subscriptionPeriods: String?
-      var discountType: String?
-
-      for discount in product.discounts {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        let priceLocale: Locale? = discount.priceLocale
-        if let pLocale = priceLocale {
-          formatter.locale = pLocale
-        }
-        localizedPrice = formatter.string(from: discount.price)
-        var numberOfPeriods: String?
-
-        switch discount.paymentMode {
-        case .freeTrial:
-          paymendMode = "FREETRIAL"
-          numberOfPeriods = NSNumber(value: discount.subscriptionPeriod.numberOfUnits ).stringValue
-          break
-
-        case .payAsYouGo:
-          paymendMode = "PAYASYOUGO"
-          numberOfPeriods = NSNumber(value: discount.numberOfPeriods).stringValue
-          break
-
-        case .payUpFront:
-          paymendMode = "PAYUPFRONT"
-          numberOfPeriods = NSNumber(value: discount.subscriptionPeriod.numberOfUnits ).stringValue
-          break
-
-        default:
-          paymendMode = ""
-          numberOfPeriods = "0"
-          break
-        }
-
-        switch discount.subscriptionPeriod.unit {
-        case .day:
-          subscriptionPeriods = "DAY"
-
-        case .week:
-          subscriptionPeriods = "WEEK"
-
-        case .month:
-          subscriptionPeriods = "MONTH"
-
-        case .year:
-          subscriptionPeriods = "YEAR"
-
-        default:
-          subscriptionPeriods = ""
-        }
-
-        let discountIdentifier = discount.identifier
-        switch discount.type {
-        case SKProductDiscount.Type.introductory:
-          discountType = "INTRODUCTORY"
-          break
-
-        case SKProductDiscount.Type.subscription:
-          discountType = "SUBSCRIPTION"
-          break
-
-        default:
-          discountType = ""
-          break
-        }
-
-        let discountObj = [
-          "identifier": discountIdentifier,
-          "type": discountType,
-          "numberOfPeriods": numberOfPeriods,
-          "price": "\(discount.price)",
-          "localizedPrice": localizedPrice,
-          "paymentMode": paymendMode,
-          "subscriptionPeriod": subscriptionPeriods
-        ]
-
-        mappedDiscounts.append(discountObj)
-      }
-
-      return mappedDiscounts
   }
 
   func getPurchaseData(_ transaction: SKPaymentTransaction, withBlock block: @escaping (_ transactionDict: [String: Any]?) -> Void) {

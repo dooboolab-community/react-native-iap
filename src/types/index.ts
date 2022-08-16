@@ -189,7 +189,10 @@ export interface RequestPurchaseAndroid extends RequestPurchaseBaseAndroid {
 export interface RequestPurchaseIOS {
   sku?: Sku;
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
-  applicationUsername?: string;
+  /**
+   * UUID representing user account
+   */
+  appAccountToken?: string;
   quantity: number;
   withOffer: Apple.PaymentDiscount;
 }
