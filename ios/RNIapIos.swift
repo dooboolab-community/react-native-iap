@@ -10,12 +10,12 @@ extension SKProductsRequest {
 @objc(RNIapIos)
 class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver {
   private var promisesByKey: [String: [RNIapIosPromise]]
-    private var hasListeners = false
-    private var pendingTransactionWithAutoFinish = false // TODO:
+  private var hasListeners = false
+  private var pendingTransactionWithAutoFinish = false // TODO:
   private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
-    private var products: [String: Product]
-    private var transactions: [String: Transaction]
-    var updateListenerTask: Task<Void, Error>?
+  private var products: [String: Product]
+  private var transactions: [String: Transaction]
+  private var updateListenerTask: Task<Void, Error>?
   private var promotedPayment: SKPayment?
   private var promotedProduct: SKProduct?
   private var productsRequest: SKProductsRequest?
@@ -25,46 +25,46 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   override init() {
     promisesByKey = [String: [RNIapIosPromise]]()
     products = [String: Product]()
-      transactions = [String: Transaction]()
+    transactions = [String: Transaction]()
     super.init()
-      updateListenerTask = listenForTransactions()
+    updateListenerTask = listenForTransactions()
   }
 
   deinit {
-      updateListenerTask?.cancel()
+    updateListenerTask?.cancel()
   }
 
   override class func requiresMainQueueSetup() -> Bool {
     return true
   }
 
-    func listenForTransactions() -> Task<Void, Error> {
-        return Task.detached {
-            // Iterate through any transactions that don't come from a direct call to `purchase()`.
-            for await result in Transaction.updates {
-                do {
-                    let transaction = try self.checkVerified(result)
+  func listenForTransactions() -> Task<Void, Error> {
+    return Task.detached {
+      // Iterate through any transactions that don't come from a direct call to `purchase()`.
+      for await result in Transaction.updates {
+        do {
+          let transaction = try self.checkVerified(result)
 
-                    // Deliver products to the user.
-                    await self.updateCustomerProductStatus()
+          // Deliver products to the user.
+          await self.updateCustomerProductStatus()
 
-                    // Always finish a transaction.
-                    await transaction.finish()
-                } catch {
-                    // StoreKit has a transaction that fails verification. Don't deliver content to the user.
-                    print("Transaction failed verification")
-                }
-            }
+          // Always finish a transaction.
+          await transaction.finish()
+        } catch {
+          // StoreKit has a transaction that fails verification. Don't deliver content to the user.
+          print("Transaction failed verification")
         }
+      }
     }
+  }
 
-    override func startObserving() {
-        hasListeners = true
-      }
+  override func startObserving() {
+    hasListeners = true
+  }
 
-      override func stopObserving() {
-        hasListeners = false
-      }
+  override func stopObserving() {
+    hasListeners = false
+  }
   override func addListener(_ eventName: String?) {
     super.addListener(eventName)
 
@@ -109,9 +109,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   }
 
   func paymentQueue(_ queue: SKPaymentQueue, shouldAddStorePayment payment: SKPayment, for product: SKProduct) -> Bool {
-      promotedProduct = product
+    promotedProduct = product
     promotedPayment = payment
-      sendEvent(withName: "iap-promoted-product", body: product.productIdentifier)
+    sendEvent(withName: "iap-promoted-product", body: product.productIdentifier)
     return false
   }
 
@@ -123,7 +123,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
-
     let canMakePayments = SKPaymentQueue.canMakePayments()
     resolve(NSNumber(value: canMakePayments))
   }
@@ -131,8 +130,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
-      updateListenerTask?.cancel()
-      updateListenerTask = nil
+    updateListenerTask?.cancel()
+    updateListenerTask = nil
     resolve(nil)
   }
   @objc public func getItems(
@@ -140,77 +139,78 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) async {
-      do {
-          let products: [[String: Any]] = try await Product.products(for: skus).map({ (product: Product) -> [String: Any] in
-              var prod = [String: Any]()
-              prod["displayName"] = product.displayName
-              prod["description"] = product.description
-              prod["id"] = product.id
-              prod["displayPrice"] = product.displayPrice
-              prod["price"] = product.price
-              prod["isFamilyShareable"] = product.isFamilyShareable
-              prod["subscription"] = product.subscription?.subscriptionGroupID
-              return prod
-
-          })
-    resolve(products)
-      } catch {
+    do {
+      let products: [[String: Any]] = try await Product.products(for: skus).map({ (product: Product) -> [String: Any] in
+        var prod = [String: Any]()
+        prod["displayName"] = product.displayName
+        prod["description"] = product.description
+        prod["id"] = product.id
+        prod["displayPrice"] = product.displayPrice
+        prod["price"] = product.price
+        prod["isFamilyShareable"] = product.isFamilyShareable
+        prod["subscription"] = product.subscription?.subscriptionGroupID
+        return prod
+      })
+      resolve(products)
+    } catch {
       reject("E_UNKNOWN", "Error fetching items", nil)
-      }
-
+    }
   }
   @objc public func getAvailableItems(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) async {
-      var purchasedItems: [Product] = []
-      // Iterate through all of the user's purchased products.
-      for await result in Transaction.currentEntitlements {
-          do {
-              // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
-              let transaction = try checkVerified(result)
+    var purchasedItems: [Product] = []
+    // Iterate through all of the user's purchased products.
+    for await result in Transaction.currentEntitlements {
+      do {
+        // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
+        let transaction = try checkVerified(result)
 
-              // Check the `productType` of the transaction and get the corresponding product from the store.
-              switch transaction.productType {
-              case .nonConsumable:
-                  if let product = products[transaction.productID] {
-                      purchasedItems.append(product)
-                  }
-              case .nonRenewable:
-                  if let nonRenewable = products[transaction.productID],
-                     transaction.productID == "nonRenewing.standard" {
-                      // Non-renewing subscriptions have no inherent expiration date, so they're always
-                      // contained in `Transaction.currentEntitlements` after the user purchases them.
-                      // This app defines this non-renewing subscription's expiration date to be one year after purchase.
-                      // If the current date is within one year of the `purchaseDate`, the user is still entitled to this
-                      // product.
-                      let currentDate = Date()
-                      let expirationDate = Calendar(identifier: .gregorian).date(byAdding: DateComponents(year: 1),
-                                                                 to: transaction.purchaseDate)!
-
-                      if currentDate < expirationDate {
-                          purchasedItems.append(nonRenewable)
-                      }
-                  }
-              case .autoRenewable:
-                  if let subscription = products[transaction.productID] {
-                      purchasedItems.append(subscription)
-                  }
-              default:
-                  break
-              }
-          } catch {
-              print()
-              reject("", "", nil) // TODO
+        // Check the `productType` of the transaction and get the corresponding product from the store.
+        switch transaction.productType {
+        case .nonConsumable:
+          if let product = products[transaction.productID] {
+            purchasedItems.append(product)
           }
-      }
 
-      // Check the `subscriptionGroupStatus` to learn the auto-renewable subscription state to determine whether the customer
-      // is new (never subscribed), active, or inactive (expired subscription). This app has only one subscription
-      // group, so products in the subscriptions array all belong to the same group. The statuses that
-      // `product.subscription.status` returns apply to the entire subscription group.
-      // subscriptionGroupStatus = try? await subscriptions.first?.subscription?.status.first?.state
-      resolve(purchasedItems)
+        case .nonRenewable:
+          if let nonRenewable = products[transaction.productID],
+             transaction.productID == "nonRenewing.standard" {
+            // Non-renewing subscriptions have no inherent expiration date, so they're always
+            // contained in `Transaction.currentEntitlements` after the user purchases them.
+            // This app defines this non-renewing subscription's expiration date to be one year after purchase.
+            // If the current date is within one year of the `purchaseDate`, the user is still entitled to this
+            // product.
+            let currentDate = Date()
+            let expirationDate = Calendar(identifier: .gregorian).date(byAdding: DateComponents(year: 1),
+                                                                       to: transaction.purchaseDate)!
+
+            if currentDate < expirationDate {
+              purchasedItems.append(nonRenewable)
+            }
+          }
+
+        case .autoRenewable:
+          if let subscription = products[transaction.productID] {
+            purchasedItems.append(subscription)
+          }
+
+        default:
+          break
+        }
+      } catch {
+        print()
+        reject("", "", nil) // TODO
+      }
+    }
+
+    // Check the `subscriptionGroupStatus` to learn the auto-renewable subscription state to determine whether the customer
+    // is new (never subscribed), active, or inactive (expired subscription). This app has only one subscription
+    // group, so products in the subscriptions array all belong to the same group. The statuses that
+    // `product.subscription.status` returns apply to the entire subscription group.
+    // subscriptionGroupStatus = try? await subscriptions.first?.subscription?.status.first?.state
+    resolve(purchasedItems)
   }
 
   @objc public func buyProduct(
@@ -222,89 +222,89 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) async {
-      pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
-      let product: Product? = products[sku]
+    pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
+    let product: Product? = products[sku]
 
     if let product = product {
-        do {
-            var options: Set<Product.PurchaseOption> = []
-            if quantity > -1 {
-                options.insert(.quantity(quantity))
-            }
-
-            let offerID = discountOffer["identifier"]
-            let keyID = discountOffer["keyIdentifier"]
-            let nonce = discountOffer["nonce"]
-            let signature = discountOffer["signature"]
-            let timestamp = discountOffer["timestamp"]
-            if let offerID = offerID, let keyID = keyID, let nonce = nonce, let nonce = UUID(uuidString: nonce), let signature = signature, let signature =  signature.data(using: .utf8), let timestamp = timestamp, let timestamp = Int(timestamp) {
-                options.insert(.promotionalOffer(offerID: offerID, keyID: keyID, nonce: nonce, signature: signature, timestamp: timestamp ))
-                                }
-                                if let appAccountToken = appAccountToken, let appAccountToken = UUID(uuidString: appAccountToken) {
-                options.insert(.appAccountToken(appAccountToken))
-            }
-
-            let result = try await product.purchase(options: options)
-            switch result {
-            case .success(let verification):
-                // Check whether the transaction is verified. If it isn't,
-                // this function rethrows the verification error.
-                let transaction = try checkVerified(verification)
-
-                // The transaction is verified. Deliver content to the user.
-                // Do on JS :await updateCustomerProductStatus()
-
-                // Always finish a transaction.
-                let transactionId = String(transaction.id)
-                if andDangerouslyFinishTransactionAutomatically {
-                    await transaction.finish()
-                    resolve(nil)
-                } else {
-                    transactions[transactionId]=transaction
-                    resolve(transactionId)
-                }
-                return
-            case .userCancelled, .pending:
-                reject("", "", nil) // TODO
-                return
-            default:
-                reject("", "", nil)// TODO
-                return
-            }
-        } catch {
-            reject("", "", nil)// TODO
+      do {
+        var options: Set<Product.PurchaseOption> = []
+        if quantity > -1 {
+          options.insert(.quantity(quantity))
         }
 
+        let offerID = discountOffer["identifier"]
+        let keyID = discountOffer["keyIdentifier"]
+        let nonce = discountOffer["nonce"]
+        let signature = discountOffer["signature"]
+        let timestamp = discountOffer["timestamp"]
+        if let offerID = offerID, let keyID = keyID, let nonce = nonce, let nonce = UUID(uuidString: nonce), let signature = signature, let signature = signature.data(using: .utf8), let timestamp = timestamp, let timestamp = Int(timestamp) {
+          options.insert(.promotionalOffer(offerID: offerID, keyID: keyID, nonce: nonce, signature: signature, timestamp: timestamp ))
+        }
+        if let appAccountToken = appAccountToken, let appAccountToken = UUID(uuidString: appAccountToken) {
+          options.insert(.appAccountToken(appAccountToken))
+        }
+
+        let result = try await product.purchase(options: options)
+        switch result {
+        case .success(let verification):
+          // Check whether the transaction is verified. If it isn't,
+          // this function rethrows the verification error.
+          let transaction = try checkVerified(verification)
+
+          // The transaction is verified. Deliver content to the user.
+          // Do on JS :await updateCustomerProductStatus()
+
+          // Always finish a transaction.
+          let transactionId = String(transaction.id)
+          if andDangerouslyFinishTransactionAutomatically {
+            await transaction.finish()
+            resolve(nil)
+          } else {
+            transactions[transactionId] = transaction
+            resolve(transactionId)
+          }
+          return
+
+        case .userCancelled, .pending:
+          reject("", "", nil) // TODO
+          return
+
+        default:
+          reject("", "", nil)// TODO
+          return
+        }
+      } catch {
+        reject("", "", nil)// TODO
+      }
     } else {
       reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
     }
   }
 
-    @MainActor
-    func updateCustomerProductStatus() async {
+  @MainActor
+  func updateCustomerProductStatus() async {
+  }
 
-    }
+  public enum StoreError: Error {
+    case failedVerification
+  }
+  func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
+    // Check whether the JWS passes StoreKit verification.
+    switch result {
+    case .unverified:
+      // StoreKit parses the JWS, but it fails verification.
+      throw StoreError.failedVerification
 
-    public enum StoreError: Error {
-        case failedVerification
+    case .verified(let safe):
+      // The result is verified. Return the unwrapped value.
+      return safe
     }
-    func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
-        // Check whether the JWS passes StoreKit verification.
-        switch result {
-        case .unverified:
-            // StoreKit parses the JWS, but it fails verification.
-            throw StoreError.failedVerification
-        case .verified(let safe):
-            // The result is verified. Return the unwrapped value.
-            return safe
-        }
-    }
+  }
 
   @objc public func clearTransaction(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) async {
-
     countPendingTransaction = transactions.count
 
     debugMessage("clear remaining Transactions (\(countPendingTransaction)). Call this before make a new transaction")
@@ -391,17 +391,17 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     }
   }
 
-    /**
-     Should remain the same according to:
-     https://stackoverflow.com/a/72789651/570612
-     */
+  /**
+   Should remain the same according to:
+   https://stackoverflow.com/a/72789651/570612
+   */
   @objc public func  presentCodeRedemptionSheet(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
     #if !os(tvOS)
-      SKPaymentQueue.default().presentCodeRedemptionSheet()
-      resolve(nil)
+    SKPaymentQueue.default().presentCodeRedemptionSheet()
+    resolve(nil)
     #else
     reject(standardErrorCode(2), "This method is not available on tvOS", nil)
     #endif
@@ -427,54 +427,54 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
       case .deferred:
         debugMessage("Deferred (awaiting approval via parental controls, etc.)")
 
-          if hasListeners {
-            let err = [
-              "debugMessage": "The payment was deferred (awaiting approval via parental controls for instance)",
-              "code": "E_DEFERRED_PAYMENT",
-              "message": "The payment was deferred (awaiting approval via parental controls for instance)",
-              "productId": transaction.payment.productIdentifier,
-              "quantity": "\(transaction.payment.quantity)"
-            ]
+        if hasListeners {
+          let err = [
+            "debugMessage": "The payment was deferred (awaiting approval via parental controls for instance)",
+            "code": "E_DEFERRED_PAYMENT",
+            "message": "The payment was deferred (awaiting approval via parental controls for instance)",
+            "productId": transaction.payment.productIdentifier,
+            "quantity": "\(transaction.payment.quantity)"
+          ]
 
-            sendEvent(withName: "purchase-error", body: err)
-          }
+          sendEvent(withName: "purchase-error", body: err)
+        }
 
-          rejectPromises(
-            forKey: transaction.payment.productIdentifier,
-            code: "E_DEFERRED_PAYMENT",
-            message: "The payment was deferred (awaiting approval via parental controls for instance)",
-            error: nil)
+        rejectPromises(
+          forKey: transaction.payment.productIdentifier,
+          code: "E_DEFERRED_PAYMENT",
+          message: "The payment was deferred (awaiting approval via parental controls for instance)",
+          error: nil)
 
       case .failed:
         debugMessage("Purchase Failed")
 
         SKPaymentQueue.default().finishTransaction(transaction)
 
-          let nsError = transaction.error as NSError?
+        let nsError = transaction.error as NSError?
 
-          if hasListeners {
-            let code = nsError?.code
-            let responseCode = String(code ?? 0)
-            let err = [
-              "responseCode": responseCode,
-              "debugMessage": transaction.error?.localizedDescription,
-              "code": standardErrorCode(code),
-              "message": transaction.error?.localizedDescription,
-              "productId": transaction.payment.productIdentifier
-            ]
+        if hasListeners {
+          let code = nsError?.code
+          let responseCode = String(code ?? 0)
+          let err = [
+            "responseCode": responseCode,
+            "debugMessage": transaction.error?.localizedDescription,
+            "code": standardErrorCode(code),
+            "message": transaction.error?.localizedDescription,
+            "productId": transaction.payment.productIdentifier
+          ]
 
-            sendEvent(withName: "purchase-error", body: err)
-          }
+          sendEvent(withName: "purchase-error", body: err)
+        }
 
-          rejectPromises(
-            forKey: transaction.payment.productIdentifier,
-            code: standardErrorCode(nsError?.code),
-            message: nsError?.localizedDescription,
-            error: nsError)
+        rejectPromises(
+          forKey: transaction.payment.productIdentifier,
+          code: standardErrorCode(nsError?.code),
+          message: nsError?.localizedDescription,
+          error: nsError)
 
         break
       @unknown default:
-          fatalError()
+        fatalError()
       }
     }
   }
@@ -509,11 +509,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
   }
 
   func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
-      rejectPromises(
-        forKey: "availableItems",
-        code: standardErrorCode((error as NSError).code),
-        message: error.localizedDescription,
-        error: error)
+    rejectPromises(
+      forKey: "availableItems",
+      code: standardErrorCode((error as NSError).code),
+      message: error.localizedDescription,
+      error: error)
 
     debugMessage("restoreCompletedTransactionsFailedWithError")
   }
