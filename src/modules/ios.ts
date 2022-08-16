@@ -4,27 +4,96 @@ import type {ResponseBody} from '@jeremybarbet/apple-api-types';
 import {enhancedFetch, errorProxy, isIos, linkingError} from '../internal';
 import type {
   NativeModuleProps,
-  PaymentDiscount,
   Product,
+  ProductCommon,
   ProductProduct,
   ProductPurchase,
+  ProductType,
   Purchase,
   Sku,
 } from '../types';
+
+enum PaymentMethodIOS {
+  'FREETRIAL' = 'FREETRIAL',
+  'PAYASYOUGO' = 'PAYASYOUGO',
+  'PAYUPFRONT' = 'PAYUPFRONT',
+}
+
+enum PeriodUnitIOS {
+  'DAY' = 'DAY',
+  'WEEK' = 'WEEK',
+  'MONTH' = 'MONTH',
+  'YEAR' = 'YEAR',
+}
+
+/**
+ * @see {@link https://developer.apple.com/documentation/storekit/skpaymentdiscount?language=objc}
+ **/
+interface PaymentDiscountIOS {
+  /** A string used to uniquely identify a discount offer for a product */
+  identifier: string;
+
+  /** A string that identifies the key used to generate the signature */
+  keyIdentifier: string;
+
+  /** A universally unique ID (UUID) value that you define */
+  nonce: string;
+
+  /** A UTF-8 string representing the properties of a specific discount offer, cryptographically signed */
+  signature: string;
+
+  /** The date and time of the signature's creation in milliseconds, formatted in Unix epoch time */
+  timestamp: number;
+}
+
+interface DiscountIOS {
+  identifier: string;
+  type: string;
+  numberOfPeriods: string;
+  price: string;
+  localizedPrice: string;
+  paymentMode: PaymentMethodIOS | '';
+  subscriptionPeriod: string;
+}
+
+export interface SubscriptionIOS extends ProductCommon {
+  type: ProductType.subs | ProductType.sub;
+  discounts?: DiscountIOS[];
+  introductoryPrice?: string;
+  introductoryPriceAsAmountIOS?: string;
+  introductoryPricePaymentModeIOS?: PaymentMethodIOS | '';
+  introductoryPriceNumberOfPeriodsIOS?: string;
+  introductoryPriceSubscriptionPeriodIOS?: PeriodUnitIOS | '';
+  subscriptionPeriodNumberIOS?: string;
+  subscriptionPeriodUnitIOS?: PeriodUnitIOS | '';
+}
+
+export interface ProductPurchaseIos {
+  quantityIOS?: number;
+  originalTransactionDateIOS?: string;
+  originalTransactionIdentifierIOS?: string;
+}
+
+export interface RequestPurchaseIOS {
+  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
+  applicationUsername?: string;
+}
+
+// ----------
 
 type getItems = (skus: Sku[]) => Promise<Product[]>;
 type getAvailableItems = () => Promise<Purchase[]>;
 
 export type BuyProduct = (
   sku: Sku,
-  andDangerouslyFinishTransactionAutomaticallyIOS: boolean,
-  applicationUsername?: string,
+  andDangerouslyFinishTransactionAutomaticallyIOS: RequestPurchaseIOS['andDangerouslyFinishTransactionAutomaticallyIOS'],
+  applicationUsername?: RequestPurchaseIOS['applicationUsername'],
 ) => Promise<void>;
 
 type buyProductWithOffer = (
   sku: Sku,
   forUser: string,
-  withOffer: PaymentDiscount,
+  withOffer: PaymentDiscountIOS,
 ) => Promise<void>;
 
 type buyProductWithQuantity = (
@@ -196,7 +265,7 @@ export const requestPurchaseWithOfferIOS = (
   forUser: string,
 
   /** The offer information */
-  withOffer: PaymentDiscount,
+  withOffer: PaymentDiscountIOS,
 ) => IosModule.buyProductWithOffer(sku, forUser, withOffer);
 
 /**

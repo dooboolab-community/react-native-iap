@@ -5,7 +5,6 @@ import {
   ProductProduct,
   ProductPurchase,
   ProductType,
-  PurchaseStateAndroid,
   RequestPurchase,
   RequestSubscription,
   Sku,
@@ -14,7 +13,7 @@ import {
 } from '../types';
 
 import {AmazonModule} from './amazon';
-import {AndroidModule} from './android';
+import {AndroidModule, PurchaseStateAndroid} from './android';
 import {IosModule} from './ios';
 
 export const NativeModule = isAndroid ? AndroidModule : IosModule;
@@ -163,6 +162,16 @@ export const requestPurchase = ({
 
   /** The purchaser's user ID */
   applicationUsername,
+
+  /**
+   * Android Billing V5
+   */
+  skus,
+
+  /**
+   * Android Billing V5
+   */
+  isOfferPersonalized,
 }: RequestPurchase) =>
   Platform.select({
     ios: async () => {
@@ -181,11 +190,13 @@ export const requestPurchase = ({
     android: async () =>
       await AndroidModule.buyItemByType(
         ProductType.inapp,
-        sku,
+        skus?.length ? skus : [sku],
         null,
-        0,
+        -1,
         obfuscatedAccountIdAndroid,
         obfuscatedProfileIdAndroid,
+        undefined,
+        isOfferPersonalized ?? false,
       ),
     default: Promise.resolve,
   })();
@@ -223,6 +234,16 @@ export const requestSubscription = ({
 
   /** The purchaser's user ID */
   applicationUsername,
+
+  /**
+   * Android Billing V5
+   */
+  subscriptionOffers,
+
+  /**
+   * Android Billing V5
+   */
+  isOfferPersonalized,
 }: RequestSubscription) =>
   Platform.select({
     ios: async () => {
@@ -238,15 +259,28 @@ export const requestSubscription = ({
         applicationUsername,
       );
     },
-    android: async () =>
-      await AndroidModule.buyItemByType(
+    android: async () => {
+      if (AmazonModule) {
+        return await AmazonModule.buyItemByType(sku);
+      }
+
+      if (!subscriptionOffers?.length) {
+        return Promise.reject(
+          'subscriptionOffers are required for Google Play Subscriptions',
+        );
+      }
+
+      return await AndroidModule.buyItemByType(
         ProductType.subs,
-        sku,
+        subscriptionOffers?.map((so) => so.sku),
         purchaseTokenAndroid,
         prorationModeAndroid,
         obfuscatedAccountIdAndroid,
         obfuscatedProfileIdAndroid,
-      ),
+        subscriptionOffers?.map((so) => so.offerToken),
+        isOfferPersonalized ?? false,
+      );
+    },
     default: Promise.resolve,
   })();
 

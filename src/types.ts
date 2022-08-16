@@ -1,11 +1,16 @@
 import type {
-  IosModuleProps,
-  AndroidModuleProps,
   AmazonModuleProps,
-  BuyItemByType,
-  BuyProduct,
-  UserDataAmazon,
-} from '../modules';
+  AndroidModuleProps,
+  IosModuleProps,
+  ProductPurchaseAmazon,
+  ProductPurchaseAndroid,
+  ProductPurchaseIos,
+  RequestPurchaseAndroid,
+  RequestPurchaseIOS,
+  RequestSubscriptionAndroid,
+  SubscriptionAndroid,
+  SubscriptionIOS,
+} from './modules';
 
 /** Sku is a string that uniquely identifies a product/subscription */
 export type Sku = string;
@@ -25,25 +30,6 @@ export enum ProductType {
 
   /** Consumable */
   iap = 'iap',
-}
-
-enum PaymentMethodIOS {
-  'FREETRIAL' = 'FREETRIAL',
-  'PAYASYOUGO' = 'PAYASYOUGO',
-  'PAYUPFRONT' = 'PAYUPFRONT',
-}
-
-enum PeriodUnitIOS {
-  'DAY' = 'DAY',
-  'WEEK' = 'WEEK',
-  'MONTH' = 'MONTH',
-  'YEAR' = 'YEAR',
-}
-
-export enum PurchaseStateAndroid {
-  UNSPECIFIED_STATE = 0,
-  PURCHASED = 1,
-  PENDING = 2,
 }
 
 /**
@@ -66,19 +52,10 @@ export interface NativeModuleProps {
 /**
  * Product or subscription item payload.
  */
-export interface Discount {
-  identifier: string;
-  type: string;
-  numberOfPeriods: string;
-  price: string;
-  localizedPrice: string;
-  paymentMode: PaymentMethodIOS | '';
-  subscriptionPeriod: string;
-}
-
 export interface ProductCommon {
   type: ProductType;
   productId: string;
+  productIds?: string[];
   title: string;
   description: string;
   price: string;
@@ -87,44 +64,31 @@ export interface ProductCommon {
   countryCode?: string;
 }
 
+/**
+ * Android V5
+ */
+
 export interface ProductProduct extends ProductCommon {
   type: ProductType.inapp | ProductType.iap;
-}
-
-export interface SubscriptionProduct extends ProductCommon {
-  type: ProductType.subs | ProductType.sub;
-  discounts?: Discount[];
-  introductoryPrice?: string;
-  introductoryPriceAsAmountIOS?: string;
-  introductoryPricePaymentModeIOS?: PaymentMethodIOS | '';
-  introductoryPriceNumberOfPeriodsIOS?: string;
-  introductoryPriceSubscriptionPeriodIOS?: PeriodUnitIOS | '';
-  subscriptionPeriodNumberIOS?: string;
-  subscriptionPeriodUnitIOS?: PeriodUnitIOS | '';
-  introductoryPriceAsAmountAndroid: string;
-  introductoryPriceCyclesAndroid?: string;
-  introductoryPricePeriodAndroid?: string;
-  subscriptionPeriodAndroid?: string;
-  freeTrialPeriodAndroid?: string;
 }
 
 /** Union type for products (consumable, non-consumable) and subscriptions */
 export type Product = ProductProduct | SubscriptionProduct;
 
+/** Union type for subscriptions */
+export type SubscriptionProduct = SubscriptionAndroid & SubscriptionIOS;
+
 /** Interface when purchasing a product */
-export interface RequestPurchase {
+export interface RequestPurchaseCommon {
   sku: Sku;
-  andDangerouslyFinishTransactionAutomaticallyIOS?: Parameters<BuyProduct>[1];
-  applicationUsername?: Parameters<BuyProduct>[2];
-  obfuscatedAccountIdAndroid?: Parameters<BuyItemByType>[4];
-  obfuscatedProfileIdAndroid?: Parameters<BuyItemByType>[5];
 }
 
+export type RequestPurchase = RequestPurchaseCommon &
+  RequestPurchaseAndroid &
+  RequestPurchaseIOS;
+
 /** Interface when purchasing a subscription */
-export interface RequestSubscription extends RequestPurchase {
-  purchaseTokenAndroid?: Parameters<BuyItemByType>[2];
-  prorationModeAndroid?: Parameters<BuyItemByType>[3];
-}
+export type RequestSubscription = RequestPurchase & RequestSubscriptionAndroid;
 
 /**
  * Product or subscription purchase response payload.
@@ -136,28 +100,6 @@ export interface ProductPurchaseCommon {
   transactionDate: number;
   transactionReceipt: string;
   purchaseToken?: string;
-}
-
-interface ProductPurchaseIos {
-  quantityIOS?: number;
-  originalTransactionDateIOS?: string;
-  originalTransactionIdentifierIOS?: string;
-}
-
-interface ProductPurchaseAndroid {
-  dataAndroid?: string;
-  signatureAndroid?: string;
-  autoRenewingAndroid?: boolean;
-  purchaseStateAndroid?: PurchaseStateAndroid;
-  isAcknowledgedAndroid?: boolean;
-  packageNameAndroid?: string;
-  developerPayloadAndroid?: string;
-  obfuscatedAccountIdAndroid?: string;
-  obfuscatedProfileIdAndroid?: string;
-}
-
-interface ProductPurchaseAmazon extends UserDataAmazon {
-  isCanceledAmazon?: boolean;
 }
 
 export type ProductPurchase = ProductPurchaseCommon &

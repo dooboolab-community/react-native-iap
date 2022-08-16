@@ -96,7 +96,10 @@ class RootComponent extends Component<*> {
 
 Then define the method like below and call it when user press the button.
 
+For one-time products:
+
 ```tsx
+class App extends Component {
   requestPurchase = async (sku: string) => {
     try {
       await RNIap.requestPurchase({
@@ -106,43 +109,55 @@ Then define the method like below and call it when user press the button.
     } catch (error) {
       console.warn(error.code, error.message);
     }
-  }
+  };
 
-  requestSubscription = async (sku: string, offerToken: string?) => {
-    try {
-      await RNIap.requestSubscription({ sku }, ...(offerToken && { subscriptionOffers: { sku, offerToken } }));
-    } catch (error) {
-      console.warn(error.code, error.message);
-    }
-  }
-  /**
-   * For one-time products
-   */
   render() {
     return (
       <Pressable onPress={() => this.requestPurchase(product.productId)}>
         {/* ... */}
       </Pressable>
-    )
+    );
   }
-  /**
-   * For subscriptions products
-   */
+}
+```
+
+For subscriptions products
+
+```tsx
+class App extends Component {
+  requestSubscription = async (sku: string, offerToken: string?) => {
+    try {
+      await RNIap.requestSubscription(
+        {sku},
+        ...(offerToken && {subscriptionOffers: {sku, offerToken}}),
+      );
+    } catch (error) {
+      console.warn(error.code, error.message);
+    }
+  };
+
   render() {
-    if(Platform.OS =='android'){
-      return product.subscriptionOfferDetails.map((offer) =>
-        <Pressable onPress={() => this.requestSubscription(product.productId, offer.offerToken)}>
+    if (Platform.OS === 'android') {
+      return product.subscriptionOfferDetails.map((offer) => (
+        <Pressable
+          onPress={() =>
+            this.requestSubscription(product.productId, offer.offerToken)
+          }
+        >
           {/* ... */}
         </Pressable>
-        )
-    }else{
+      ));
+    } else {
       return (
-        <Pressable onPress={() => this.requestSubscription(product.productId, null)}>
+        <Pressable
+          onPress={() => this.requestSubscription(product.productId, null)}
+        >
           {/* ... */}
         </Pressable>
-        )
+      );
     }
   }
+}
 ```
 
 ## New Purchase Flow

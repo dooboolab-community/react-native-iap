@@ -6,15 +6,44 @@ import type {
   Product,
   Purchase,
   PurchaseToken,
-  ReceiptType,
   Sku,
 } from '../types';
+
+/**
+ * @see {@link https://developer.amazon.com/es/docs/in-app-purchasing/iap-rvs-examples.html}
+ **/
+interface ReceiptTypeAmazon {
+  autoRenewing: boolean;
+  betaProduct: boolean;
+  cancelDate: number | null;
+  cancelReason: string;
+  deferredDate: number | null;
+  deferredSku: number | null;
+  freeTrialEndDate: number;
+  gracePeriodEndDate: number;
+  parentProductId: string;
+  productId: string;
+  productType: string;
+  purchaseDate: number;
+  quantity: number;
+  receiptId: string;
+  renewalDate: number;
+  term: string;
+  termSku: Sku;
+  testTransaction: boolean;
+}
 
 export interface UserDataAmazon {
   userIdAmazon?: string;
   userMarketplaceAmazon?: string;
   userJsonAmazon?: string;
 }
+
+export interface ProductPurchaseAmazon extends UserDataAmazon {
+  isCanceledAmazon?: boolean;
+}
+
+// ----------
 
 type GetUser = () => Promise<UserDataAmazon>;
 type FlushFailedPurchasesCachedAsPending = () => Promise<void>;
@@ -79,5 +108,5 @@ export const validateReceiptAmazon = async (
   const sandBoxUrl = useSandbox ? 'sandbox/' : '';
   const url = `https://appstore-sdk.amazon.com/${sandBoxUrl}version/1.0/verifyReceiptId/developer/${developerSecret}/user/${userId}/receiptId/${receiptId}`;
 
-  return await enhancedFetch<ReceiptType>(url);
+  return await enhancedFetch<ReceiptTypeAmazon>(url);
 };

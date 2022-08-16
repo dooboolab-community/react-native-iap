@@ -8,6 +8,7 @@ import {enhancedFetch, errorProxy, isAndroid, linkingError} from '../internal';
 import type {
   NativeModuleProps,
   Product,
+  ProductCommon,
   ProductType,
   Purchase,
   PurchaseToken,
@@ -22,12 +23,79 @@ export enum ProrationModesAndroid {
   DEFERRED = 4,
 }
 
+export enum PurchaseStateAndroid {
+  UNSPECIFIED_STATE = 0,
+  PURCHASED = 1,
+  PENDING = 2,
+}
+
 export interface PurchaseResult {
   responseCode?: number;
   debugMessage?: string;
   code?: string;
   message?: string;
 }
+
+interface OneTimePurchaseOfferDetails {
+  priceCurrencyCode: string;
+  formattedPrice: string;
+  priceAmountMicros: string;
+}
+
+interface PricingPhaseList {
+  formattedPrice: string;
+  priceCurrencyCode: string;
+  /**
+   * P1W, P1M, P1Y
+   */
+  billingPeriod: string;
+  billingCycleCount: number;
+  priceAmountMicros: string;
+  recurrenceMode: number;
+}
+
+interface SubscriptionOfferDetails {
+  offerToken: string;
+  pricingPhases: {
+    pricingPhaseList: PricingPhaseList[];
+  };
+}
+
+export interface SubscriptionAndroid extends ProductCommon {
+  type: ProductType.sub | ProductType.subs;
+  productType?: string;
+  name?: string;
+  subscriptionOfferDetails?: SubscriptionOfferDetails[];
+}
+
+export interface ProductAndroid extends ProductCommon {
+  oneTimePurchaseOfferDetails?: OneTimePurchaseOfferDetails;
+}
+
+export interface ProductPurchaseAndroid {
+  productIds?: string[];
+  dataAndroid?: string;
+  signatureAndroid?: string;
+  autoRenewingAndroid?: boolean;
+  purchaseStateAndroid?: PurchaseStateAndroid;
+  isAcknowledgedAndroid?: boolean;
+  packageNameAndroid?: string;
+  developerPayloadAndroid?: string;
+  obfuscatedAccountIdAndroid?: string;
+  obfuscatedProfileIdAndroid?: string;
+}
+
+export interface RequestPurchaseAndroid {
+  obfuscatedAccountIdAndroid?: string;
+  obfuscatedProfileIdAndroid?: string;
+}
+
+export interface RequestSubscriptionAndroid {
+  purchaseTokenAndroid?: PurchaseToken;
+  prorationModeAndroid?: ProrationModesAndroid;
+}
+
+// -----------
 
 type FlushFailedPurchasesCachedAsPending = () => Promise<void>;
 
