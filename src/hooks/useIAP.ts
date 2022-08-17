@@ -4,10 +4,8 @@ import {
   finishTransaction as iapFinishTransaction,
   getAvailablePurchases as iapGetAvailablePurchases,
   getProducts as iapGetProducts,
-  getPurchaseHistory,
+  getPurchaseHistory as iapGetPurchaseHistory,
   getSubscriptions as iapGetSubscriptions,
-  requestPurchase as iapRequestPurchase,
-  requestSubscription as iapRequestSubscription,
 } from '../iap';
 import type {PurchaseError} from '../purchaseError';
 import type {Product, Purchase, Subscription} from '../types';
@@ -19,7 +17,7 @@ type IAP_STATUS = {
   products: Product[];
   promotedProductsIOS: Product[];
   subscriptions: Subscription[];
-  purchaseHistories: Purchase[];
+  purchaseHistory: Purchase[];
   availablePurchases: Purchase[];
   currentPurchase?: Purchase;
   currentPurchaseError?: PurchaseError;
@@ -30,11 +28,9 @@ type IAP_STATUS = {
     developerPayloadAndroid?: string,
   ) => Promise<string | void>;
   getAvailablePurchases: () => Promise<void>;
-  getPurchaseHistories: () => Promise<void>;
+  getPurchaseHistory: () => Promise<void>;
   getProducts: (skus: string[]) => Promise<void>;
   getSubscriptions: (skus: string[]) => Promise<void>;
-  requestPurchase: typeof iapRequestPurchase;
-  requestSubscription: typeof iapRequestSubscription;
 };
 
 export function useIAP(): IAP_STATUS {
@@ -43,7 +39,7 @@ export function useIAP(): IAP_STATUS {
     products,
     promotedProductsIOS,
     subscriptions,
-    purchaseHistories,
+    purchaseHistory,
     availablePurchases,
     currentPurchase,
     currentPurchaseError,
@@ -51,7 +47,7 @@ export function useIAP(): IAP_STATUS {
     setProducts,
     setSubscriptions,
     setAvailablePurchases,
-    setPurchaseHistories,
+    setPurchaseHistory,
     setCurrentPurchase,
     setCurrentPurchaseError,
   } = useIAPContext();
@@ -74,9 +70,9 @@ export function useIAP(): IAP_STATUS {
     setAvailablePurchases(await iapGetAvailablePurchases());
   }, [setAvailablePurchases]);
 
-  const getPurchaseHistories = useCallback(async (): Promise<void> => {
-    setPurchaseHistories(await getPurchaseHistory());
-  }, [setPurchaseHistories]);
+  const getPurchaseHistory = useCallback(async (): Promise<void> => {
+    setPurchaseHistory(await iapGetPurchaseHistory());
+  }, [setPurchaseHistory]);
 
   const finishTransaction = useCallback(
     async (
@@ -115,7 +111,7 @@ export function useIAP(): IAP_STATUS {
     products,
     promotedProductsIOS,
     subscriptions,
-    purchaseHistories,
+    purchaseHistory,
     availablePurchases,
     currentPurchase,
     currentPurchaseError,
@@ -124,8 +120,6 @@ export function useIAP(): IAP_STATUS {
     getProducts,
     getSubscriptions,
     getAvailablePurchases,
-    getPurchaseHistories,
-    requestPurchase: iapRequestPurchase,
-    requestSubscription: iapRequestSubscription,
+    getPurchaseHistory,
   };
 }

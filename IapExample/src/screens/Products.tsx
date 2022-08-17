@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {PurchaseError, Sku, useIAP} from 'react-native-iap';
+import {PurchaseError, requestPurchase, Sku, useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {
@@ -22,7 +22,6 @@ export const Products = () => {
     initConnectionError,
     finishTransaction,
     getProducts,
-    requestPurchase,
   } = useIAP();
 
   const handleGetProducts = async () => {
