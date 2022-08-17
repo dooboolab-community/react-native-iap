@@ -19,6 +19,7 @@ import type {
   PurchaseResult,
   RequestPurchase,
   RequestSubscription,
+  Sku,
   Subscription,
   SubscriptionPurchase,
 } from './types';
@@ -376,7 +377,7 @@ export const requestSubscription = ({
  * @returns {Promise<void>}
  */
 export const requestPurchaseWithQuantityIOS = (
-  sku: string,
+  sku: Sku,
   quantity: number,
 ): Promise<InAppPurchase> =>
   getIosModule().buyProductWithQuantityIOS(sku, quantity);
@@ -466,7 +467,7 @@ export const acknowledgePurchaseAndroid = (
  * @returns {Promise<void>}
  */
 export const deepLinkToSubscriptionsAndroid = async (
-  sku: string,
+  sku: Sku,
 ): Promise<void> => {
   checkNativeAndroidAvailable();
 
@@ -551,7 +552,7 @@ const requestAgnosticReceiptValidationIos = async (
  * @returns {Promise<void>}
  */
 export const requestPurchaseWithOfferIOS = (
-  sku: string,
+  sku: Sku,
   forUser: string,
   withOffer: Apple.PaymentDiscount,
 ): Promise<void> => getIosModule().buyProductWithOffer(sku, forUser, withOffer);

@@ -1,13 +1,12 @@
 import React from 'react';
 import {Platform, ScrollView, StyleSheet, View} from 'react-native';
-import {PurchaseError, useIAP} from 'react-native-iap';
+import {PurchaseError, requestSubscription, useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {constants, contentContainerStyle, errorLog} from '../utils';
 
 export const Subscriptions = () => {
-  const {connected, subscriptions, getSubscriptions, requestSubscription} =
-    useIAP();
+  const {connected, subscriptions, getSubscriptions} = useIAP();
 
   const handleGetSubscriptions = async () => {
     try {
