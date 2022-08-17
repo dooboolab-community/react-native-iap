@@ -50,20 +50,24 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     }
   }
 
+  func addTransaction(_ transaction: Transaction) {
+    let transactionId = String(transaction.id)
+    self.transactions[transactionId] = transaction
+  }
+
   func listenForTransactions() -> Task<Void, Error> {
     return Task.detached {
       // Iterate through any transactions that don't come from a direct call to `purchase()`.
       for await result in Transaction.updates {
         do {
           let transaction = try self.checkVerified(result)
+          self.addTransaction(transaction)
           // Deliver products to the user.
-          await self.updateCustomerProductStatus()
-          let transactionId = String(transaction.id)
-          // Always finish a transaction.
-          self.transactions[transactionId] = transaction
+          // await self.updateCustomerProductStatus()
           if self.hasListeners {
             self.sendEvent(withName: "purchase-updated", body: transaction) // TODO: serialize transaction
           }
+          // Always finish a transaction.
           // await transaction.finish() //TODO: Document
         } catch {
           // StoreKit has a transaction that fails verification. Don't deliver content to the user.
@@ -115,6 +119,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
     let canMakePayments = AppStore.canMakePayments
+    addTransactionObserver()
     resolve(NSNumber(value: canMakePayments))
   }
   @objc public func endConnection(
@@ -222,21 +227,25 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
           options.insert(.quantity(quantity))
         }
 
-        let offerID = discountOffer["identifier"]
+        let offerID = discountOffer["identifier"] // TODO: Change names to match Native API
         let keyID = discountOffer["keyIdentifier"]
         let nonce = discountOffer["nonce"]
         let signature = discountOffer["signature"]
         let timestamp = discountOffer["timestamp"]
+
         if let offerID = offerID, let keyID = keyID, let nonce = nonce, let nonce = UUID(uuidString: nonce), let signature = signature, let signature = signature.data(using: .utf8), let timestamp = timestamp, let timestamp = Int(timestamp) {
           options.insert(.promotionalOffer(offerID: offerID, keyID: keyID, nonce: nonce, signature: signature, timestamp: timestamp ))
         }
         if let appAccountToken = appAccountToken, let appAccountToken = UUID(uuidString: appAccountToken) {
           options.insert(.appAccountToken(appAccountToken))
         }
+        debugMessage("Purchase Started")
 
         let result = try await product.purchase(options: options)
         switch result {
         case .success(let verification):
+          debugMessage("Purchase Successful")
+
           // Check whether the transaction is verified. If it isn't,
           // this function rethrows the verification error.
           let transaction = try checkVerified(verification)
@@ -245,18 +254,35 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
           // Do on JS :await updateCustomerProductStatus()
 
           // Always finish a transaction.
-          let transactionId = String(transaction.id)
           if andDangerouslyFinishTransactionAutomatically {
             await transaction.finish()
             resolve(nil)
           } else {
-            self.transactions[transactionId] = transaction
-            resolve(transactionId)
+            self.addTransaction(transaction)
+            resolve(transaction)
           }
           return
 
         case .userCancelled, .pending:
-          reject("", "", nil) // TODO
+          debugMessage("Deferred (awaiting approval via parental controls, etc.)")
+
+          if hasListeners {
+            let err = [
+              "debugMessage": "The payment was deferred (awaiting approval via parental controls for instance)",
+              "code": "E_DEFERRED_PAYMENT",
+              "message": "The payment was deferred (awaiting approval via parental controls for instance)",
+              "productId": sku,
+              "quantity": "\(quantity)"
+            ]
+
+            sendEvent(withName: "purchase-error", body: err)
+          }
+
+          reject(
+            "E_DEFERRED_PAYMENT",
+            "The payment was deferred for \(sku) (awaiting approval via parental controls for instance)",
+            nil)
+
           return
 
         default:
@@ -264,7 +290,26 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
           return
         }
       } catch {
-        reject("", "", nil)// TODO
+        debugMessage("Purchase Failed")
+
+        if hasListeners {
+          let code = IapErrors.E_PURCHASE_ERROR
+          let responseCode = code.rawValue
+          let err = [
+            "responseCode": responseCode,
+            "debugMessage": error.localizedDescription,
+            "code": "\(code.asInt())",
+            "message": error.localizedDescription,
+            "productId": sku
+          ]
+
+          sendEvent(withName: "purchase-error", body: err)
+        }
+
+        reject(
+          IapErrors.E_UNKNOWN.rawValue,
+          "Purchased failed for sku:\(sku): \(error.localizedDescription)",
+          error)
       }
     } else {
       reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
@@ -291,25 +336,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     }
   }
 
-  @objc public func clearTransaction(
-    _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
-    reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-  ) async {
-    countPendingTransaction = transactions.count
-
-    debugMessage("clear remaining Transactions (\(countPendingTransaction)). Call this before make a new transaction")
-
-    if countPendingTransaction > 0 {
-      addPromise(forKey: "cleaningTransactions", resolve: resolve, reject: reject)
-      for transaction in transactions {
-        await transaction.value.finish()
-        transactions.removeValue(forKey: transaction.key)
-      }
-    } else {
-      resolve(nil)
-    }
-  }
-
   @objc public func  promotedProduct(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
@@ -326,7 +352,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
       debugMessage("buy promoted product")
       SKPaymentQueue.default().add(promoPayment)
     } else {
-      reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
+      reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Invalid product ID.", nil)
     }
   }
 
@@ -335,11 +361,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
-    requestReceiptData(withBlock: refresh) { [self] receiptData, error in
+    requestReceiptData(withBlock: refresh) {  receiptData, error in
       if error == nil {
         resolve(receiptData?.base64EncodedString(options: []))
       } else {
-        reject(standardErrorCode(9), "Invalid receipt", nil)
+        reject(IapErrors.E_RECEIPT_FAILED.rawValue, "Invalid receipt", nil)
       }
     }
   }
@@ -348,8 +374,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     _ transactionIdentifier: String,
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-  ) {
-    finishTransaction(withIdentifier: transactionIdentifier)
+  ) async {
+    await transactions[transactionIdentifier]?.finish()
+    transactions.removeValue(forKey: transactionIdentifier)
     resolve(nil)
   }
 
@@ -357,28 +384,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
-    requestReceiptData(withBlock: false) { receiptData, _ in
-      var output: [AnyHashable] = []
-
-      if let receipt = receiptData {
-        let transactions = SKPaymentQueue.default().transactions
-
-        for item in transactions {
-          let timestamp = item.transactionDate?.millisecondsSince1970 == nil ? nil : String(item.transactionDate!.millisecondsSince1970)
-          let purchase = [
-            "transactionDate": timestamp,
-            "transactionId": item.transactionIdentifier,
-            "productId": item.payment.productIdentifier,
-            "quantity": "\(item.payment.quantity)",
-            "transactionReceipt": receipt.base64EncodedString(options: [])
-          ]
-
-          output.append(purchase)
-        }
-      }
-
-      resolve(output)
-    }
+    resolve(transactions.values)
   }
 
   /**
@@ -397,163 +403,20 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     #endif
   }
 
-  func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
-    for transaction in transactions {
-      switch transaction.transactionState {
-      case .purchasing:
-        debugMessage("Purchase Started")
-        break
-
-      case .purchased:
-        debugMessage("Purchase Successful")
-        // purchaseProcess(transaction)
-        break
-
-      case .restored:
-        debugMessage("Restored")
-        SKPaymentQueue.default().finishTransaction(transaction)
-        break
-
-      case .deferred:
-        debugMessage("Deferred (awaiting approval via parental controls, etc.)")
-
-        if hasListeners {
-          let err = [
-            "debugMessage": "The payment was deferred (awaiting approval via parental controls for instance)",
-            "code": "E_DEFERRED_PAYMENT",
-            "message": "The payment was deferred (awaiting approval via parental controls for instance)",
-            "productId": transaction.payment.productIdentifier,
-            "quantity": "\(transaction.payment.quantity)"
-          ]
-
-          sendEvent(withName: "purchase-error", body: err)
-        }
-
-        rejectPromises(
-          forKey: transaction.payment.productIdentifier,
-          code: "E_DEFERRED_PAYMENT",
-          message: "The payment was deferred (awaiting approval via parental controls for instance)",
-          error: nil)
-
-      case .failed:
-        debugMessage("Purchase Failed")
-
-        SKPaymentQueue.default().finishTransaction(transaction)
-
-        let nsError = transaction.error as NSError?
-
-        if hasListeners {
-          let code = nsError?.code
-          let responseCode = String(code ?? 0)
-          let err = [
-            "responseCode": responseCode,
-            "debugMessage": transaction.error?.localizedDescription,
-            "code": standardErrorCode(code),
-            "message": transaction.error?.localizedDescription,
-            "productId": transaction.payment.productIdentifier
-          ]
-
-          sendEvent(withName: "purchase-error", body: err)
-        }
-
-        rejectPromises(
-          forKey: transaction.payment.productIdentifier,
-          code: standardErrorCode(nsError?.code),
-          message: nsError?.localizedDescription,
-          error: nsError)
-
-        break
-      @unknown default:
-        fatalError()
-      }
-    }
-  }
-
-  func finishTransaction(withIdentifier transactionIdentifier: String?) {
-    let queue = SKPaymentQueue.default()
-
-    for transaction in queue.transactions {
-      if transaction.transactionIdentifier == transactionIdentifier {
-        SKPaymentQueue.default().finishTransaction(transaction)
-      }
-    }
-  }
-
-  func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
-    debugMessage("PaymentQueueRestoreCompletedTransactionsFinished")
-    var items = [[String: Any?]]()
-
-    for transaction in queue.transactions {
-      if transaction.transactionState == .restored || transaction.transactionState == .purchased {
-        getPurchaseData(transaction) { restored in
-          if let restored = restored {
-            items.append(restored)
-          }
-
-          SKPaymentQueue.default().finishTransaction(transaction)
-        }
-      }
-    }
-
-    resolvePromises(forKey: "availableItems", value: items)
-  }
-
-  func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
-    rejectPromises(
-      forKey: "availableItems",
-      code: standardErrorCode((error as NSError).code),
-      message: error.localizedDescription,
-      error: error)
-
-    debugMessage("restoreCompletedTransactionsFailedWithError")
-  }
-
-  func standardErrorCode(_ code: Int?) -> String? {
-    let descriptions = [
-      "E_UNKNOWN",
-      "E_SERVICE_ERROR",
-      "E_USER_CANCELLED",
-      "E_USER_ERROR",
-      "E_USER_ERROR",
-      "E_ITEM_UNAVAILABLE",
-      "E_REMOTE_ERROR",
-      "E_NETWORK_ERROR",
-      "E_SERVICE_ERROR",
-      "E_RECEIPT_FAILED",
-      "E_RECEIPT_FINISHED_FAILED"
-    ]
-
-    guard let code = code else {
-      return descriptions[0]
-    }
-
-    if code > descriptions.count - 1 || code < 0 { // Fix crash app without internet connection
-      return descriptions[0]
-    }
-
-    return descriptions[code]
-  }
-
-  func getPurchaseData(_ transaction: SKPaymentTransaction, withBlock block: @escaping (_ transactionDict: [String: Any]?) -> Void) {
-    requestReceiptData(withBlock: false) { receiptData, _ in
-      if receiptData == nil {
-        block(nil)
-      } else {
-        var purchase = [
-          "transactionDate": transaction.transactionDate?.millisecondsSince1970String,
-          "transactionId": transaction.transactionIdentifier,
-          "productId": transaction.payment.productIdentifier,
-          "transactionReceipt": receiptData?.base64EncodedString(options: [])
-        ]
-
-        // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
-        if let originalTransaction = transaction.original {
-          purchase["originalTransactionDateIOS"] = originalTransaction.transactionDate?.millisecondsSince1970String
-          purchase["originalTransactionIdentifierIOS"] = originalTransaction.transactionIdentifier
-        }
-
-        block(purchase as [String: Any])
-      }
+  enum IapErrors: String, CaseIterable {
+    case E_UNKNOWN = "E_UNKNOWN"
+    case E_SERVICE_ERROR = "E_SERVICE_ERROR"
+    case E_USER_CANCELLED = "E_USER_CANCELLED"
+    case E_USER_ERROR = "E_USER_ERROR"
+    case E_ITEM_UNAVAILABLE = "E_ITEM_UNAVAILABLE"
+    case E_REMOTE_ERROR = "E_REMOTE_ERROR"
+    case E_NETWORK_ERROR = "E_NETWORK_ERROR"
+    case E_RECEIPT_FAILED = "E_RECEIPT_FAILED"
+    case E_RECEIPT_FINISHED_FAILED = "E_RECEIPT_FINISHED_FAILED"
+    case E_DEVELOPER_ERROR = "E_DEVELOPER_ERROR"
+    case E_PURCHASE_ERROR = "E_PURCHASE_ERROR"
+    func asInt() -> Int {
+      return IapErrors.allCases.firstIndex(of: self)!
     }
   }
 
@@ -597,72 +460,4 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
 
     return receiptData
   }
-
-  func requestDidFinish(_ request: SKRequest) {
-    if request is SKReceiptRefreshRequest {
-      if isReceiptPresent() == true {
-        debugMessage("Receipt refreshed success")
-
-        if let receiptBlock = receiptBlock {
-          receiptBlock(receiptData(), nil)
-        }
-      } else if let receiptBlock = receiptBlock {
-        debugMessage("Finished but receipt refreshed failed")
-
-        let error = NSError(domain: "Receipt request finished but it failed!", code: 10, userInfo: nil)
-        receiptBlock(nil, error)
-      }
-
-      receiptBlock = nil
-    }
-  }
-
-  func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]) {
-    debugMessage("removedTransactions - countPendingTransactions \(countPendingTransaction)")
-
-    if countPendingTransaction > 0 {
-      countPendingTransaction -= transactions.count
-
-      if countPendingTransaction <= 0 {
-        resolvePromises(forKey: "cleaningTransactions", value: nil)
-        countPendingTransaction = 0
-      }
-    }
-  }
-    
-    // Promises:
-    func addPromise(forKey key: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-      var promises: [RNIapIosPromise]? = promisesByKey[key]
-
-      if promises == nil {
-        promises = []
-      }
-
-      promises?.append((resolve, reject))
-      promisesByKey[key] = promises
-    }
-
-    func resolvePromises(forKey key: String?, value: Any?) {
-      let promises: [RNIapIosPromise]? = promisesByKey[key ?? ""]
-
-      if let promises = promises {
-        for tuple in promises {
-          let resolveBlck = tuple.0
-          resolveBlck(value)
-        }
-        promisesByKey[key ?? ""] = nil
-      }
-    }
-
-    func rejectPromises(forKey key: String, code: String?, message: String?, error: Error?) {
-      let promises = promisesByKey[key]
-
-      if let promises = promises {
-        for tuple in promises {
-          let reject = tuple.1
-          reject(code, message, error)
-        }
-        promisesByKey[key] = nil
-      }
-    }
 }
