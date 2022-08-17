@@ -316,7 +316,7 @@ export const requestPurchase = ({
           -1,
           obfuscatedAccountIdAndroid,
           obfuscatedProfileIdAndroid,
-          undefined,
+          [],
           isOfferPersonalized ?? false,
         );
       },
