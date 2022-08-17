@@ -11,14 +11,13 @@ import {
   isAndroid,
 } from './internal';
 import type {
-  InAppPurchase,
   Product,
   ProductPurchase,
+  ProrationModesAndroid,
   PurchaseResult,
-  RequestPurchase,
-  RequestSubscription,
   Sku,
   Subscription,
+  SubscriptionOffer,
   SubscriptionPurchase,
 } from './types';
 import {InstallSourceAndroid, PurchaseStateAndroid} from './types';
@@ -105,7 +104,11 @@ export const flushFailedPurchasesCachedAsPendingAndroid = (): Promise<
  * @param {string[]} skus The item skus
  * @returns {Promise<Product[]>}
  */
-export const getProducts = (skus: string[]): Promise<Array<Product>> =>
+export const getProducts = ({
+  skus,
+}: {
+  skus: string[];
+}): Promise<Array<Product>> =>
   (
     Platform.select({
       ios: async () => {
@@ -132,7 +135,11 @@ export const getProducts = (skus: string[]): Promise<Array<Product>> =>
  * @param {string[]} skus The item skus
  * @returns {Promise<Subscription[]>}
  */
-export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
+export const getSubscriptions = ({
+  skus,
+}: {
+  skus: string[];
+}): Promise<Subscription[]> =>
   (
     Platform.select({
       ios: async () => {
@@ -156,10 +163,10 @@ export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
 
 /**
  * Gets an inventory of purchases made by the user regardless of consumption status
- * @returns {Promise<(InAppPurchase | SubscriptionPurchase)[]>}
+ * @returns {Promise<(ProductPurchase | SubscriptionPurchase)[]>}
  */
 export const getPurchaseHistory = (): Promise<
-  (InAppPurchase | SubscriptionPurchase)[]
+  (ProductPurchase | SubscriptionPurchase)[]
 > =>
   (
     Platform.select({
@@ -186,10 +193,10 @@ export const getPurchaseHistory = (): Promise<
 
 /**
  * Get all purchases made by the user (either non-consumable, or haven't been consumed yet)
- * @returns {Promise<(InAppPurchase | SubscriptionPurchase)[]>}
+ * @returns {Promise<(ProductPurchase | SubscriptionPurchase)[]>}
  */
 export const getAvailablePurchases = (): Promise<
-  (InAppPurchase | SubscriptionPurchase)[]
+  (ProductPurchase | SubscriptionPurchase)[]
 > =>
   (
     Platform.select({
@@ -223,18 +230,26 @@ export const getAvailablePurchases = (): Promise<
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
  * @param {string[]} [skus] Product Ids to purchase. Note that this is only for Android. iOS only uses a single SKU. If not provided, it'll default to using [sku] for backward-compatibility
  * @param {boolean} [isOfferPersonalized] Defaults to false, Only for Android V5
- * @returns {Promise<InAppPurchase>}
+ * @returns {Promise<ProductPurchase>}
  */
 
 export const requestPurchase = ({
-  sku,
+  skus,
   andDangerouslyFinishTransactionAutomaticallyIOS = false,
+  applicationUsername,
   obfuscatedAccountIdAndroid,
   obfuscatedProfileIdAndroid,
-  applicationUsername,
-  skus, // Android Billing V5
-  isOfferPersonalized = undefined, // Android Billing V5
-}: RequestPurchase): Promise<InAppPurchase> =>
+  isOfferPersonalized,
+}: {
+  // TODO: use typescript to define as `[Sku]` for iOS and `Sku[]` for Android
+  skus: Sku[];
+  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
+  applicationUsername?: string;
+  obfuscatedAccountIdAndroid?: string;
+  obfuscatedProfileIdAndroid?: string;
+  /** For Google Play Billing Library 5 https://developer.android.com/google/play/billing/integrate#personalized-price */
+  isOfferPersonalized?: boolean;
+}): Promise<ProductPurchase> =>
   (
     Platform.select({
       ios: async () => {
@@ -245,7 +260,7 @@ export const requestPurchase = ({
         }
 
         return getIosModule().buyProduct(
-          sku,
+          skus[0],
           andDangerouslyFinishTransactionAutomaticallyIOS,
           applicationUsername,
         );
@@ -253,7 +268,7 @@ export const requestPurchase = ({
       android: async () => {
         return getAndroidModule().buyItemByType(
           ANDROID_ITEM_TYPE_IAP,
-          skus?.length ? skus : [sku],
+          skus,
           null,
           -1,
           obfuscatedAccountIdAndroid,
@@ -280,14 +295,26 @@ export const requestPurchase = ({
 export const requestSubscription = ({
   sku,
   andDangerouslyFinishTransactionAutomaticallyIOS = false,
+  applicationUsername,
   purchaseTokenAndroid,
   prorationModeAndroid = -1,
+  subscriptionOffers,
   obfuscatedAccountIdAndroid,
   obfuscatedProfileIdAndroid,
-  subscriptionOffers = undefined, // Android Billing V5
-  isOfferPersonalized = undefined, // Android Billing V5
-  applicationUsername,
-}: RequestSubscription): Promise<SubscriptionPurchase | null> =>
+  isOfferPersonalized = undefined,
+}: {
+  sku?: Sku;
+  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
+  applicationUsername?: string;
+  purchaseTokenAndroid?: string;
+  prorationModeAndroid?: ProrationModesAndroid;
+  /** For Google Play Billing Library 5 */
+  subscriptionOffers?: SubscriptionOffer[];
+  obfuscatedAccountIdAndroid?: string;
+  obfuscatedProfileIdAndroid?: string;
+  /** For Google Play Billing Library 5 https://developer.android.com/google/play/billing/integrate#personalized-price */
+  isOfferPersonalized?: boolean;
+}): Promise<SubscriptionPurchase | null> =>
   (
     Platform.select({
       ios: async () => {
@@ -333,10 +360,13 @@ export const requestSubscription = ({
  * @param {string} sku The product's sku/ID
  * @returns {Promise<void>}
  */
-export const requestPurchaseWithQuantityIOS = (
-  sku: Sku,
-  quantity: number,
-): Promise<InAppPurchase> =>
+export const requestPurchaseWithQuantityIOS = ({
+  sku,
+  quantity,
+}: {
+  sku: Sku;
+  quantity: number;
+}): Promise<ProductPurchase> =>
   getIosModule().buyProductWithQuantityIOS(sku, quantity);
 
 /**
@@ -351,11 +381,15 @@ export const requestPurchaseWithQuantityIOS = (
  * @param {string} developerPayloadAndroid Android developerPayload.
  * @returns {Promise<string | void> }
  */
-export const finishTransaction = (
-  purchase: InAppPurchase | ProductPurchase,
-  isConsumable?: boolean,
-  developerPayloadAndroid?: string,
-): Promise<string | void> => {
+export const finishTransaction = ({
+  purchase,
+  isConsumable,
+  developerPayloadAndroid,
+}: {
+  purchase: ProductPurchase | ProductPurchase;
+  isConsumable?: boolean;
+  developerPayloadAndroid?: string;
+}): Promise<string | void> => {
   return (
     Platform.select({
       ios: async () => {
@@ -411,10 +445,13 @@ export const clearProductsIOS = (): Promise<void> =>
  * @param {string} token The product's token (on Android)
  * @returns {Promise<PurchaseResult | void>}
  */
-export const acknowledgePurchaseAndroid = (
-  token: string,
-  developerPayload?: string,
-): Promise<PurchaseResult | void> => {
+export const acknowledgePurchaseAndroid = ({
+  token,
+  developerPayload,
+}: {
+  token: string;
+  developerPayload?: string;
+}): Promise<PurchaseResult | void> => {
   return getAndroidModule().acknowledgePurchase(token, developerPayload);
 };
 
@@ -423,9 +460,11 @@ export const acknowledgePurchaseAndroid = (
  * @param {string} sku The product's SKU (on Android)
  * @returns {Promise<void>}
  */
-export const deepLinkToSubscriptionsAndroid = async (
-  sku: Sku,
-): Promise<void> => {
+export const deepLinkToSubscriptionsAndroid = async ({
+  sku,
+}: {
+  sku: Sku;
+}): Promise<void> => {
   checkNativeAndroidAvailable();
 
   return Linking.openURL(
@@ -492,11 +531,16 @@ const requestAgnosticReceiptValidationIos = async (
  * @param {number} withOffer.timestamp The timestamp of the signature
  * @returns {Promise<void>}
  */
-export const requestPurchaseWithOfferIOS = (
-  sku: Sku,
-  forUser: string,
-  withOffer: Apple.PaymentDiscount,
-): Promise<void> => getIosModule().buyProductWithOffer(sku, forUser, withOffer);
+export const requestPurchaseWithOfferIOS = ({
+  sku,
+  forUser,
+  withOffer,
+}: {
+  sku: Sku;
+  forUser: string;
+  withOffer: Apple.PaymentDiscount;
+}): Promise<void> =>
+  getIosModule().buyProductWithOffer(sku, forUser, withOffer);
 
 /**
  * Validate receipt for iOS.
@@ -504,10 +548,13 @@ export const requestPurchaseWithOfferIOS = (
  * @param {boolean} isTest whether this is in test environment which is sandbox.
  * @returns {Promise<Apple.ReceiptValidationResponse | false>}
  */
-export const validateReceiptIos = async (
-  receiptBody: Record<string, unknown>,
-  isTest?: boolean,
-): Promise<Apple.ReceiptValidationResponse | false> => {
+export const validateReceiptIos = async ({
+  receiptBody,
+  isTest,
+}: {
+  receiptBody: Record<string, unknown>;
+  isTest?: boolean;
+}): Promise<Apple.ReceiptValidationResponse | false> => {
   if (isTest == null) {
     return await requestAgnosticReceiptValidationIos(receiptBody);
   }
@@ -530,13 +577,19 @@ export const validateReceiptIos = async (
  * @param {boolean} isSub whether this is subscription or inapp. `true` for subscription.
  * @returns {Promise<object>}
  */
-export const validateReceiptAndroid = async (
-  packageName: string,
-  productId: string,
-  productToken: string,
-  accessToken: string,
-  isSub?: boolean,
-): Promise<Android.ReceiptType> => {
+export const validateReceiptAndroid = async ({
+  packageName,
+  productId,
+  productToken,
+  accessToken,
+  isSub,
+}: {
+  packageName: string;
+  productId: string;
+  productToken: string;
+  accessToken: string;
+  isSub?: boolean;
+}): Promise<Android.ReceiptType> => {
   const type = isSub ? 'subscriptions' : 'products';
 
   const url =
@@ -557,12 +610,17 @@ export const validateReceiptAndroid = async (
  * @param {boolean} useSandbox Defaults to true, use sandbox environment or production.
  * @returns {Promise<object>}
  */
-export const validateReceiptAmazon = async (
-  developerSecret: string,
-  userId: string,
-  receiptId: string,
-  useSandbox: boolean = true,
-): Promise<Amazon.ReceiptType> => {
+export const validateReceiptAmazon = async ({
+  developerSecret,
+  userId,
+  receiptId,
+  useSandbox = true,
+}: {
+  developerSecret: string;
+  userId: string;
+  receiptId: string;
+  useSandbox: boolean;
+}): Promise<Amazon.ReceiptType> => {
   const sandBoxUrl = useSandbox ? 'sandbox/' : '';
   const url = `https://appstore-sdk.amazon.com/${sandBoxUrl}version/1.0/verifyReceiptId/developer/${developerSecret}/user/${userId}/receiptId/${receiptId}`;
 
@@ -582,8 +640,11 @@ export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> =>
  * @param {forceRefresh?:boolean}
  * @returns {Promise<string>}
  */
-export const getReceiptIOS = async (forceRefresh?: boolean): Promise<string> =>
-  getIosModule().requestReceipt(forceRefresh ?? false);
+export const getReceiptIOS = async ({
+  forceRefresh,
+}: {
+  forceRefresh?: boolean;
+}): Promise<string> => getIosModule().requestReceipt(forceRefresh ?? false);
 
 /**
  * Launches a modal to register the redeem offer code in IOS.

@@ -22,15 +22,19 @@ type IAP_STATUS = {
   currentPurchase?: Purchase;
   currentPurchaseError?: PurchaseError;
   initConnectionError?: Error;
-  finishTransaction: (
-    purchase: Purchase,
-    isConsumable?: boolean,
-    developerPayloadAndroid?: string,
-  ) => Promise<string | void>;
+  finishTransaction: ({
+    purchase,
+    isConsumable,
+    developerPayloadAndroid,
+  }: {
+    purchase: Purchase;
+    isConsumable?: boolean;
+    developerPayloadAndroid?: string;
+  }) => Promise<string | void>;
   getAvailablePurchases: () => Promise<void>;
   getPurchaseHistory: () => Promise<void>;
-  getProducts: (skus: string[]) => Promise<void>;
-  getSubscriptions: (skus: string[]) => Promise<void>;
+  getProducts: ({skus}: {skus: string[]}) => Promise<void>;
+  getSubscriptions: ({skus}: {skus: string[]}) => Promise<void>;
 };
 
 export function useIAP(): IAP_STATUS {
@@ -53,15 +57,15 @@ export function useIAP(): IAP_STATUS {
   } = useIAPContext();
 
   const getProducts = useCallback(
-    async (skus: string[]): Promise<void> => {
-      setProducts(await iapGetProducts(skus));
+    async ({skus}: {skus: string[]}): Promise<void> => {
+      setProducts(await iapGetProducts({skus}));
     },
     [setProducts],
   );
 
   const getSubscriptions = useCallback(
-    async (skus: string[]): Promise<void> => {
-      setSubscriptions(await iapGetSubscriptions(skus));
+    async ({skus}: {skus: string[]}): Promise<void> => {
+      setSubscriptions(await iapGetSubscriptions({skus}));
     },
     [setSubscriptions],
   );
@@ -75,17 +79,21 @@ export function useIAP(): IAP_STATUS {
   }, [setPurchaseHistory]);
 
   const finishTransaction = useCallback(
-    async (
-      purchase: Purchase,
-      isConsumable?: boolean,
-      developerPayloadAndroid?: string,
-    ): Promise<string | void> => {
+    async ({
+      purchase,
+      isConsumable,
+      developerPayloadAndroid,
+    }: {
+      purchase: Purchase;
+      isConsumable?: boolean;
+      developerPayloadAndroid?: string;
+    }): Promise<string | void> => {
       try {
-        return await iapFinishTransaction(
+        return await iapFinishTransaction({
           purchase,
           isConsumable,
           developerPayloadAndroid,
-        );
+        });
       } catch (err) {
         throw err;
       } finally {

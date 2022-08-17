@@ -8,8 +8,8 @@ import {
 import {getPromotedProductIOS, initConnection} from '../iap';
 import type {PurchaseError} from '../purchaseError';
 import type {
-  InAppPurchase,
   Product,
+  ProductPurchase,
   Purchase,
   Subscription,
   SubscriptionPurchase,
@@ -121,7 +121,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
       }
 
       const purchaseUpdateSubscription = purchaseUpdatedListener(
-        async (purchase: InAppPurchase | SubscriptionPurchase) => {
+        async (purchase: ProductPurchase | SubscriptionPurchase) => {
           setCurrentPurchaseError(undefined);
           setCurrentPurchase(purchase);
         },
