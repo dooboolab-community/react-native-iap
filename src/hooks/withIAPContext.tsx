@@ -7,11 +7,11 @@ import {
   purchaseErrorListener,
   purchaseUpdatedListener,
 } from '../iap';
+import type {PurchaseError} from '../purchaseError';
 import type {
   InAppPurchase,
   Product,
   Purchase,
-  PurchaseError,
   Subscription,
   SubscriptionPurchase,
 } from '../types';

@@ -7,7 +7,8 @@ import {
   getPurchaseHistory as iapGetPurchaseHistory,
   getSubscriptions as iapGetSubscriptions,
 } from '../iap';
-import type {Product, Purchase, PurchaseError, Subscription} from '../types';
+import type {PurchaseError} from '../purchaseError';
+import type {Product, Purchase, Subscription} from '../types';
 
 import {useIAPContext} from './withIAPContext';
 

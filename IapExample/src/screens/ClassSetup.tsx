@@ -15,11 +15,11 @@ import {
   getAvailablePurchases,
   getProducts,
   getSubscriptions,
-  IapError,
   InAppPurchase,
   initConnection,
   Product,
   promotedProductListener,
+  PurchaseError,
   purchaseErrorListener,
   purchaseUpdatedListener,
   requestPurchase,
@@ -78,7 +78,7 @@ export class ClassSetup extends Component<{}, State> {
         await clearTransactionIOS();
       }
     } catch (error) {
-      if (error instanceof IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'finishTransaction', error});
@@ -97,7 +97,7 @@ export class ClassSetup extends Component<{}, State> {
 
             console.info('acknowledgeResult', acknowledgeResult);
           } catch (error) {
-            if (error instanceof IapError) {
+            if (error instanceof PurchaseError) {
               errorLog({message: `[${error.code}]: ${error.message}`, error});
             } else {
               errorLog({message: 'finishTransaction', error});
@@ -109,7 +109,7 @@ export class ClassSetup extends Component<{}, State> {
       },
     );
 
-    this.purchaseError = purchaseErrorListener((error: IapError) => {
+    this.purchaseError = purchaseErrorListener((error: PurchaseError) => {
       Alert.alert('purchase error', JSON.stringify(error));
     });
 
@@ -136,7 +136,7 @@ export class ClassSetup extends Component<{}, State> {
 
       this.setState({productList: products});
     } catch (error) {
-      if (error instanceof IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'getItems', error});
@@ -150,7 +150,7 @@ export class ClassSetup extends Component<{}, State> {
 
       this.setState({productList: products});
     } catch (error) {
-      if (error instanceof IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'getSubscriptions', error});
@@ -169,7 +169,7 @@ export class ClassSetup extends Component<{}, State> {
         });
       }
     } catch (error) {
-      if (error instanceof IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'getAvailablePurchases', error});
@@ -181,7 +181,7 @@ export class ClassSetup extends Component<{}, State> {
     try {
       requestPurchase({sku});
     } catch (error) {
-      if (error instanceof IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'requestPurchase', error});
@@ -193,7 +193,7 @@ export class ClassSetup extends Component<{}, State> {
     try {
       requestSubscription({sku});
     } catch (error) {
-      if (error instanceof IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'requestSubscription', error});
