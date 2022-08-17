@@ -13,11 +13,7 @@ export const Subscriptions = () => {
     try {
       await getSubscriptions(constants.subscriptionSkus);
     } catch (error) {
-      if (error instanceof PurchaseError) {
-        errorLog({message: `[${error.code}]: ${error.message}`, error});
-      } else {
-        errorLog({message: 'handleGetSubscriptions', error});
-      }
+      errorLog({message: 'handleGetSubscriptions', error});
     }
   };
 
