@@ -28,11 +28,7 @@ export const Products = () => {
     try {
       await getProducts(constants.productSkus);
     } catch (error) {
-      if (error instanceof PurchaseError) {
-        errorLog({message: `[${error.code}]: ${error.message}`, error});
-      } else {
-        errorLog({message: 'handleGetProducts', error});
-      }
+      errorLog({message: 'handleGetProducts', error});
     }
   };
 
