@@ -10,6 +10,7 @@ import {
 import RNIap, {
   InAppPurchase,
   Product,
+  PurchaseError,
   Subscription,
   SubscriptionPurchase,
 } from 'react-native-iap';
@@ -63,7 +64,7 @@ export class ClassSetup extends Component<{}, State> {
         await RNIap.clearTransactionIOS();
       }
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'finishTransaction', error});
@@ -82,7 +83,7 @@ export class ClassSetup extends Component<{}, State> {
 
             console.info('acknowledgeResult', acknowledgeResult);
           } catch (error) {
-            if (error instanceof RNIap.IapError) {
+            if (error instanceof PurchaseError) {
               errorLog({message: `[${error.code}]: ${error.message}`, error});
             } else {
               errorLog({message: 'finishTransaction', error});
@@ -94,11 +95,9 @@ export class ClassSetup extends Component<{}, State> {
       },
     );
 
-    this.purchaseError = RNIap.purchaseErrorListener(
-      (error: RNIap.IapError) => {
-        Alert.alert('purchase error', JSON.stringify(error));
-      },
-    );
+    this.purchaseError = RNIap.purchaseErrorListener((error: PurchaseError) => {
+      Alert.alert('purchase error', JSON.stringify(error));
+    });
 
     this.promotedProduct = RNIap.promotedProductListener((productId?: string) =>
       Alert.alert('Product promoted', productId),
@@ -123,7 +122,7 @@ export class ClassSetup extends Component<{}, State> {
 
       this.setState({productList: products});
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'getItems', error});
@@ -137,7 +136,7 @@ export class ClassSetup extends Component<{}, State> {
 
       this.setState({productList: products});
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'getSubscriptions', error});
@@ -156,7 +155,7 @@ export class ClassSetup extends Component<{}, State> {
         });
       }
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'getAvailablePurchases', error});
@@ -168,7 +167,7 @@ export class ClassSetup extends Component<{}, State> {
     try {
       RNIap.requestPurchase({sku});
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'requestPurchase', error});
@@ -180,7 +179,7 @@ export class ClassSetup extends Component<{}, State> {
     try {
       RNIap.requestSubscription({sku});
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'requestSubscription', error});

@@ -10,23 +10,19 @@ import type * as Amazon from './types/amazon';
 import type * as Android from './types/android';
 import type * as Apple from './types/apple';
 import {ReceiptValidationStatus} from './types/apple';
+import type {PurchaseError} from './purchaseError';
 import type {
   InAppPurchase,
   Product,
   ProductCommon,
   ProductPurchase,
-  PurchaseError,
   PurchaseResult,
   RequestPurchase,
   RequestSubscription,
   Subscription,
   SubscriptionPurchase,
 } from './types';
-import {
-  IAPErrorCode,
-  InstallSourceAndroid,
-  PurchaseStateAndroid,
-} from './types';
+import {InstallSourceAndroid, PurchaseStateAndroid} from './types';
 
 const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
 const isAndroid = Platform.OS === 'android';
@@ -34,13 +30,6 @@ const isAmazon = isAndroid && !!RNIapAmazonModule;
 const isIos = Platform.OS === 'ios';
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
-
-export class IapError implements PurchaseError {
-  constructor(public code?: string, public message?: string) {
-    this.code = code;
-    this.message = message;
-  }
-}
 
 export const getInstallSourceAndroid = (): InstallSourceAndroid => {
   return RNIapModule
@@ -58,7 +47,7 @@ export const setAndroidNativeModule = (
 
 const checkNativeAndroidAvailable = (): void => {
   if (!RNIapModule && !RNIapAmazonModule) {
-    throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
+    throw new Error('IAP_NOT_AVAILABLE');
   }
 };
 
@@ -74,7 +63,7 @@ const getAndroidModule = (): typeof RNIapModule | typeof RNIapAmazonModule => {
 
 const checkNativeIOSAvailable = (): void => {
   if (!RNIapIos) {
-    throw new Error(IAPErrorCode.E_IAP_NOT_AVAILABLE);
+    throw new Error('IAP_NOT_AVAILABLE');
   }
 };
 
