@@ -236,3 +236,89 @@ func getDiscountData(_ product: SKProduct) -> [[String: String?]]? {
 
   return mappedDiscounts
 }
+
+func serialize(_ p: Product) -> [String: Any?] {
+  return ["displayName": p.displayName,
+          "description": p.description,
+          "id": p.id,
+          "displayPrice": p.displayPrice,
+          "price": p.price,
+          "isFamilyShareable": p.isFamilyShareable,
+          "subscription": p.subscription?.subscriptionGroupID,
+          "jsonRepresentation": p.jsonRepresentation,
+          "debugDescription": p.debugDescription,
+          "subscription": serialize(p.subscription)
+  ]
+}
+
+func serialize(_ ot: Product.SubscriptionInfo?) -> String? {
+  return nil
+  // TODO:    switch ot{
+  //    case .none:
+  //        return nil
+  //    case .some(.promotional): return "promotional"
+  //    case .some(.introductory): return "introductory"
+  //    case .some(.code): return "code"
+  //    case .some(_): return nil
+  //
+  //    }
+}
+
+func serialize(_ t: Transaction) -> [String: Any?] {
+  return ["id": t.id,
+          "appBundleID": t.appBundleID,
+          "offerID": t.offerID,
+          "subscriptionGroupID": t.subscriptionGroupID,
+          "appAccountToken": t.appAccountToken,
+          "debugDescription": t.debugDescription,
+          "deviceVerification": t.deviceVerification,
+          "deviceVerificationNonce": t.deviceVerificationNonce,
+          "expirationDate": t.expirationDate,
+          "isUpgraded": t.isUpgraded,
+          "jsonRepresentation": t.jsonRepresentation,
+          "offerType": serialize(t.offerType),
+          "expirationDate": t.expirationDate,
+          "originalID": t.originalID,
+          "originalPurchaseDate": t.originalPurchaseDate,
+          "ownershipType": serialize(t.ownershipType),
+          "productType": serialize(t.productType),
+          "productID": t.productID,
+          "purchasedQuantity": t.purchasedQuantity,
+          "revocationDate": t.revocationDate,
+          "revocationReason": t.revocationReason,
+          "purchaseDate": t.purchaseDate,
+          "signedDate": t.signedDate,
+          "webOrderLineItemID": t.webOrderLineItemID
+  ]
+}
+
+func serialize(_ ot: Transaction.OfferType?) -> String? {
+  switch ot {
+  case .none:
+    return nil
+  case .some(.promotional): return "promotional"
+  case .some(.introductory): return "introductory"
+  case .some(.code): return "code"
+  case .some: return nil
+  }
+}
+func serialize(_ ot: Transaction.OwnershipType?) -> String? {
+  switch ot {
+  case .none:
+    return nil
+  case .some(.purchased): return "purchased"
+  case .some(.familyShared): return "familyShared"
+  case .some: return nil
+  }
+}
+func serialize(_ pt: Product.ProductType?) -> String? {
+  switch pt {
+  case .none:
+    return nil
+  case .some(.autoRenewable): return "autoRenewable"
+  case .some(.consumable): return "consumable"
+  case .some(.nonConsumable): return "nonConsumable"
+  case .some(.nonRenewable): return "nonRenewable"
+  case .some: return nil
+  }
+}

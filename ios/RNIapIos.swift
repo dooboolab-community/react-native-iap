@@ -10,7 +10,6 @@ extension SKProductsRequest {
 
 @objc(RNIapIos)
 class RNIapIos: RCTEventEmitter, SKRequestDelegate {
-  private var promisesByKey: [String: [RNIapIosPromise]]
   private var hasListeners = false
   private var pendingTransactionWithAutoFinish = false // TODO:
   private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
@@ -19,11 +18,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
   private var updateListenerTask: Task<Void, Error>?
   private var promotedPayment: SKPayment?
   private var promotedProduct: SKProduct?
-  private var productsRequest: SKProductsRequest?
-  private var countPendingTransaction: Int = 0
 
   override init() {
-    promisesByKey = [String: [RNIapIosPromise]]()
     products = [String: Product]()
     transactions = [String: Transaction]()
     super.init()
@@ -64,8 +60,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
           self.addTransaction(transaction)
           // Deliver products to the user.
           // await self.updateCustomerProductStatus()
+
           if self.hasListeners {
-            self.sendEvent(withName: "purchase-updated", body: transaction) // TODO: serialize transaction
+            self.sendEvent(withName: "purchase-updated", body: serialize(transaction))
           }
           // Always finish a transaction.
           // await transaction.finish() //TODO: Document
@@ -136,16 +133,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) async {
     do {
-      let products: [[String: Any]] = try await Product.products(for: skus).map({ (product: Product) -> [String: Any] in
-        var prod = [String: Any]()
-        prod["displayName"] = product.displayName
-        prod["description"] = product.description
-        prod["id"] = product.id
-        prod["displayPrice"] = product.displayPrice
-        prod["price"] = product.price
-        prod["isFamilyShareable"] = product.isFamilyShareable
-        prod["subscription"] = product.subscription?.subscriptionGroupID
-        return prod
+      let products: [[String: Any?]] = try await Product.products(for: skus).map({ (prod: Product) -> [String: Any?] in
+        return serialize(prod)
       })
       resolve(products)
     } catch {
