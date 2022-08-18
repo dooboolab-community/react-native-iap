@@ -10,11 +10,17 @@ import type * as Amazon from './types/amazon';
 import type * as Android from './types/android';
 import type * as Apple from './types/apple';
 import {ReceiptValidationStatus} from './types/apple';
+import {
+  enhancedFetch,
+  fillProductsWithAdditionalData,
+  isAmazon,
+  isAndroid,
+  isIos,
+} from './internal';
 import type {PurchaseError} from './purchaseError';
 import type {
   InAppPurchase,
   Product,
-  ProductCommon,
   ProductPurchase,
   PurchaseResult,
   RequestPurchase,
@@ -26,9 +32,6 @@ import type {
 import {InstallSourceAndroid, PurchaseStateAndroid} from './types';
 
 const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
-const isAndroid = Platform.OS === 'android';
-const isAmazon = isAndroid && !!RNIapAmazonModule;
-const isIos = Platform.OS === 'ios';
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
 
@@ -104,46 +107,6 @@ export const flushFailedPurchasesCachedAsPendingAndroid = (): Promise<
 > => getAndroidModule().flushFailedPurchasesCachedAsPending();
 
 /**
- * Fill products with additional data
- * @param {Array<ProductCommon>} products Products
- */
-const fillProductsAdditionalData = async (
-  products: Array<ProductCommon>,
-): Promise<Array<ProductCommon>> => {
-  // Amazon
-  if (RNIapAmazonModule) {
-    // On amazon we must get the user marketplace to detect the currency
-    const user = await RNIapAmazonModule.getUser();
-
-    const currencies = {
-      CA: 'CAD',
-      ES: 'EUR',
-      AU: 'AUD',
-      DE: 'EUR',
-      IN: 'INR',
-      US: 'USD',
-      JP: 'JPY',
-      GB: 'GBP',
-      IT: 'EUR',
-      BR: 'BRL',
-      FR: 'EUR',
-    };
-
-    const currency =
-      currencies[user.userMarketplaceAmazon as keyof typeof currencies];
-
-    // Add currency to products
-    products.forEach((product) => {
-      if (currency) {
-        product.currency = currency;
-      }
-    });
-  }
-
-  return products;
-};
-
-/**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
  * @param {string[]} skus The item skus
  * @returns {Promise<Product[]>}
@@ -165,7 +128,7 @@ export const getProducts = (skus: string[]): Promise<Array<Product>> =>
           skus,
         );
 
-        return fillProductsAdditionalData(products);
+        return fillProductsWithAdditionalData(products);
       },
     }) || Promise.resolve
   )();
@@ -192,7 +155,7 @@ export const getSubscriptions = (skus: string[]): Promise<Subscription[]> =>
           skus,
         );
 
-        return fillProductsAdditionalData(subscriptions);
+        return fillProductsWithAdditionalData(subscriptions);
       },
     }) || Promise.resolve
   )();
@@ -492,42 +455,26 @@ export const getPromotedProductIOS = (): Promise<Product | null> =>
 export const buyPromotedProductIOS = (): Promise<void> =>
   getIosModule().buyPromotedProduct();
 
-const fetchJsonOrThrow = async (
-  url: string,
-  receiptBody: Record<string, unknown>,
-): Promise<Apple.ReceiptValidationResponse | false> => {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(receiptBody),
-  });
-
-  if (!response.ok) {
-    throw Object.assign(new Error(response.statusText), {
-      statusCode: response.status,
-    });
-  }
-
-  return response.json();
-};
-
 const requestAgnosticReceiptValidationIos = async (
   receiptBody: Record<string, unknown>,
 ): Promise<Apple.ReceiptValidationResponse | false> => {
-  const response = await fetchJsonOrThrow(
+  const response = await enhancedFetch<Apple.ReceiptValidationResponse>(
     'https://buy.itunes.apple.com/verifyReceipt',
-    receiptBody,
+    {
+      method: 'POST',
+      body: receiptBody,
+    },
   );
 
   // Best practice is to check for test receipt and check sandbox instead
   // https://developer.apple.com/documentation/appstorereceipts/verifyreceipt
   if (response && response.status === ReceiptValidationStatus.TEST_RECEIPT) {
-    const testResponse = await fetchJsonOrThrow(
+    const testResponse = await enhancedFetch<Apple.ReceiptValidationResponse>(
       'https://sandbox.itunes.apple.com/verifyReceipt',
-      receiptBody,
+      {
+        method: 'POST',
+        body: receiptBody,
+      },
     );
 
     return testResponse;
@@ -575,9 +522,7 @@ export const validateReceiptIos = async (
     ? 'https://sandbox.itunes.apple.com/verifyReceipt'
     : 'https://buy.itunes.apple.com/verifyReceipt';
 
-  const response = await fetchJsonOrThrow(url, receiptBody);
-
-  return response;
+  return await enhancedFetch<Apple.ReceiptValidationResponse>(url);
 };
 
 /**
@@ -605,20 +550,7 @@ export const validateReceiptAndroid = async (
     `/${packageName}/purchases/${type}/${productId}` +
     `/tokens/${productToken}?access_token=${accessToken}`;
 
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    throw Object.assign(new Error(response.statusText), {
-      statusCode: response.status,
-    });
-  }
-
-  return response.json();
+  return await enhancedFetch<Android.ReceiptType>(url);
 };
 
 /**
@@ -640,20 +572,7 @@ export const validateReceiptAmazon = async (
   const sandBoxUrl = useSandbox ? 'sandbox/' : '';
   const url = `https://appstore-sdk.amazon.com/${sandBoxUrl}version/1.0/verifyReceiptId/developer/${developerSecret}/user/${userId}/receiptId/${receiptId}`;
 
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    throw Object.assign(new Error(response.statusText), {
-      statusCode: response.status,
-    });
-  }
-
-  return response.json();
+  return await enhancedFetch<Amazon.ReceiptType>(url);
 };
 
 /**
