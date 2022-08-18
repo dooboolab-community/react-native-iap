@@ -12,12 +12,9 @@ extension SKProductsRequest {
 class RNIapIos: RCTEventEmitter, SKRequestDelegate {
   private var hasListeners = false
   private var pendingTransactionWithAutoFinish = false // TODO:
-  private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
   private var products: [String: Product]
   private var transactions: [String: Transaction]
   private var updateListenerTask: Task<Void, Error>?
-  private var promotedPayment: SKPayment?
-  private var promotedProduct: SKProduct?
 
   override init() {
     products = [String: Product]()
@@ -62,7 +59,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
           // await self.updateCustomerProductStatus()
 
           if self.hasListeners {
-            self.sendEvent(withName: "purchase-updated", body: serialize(transaction))
+            self.sendEvent(withName: "transaction-updated", body: ["transaction": serialize(transaction)])
           }
           // Always finish a transaction.
           // await transaction.finish() //TODO: Document
@@ -70,15 +67,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
           // StoreKit has a transaction that fails verification. Don't deliver content to the user.
           print("Transaction failed verification")
           if self.hasListeners {
-            let err = [ // TODO: add info
+            let err = [
               "responseCode": "-1",
               "debugMessage": error.localizedDescription,
               "code": "E_RECEIPT_FINISHED_FAILED",
-              "message": error.localizedDescription,
-              "productId": ""
+              "message": error.localizedDescription
             ]
 
-            self.sendEvent(withName: "purchase-error", body: err)
+            self.sendEvent(withName: "transaction-updated", body: ["error": err])
           }
         }
       }
@@ -94,30 +90,18 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
   }
   override func addListener(_ eventName: String?) {
     super.addListener(eventName)
-
-    if (eventName == "iap-promoted-product") && promotedPayment != nil {
-      sendEvent(withName: "iap-promoted-product", body: promotedPayment?.productIdentifier)
-    }
-  }
-
-  func paymentQueue(_ queue: SKPaymentQueue, shouldAddStorePayment payment: SKPayment, for product: SKProduct) -> Bool {
-    promotedProduct = product
-    promotedPayment = payment
-    sendEvent(withName: "iap-promoted-product", body: product.productIdentifier)
-    return false
   }
 
   override func supportedEvents() -> [String]? {
-    return ["iap-promoted-product", "purchase-updated", "purchase-error"]
+    return [ "transaction-updated"]
   }
 
   @objc public func initConnection(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
-    let canMakePayments = AppStore.canMakePayments
     addTransactionObserver()
-    resolve(NSNumber(value: canMakePayments))
+    resolve(AppStore.canMakePayments)
   }
   @objc public func endConnection(
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
@@ -127,25 +111,27 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     updateListenerTask = nil
     resolve(nil)
   }
-  @objc public func getItems(
+
+  @objc public func products( // TODO: renamed from getItems
     _ skus: [String],
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) async {
     do {
-      let products: [[String: Any?]] = try await Product.products(for: skus).map({ (prod: Product) -> [String: Any?] in
+      let products: [[String: Any?]] = try await Product.products(for: skus).map({ (prod: Product) -> [String: Any?]? in
         return serialize(prod)
-      })
+      }).compactMap({$0})
       resolve(products)
     } catch {
-      reject("E_UNKNOWN", "Error fetching items", nil)
+      reject(IapErrors.E_UNKNOWN.rawValue, "Error fetching items", error)
     }
   }
-  @objc public func getAvailableItems(
+
+  @objc public func currentEntitlements( // TODO: renamed from getAvailableItems
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) async {
-    var purchasedItems: [Product] = []
+    var purchasedItems: [ProductOrError] = []
     // Iterate through all of the user's purchased products.
     for await result in Transaction.currentEntitlements {
       do {
@@ -155,12 +141,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
         switch transaction.productType {
         case .nonConsumable:
           if let product = products[transaction.productID] {
-            purchasedItems.append(product)
+            purchasedItems.append(ProductOrError(product: product, error: nil))
           }
 
         case .nonRenewable:
-          if let nonRenewable = products[transaction.productID],
-             transaction.productID == "nonRenewing.standard" {
+          if let nonRenewable = products[transaction.productID] {
             // Non-renewing subscriptions have no inherent expiration date, so they're always
             // contained in `Transaction.currentEntitlements` after the user purchases them.
             // This app defines this non-renewing subscription's expiration date to be one year after purchase.
@@ -171,21 +156,21 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
                                                                        to: transaction.purchaseDate)!
 
             if currentDate < expirationDate {
-              purchasedItems.append(nonRenewable)
+              purchasedItems.append(ProductOrError(product: nonRenewable, error: nil))
             }
           }
 
         case .autoRenewable:
           if let subscription = products[transaction.productID] {
-            purchasedItems.append(subscription)
+            purchasedItems.append(ProductOrError(product: subscription, error: nil))
           }
 
         default:
           break
         }
       } catch {
-        print()
-        reject("", "", nil) // TODO
+        print(error)
+        purchasedItems.append(ProductOrError(product: nil, error: error))
       }
     }
 
@@ -194,10 +179,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     // group, so products in the subscriptions array all belong to the same group. The statuses that
     // `product.subscription.status` returns apply to the entire subscription group.
     // subscriptionGroupStatus = try? await subscriptions.first?.subscription?.status.first?.state
-    resolve(purchasedItems)
+    resolve(purchasedItems.map({(p: ProductOrError) in ["product": p.product.flatMap { serialize($0)}, "error": serialize(p.error)]}))
   }
 
-  @objc public func buyProduct(
+  @objc public func purchase( // TODO: renamed from buyProduct
     _ sku: String,
     andDangerouslyFinishTransactionAutomatically: Bool,
     appAccountToken: String?,
@@ -216,8 +201,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
           options.insert(.quantity(quantity))
         }
 
-        let offerID = discountOffer["identifier"] // TODO: Change names to match Native API
-        let keyID = discountOffer["keyIdentifier"]
+        let offerID = discountOffer["offerID"] // TODO: Adjust JS to match these new names
+        let keyID = discountOffer["keyID"]
         let nonce = discountOffer["nonce"]
         let signature = discountOffer["signature"]
         let timestamp = discountOffer["timestamp"]
@@ -248,52 +233,43 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
             resolve(nil)
           } else {
             self.addTransaction(transaction)
-            resolve(transaction)
+            resolve(serialize(transaction))
           }
           return
 
         case .userCancelled, .pending:
           debugMessage("Deferred (awaiting approval via parental controls, etc.)")
 
-          if hasListeners {
-            let err = [
-              "debugMessage": "The payment was deferred (awaiting approval via parental controls for instance)",
-              "code": "E_DEFERRED_PAYMENT",
-              "message": "The payment was deferred (awaiting approval via parental controls for instance)",
-              "productId": sku,
-              "quantity": "\(quantity)"
-            ]
-
-            sendEvent(withName: "purchase-error", body: err)
-          }
+          let err = [
+            "debugMessage": "The payment was deferred (awaiting approval via parental controls for instance)",
+            "code": IapErrors.E_DEFERRED_PAYMENT.rawValue,
+            "message": "The payment was deferred (awaiting approval via parental controls for instance)",
+            "productId": sku,
+            "quantity": "\(quantity)"
+          ]
+          print(err)
 
           reject(
-            "E_DEFERRED_PAYMENT",
+            IapErrors.E_DEFERRED_PAYMENT.rawValue,
             "The payment was deferred for \(sku) (awaiting approval via parental controls for instance)",
             nil)
 
           return
 
         default:
-          reject("", "", nil)// TODO
+          reject(IapErrors.E_UNKNOWN.rawValue, "Unknown response from purchase", nil)
           return
         }
       } catch {
         debugMessage("Purchase Failed")
 
-        if hasListeners {
-          let code = IapErrors.E_PURCHASE_ERROR
-          let responseCode = code.rawValue
-          let err = [
-            "responseCode": responseCode,
-            "debugMessage": error.localizedDescription,
-            "code": "\(code.asInt())",
-            "message": error.localizedDescription,
-            "productId": sku
-          ]
-
-          sendEvent(withName: "purchase-error", body: err)
-        }
+        let err = [
+          "responseCode": IapErrors.E_PURCHASE_ERROR.rawValue,
+          "debugMessage": error.localizedDescription,
+          "message": error.localizedDescription,
+          "productId": sku
+        ]
+        print(err)
 
         reject(
           IapErrors.E_UNKNOWN.rawValue,
@@ -303,10 +279,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     } else {
       reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
     }
-  }
-
-  @MainActor
-  func updateCustomerProductStatus() async {
   }
 
   public enum StoreError: Error {
@@ -325,40 +297,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     }
   }
 
-  @objc public func  promotedProduct(
-    _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
-    reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-  ) {
-    debugMessage("get promoted product")
-    resolve((promotedProduct != nil) ? getProductObject(promotedProduct!) : nil)
-  }
-
-  @objc public func  buyPromotedProduct(
-    _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
-    reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-  ) {
-    if let promoPayment = promotedPayment {
-      debugMessage("buy promoted product")
-      SKPaymentQueue.default().add(promoPayment)
-    } else {
-      reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Invalid product ID.", nil)
-    }
-  }
-
-  @objc public func  requestReceipt(
-    _ refresh: Bool,
-    resolve: @escaping RCTPromiseResolveBlock = { _ in },
-    reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-  ) {
-    requestReceiptData(withBlock: refresh) {  receiptData, error in
-      if error == nil {
-        resolve(receiptData?.base64EncodedString(options: []))
-      } else {
-        reject(IapErrors.E_RECEIPT_FAILED.rawValue, "Invalid receipt", nil)
-      }
-    }
-  }
-
   @objc public func  finishTransaction(
     _ transactionIdentifier: String,
     resolve: @escaping RCTPromiseResolveBlock = { _ in },
@@ -373,7 +311,16 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
     reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
   ) {
-    resolve(transactions.values)
+    resolve(transactions.values.map({(t: Transaction) in serialize(t)}))
+  }
+
+  // TODO: New method
+  @objc public func  sync(_ resolve: @escaping RCTPromiseResolveBlock = { _ in}, reject: @escaping RCTPromiseRejectBlock = {_, _, _ in}) async {
+    do {
+      try await AppStore.sync()
+    } catch {
+      reject(IapErrors.E_SYNC_ERROR.rawValue, "Error synchronizing with the AppStore", error)
+    }
   }
 
   /**
@@ -390,63 +337,5 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     #else
     reject(standardErrorCode(2), "This method is not available on tvOS", nil)
     #endif
-  }
-
-  enum IapErrors: String, CaseIterable {
-    case E_UNKNOWN = "E_UNKNOWN"
-    case E_SERVICE_ERROR = "E_SERVICE_ERROR"
-    case E_USER_CANCELLED = "E_USER_CANCELLED"
-    case E_USER_ERROR = "E_USER_ERROR"
-    case E_ITEM_UNAVAILABLE = "E_ITEM_UNAVAILABLE"
-    case E_REMOTE_ERROR = "E_REMOTE_ERROR"
-    case E_NETWORK_ERROR = "E_NETWORK_ERROR"
-    case E_RECEIPT_FAILED = "E_RECEIPT_FAILED"
-    case E_RECEIPT_FINISHED_FAILED = "E_RECEIPT_FINISHED_FAILED"
-    case E_DEVELOPER_ERROR = "E_DEVELOPER_ERROR"
-    case E_PURCHASE_ERROR = "E_PURCHASE_ERROR"
-    func asInt() -> Int {
-      return IapErrors.allCases.firstIndex(of: self)!
-    }
-  }
-
-  func requestReceiptData(withBlock forceRefresh: Bool, withBlock block: @escaping (_ data: Data?, _ error: Error?) -> Void) {
-    debugMessage("requestReceiptDataWithBlock with force refresh: \(forceRefresh ? "YES" : "NO")")
-
-    if forceRefresh || isReceiptPresent() == false {
-      let refreshRequest = SKReceiptRefreshRequest()
-      refreshRequest.delegate = self
-      refreshRequest.start()
-      receiptBlock = block
-    } else {
-      receiptBlock = nil
-      block(receiptData(), nil)
-    }
-  }
-
-  func isReceiptPresent() -> Bool {
-    let receiptURL = Bundle.main.appStoreReceiptURL
-    var canReachError: Error?
-
-    do {
-      try _ = receiptURL?.checkResourceIsReachable()
-    } catch let error {
-      canReachError = error
-    }
-
-    return canReachError == nil
-  }
-
-  func receiptData() -> Data? {
-    let receiptURL = Bundle.main.appStoreReceiptURL
-    var receiptData: Data?
-
-    if let receiptURL = receiptURL {
-      do {
-        try receiptData = Data(contentsOf: receiptURL)
-      } catch _ {
-      }
-    }
-
-    return receiptData
   }
 }
