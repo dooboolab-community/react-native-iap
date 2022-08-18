@@ -1,10 +1,4 @@
-import {
-  EmitterSubscription,
-  Linking,
-  NativeEventEmitter,
-  NativeModules,
-  Platform,
-} from 'react-native';
+import {Linking, NativeModules, Platform} from 'react-native';
 
 import type * as Amazon from './types/amazon';
 import type * as Android from './types/android';
@@ -15,9 +9,7 @@ import {
   fillProductsWithAdditionalData,
   isAmazon,
   isAndroid,
-  isIos,
 } from './internal';
-import type {PurchaseError} from './purchaseError';
 import type {
   InAppPurchase,
   Product,
@@ -55,7 +47,9 @@ const checkNativeAndroidAvailable = (): void => {
   }
 };
 
-const getAndroidModule = (): typeof RNIapModule | typeof RNIapAmazonModule => {
+export const getAndroidModule = ():
+  | typeof RNIapModule
+  | typeof RNIapAmazonModule => {
   checkNativeAndroidAvailable();
 
   return androidNativeModule
@@ -71,13 +65,13 @@ const checkNativeIOSAvailable = (): void => {
   }
 };
 
-const getIosModule = (): typeof RNIapIos => {
+export const getIosModule = (): typeof RNIapIos => {
   checkNativeIOSAvailable();
 
   return RNIapIos;
 };
 
-const getNativeModule = ():
+export const getNativeModule = ():
   | typeof RNIapModule
   | typeof RNIapAmazonModule
   | typeof RNIapIos => {
@@ -573,52 +567,6 @@ export const validateReceiptAmazon = async (
   const url = `https://appstore-sdk.amazon.com/${sandBoxUrl}version/1.0/verifyReceiptId/developer/${developerSecret}/user/${userId}/receiptId/${receiptId}`;
 
   return await enhancedFetch<Amazon.ReceiptType>(url);
-};
-
-/**
- * Add IAP purchase event
- * @returns {callback(e: InAppPurchase | ProductPurchase)}
- */
-export const purchaseUpdatedListener = (
-  listener: (event: InAppPurchase | SubscriptionPurchase) => void,
-): EmitterSubscription => {
-  const emitterSubscription = new NativeEventEmitter(
-    getNativeModule(),
-  ).addListener('purchase-updated', listener);
-
-  if (isAndroid) {
-    getAndroidModule().startListening();
-  }
-
-  return emitterSubscription;
-};
-
-/**
- * Add IAP purchase error event
- * @returns {callback(e: PurchaseError)}
- */
-export const purchaseErrorListener = (
-  listener: (errorEvent: PurchaseError) => void,
-): EmitterSubscription =>
-  new NativeEventEmitter(getNativeModule()).addListener(
-    'purchase-error',
-    listener,
-  );
-
-/**
- * Add IAP promoted subscription event
- * Only available on iOS
- */
-export const promotedProductListener = (
-  listener: (productId?: string) => void,
-): EmitterSubscription | null => {
-  if (isIos) {
-    return new NativeEventEmitter(getIosModule()).addListener(
-      'iap-promoted-product',
-      listener,
-    );
-  }
-  return null;
 };
 
 /**

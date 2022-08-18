@@ -1,12 +1,11 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import {
-  getPromotedProductIOS,
-  initConnection,
   promotedProductListener,
   purchaseErrorListener,
   purchaseUpdatedListener,
-} from '../iap';
+} from '../eventEmitter';
+import {getPromotedProductIOS, initConnection} from '../iap';
 import type {PurchaseError} from '../purchaseError';
 import type {
   InAppPurchase,
