@@ -11,7 +11,6 @@ extension SKProductsRequest {
 @objc(RNIapIos)
 class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     private var hasListeners = false
-    private var pendingTransactionWithAutoFinish = false // TODO:
     private var products: [String: Product]
     private var transactions: [String: Transaction]
     private var updateListenerTask: Task<Void, Error>?
@@ -63,7 +62,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
                     // await transaction.finish() //TODO: Document
                 } catch {
                     // StoreKit has a transaction that fails verification. Don't deliver content to the user.
-                    print("Transaction failed verification")
+                    debugMessage("Transaction failed verification")
                     if self.hasListeners {
                         let err = [
                             "responseCode": "-1",
@@ -191,7 +190,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) async {
-        pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
         let product: Product? = products[sku]
 
         if let product = product {
@@ -247,7 +245,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
                         "productId": sku,
                         "quantity": "\(quantity)"
                     ]
-                    print(err)
+                    debugMessage(err)
 
                     reject(
                         IapErrors.E_DEFERRED_PAYMENT.rawValue,
@@ -371,8 +369,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     }
 
     // TODO: New method
-    @objc public func  sync(_ resolve: @escaping RCTPromiseResolveBlock = { _ in},
-                            reject: @escaping RCTPromiseRejectBlock = {_, _, _ in}
+    @objc public func sync(
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in},
+        reject: @escaping RCTPromiseRejectBlock = {_, _, _ in}
     ) async {
         do {
             try await AppStore.sync()
