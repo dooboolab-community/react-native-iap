@@ -37,10 +37,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     }
 
     func removeTransactionObserver() {
-        if updateListenerTask != nil {
-            updateListenerTask?.cancel()
-            updateListenerTask = nil
-        }
+        updateListenerTask?.cancel()
+        updateListenerTask = nil
     }
 
     func addTransaction(_ transaction: Transaction) {
@@ -53,7 +51,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
             // Iterate through any transactions that don't come from a direct call to `purchase()`.
             for await result in Transaction.updates {
                 do {
-                    let transaction = try self.checkVerified(result)
+                    let transaction = try checkVerified(result)
                     self.addTransaction(transaction)
                     // Deliver products to the user.
                     // await self.updateCustomerProductStatus()
@@ -168,8 +166,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
                 default:
                     break
                 }
+            } catch StoreError.failedVerification {
+                purchasedItems.append(ProductOrError(product: nil, error: StoreError.failedVerification))
             } catch {
-                print(error)
+                debugMessage(error)
                 purchasedItems.append(ProductOrError(product: nil, error: error))
             }
         }
@@ -281,19 +281,75 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
         }
     }
 
-    public enum StoreError: Error {
-        case failedVerification
+    @objc public func isEligibleForIntroOffer( // TODO: new method
+        _ groupID: String,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) async {
+        let isEligibleForIntroOffer = await Product.SubscriptionInfo.isEligibleForIntroOffer(for: groupID)
+        resolve(isEligibleForIntroOffer)
     }
-    func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
-        // Check whether the JWS passes StoreKit verification.
-        switch result {
-        case .unverified:
-            // StoreKit parses the JWS, but it fails verification.
-            throw StoreError.failedVerification
 
-        case .verified(let safe):
-            // The result is verified. Return the unwrapped value.
-            return safe
+    @objc public func subscriptionStatus( // TODO: new method
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) async {
+        do {
+            let status = try await products[sku]?.subscription?.status
+            resolve(status)
+        } catch {
+            reject("", "", error)
+        }
+    }
+
+    @objc public func currentEntitlement( // TODO: new method
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) async {
+        if let product = products[sku] {
+            if let result = await product.currentEntitlement {
+                do {
+                    // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
+                    let transaction = try checkVerified(result)
+                    resolve(serialize(transaction))
+                } catch StoreError.failedVerification {
+                    reject(IapErrors.E_UNKNOWN.rawValue, "Failed to verify transaction for sku \(sku)", StoreError.failedVerification)
+                } catch {
+                    debugMessage(error)
+                    reject(IapErrors.E_UNKNOWN.rawValue, "Error fetching entitlement for sku \(sku)", error)
+                }
+            } else {
+                reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Can't find entitlement for sku \(sku)", nil)
+            }
+        } else {
+            reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Can't find product for sku \(sku)", nil)
+        }
+    }
+
+    @objc public func latestTransaction( // TODO: new method
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) async {
+        if let product = products[sku] {
+            if let result = await product.latestTransaction {
+                do {
+                    // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
+                    let transaction = try checkVerified(result)
+                    resolve(serialize(transaction))
+                } catch StoreError.failedVerification {
+                    reject(IapErrors.E_UNKNOWN.rawValue, "Failed to verify transaction for sku \(sku)", StoreError.failedVerification)
+                } catch {
+                    debugMessage(error)
+                    reject(IapErrors.E_UNKNOWN.rawValue, "Error fetching latest transaction for sku \(sku)", error)
+                }
+            } else {
+                reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Can't find latest transaction for sku \(sku)", nil)
+            }
+        } else {
+            reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Can't find product for sku \(sku)", nil)
         }
     }
 
@@ -307,7 +363,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
         resolve(nil)
     }
 
-    @objc public func getPendingTransactions (
+    @objc public func pendingTransactions (
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
@@ -315,7 +371,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
     }
 
     // TODO: New method
-    @objc public func  sync(_ resolve: @escaping RCTPromiseResolveBlock = { _ in}, reject: @escaping RCTPromiseRejectBlock = {_, _, _ in}) async {
+    @objc public func  sync(_ resolve: @escaping RCTPromiseResolveBlock = { _ in},
+                            reject: @escaping RCTPromiseRejectBlock = {_, _, _ in}
+    ) async {
         do {
             try await AppStore.sync()
         } catch {

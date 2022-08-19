@@ -15,6 +15,10 @@ struct ProductOrError {
     let error: Error?
 }
 
+public enum StoreError: Error {
+    case failedVerification
+}
+
 enum IapErrors: String, CaseIterable {
     case E_UNKNOWN = "E_UNKNOWN"
     case E_SERVICE_ERROR = "E_SERVICE_ERROR"

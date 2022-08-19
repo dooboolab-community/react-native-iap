@@ -15,3 +15,16 @@ public func debugMessage(_ object: Any...) {
     }
     #endif
 }
+
+func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
+    // Check whether the JWS passes StoreKit verification.
+    switch result {
+    case .unverified:
+        // StoreKit parses the JWS, but it fails verification.
+        throw StoreError.failedVerification
+
+    case .verified(let safe):
+        // The result is verified. Return the unwrapped value.
+        return safe
+    }
+}

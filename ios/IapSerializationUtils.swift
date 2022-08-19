@@ -18,7 +18,8 @@ func serialize(_ p: Product) -> [String: Any?] {
             "subscription": p.subscription?.subscriptionGroupID,
             "jsonRepresentation": p.jsonRepresentation,
             "debugDescription": p.debugDescription,
-            "subscription": serialize(p.subscription)
+            "subscription": serialize(p.subscription),
+            "type": serialize(p.type)
     ]
 }
 
@@ -31,10 +32,8 @@ func serialize(_ si: Product.SubscriptionInfo?) -> [String: Any?]? {
     guard let si = si else {return nil}
     return [
         "subscriptionGroupID": si.subscriptionGroupID,
-        // TODO: "isEligibleForIntroOffer":si?.isEligibleForIntroOffer,
         "promotionalOffers": si.promotionalOffers.map {(offer: Product.SubscriptionOffer) in serialize(offer)},
         "introductoryOffer": serialize(si.introductoryOffer),
-        // TODO: "status":si.status,
         "subscriptionPeriod": si.subscriptionPeriod
     ]
 }
