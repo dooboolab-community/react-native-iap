@@ -309,16 +309,20 @@ export const requestPurchase = ({
         );
       },
       android: async () => {
-        return getAndroidModule().buyItemByType(
-          ANDROID_ITEM_TYPE_IAP,
-          skus?.length ? skus : [sku],
-          null,
-          -1,
-          obfuscatedAccountIdAndroid,
-          obfuscatedProfileIdAndroid,
-          [],
-          isOfferPersonalized ?? false,
-        );
+        if (isAmazon) {
+          return RNIapAmazonModule.buyItemByType(sku);
+        } else {
+          return getAndroidModule().buyItemByType(
+            ANDROID_ITEM_TYPE_IAP,
+            skus?.length ? skus : [sku],
+            null,
+            -1,
+            obfuscatedAccountIdAndroid,
+            obfuscatedProfileIdAndroid,
+            [],
+            isOfferPersonalized ?? false,
+          );
+        }
       },
     }) || Promise.resolve
   )();
