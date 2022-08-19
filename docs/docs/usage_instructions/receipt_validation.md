@@ -57,7 +57,6 @@ flow) or unstable internet connections.
 For these cases we have a convenience method `getReceiptIOS()` which gets
 the latest receipt for the app at any given time. The response is base64 encoded.
 
-
 ### Example backend (Node.js)
 
 [Here](https://github.com/mifi/in-app-subscription-example) you can find an example backend for idempotent validating of receipts on both iOS/Android and storing and serving subscription state to the client.
