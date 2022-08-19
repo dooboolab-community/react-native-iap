@@ -234,20 +234,21 @@ export const getAvailablePurchases = (): Promise<
  */
 
 export const requestPurchase = ({
-  skus,
+  sku,
   andDangerouslyFinishTransactionAutomaticallyIOS = false,
   applicationUsername,
   obfuscatedAccountIdAndroid,
   obfuscatedProfileIdAndroid,
+  skus,
   isOfferPersonalized,
 }: {
-  // TODO: use typescript to define as `[Sku]` for iOS and `Sku[]` for Android
-  skus: Sku[];
+  sku?: Sku;
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
   applicationUsername?: string;
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
   /** For Google Play Billing Library 5 https://developer.android.com/google/play/billing/integrate#personalized-price */
+  skus?: Sku[];
   isOfferPersonalized?: boolean;
 }): Promise<ProductPurchase> =>
   (
@@ -260,7 +261,7 @@ export const requestPurchase = ({
         }
 
         return getIosModule().buyProduct(
-          skus[0],
+          sku,
           andDangerouslyFinishTransactionAutomaticallyIOS,
           applicationUsername,
         );
@@ -268,7 +269,7 @@ export const requestPurchase = ({
       android: async () => {
         return getAndroidModule().buyItemByType(
           ANDROID_ITEM_TYPE_IAP,
-          skus,
+          skus?.length ? skus : [sku],
           null,
           -1,
           obfuscatedAccountIdAndroid,

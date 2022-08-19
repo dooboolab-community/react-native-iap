@@ -165,7 +165,7 @@ export class ClassSetup extends Component<{}, State> {
 
   requestPurchase = async (sku: Sku) => {
     try {
-      requestPurchase({skus: [sku]});
+      requestPurchase({sku});
     } catch (error) {
       if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});

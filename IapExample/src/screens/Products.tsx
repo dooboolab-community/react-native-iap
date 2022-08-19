@@ -34,7 +34,7 @@ export const Products = () => {
 
   const handleBuyProduct = async (sku: Sku) => {
     try {
-      await requestPurchase({skus: [sku]});
+      await requestPurchase({sku});
     } catch (error) {
       if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
