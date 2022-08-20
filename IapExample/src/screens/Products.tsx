@@ -26,7 +26,7 @@ export const Products = () => {
 
   const handleGetProducts = async () => {
     try {
-      await getProducts(constants.productSkus);
+      await getProducts({skus: constants.productSkus});
     } catch (error) {
       errorLog({message: 'handleGetProducts', error});
     }
@@ -48,7 +48,11 @@ export const Products = () => {
     const checkCurrentPurchase = async () => {
       try {
         if (currentPurchase?.transactionReceipt) {
-          await finishTransaction(currentPurchase, true);
+          await finishTransaction({
+            purchase: currentPurchase,
+            isConsumable: true,
+          });
+
           setSuccess(true);
         }
       } catch (error) {

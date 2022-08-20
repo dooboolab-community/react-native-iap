@@ -10,7 +10,7 @@ export const Subscriptions = () => {
 
   const handleGetSubscriptions = async () => {
     try {
-      await getSubscriptions(constants.subscriptionSkus);
+      await getSubscriptions({skus: constants.subscriptionSkus});
     } catch (error) {
       errorLog({message: 'handleGetSubscriptions', error});
     }

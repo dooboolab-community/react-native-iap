@@ -69,15 +69,13 @@ export interface PurchaseResult {
   message?: string;
 }
 
-export type InAppPurchase = ProductPurchase;
-
 export interface SubscriptionPurchase extends ProductPurchase {
   autoRenewingAndroid?: boolean;
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;
 }
 
-export type Purchase = InAppPurchase | SubscriptionPurchase;
+export type Purchase = ProductPurchase | SubscriptionPurchase;
 
 export interface Discount {
   identifier: string;
@@ -148,24 +146,6 @@ export interface SubscriptionIOS extends ProductCommon {
 
 export type Subscription = SubscriptionAndroid & SubscriptionIOS;
 
-export interface RequestPurchaseBaseAndroid {
-  obfuscatedAccountIdAndroid?: string;
-  obfuscatedProfileIdAndroid?: string;
-  isOfferPersonalized?: boolean; // For AndroidBilling V5 https://developer.android.com/google/play/billing/integrate#personalized-price
-}
-
-export interface RequestPurchaseAndroid extends RequestPurchaseBaseAndroid {
-  skus?: Sku[];
-}
-
-export interface RequestPurchaseIOS {
-  sku?: Sku;
-  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
-  applicationUsername?: string;
-}
-
-export type RequestPurchase = RequestPurchaseAndroid & RequestPurchaseIOS;
-
 /**
  * In order to purchase a new subscription, every sku must have a selected offerToken
  * @see SubscriptionAndroid.subscriptionOfferDetails.offerToken
@@ -174,14 +154,3 @@ export interface SubscriptionOffer {
   sku: Sku;
   offerToken: string;
 }
-
-export interface RequestSubscriptionAndroid extends RequestPurchaseBaseAndroid {
-  purchaseTokenAndroid?: string;
-  prorationModeAndroid?: ProrationModesAndroid;
-  subscriptionOffers?: SubscriptionOffer[]; // For AndroidBilling V5
-}
-
-export type RequestSubscriptionIOS = RequestPurchaseIOS;
-
-export type RequestSubscription = RequestSubscriptionAndroid &
-  RequestSubscriptionIOS;

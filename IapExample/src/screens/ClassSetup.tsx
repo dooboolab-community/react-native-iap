@@ -15,9 +15,9 @@ import {
   getAvailablePurchases,
   getProducts,
   getSubscriptions,
-  InAppPurchase,
   initConnection,
   Product,
+  ProductPurchase,
   promotedProductListener,
   PurchaseError,
   purchaseErrorListener,
@@ -86,14 +86,14 @@ export class ClassSetup extends Component<{}, State> {
     }
 
     this.purchaseUpdate = purchaseUpdatedListener(
-      async (purchase: InAppPurchase | SubscriptionPurchase) => {
+      async (purchase: ProductPurchase | SubscriptionPurchase) => {
         const receipt = purchase.transactionReceipt
           ? purchase.transactionReceipt
           : (purchase as unknown as {originalJson: string}).originalJson;
 
         if (receipt) {
           try {
-            const acknowledgeResult = await finishTransaction(purchase);
+            const acknowledgeResult = await finishTransaction({purchase});
 
             console.info('acknowledgeResult', acknowledgeResult);
           } catch (error) {
@@ -128,7 +128,7 @@ export class ClassSetup extends Component<{}, State> {
 
   getItems = async () => {
     try {
-      const products = await getProducts(constants.productSkus);
+      const products = await getProducts({skus: constants.productSkus});
 
       this.setState({productList: products});
     } catch (error) {
@@ -138,7 +138,9 @@ export class ClassSetup extends Component<{}, State> {
 
   getSubscriptions = async () => {
     try {
-      const products = await getSubscriptions(constants.subscriptionSkus);
+      const products = await getSubscriptions({
+        skus: constants.subscriptionSkus,
+      });
 
       this.setState({productList: products});
     } catch (error) {
