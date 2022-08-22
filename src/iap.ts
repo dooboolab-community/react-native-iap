@@ -13,11 +13,11 @@ import {
 import type {
   Product,
   ProductPurchase,
-  ProrationModesAndroid,
   PurchaseResult,
+  RequestPurchase,
+  RequestSubscription,
   Sku,
   Subscription,
-  SubscriptionOffer,
   SubscriptionPurchase,
 } from './types';
 import {InstallSourceAndroid, PurchaseStateAndroid} from './types';
@@ -224,7 +224,7 @@ export const getAvailablePurchases = (): Promise<
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} sku The product's sku/ID
- * @param {string} [applicationUsername] The purchaser's user ID
+ * @param {string} [appAccountToken] UUID representing the purchaser
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
  * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
@@ -236,21 +236,14 @@ export const getAvailablePurchases = (): Promise<
 export const requestPurchase = ({
   sku,
   andDangerouslyFinishTransactionAutomaticallyIOS = false,
-  applicationUsername,
   obfuscatedAccountIdAndroid,
   obfuscatedProfileIdAndroid,
-  skus,
-  isOfferPersonalized,
-}: {
-  sku?: Sku;
-  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
-  applicationUsername?: string;
-  obfuscatedAccountIdAndroid?: string;
-  obfuscatedProfileIdAndroid?: string;
-  /** For Google Play Billing Library 5 https://developer.android.com/google/play/billing/integrate#personalized-price */
-  skus?: Sku[];
-  isOfferPersonalized?: boolean;
-}): Promise<ProductPurchase> =>
+  appAccountToken,
+  skus, // Android Billing V5
+  isOfferPersonalized = undefined, // Android Billing V5
+  quantity,
+  withOffer,
+}: RequestPurchase): Promise<ProductPurchase> =>
   (
     Platform.select({
       ios: async () => {
@@ -263,7 +256,9 @@ export const requestPurchase = ({
         return getIosModule().buyProduct(
           sku,
           andDangerouslyFinishTransactionAutomaticallyIOS,
-          applicationUsername,
+          appAccountToken,
+          quantity,
+          withOffer,
         );
       },
       android: async () => {
@@ -288,7 +283,7 @@ export const requestPurchase = ({
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
  * @param {string} [sku] The product's sku/ID
- * @param {string} [applicationUsername] The purchaser's user ID
+ * @param {string} [appAccountToken] The purchaser's user ID
  * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
  * @param {string} [purchaseTokenAndroid] purchaseToken that the user is upgrading or downgrading from (Android).
  * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
@@ -300,26 +295,14 @@ export const requestPurchase = ({
 export const requestSubscription = ({
   sku,
   andDangerouslyFinishTransactionAutomaticallyIOS = false,
-  applicationUsername,
   purchaseTokenAndroid,
   prorationModeAndroid = -1,
-  subscriptionOffers,
   obfuscatedAccountIdAndroid,
   obfuscatedProfileIdAndroid,
-  isOfferPersonalized = undefined,
-}: {
-  sku?: Sku;
-  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
-  applicationUsername?: string;
-  purchaseTokenAndroid?: string;
-  prorationModeAndroid?: ProrationModesAndroid;
-  /** For Google Play Billing Library 5 */
-  subscriptionOffers?: SubscriptionOffer[];
-  obfuscatedAccountIdAndroid?: string;
-  obfuscatedProfileIdAndroid?: string;
-  /** For Google Play Billing Library 5 https://developer.android.com/google/play/billing/integrate#personalized-price */
-  isOfferPersonalized?: boolean;
-}): Promise<SubscriptionPurchase | null> =>
+  subscriptionOffers = undefined, // Android Billing V5
+  isOfferPersonalized = undefined, // Android Billing V5
+  appAccountToken,
+}: RequestSubscription): Promise<SubscriptionPurchase | null> =>
   (
     Platform.select({
       ios: async () => {
@@ -332,7 +315,7 @@ export const requestSubscription = ({
         return getIosModule().buyProduct(
           sku,
           andDangerouslyFinishTransactionAutomaticallyIOS,
-          applicationUsername,
+          appAccountToken,
         );
       },
       android: async () => {
@@ -361,20 +344,6 @@ export const requestSubscription = ({
   )();
 
 /**
- * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
- * @param {string} sku The product's sku/ID
- * @returns {Promise<void>}
- */
-export const requestPurchaseWithQuantityIOS = ({
-  sku,
-  quantity,
-}: {
-  sku: Sku;
-  quantity: number;
-}): Promise<ProductPurchase> =>
-  getIosModule().buyProductWithQuantityIOS(sku, quantity);
-
-/**
  * Finish Transaction (both platforms)
  *   Abstracts  Finish Transaction
  *   iOS: Tells StoreKit that you have delivered the purchase to the user and StoreKit can now let go of the transaction.
@@ -391,7 +360,7 @@ export const finishTransaction = ({
   isConsumable,
   developerPayloadAndroid,
 }: {
-  purchase: ProductPurchase | ProductPurchase;
+  purchase: ProductPurchase | SubscriptionPurchase;
   isConsumable?: boolean;
   developerPayloadAndroid?: string;
 }): Promise<string | void> => {
@@ -436,14 +405,6 @@ export const finishTransaction = ({
  */
 export const clearTransactionIOS = (): Promise<void> =>
   getIosModule().clearTransaction();
-
-/**
- * Clear valid Products (iOS only)
- *   Remove all products which are validated by Apple server.
- * @returns {void}
- */
-export const clearProductsIOS = (): Promise<void> =>
-  getIosModule().clearProducts();
 
 /**
  * Acknowledge a product (on Android.) No-op on iOS.
@@ -493,15 +454,34 @@ export const getPromotedProductIOS = (): Promise<Product | null> =>
 export const buyPromotedProductIOS = (): Promise<void> =>
   getIosModule().buyPromotedProduct();
 
+const fetchJsonOrThrow = async (
+  url: string,
+  receiptBody: Record<string, unknown>,
+): Promise<Apple.ReceiptValidationResponse | false> => {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(receiptBody),
+  });
+
+  if (!response.ok) {
+    throw Object.assign(new Error(response.statusText), {
+      statusCode: response.status,
+    });
+  }
+
+  return response.json();
+};
+
 const requestAgnosticReceiptValidationIos = async (
   receiptBody: Record<string, unknown>,
 ): Promise<Apple.ReceiptValidationResponse | false> => {
-  const response = await enhancedFetch<Apple.ReceiptValidationResponse>(
+  const response = await fetchJsonOrThrow(
     'https://buy.itunes.apple.com/verifyReceipt',
-    {
-      method: 'POST',
-      body: receiptBody,
-    },
+    receiptBody,
   );
 
   // Best practice is to check for test receipt and check sandbox instead
@@ -520,32 +500,6 @@ const requestAgnosticReceiptValidationIos = async (
 
   return response;
 };
-
-/**
- * Buy products or subscriptions with offers (iOS only)
- *
- * Runs the payment process with some info you must fetch
- * from your server.
- * @param {string} sku The product identifier
- * @param {string} forUser  An user identifier on you system
- * @param {Apple.PaymentDiscount} withOffer The offer information
- * @param {string} withOffer.identifier The offer identifier
- * @param {string} withOffer.keyIdentifier Key identifier that it uses to generate the signature
- * @param {string} withOffer.nonce An UUID returned from the server
- * @param {string} withOffer.signature The actual signature returned from the server
- * @param {number} withOffer.timestamp The timestamp of the signature
- * @returns {Promise<void>}
- */
-export const requestPurchaseWithOfferIOS = ({
-  sku,
-  forUser,
-  withOffer,
-}: {
-  sku: Sku;
-  forUser: string;
-  withOffer: Apple.PaymentDiscount;
-}): Promise<void> =>
-  getIosModule().buyProductWithOffer(sku, forUser, withOffer);
 
 /**
  * Validate receipt for iOS.
