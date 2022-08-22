@@ -13,6 +13,7 @@ import java.util.HashSet
 
 class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
+    var hasListener = false
     override fun getName(): String {
         return TAG
     }
@@ -21,6 +22,7 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     fun initConnection(promise: Promise) {
         val context = reactApplicationContext
         PurchasingService.registerListener(context, RNIapAmazonListener(context))
+        hasListener = true
         // Prefetch user and purchases as per Amazon SDK documentation:
         PurchasingService.getUserData()
         PurchasingService.getPurchaseUpdates(false)
@@ -132,8 +134,10 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
              * We should fetch updates on resume
              */
             override fun onHostResume() {
-                PurchasingService.getUserData()
-                PurchasingService.getPurchaseUpdates(false)
+                if (hasListener) {
+                    PurchasingService.getUserData()
+                    PurchasingService.getPurchaseUpdates(false)
+                }
             }
             override fun onHostPause() {}
             override fun onHostDestroy() {

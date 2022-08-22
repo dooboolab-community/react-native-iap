@@ -7,7 +7,7 @@ on:
       - 'src/**'
       - 'ios/**'
       - 'IapExample/ios/**'
-      - .github/**
+      - .github/ci-example-ios.yml
 
   pull_request:
     types: [opened, synchronize, reopened]
@@ -15,7 +15,7 @@ on:
       - 'src/**'
       - 'ios/**'
       - 'IapExample/ios/**'
-      - .github/**
+      - .github/ci-example-ios.yml
 
 jobs:
   build_ios_example:
