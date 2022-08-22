@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import RNIap, {Sku, useIAP} from 'react-native-iap';
+import {PurchaseError, requestPurchase, Sku, useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {
@@ -22,18 +22,13 @@ export const Products = () => {
     initConnectionError,
     finishTransaction,
     getProducts,
-    requestPurchase,
   } = useIAP();
 
   const handleGetProducts = async () => {
     try {
-      await getProducts(constants.productSkus);
+      await getProducts({skus: constants.productSkus});
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
-        errorLog({message: `[${error.code}]: ${error.message}`, error});
-      } else {
-        errorLog({message: 'handleGetProducts', error});
-      }
+      errorLog({message: 'handleGetProducts', error});
     }
   };
 
@@ -41,7 +36,7 @@ export const Products = () => {
     try {
       await requestPurchase({sku});
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'handleBuyProduct', error});
@@ -53,11 +48,15 @@ export const Products = () => {
     const checkCurrentPurchase = async () => {
       try {
         if (currentPurchase?.transactionReceipt) {
-          await finishTransaction(currentPurchase, true);
+          await finishTransaction({
+            purchase: currentPurchase,
+            isConsumable: true,
+          });
+
           setSuccess(true);
         }
       } catch (error) {
-        if (error instanceof RNIap.IapError) {
+        if (error instanceof PurchaseError) {
           errorLog({message: `[${error.code}]: ${error.message}`, error});
         } else {
           errorLog({message: 'handleBuyProduct', error});

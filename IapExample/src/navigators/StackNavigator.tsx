@@ -6,7 +6,7 @@ import {
   ClassSetup,
   Examples,
   Products,
-  PurchaseHistories,
+  PurchaseHistory,
   Subscriptions,
 } from '../screens';
 import {AvailablePurchases} from '../screens/AvailablePurchases';
@@ -28,8 +28,8 @@ export const examples = [
     emoji: '💳',
   },
   {
-    name: 'PurchaseHistories',
-    component: withIAPContext(PurchaseHistories),
+    name: 'PurchaseHistory',
+    component: withIAPContext(PurchaseHistory),
     section: 'Context',
     color: '#c241b3',
     emoji: '📄',
@@ -54,7 +54,7 @@ export type Screens = {
   Examples: undefined;
   Products: undefined;
   Subscriptions: undefined;
-  PurchaseHistories: undefined;
+  PurchaseHistory: undefined;
   AvailablePurchases: undefined;
   Listeners: undefined;
   ClassSetup: undefined;

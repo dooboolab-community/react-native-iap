@@ -1,25 +1,6 @@
 import type * as Apple from './apple';
 export type Sku = string;
 
-export enum IAPErrorCode {
-  E_IAP_NOT_AVAILABLE = 'E_IAP_NOT_AVAILABLE',
-  E_UNKNOWN = 'E_UNKNOWN',
-  E_USER_CANCELLED = 'E_USER_CANCELLED',
-  E_USER_ERROR = 'E_USER_ERROR',
-  E_ITEM_UNAVAILABLE = 'E_ITEM_UNAVAILABLE',
-  E_REMOTE_ERROR = 'E_REMOTE_ERROR',
-  E_NETWORK_ERROR = 'E_NETWORK_ERROR',
-  E_SERVICE_ERROR = 'E_SERVICE_ERROR',
-  E_RECEIPT_FAILED = 'E_RECEIPT_FAILED',
-  E_RECEIPT_FINISHED_FAILED = 'E_RECEIPT_FINISHED_FAILED',
-  E_NOT_PREPARED = 'E_NOT_PREPARED',
-  E_NOT_ENDED = 'E_NOT_ENDED',
-  E_ALREADY_OWNED = 'E_ALREADY_OWNED',
-  E_DEVELOPER_ERROR = 'E_DEVELOPER_ERROR',
-  E_BILLING_RESPONSE_JSON_PARSE_ERROR = 'E_BILLING_RESPONSE_JSON_PARSE_ERROR',
-  E_DEFERRED_PAYMENT = 'E_DEFERRED_PAYMENT',
-}
-
 export enum ProrationModesAndroid {
   IMMEDIATE_WITH_TIME_PRORATION = 1,
   IMMEDIATE_AND_CHARGE_PRORATED_PRICE = 2,
@@ -90,23 +71,13 @@ export interface PurchaseResult {
   message?: string;
 }
 
-export interface PurchaseError {
-  responseCode?: number;
-  debugMessage?: string;
-  code?: string;
-  message?: string;
-  productId?: string;
-}
-
-export type InAppPurchase = ProductPurchase;
-
 export interface SubscriptionPurchase extends ProductPurchase {
   autoRenewingAndroid?: boolean;
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;
 }
 
-export type Purchase = InAppPurchase | SubscriptionPurchase;
+export type Purchase = ProductPurchase | SubscriptionPurchase;
 
 export interface Discount {
   identifier: string;
@@ -176,7 +147,6 @@ export interface SubscriptionIOS extends ProductCommon {
 }
 
 export type Subscription = SubscriptionAndroid & SubscriptionIOS;
-
 export interface RequestPurchaseBaseAndroid {
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;

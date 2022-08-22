@@ -1,22 +1,18 @@
 import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import RNIap, {useIAP} from 'react-native-iap';
+import {useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {contentContainerStyle, errorLog} from '../utils';
 
-export const PurchaseHistories = () => {
-  const {connected, purchaseHistories, getPurchaseHistories} = useIAP();
+export const PurchaseHistory = () => {
+  const {connected, purchaseHistory, getPurchaseHistory} = useIAP();
 
-  const handleGetPurchaseHistories = async () => {
+  const handleGetPurchaseHistory = async () => {
     try {
-      await getPurchaseHistories();
+      await getPurchaseHistory();
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
-        errorLog({message: `[${error.code}]: ${error.message}`, error});
-      } else {
-        errorLog({message: 'handleGetPurchaseHistories', error});
-      }
+      errorLog({message: 'handleGetPurchaseHistory', error});
     }
   };
 
@@ -28,23 +24,23 @@ export const PurchaseHistories = () => {
         <View style={styles.container}>
           <Heading copy="Purchase histories" />
 
-          {purchaseHistories.map((purchaseHistory, index) => (
+          {purchaseHistory.map((purchase, index) => (
             <Row
-              key={purchaseHistory.productId}
+              key={purchase.productId}
               fields={[
                 {
                   label: 'Product Id',
-                  value: purchaseHistory.productId,
+                  value: purchase.productId,
                 },
               ]}
-              isLast={purchaseHistories.length - 1 === index}
+              isLast={purchaseHistory.length - 1 === index}
             />
           ))}
         </View>
 
         <Button
           title="Get the purchase histories"
-          onPress={handleGetPurchaseHistories}
+          onPress={handleGetPurchaseHistory}
         />
       </Box>
     </ScrollView>
