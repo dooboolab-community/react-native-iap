@@ -1,14 +1,17 @@
-name: publish-next
+name: Publish next package
+
 on:
   release:
     types: [prereleased]
 
 jobs:
-  publish-npm-registry:
+  deploy:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/next'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
