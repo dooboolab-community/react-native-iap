@@ -7,9 +7,24 @@ import {
   Text,
   View,
 } from 'react-native';
-import RNIap, {
-  InAppPurchase,
+import {
+  clearTransactionIOS,
+  endConnection,
+  finishTransaction,
+  flushFailedPurchasesCachedAsPendingAndroid,
+  getAvailablePurchases,
+  getProducts,
+  getSubscriptions,
+  initConnection,
   Product,
+  ProductPurchase,
+  promotedProductListener,
+  PurchaseError,
+  purchaseErrorListener,
+  purchaseUpdatedListener,
+  requestPurchase,
+  requestSubscription,
+  Sku,
   Subscription,
   SubscriptionPurchase,
 } from 'react-native-iap';
@@ -46,10 +61,10 @@ export class ClassSetup extends Component<{}, State> {
 
   async componentDidMount() {
     try {
-      await RNIap.initConnection();
+      await initConnection();
 
       if (isAndroid) {
-        await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
+        await flushFailedPurchasesCachedAsPendingAndroid();
       } else {
         /**
          * WARNING This line should not be included in production code
@@ -60,33 +75,29 @@ export class ClassSetup extends Component<{}, State> {
          * TL;DR you will no longer receive any updates from Apple on
          * every launch for pending purchases
          */
-        await RNIap.clearTransactionIOS();
+        await clearTransactionIOS();
       }
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'finishTransaction', error});
       }
     }
 
-    this.purchaseUpdate = RNIap.purchaseUpdatedListener(
-      async (purchase: InAppPurchase | SubscriptionPurchase) => {
+    this.purchaseUpdate = purchaseUpdatedListener(
+      async (purchase: ProductPurchase | SubscriptionPurchase) => {
         const receipt = purchase.transactionReceipt
           ? purchase.transactionReceipt
           : (purchase as unknown as {originalJson: string}).originalJson;
 
         if (receipt) {
           try {
-            const acknowledgeResult = await RNIap.finishTransaction(purchase);
+            const acknowledgeResult = await finishTransaction({purchase});
 
             console.info('acknowledgeResult', acknowledgeResult);
           } catch (error) {
-            if (error instanceof RNIap.IapError) {
-              errorLog({message: `[${error.code}]: ${error.message}`, error});
-            } else {
-              errorLog({message: 'finishTransaction', error});
-            }
+            errorLog({message: 'finishTransaction', error});
           }
 
           this.setState({receipt}, () => this.goNext());
@@ -94,13 +105,11 @@ export class ClassSetup extends Component<{}, State> {
       },
     );
 
-    this.purchaseError = RNIap.purchaseErrorListener(
-      (error: RNIap.IapError) => {
-        Alert.alert('purchase error', JSON.stringify(error));
-      },
-    );
+    this.purchaseError = purchaseErrorListener((error: PurchaseError) => {
+      Alert.alert('purchase error', JSON.stringify(error));
+    });
 
-    this.promotedProduct = RNIap.promotedProductListener((productId?: string) =>
+    this.promotedProduct = promotedProductListener((productId?: string) =>
       Alert.alert('Product promoted', productId),
     );
   }
@@ -110,7 +119,7 @@ export class ClassSetup extends Component<{}, State> {
     this.purchaseError?.remove();
     this.promotedProduct?.remove();
 
-    RNIap.endConnection();
+    endConnection();
   }
 
   goNext = () => {
@@ -119,35 +128,29 @@ export class ClassSetup extends Component<{}, State> {
 
   getItems = async () => {
     try {
-      const products = await RNIap.getProducts(constants.productSkus);
+      const products = await getProducts({skus: constants.productSkus});
 
       this.setState({productList: products});
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
-        errorLog({message: `[${error.code}]: ${error.message}`, error});
-      } else {
-        errorLog({message: 'getItems', error});
-      }
+      errorLog({message: 'getItems', error});
     }
   };
 
   getSubscriptions = async () => {
     try {
-      const products = await RNIap.getSubscriptions(constants.subscriptionSkus);
+      const products = await getSubscriptions({
+        skus: constants.subscriptionSkus,
+      });
 
       this.setState({productList: products});
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
-        errorLog({message: `[${error.code}]: ${error.message}`, error});
-      } else {
-        errorLog({message: 'getSubscriptions', error});
-      }
+      errorLog({message: 'getSubscriptions', error});
     }
   };
 
   getAvailablePurchases = async () => {
     try {
-      const purchases = await RNIap.getAvailablePurchases();
+      const purchases = await getAvailablePurchases();
 
       if (purchases?.length > 0) {
         this.setState({
@@ -156,19 +159,15 @@ export class ClassSetup extends Component<{}, State> {
         });
       }
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
-        errorLog({message: `[${error.code}]: ${error.message}`, error});
-      } else {
-        errorLog({message: 'getAvailablePurchases', error});
-      }
+      errorLog({message: 'getAvailablePurchases', error});
     }
   };
 
-  requestPurchase = async (sku: string) => {
+  requestPurchase = async (sku: Sku) => {
     try {
-      RNIap.requestPurchase({sku});
+      requestPurchase({sku});
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'requestPurchase', error});
@@ -176,11 +175,11 @@ export class ClassSetup extends Component<{}, State> {
     }
   };
 
-  requestSubscription = async (sku: string) => {
+  requestSubscription = async (sku: Sku) => {
     try {
-      RNIap.requestSubscription({sku});
+      requestSubscription({sku});
     } catch (error) {
-      if (error instanceof RNIap.IapError) {
+      if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
       } else {
         errorLog({message: 'requestSubscription', error});
