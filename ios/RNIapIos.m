@@ -12,58 +12,49 @@ RCT_EXTERN_METHOD(endConnection:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(getItems:
+RCT_EXTERN_METHOD(products:
                   (NSArray*)skus
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(getAvailableItems:
+RCT_EXTERN_METHOD(currentEntitlements:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(buyProduct:
+RCT_EXTERN_METHOD(purchase:
                   (NSString*)sku
                   andDangerouslyFinishTransactionAutomatically:(BOOL)andDangerouslyFinishTransactionAutomatically
-                  applicationUsername:(NSString*)applicationUsername
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(buyProductWithOffer:
-                  (NSString*)sku
-                  forUser:(NSString*)usernameHash
+                  appAccountToken:(NSString*)appAccountToken
+                  quantity:(NSInteger)quantity
                   withOffer:(NSDictionary*)discountOffer
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(buyProductWithQuantityIOS:
+
+RCT_EXTERN_METHOD(isEligibleForIntroOffer:
+                  (NSString*)groupID
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(currentEntitlement:
                   (NSString*)sku
-                  quantity:(NSInteger)quantity
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(clearTransaction:
-                  (RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
-
-RCT_EXTERN_METHOD(clearProducts:
-                  (RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
-
-RCT_EXTERN_METHOD(promotedProduct:
-                  (RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
-
-RCT_EXTERN_METHOD(buyPromotedProduct:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
-
-RCT_EXTERN_METHOD(requestReceipt:
-                  (BOOL)refresh
+RCT_EXTERN_METHOD(latestTransaction:
+                  (NSString*)sku
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(finishTransaction:
                   (NSString*)transactionIdentifier
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(getPendingTransactions:
+RCT_EXTERN_METHOD(pendingTransactions:
+                  (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(sync:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
