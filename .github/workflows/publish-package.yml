@@ -1,13 +1,12 @@
-name: Publish next package
+name: Publish main package
 
 on:
   release:
-    types: [prereleased]
+    types: [created]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/next'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -24,12 +23,12 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Build typescript
+      - name: Run lint scripts
         run: yarn lint:ci
 
       - name: Verify no files have changed after auto-fix
         run: git diff -- ":(exclude)IapExample/*" --exit-code HEAD
 
-      - run: npm publish --tag next
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
