@@ -58,7 +58,9 @@ export function useIAP(): IAP_STATUS {
 
   const getProducts = useCallback(
     async ({skus}: {skus: string[]}): Promise<void> => {
-      setProducts(await iapGetProducts({skus}));
+      const prods = await iapGetProducts({skus});
+      console.log(prods);
+      setProducts(prods);
     },
     [setProducts],
   );

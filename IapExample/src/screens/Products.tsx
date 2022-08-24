@@ -102,18 +102,22 @@ export const Products = () => {
 
           {products.map((product, index) => (
             <Row
-              key={product.productId}
+              key={product.id}
               fields={[
                 {
                   label: 'Product Id',
-                  value: product.productId,
+                  value: product.id,
+                },
+                {
+                  label: 'type',
+                  value: product.type,
                 },
               ]}
               isLast={products.length - 1 === index}
             >
               <Button
                 title="Buy"
-                onPress={() => handleBuyProduct(product.productId)}
+                onPress={() => handleBuyProduct(product.id)}
               />
             </Row>
           ))}

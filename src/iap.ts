@@ -114,10 +114,7 @@ export const getProducts = ({
       ios: async () => {
         const items = await getIosModule().getItems(skus);
 
-        return items.filter(
-          (item: Product) =>
-            skus.includes(item.productId) && item.type === 'iap',
-        );
+        return items.filter((item: Product) => item.subscription === null);
       },
       android: async () => {
         const products = await getAndroidModule().getItemsByType(
@@ -201,7 +198,7 @@ export const getAvailablePurchases = (): Promise<
   (
     Platform.select({
       ios: async () => {
-        return getIosModule().getAvailableItems();
+        return getIosModule().currentEntitlements();
       },
       android: async () => {
         if (RNIapAmazonModule) {
@@ -257,7 +254,7 @@ export const requestPurchase = ({
           sku,
           andDangerouslyFinishTransactionAutomaticallyIOS,
           appAccountToken,
-          quantity,
+          quantity ?? -1,
           withOffer,
         );
       },
@@ -397,16 +394,6 @@ export const finishTransaction = ({
 };
 
 /**
- * Clear Transaction (iOS only)
- *   Finish remaining transactions. Related to issue #257 and #801
- *     link : https://github.com/dooboolab/react-native-iap/issues/257
- *            https://github.com/dooboolab/react-native-iap/issues/801
- * @returns {Promise<void>}
- */
-export const clearTransactionIOS = (): Promise<void> =>
-  getIosModule().clearTransaction();
-
-/**
  * Acknowledge a product (on Android.) No-op on iOS.
  * @param {string} token The product's token (on Android)
  * @returns {Promise<PurchaseResult | void>}
@@ -436,93 +423,6 @@ export const deepLinkToSubscriptionsAndroid = async ({
   return Linking.openURL(
     `https://play.google.com/store/account/subscriptions?package=${await RNIapModule.getPackageName()}&sku=${sku}`,
   );
-};
-
-/**
- * Should Add Store Payment (iOS only)
- *   Indicates the the App Store purchase should continue from the app instead of the App Store.
- * @returns {Promise<Product | null>} promoted product
- */
-export const getPromotedProductIOS = (): Promise<Product | null> =>
-  getIosModule().promotedProduct();
-
-/**
- * Buy the currently selected promoted product (iOS only)
- *   Initiates the payment process for a promoted product. Should only be called in response to the `iap-promoted-product` event.
- * @returns {Promise<void>}
- */
-export const buyPromotedProductIOS = (): Promise<void> =>
-  getIosModule().buyPromotedProduct();
-
-const fetchJsonOrThrow = async (
-  url: string,
-  receiptBody: Record<string, unknown>,
-): Promise<Apple.ReceiptValidationResponse | false> => {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(receiptBody),
-  });
-
-  if (!response.ok) {
-    throw Object.assign(new Error(response.statusText), {
-      statusCode: response.status,
-    });
-  }
-
-  return response.json();
-};
-
-const requestAgnosticReceiptValidationIos = async (
-  receiptBody: Record<string, unknown>,
-): Promise<Apple.ReceiptValidationResponse | false> => {
-  const response = await fetchJsonOrThrow(
-    'https://buy.itunes.apple.com/verifyReceipt',
-    receiptBody,
-  );
-
-  // Best practice is to check for test receipt and check sandbox instead
-  // https://developer.apple.com/documentation/appstorereceipts/verifyreceipt
-  if (response && response.status === ReceiptValidationStatus.TEST_RECEIPT) {
-    const testResponse = await enhancedFetch<Apple.ReceiptValidationResponse>(
-      'https://sandbox.itunes.apple.com/verifyReceipt',
-      {
-        method: 'POST',
-        body: receiptBody,
-      },
-    );
-
-    return testResponse;
-  }
-
-  return response;
-};
-
-/**
- * Validate receipt for iOS.
- * @param {object} receiptBody the receipt body to send to apple server.
- * @param {boolean} isTest whether this is in test environment which is sandbox.
- * @returns {Promise<Apple.ReceiptValidationResponse | false>}
- */
-export const validateReceiptIos = async ({
-  receiptBody,
-  isTest,
-}: {
-  receiptBody: Record<string, unknown>;
-  isTest?: boolean;
-}): Promise<Apple.ReceiptValidationResponse | false> => {
-  if (isTest == null) {
-    return await requestAgnosticReceiptValidationIos(receiptBody);
-  }
-
-  const url = isTest
-    ? 'https://sandbox.itunes.apple.com/verifyReceipt'
-    : 'https://buy.itunes.apple.com/verifyReceipt';
-
-  return await enhancedFetch<Apple.ReceiptValidationResponse>(url);
 };
 
 /**
@@ -585,25 +485,6 @@ export const validateReceiptAmazon = async ({
 
   return await enhancedFetch<Amazon.ReceiptType>(url);
 };
-
-/**
- * Get the current receipt base64 encoded in IOS.
- * @param {forceRefresh?:boolean}
- * @returns {Promise<ProductPurchase[]>}
- */
-export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> =>
-  getIosModule().getPendingTransactions();
-
-/**
- * Get the current receipt base64 encoded in IOS.
- * @param {forceRefresh?:boolean}
- * @returns {Promise<string>}
- */
-export const getReceiptIOS = async ({
-  forceRefresh,
-}: {
-  forceRefresh?: boolean;
-}): Promise<string> => getIosModule().requestReceipt(forceRefresh ?? false);
 
 /**
  * Launches a modal to register the redeem offer code in IOS.

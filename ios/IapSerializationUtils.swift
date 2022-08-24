@@ -15,11 +15,11 @@ func serialize(_ p: Product) -> [String: Any?] {
             "displayPrice": p.displayPrice,
             "price": p.price,
             "isFamilyShareable": p.isFamilyShareable,
-            "subscription": p.subscription?.subscriptionGroupID,
-            "jsonRepresentation": p.jsonRepresentation,
-            "debugDescription": p.debugDescription,
+            "jsonRepresentation": String( decoding: p.jsonRepresentation, as: UTF8.self),
+            //"debugDescription": p.debugDescription,
             "subscription": serialize(p.subscription),
-            "type": serialize(p.type)
+            "type": serialize(p.type),
+            
     ]
 }
 
@@ -58,7 +58,7 @@ func serialize(_ t: Transaction) -> [String: Any?] {
             "offerID": t.offerID,
             "subscriptionGroupID": t.subscriptionGroupID,
             "appAccountToken": t.appAccountToken,
-            "debugDescription": t.debugDescription,
+            //"debugDescription": t.debugDescription,
             "deviceVerification": t.deviceVerification,
             "deviceVerificationNonce": t.deviceVerificationNonce,
             "expirationDate": t.expirationDate,
