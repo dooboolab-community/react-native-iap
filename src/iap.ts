@@ -2,8 +2,6 @@ import {Linking, NativeModules, Platform} from 'react-native';
 
 import type * as Amazon from './types/amazon';
 import type * as Android from './types/android';
-import type * as Apple from './types/apple';
-import {ReceiptValidationStatus} from './types/apple';
 import {
   enhancedFetch,
   fillProductsWithAdditionalData,
@@ -144,7 +142,7 @@ export const getSubscriptions = ({
 
         return items.filter(
           (item: Subscription) =>
-            skus.includes(item.productId) && item.type === 'subs',
+            skus.includes(item.id) && item.type === 'subs',
         );
       },
       android: async () => {

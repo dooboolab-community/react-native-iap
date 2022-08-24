@@ -26,7 +26,6 @@ export enum InstallSourceAndroid {
 
 export interface ProductCommon {
   type: 'subs' | 'sub' | 'inapp' | 'iap';
-  productId: string;
   productIds?: string[];
   title: string;
   description: string;
@@ -89,15 +88,21 @@ export interface Discount {
   subscriptionPeriod: string;
 }
 
-export interface Product extends ProductCommon {
+export interface ProductAndroid extends ProductCommon {
   type: 'inapp' | 'iap';
-  // Android V5
   oneTimePurchaseOfferDetails?: {
     priceCurrencyCode: string;
     formattedPrice: string;
     priceAmountMicros: string;
   };
 }
+export interface ProductIOS extends ProductCommon {
+  subscription: null;
+  id: string;
+  type: 'inapp' | 'iap';
+}
+
+export type Product = ProductAndroid & ProductIOS;
 
 // Android V5
 export interface SubscriptionAndroid extends ProductCommon {
@@ -125,7 +130,7 @@ export interface SubscriptionAndroid extends ProductCommon {
 
 export interface SubscriptionIOS extends ProductCommon {
   type: 'subs';
-
+  id: string;
   discounts?: Discount[];
   introductoryPrice?: string;
   introductoryPriceAsAmountIOS?: string;
