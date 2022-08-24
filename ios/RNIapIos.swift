@@ -113,19 +113,19 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
         _ skus: [String],
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-    )  {
-        Task{
-        do {
-            let products = try await Product.products(for: skus)
-            self.products = products.reduce(into:[String:Product]()) {(res, prod) in
-                res[prod.id] = prod
+    ) {
+        Task {
+            do {
+                let products = try await Product.products(for: skus)
+                self.products = products.reduce(into: [String: Product]()) {(res, prod) in
+                    res[prod.id] = prod
+                }
+                resolve(products.map({ (prod: Product) -> [String: Any?]? in
+                    return serialize(prod)
+                }).compactMap({$0}))
+            } catch {
+                reject(IapErrors.E_UNKNOWN.rawValue, "Error fetching items", error)
             }
-            resolve(products.map({ (prod: Product) -> [String: Any?]? in
-                return serialize(prod)
-            }).compactMap({$0}))
-        } catch {
-            reject(IapErrors.E_UNKNOWN.rawValue, "Error fetching items", error)
-        }
         }
     }
 
@@ -195,7 +195,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        Task{
+        Task {
             let product: Product? = products[sku]
 
             if let product = product {
