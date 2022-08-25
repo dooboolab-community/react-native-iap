@@ -15,7 +15,6 @@ import {useIAPContext} from './withIAPContext';
 type IAP_STATUS = {
   connected: boolean;
   products: Product[];
-  promotedProductsIOS: Product[];
   subscriptions: Subscription[];
   purchaseHistory: Purchase[];
   availablePurchases: Purchase[];
@@ -41,7 +40,6 @@ export function useIAP(): IAP_STATUS {
   const {
     connected,
     products,
-    promotedProductsIOS,
     subscriptions,
     purchaseHistory,
     availablePurchases,
@@ -58,7 +56,9 @@ export function useIAP(): IAP_STATUS {
 
   const getProducts = useCallback(
     async ({skus}: {skus: string[]}): Promise<void> => {
-      setProducts(await iapGetProducts({skus}));
+      const prods = await iapGetProducts({skus});
+      console.log(prods);
+      setProducts(prods);
     },
     [setProducts],
   );
@@ -117,7 +117,6 @@ export function useIAP(): IAP_STATUS {
   return {
     connected,
     products,
-    promotedProductsIOS,
     subscriptions,
     purchaseHistory,
     availablePurchases,

@@ -16,7 +16,6 @@ export const Products = () => {
   const {
     connected,
     products,
-    promotedProductsIOS,
     currentPurchase,
     currentPurchaseError,
     initConnectionError,
@@ -102,46 +101,28 @@ export const Products = () => {
 
           {products.map((product, index) => (
             <Row
-              key={product.productId}
+              key={product.id}
               fields={[
                 {
                   label: 'Product Id',
-                  value: product.productId,
+                  value: product.id,
+                },
+                {
+                  label: 'type',
+                  value: product.type,
                 },
               ]}
               isLast={products.length - 1 === index}
             >
               <Button
                 title="Buy"
-                onPress={() => handleBuyProduct(product.productId)}
+                onPress={() => handleBuyProduct(product.id)}
               />
             </Row>
           ))}
         </View>
 
         <Button title="Get the products" onPress={handleGetProducts} />
-      </Box>
-
-      <Box>
-        <Heading copy="Promoted products" label="iOS only" />
-
-        {promotedProductsIOS.map((product, index) => (
-          <Row
-            key={product.productId}
-            fields={[
-              {
-                label: 'Product Id',
-                value: product.productId,
-              },
-            ]}
-            isLast={promotedProductsIOS.length - 1 === index}
-          >
-            <Button
-              title="Buy a product"
-              onPress={() => handleBuyProduct(product.productId)}
-            />
-          </Row>
-        ))}
       </Box>
     </ScrollView>
   );
