@@ -6,5 +6,6 @@ opt_in_rules:
   - operator_usage_whitespace
   - redundant_type_annotation
 
+indentation: 2
 vertical_whitespace_closing_braces: true
 vertical_whitespace_opening_braces: true

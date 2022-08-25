@@ -1,7 +1,11 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
-import {purchaseErrorListener, purchaseUpdatedListener} from '../eventEmitter';
-import {initConnection} from '../iap';
+import {
+  promotedProductListener,
+  purchaseErrorListener,
+  purchaseUpdatedListener,
+} from '../eventEmitter';
+import {getPromotedProductIOS, initConnection} from '../iap';
 import type {PurchaseError} from '../purchaseError';
 import type {
   Product,
@@ -14,6 +18,7 @@ import type {
 type IAPContextType = {
   connected: boolean;
   products: Product[];
+  promotedProductsIOS: Product[];
   subscriptions: Subscription[];
   purchaseHistory: Purchase[];
   availablePurchases: Purchase[];
@@ -47,6 +52,10 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
   return function WrapperComponent(props: T) {
     const [connected, setConnected] = useState(false);
     const [products, setProducts] = useState<Product[]>([]);
+
+    const [promotedProductsIOS, setPromotedProductsIOS] = useState<Product[]>(
+      [],
+    );
     const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
     const [purchaseHistory, setPurchaseHistory] = useState<Purchase[]>([]);
 
@@ -65,6 +74,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         connected,
         products,
         subscriptions,
+        promotedProductsIOS,
         purchaseHistory,
         availablePurchases,
         currentPurchase,
@@ -81,6 +91,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         connected,
         products,
         subscriptions,
+        promotedProductsIOS,
         purchaseHistory,
         availablePurchases,
         currentPurchase,
@@ -123,9 +134,19 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         },
       );
 
+      const promotedProductSubscription = promotedProductListener(async () => {
+        const product = await getPromotedProductIOS();
+
+        setPromotedProductsIOS((prevProducts) => [
+          ...prevProducts,
+          ...(product ? [product] : []),
+        ]);
+      });
+
       return () => {
         purchaseUpdateSubscription.remove();
         purchaseErrorSubscription.remove();
+        promotedProductSubscription?.remove();
       };
     }, [connected]);
 
