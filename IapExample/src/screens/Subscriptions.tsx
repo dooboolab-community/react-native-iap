@@ -51,11 +51,11 @@ export const Subscriptions = () => {
 
           {subscriptions.map((subscription, index) => (
             <Row
-              key={subscription.id}
+              key={subscription.productId}
               fields={[
                 {
                   label: 'Subscription Id',
-                  value: subscription.id,
+                  value: subscription.productId,
                 },
               ]}
               isLast={subscriptions.length - 1 === index}
@@ -68,7 +68,10 @@ export const Subscriptions = () => {
                       .map((ppl) => ppl.billingPeriod)
                       .join(',')}`}
                     onPress={() => {
-                      handleBuySubscription(subscription.id, offer.offerToken);
+                      handleBuySubscription(
+                        subscription.productId,
+                        offer.offerToken,
+                      );
                     }}
                   />
                 ))}
@@ -76,7 +79,7 @@ export const Subscriptions = () => {
                 <Button
                   title="Subscribe"
                   onPress={() => {
-                    handleBuySubscription(subscription.id);
+                    handleBuySubscription(subscription.productId);
                   }}
                 />
               )}

@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import {
+  clearTransactionIOS,
   endConnection,
   finishTransaction,
   flushFailedPurchasesCachedAsPendingAndroid,
@@ -64,6 +65,17 @@ export class ClassSetup extends Component<{}, State> {
 
       if (isAndroid) {
         await flushFailedPurchasesCachedAsPendingAndroid();
+      } else {
+        /**
+         * WARNING This line should not be included in production code
+         * This call will call finishTransaction in all pending purchases
+         * on every launch, effectively consuming purchases that you might
+         * not have verified the receipt or given the consumer their product
+         *
+         * TL;DR you will no longer receive any updates from Apple on
+         * every launch for pending purchases
+         */
+        await clearTransactionIOS();
       }
     } catch (error) {
       if (error instanceof PurchaseError) {
@@ -187,7 +199,7 @@ export class ClassSetup extends Component<{}, State> {
 
             {productList.map((product, index) => (
               <Row
-                key={product.id}
+                key={product.productId}
                 fields={[
                   {
                     label: 'Product JSON',
@@ -199,7 +211,7 @@ export class ClassSetup extends Component<{}, State> {
               >
                 <Button
                   title="Buy"
-                  onPress={() => this.requestSubscription(product.id)}
+                  onPress={() => this.requestSubscription(product.productId)}
                 />
               </Row>
             ))}
