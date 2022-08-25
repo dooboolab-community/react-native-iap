@@ -9,8 +9,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.WritableNativeArray
+import com.facebook.react.module.annotations.ReactModule
 import java.util.HashSet
-
+@ReactModule(name = RNIapAmazonModule.TAG)
 class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
     var hasListener = false
