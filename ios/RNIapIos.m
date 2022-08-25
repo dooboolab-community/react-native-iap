@@ -12,7 +12,7 @@ RCT_EXTERN_METHOD(endConnection:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(products:
+RCT_EXTERN_METHOD(getItems:
                   (NSArray*)skus
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
@@ -21,12 +21,12 @@ RCT_EXTERN_METHOD(currentEntitlements:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(purchase:
+RCT_EXTERN_METHOD(buyProduct:
                   (NSString*)sku
                   andDangerouslyFinishTransactionAutomatically:(BOOL)andDangerouslyFinishTransactionAutomatically
                   appAccountToken:(NSString*)appAccountToken
                   quantity:(NSInteger)quantity
-                  withOffer:(NSDictionary*)discountOffer
+                  withOffer:(NSDictionary*)withOffer
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 

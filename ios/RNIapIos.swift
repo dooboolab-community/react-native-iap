@@ -109,22 +109,27 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
         resolve(nil)
     }
 
-    @objc public func products( // TODO: renamed from getItems
+    @objc public func getItems(
         _ skus: [String],
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-    ) async {
-        do {
-            let products: [[String: Any?]] = try await Product.products(for: skus).map({ (prod: Product) -> [String: Any?]? in
-                return serialize(prod)
-            }).compactMap({$0})
-            resolve(products)
-        } catch {
-            reject(IapErrors.E_UNKNOWN.rawValue, "Error fetching items", error)
+    ) {
+        Task {
+            do {
+                let products = try await Product.products(for: skus)
+                self.products = products.reduce(into: [String: Product]()) {(res, prod) in
+                    res[prod.id] = prod
+                }
+                resolve(products.map({ (prod: Product) -> [String: Any?]? in
+                    return serialize(prod)
+                }).compactMap({$0}))
+            } catch {
+                reject(IapErrors.E_UNKNOWN.rawValue, "Error fetching items", error)
+            }
         }
     }
 
-    @objc public func currentEntitlements( // TODO: renamed from getAvailableItems
+    @objc public func currentEntitlements(
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) async {
@@ -181,101 +186,103 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
         resolve(purchasedItems.map({(p: ProductOrError) in ["product": p.product.flatMap { serialize($0)}, "error": serialize(p.error)]}))
     }
 
-    @objc public func purchase( // TODO: renamed from buyProduct
+    @objc public func buyProduct(
         _ sku: String,
         andDangerouslyFinishTransactionAutomatically: Bool,
         appAccountToken: String?,
         quantity: Int,
-        withOffer discountOffer: [String: String],
+        withOffer: [String: String],
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-    ) async {
-        let product: Product? = products[sku]
+    ) {
+        Task {
+            let product: Product? = products[sku]
 
-        if let product = product {
-            do {
-                var options: Set<Product.PurchaseOption> = []
-                if quantity > -1 {
-                    options.insert(.quantity(quantity))
-                }
-
-                let offerID = discountOffer["offerID"] // TODO: Adjust JS to match these new names
-                let keyID = discountOffer["keyID"]
-                let nonce = discountOffer["nonce"]
-                let signature = discountOffer["signature"]
-                let timestamp = discountOffer["timestamp"]
-
-                if let offerID = offerID, let keyID = keyID, let nonce = nonce, let nonce = UUID(uuidString: nonce), let signature = signature, let signature = signature.data(using: .utf8), let timestamp = timestamp, let timestamp = Int(timestamp) {
-                    options.insert(.promotionalOffer(offerID: offerID, keyID: keyID, nonce: nonce, signature: signature, timestamp: timestamp ))
-                }
-                if let appAccountToken = appAccountToken, let appAccountToken = UUID(uuidString: appAccountToken) {
-                    options.insert(.appAccountToken(appAccountToken))
-                }
-                debugMessage("Purchase Started")
-
-                let result = try await product.purchase(options: options)
-                switch result {
-                case .success(let verification):
-                    debugMessage("Purchase Successful")
-
-                    // Check whether the transaction is verified. If it isn't,
-                    // this function rethrows the verification error.
-                    let transaction = try checkVerified(verification)
-
-                    // The transaction is verified. Deliver content to the user.
-                    // Do on JS :await updateCustomerProductStatus()
-
-                    // Always finish a transaction.
-                    if andDangerouslyFinishTransactionAutomatically {
-                        await transaction.finish()
-                        resolve(nil)
-                    } else {
-                        self.addTransaction(transaction)
-                        resolve(serialize(transaction))
+            if let product = product {
+                do {
+                    var options: Set<Product.PurchaseOption> = []
+                    if quantity > -1 {
+                        options.insert(.quantity(quantity))
                     }
-                    return
 
-                case .userCancelled, .pending:
-                    debugMessage("Deferred (awaiting approval via parental controls, etc.)")
+                    let offerID = withOffer["offerID"] // TODO: Adjust JS to match these new names
+                    let keyID = withOffer["keyID"]
+                    let nonce = withOffer["nonce"]
+                    let signature = withOffer["signature"]
+                    let timestamp = withOffer["timestamp"]
+
+                    if let offerID = offerID, let keyID = keyID, let nonce = nonce, let nonce = UUID(uuidString: nonce), let signature = signature, let signature = signature.data(using: .utf8), let timestamp = timestamp, let timestamp = Int(timestamp) {
+                        options.insert(.promotionalOffer(offerID: offerID, keyID: keyID, nonce: nonce, signature: signature, timestamp: timestamp ))
+                    }
+                    if let appAccountToken = appAccountToken, let appAccountToken = UUID(uuidString: appAccountToken) {
+                        options.insert(.appAccountToken(appAccountToken))
+                    }
+                    debugMessage("Purchase Started")
+
+                    let result = try await product.purchase(options: options)
+                    switch result {
+                    case .success(let verification):
+                        debugMessage("Purchase Successful")
+
+                        // Check whether the transaction is verified. If it isn't,
+                        // this function rethrows the verification error.
+                        let transaction = try checkVerified(verification)
+
+                        // The transaction is verified. Deliver content to the user.
+                        // Do on JS :await updateCustomerProductStatus()
+
+                        // Always finish a transaction.
+                        if andDangerouslyFinishTransactionAutomatically {
+                            await transaction.finish()
+                            resolve(nil)
+                        } else {
+                            self.addTransaction(transaction)
+                            resolve(serialize(transaction))
+                        }
+                        return
+
+                    case .userCancelled, .pending:
+                        debugMessage("Deferred (awaiting approval via parental controls, etc.)")
+
+                        let err = [
+                            "debugMessage": "The payment was deferred (awaiting approval via parental controls for instance)",
+                            "code": IapErrors.E_DEFERRED_PAYMENT.rawValue,
+                            "message": "The payment was deferred (awaiting approval via parental controls for instance)",
+                            "productId": sku,
+                            "quantity": "\(quantity)"
+                        ]
+                        debugMessage(err)
+
+                        reject(
+                            IapErrors.E_DEFERRED_PAYMENT.rawValue,
+                            "The payment was deferred for \(sku) (awaiting approval via parental controls for instance)",
+                            nil)
+
+                        return
+
+                    default:
+                        reject(IapErrors.E_UNKNOWN.rawValue, "Unknown response from purchase", nil)
+                        return
+                    }
+                } catch {
+                    debugMessage("Purchase Failed")
 
                     let err = [
-                        "debugMessage": "The payment was deferred (awaiting approval via parental controls for instance)",
-                        "code": IapErrors.E_DEFERRED_PAYMENT.rawValue,
-                        "message": "The payment was deferred (awaiting approval via parental controls for instance)",
-                        "productId": sku,
-                        "quantity": "\(quantity)"
+                        "responseCode": IapErrors.E_PURCHASE_ERROR.rawValue,
+                        "debugMessage": error.localizedDescription,
+                        "message": error.localizedDescription,
+                        "productId": sku
                     ]
-                    debugMessage(err)
+                    print(err)
 
                     reject(
-                        IapErrors.E_DEFERRED_PAYMENT.rawValue,
-                        "The payment was deferred for \(sku) (awaiting approval via parental controls for instance)",
-                        nil)
-
-                    return
-
-                default:
-                    reject(IapErrors.E_UNKNOWN.rawValue, "Unknown response from purchase", nil)
-                    return
+                        IapErrors.E_UNKNOWN.rawValue,
+                        "Purchased failed for sku:\(sku): \(error.localizedDescription)",
+                        error)
                 }
-            } catch {
-                debugMessage("Purchase Failed")
-
-                let err = [
-                    "responseCode": IapErrors.E_PURCHASE_ERROR.rawValue,
-                    "debugMessage": error.localizedDescription,
-                    "message": error.localizedDescription,
-                    "productId": sku
-                ]
-                print(err)
-
-                reject(
-                    IapErrors.E_UNKNOWN.rawValue,
-                    "Purchased failed for sku:\(sku): \(error.localizedDescription)",
-                    error)
+            } else {
+                reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
             }
-        } else {
-            reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
         }
     }
 
