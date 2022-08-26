@@ -17,9 +17,7 @@ import {
   initConnection,
   Product,
   ProductPurchase,
-  promotedProductListener,
   PurchaseError,
-  purchaseErrorListener,
   purchaseUpdatedListener,
   requestPurchase,
   requestSubscription,
@@ -45,8 +43,6 @@ interface State {
 
 export class ClassSetup extends Component<{}, State> {
   private purchaseUpdate: EmitterSubscription | null = null;
-  private purchaseError: EmitterSubscription | null = null;
-  private promotedProduct: EmitterSubscription | null = null;
 
   constructor(props: {}) {
     super(props);
@@ -92,20 +88,10 @@ export class ClassSetup extends Component<{}, State> {
         }
       },
     );
-
-    this.purchaseError = purchaseErrorListener((error: PurchaseError) => {
-      Alert.alert('purchase error', JSON.stringify(error));
-    });
-
-    this.promotedProduct = promotedProductListener((productId?: string) =>
-      Alert.alert('Product promoted', productId),
-    );
   }
 
   componentWillUnmount() {
     this.purchaseUpdate?.remove();
-    this.purchaseError?.remove();
-    this.promotedProduct?.remove();
 
     endConnection();
   }

@@ -34,6 +34,7 @@ type IAP_STATUS = {
   getPurchaseHistory: () => Promise<void>;
   getProducts: ({skus}: {skus: string[]}) => Promise<void>;
   getSubscriptions: ({skus}: {skus: string[]}) => Promise<void>;
+  setCurrentPurchase: (currentPurchase: Purchase | undefined) => void;
 };
 
 export function useIAP(): IAP_STATUS {
@@ -97,18 +98,18 @@ export function useIAP(): IAP_STATUS {
       } catch (err) {
         throw err;
       } finally {
-        if (purchase.productId === currentPurchase?.productId) {
+        if (purchase.id === currentPurchase?.id) {
           setCurrentPurchase(undefined);
         }
 
-        if (purchase.productId === currentPurchaseError?.productId) {
+        if (purchase.id === currentPurchaseError?.id) {
           setCurrentPurchaseError(undefined);
         }
       }
     },
     [
-      currentPurchase?.productId,
-      currentPurchaseError?.productId,
+      currentPurchase?.id,
+      currentPurchaseError?.id,
       setCurrentPurchase,
       setCurrentPurchaseError,
     ],
@@ -128,5 +129,6 @@ export function useIAP(): IAP_STATUS {
     getSubscriptions,
     getAvailablePurchases,
     getPurchaseHistory,
+    setCurrentPurchase,
   };
 }

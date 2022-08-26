@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
-import {purchaseErrorListener, purchaseUpdatedListener} from '../eventEmitter';
+import {purchaseUpdatedListener} from '../eventEmitter';
 import {initConnection} from '../iap';
 import type {PurchaseError} from '../purchaseError';
 import type {
@@ -116,16 +116,8 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         },
       );
 
-      const purchaseErrorSubscription = purchaseErrorListener(
-        (error: PurchaseError) => {
-          setCurrentPurchase(undefined);
-          setCurrentPurchaseError(error);
-        },
-      );
-
       return () => {
         purchaseUpdateSubscription.remove();
-        purchaseErrorSubscription.remove();
       };
     }, [connected]);
 

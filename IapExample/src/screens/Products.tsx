@@ -21,6 +21,7 @@ export const Products = () => {
     initConnectionError,
     finishTransaction,
     getProducts,
+    setCurrentPurchase,
   } = useIAP();
 
   const handleGetProducts = async () => {
@@ -33,7 +34,8 @@ export const Products = () => {
 
   const handleBuyProduct = async (sku: Sku) => {
     try {
-      await requestPurchase({sku});
+      const transaction = await requestPurchase({sku});
+      setCurrentPurchase(transaction);
     } catch (error) {
       if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
@@ -46,7 +48,7 @@ export const Products = () => {
   useEffect(() => {
     const checkCurrentPurchase = async () => {
       try {
-        if (currentPurchase?.transactionReceipt) {
+        if (currentPurchase?.id) {
           await finishTransaction({
             purchase: currentPurchase,
             isConsumable: true,

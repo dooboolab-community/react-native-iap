@@ -362,7 +362,7 @@ export const finishTransaction = ({
   return (
     Platform.select({
       ios: async () => {
-        return getIosModule().finishTransaction(purchase.transactionId);
+        return getIosModule().finishTransaction(purchase.id + '');
       },
       android: async () => {
         if (purchase) {
