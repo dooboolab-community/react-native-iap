@@ -1,8 +1,7 @@
-import {EmitterSubscription, NativeEventEmitter} from 'react-native';
+import {NativeEventEmitter} from 'react-native';
 
-import {getAndroidModule, getIosModule, getNativeModule} from './iap';
-import {isAndroid, isIos} from './internal';
-import type {PurchaseError} from './purchaseError';
+import {getAndroidModule, getNativeModule} from './iap';
+import {isAndroid} from './internal';
 import type {Purchase} from './types';
 
 const eventEmitter = new NativeEventEmitter(getNativeModule());

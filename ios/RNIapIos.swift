@@ -370,8 +370,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
                 debugMessage("Finished transaction")
                 transactions.removeValue(forKey: transactionIdentifier)
                 resolve(nil)
-            }else{
-                reject(IapErrors.E_DEVELOPER_ERROR.rawValue,"Invalid transaction Id",nil)
+            } else {
+                reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Invalid transaction Id", nil)
             }
         }
     }

@@ -16,7 +16,7 @@ func serialize(_ p: Product) -> [String: Any?] {
         "displayPrice": p.displayPrice,
         "id": p.id,
         "isFamilyShareable": p.isFamilyShareable,
-        "jsonRepresentation":serializeDebug(p.jsonRepresentation),
+        "jsonRepresentation": serializeDebug(p.jsonRepresentation),
         "price": p.price,
         "subscription": serialize(p.subscription),
         "type": serialize(p.type)

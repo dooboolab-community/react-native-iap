@@ -23,13 +23,13 @@ export class PurchaseError implements Error {
     public responseCode?: number,
     public debugMessage?: string,
     public code?: ErrorCode,
-    public productId?: string,
+    public id?: string,
   ) {
     this.name = '[react-native-iap]: PurchaseError';
     this.message = message;
     this.responseCode = responseCode;
     this.debugMessage = debugMessage;
     this.code = code;
-    this.productId = productId;
+    this.id = id;
   }
 }
