@@ -142,7 +142,9 @@ export const getSubscriptions = ({
 
         return items.filter(
           (item: Subscription) =>
-            skus.includes(item.id) && item.type === 'subs',
+            skus.includes(
+              item.id,
+            ) /* TODO: only works for nonrenewable subs && !!item.subscription*/,
         );
       },
       android: async () => {
@@ -297,6 +299,8 @@ export const requestSubscription = ({
   subscriptionOffers = undefined, // Android Billing V5
   isOfferPersonalized = undefined, // Android Billing V5
   appAccountToken,
+  quantity,
+  withOffer,
 }: RequestSubscription): Promise<SubscriptionPurchase | null> =>
   (
     Platform.select({
@@ -311,6 +315,8 @@ export const requestSubscription = ({
           sku,
           andDangerouslyFinishTransactionAutomaticallyIOS,
           appAccountToken,
+          quantity ?? -1,
+          withOffer,
         );
       },
       android: async () => {

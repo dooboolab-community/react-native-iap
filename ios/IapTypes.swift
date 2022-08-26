@@ -2,7 +2,7 @@
 //  IapTypes.swift
 //  RNIap
 //
-//  Created by Aguilar Andres on 8/18/22.
+//  Created by Andres Aguilar on 8/18/22.
 //
 
 import Foundation

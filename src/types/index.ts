@@ -37,6 +37,7 @@ export interface ProductCommon {
 
 export interface ProductPurchase {
   productId: string;
+  productID: string; //iOS naming
   transactionId?: string;
   transactionDate: number;
   transactionReceipt: string;

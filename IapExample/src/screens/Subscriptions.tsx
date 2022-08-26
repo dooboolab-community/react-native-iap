@@ -1,13 +1,14 @@
-import React from 'react';
-import {Platform, ScrollView, StyleSheet, View} from 'react-native';
+import React, {useState} from 'react';
+import {Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {PurchaseError, requestSubscription, useIAP} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {constants, contentContainerStyle, errorLog} from '../utils';
 
 export const Subscriptions = () => {
-  const {connected, subscriptions, getSubscriptions} = useIAP();
-
+  const {connected, subscriptions, getSubscriptions, setCurrentPurchase} =
+    useIAP();
+  const [ownedSubscriptions, setOwnedSubscriptions] = useState(new Set());
   const handleGetSubscriptions = async () => {
     try {
       await getSubscriptions({skus: constants.subscriptionSkus});
@@ -26,12 +27,17 @@ export const Subscriptions = () => {
       );
     }
     try {
-      await requestSubscription({
+      const transaction = await requestSubscription({
         sku: productId,
         ...(offerToken && {
           subscriptionOffers: [{sku: productId, offerToken}],
         }),
       });
+      console.warn('transaction', transaction);
+      setOwnedSubscriptions((prev) => {
+        return new Set([...prev, transaction?.productID]);
+      });
+      transaction && setCurrentPurchase(transaction);
     } catch (error) {
       if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
@@ -57,10 +63,18 @@ export const Subscriptions = () => {
                   label: 'Subscription Id',
                   value: subscription.id,
                 },
+                {
+                  label: 'type',
+                  value: subscription.type,
+                },
               ]}
               isLast={subscriptions.length - 1 === index}
             >
-              {Platform.OS === 'android' &&
+              {ownedSubscriptions.has(subscription.id) && (
+                <Text>Subscribed</Text>
+              )}
+              {!ownedSubscriptions.has(subscription.id) &&
+                Platform.OS === 'android' &&
                 // On Google Play Billing V5 you might have  multiple offers for a single sku
                 subscription?.subscriptionOfferDetails?.map((offer) => (
                   <Button
@@ -72,14 +86,15 @@ export const Subscriptions = () => {
                     }}
                   />
                 ))}
-              {Platform.OS === 'ios' && (
-                <Button
-                  title="Subscribe"
-                  onPress={() => {
-                    handleBuySubscription(subscription.id);
-                  }}
-                />
-              )}
+              {!ownedSubscriptions.has(subscription.id) &&
+                Platform.OS === 'ios' && (
+                  <Button
+                    title="Subscribe"
+                    onPress={() => {
+                      handleBuySubscription(subscription.id);
+                    }}
+                  />
+                )}
             </Row>
           ))}
         </View>
