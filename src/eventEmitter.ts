@@ -25,26 +25,3 @@ export const purchaseUpdatedListener = (
 
   return emitterSubscription;
 };
-
-/**
- * Add IAP purchase error event
- */
-export const purchaseErrorListener = (
-  listener: (error: PurchaseError) => void,
-): EmitterSubscription => eventEmitter.addListener('purchase-error', listener);
-
-/**
- * Add IAP promoted subscription event
- *
- * @platform iOS
- */
-export const promotedProductListener = (listener: () => void) => {
-  if (isIos) {
-    return new NativeEventEmitter(getIosModule()).addListener(
-      'iap-promoted-product',
-      listener,
-    );
-  }
-
-  return null;
-};

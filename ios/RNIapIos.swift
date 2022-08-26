@@ -362,10 +362,18 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
         _ transactionIdentifier: String,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-    ) async {
-        await transactions[transactionIdentifier]?.finish()
-        transactions.removeValue(forKey: transactionIdentifier)
-        resolve(nil)
+    ) {
+        Task {
+            if let transaction = transactions[transactionIdentifier] {
+                debugMessage("Finishing transaction")
+                await transaction.finish()
+                debugMessage("Finished transaction")
+                transactions.removeValue(forKey: transactionIdentifier)
+                resolve(nil)
+            }else{
+                reject(IapErrors.E_DEVELOPER_ERROR.rawValue,"Invalid transaction Id",nil)
+            }
+        }
     }
 
     @objc public func pendingTransactions (

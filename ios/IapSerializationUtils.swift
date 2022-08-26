@@ -9,17 +9,34 @@ import Foundation
 import StoreKit
 
 func serialize(_ p: Product) -> [String: Any?] {
-    return ["displayName": p.displayName,
-            "description": p.description,
-            "id": p.id,
-            "displayPrice": p.displayPrice,
-            "price": p.price,
-            "isFamilyShareable": p.isFamilyShareable,
-            "jsonRepresentation": String( decoding: p.jsonRepresentation, as: UTF8.self),
-            // "debugDescription": p.debugDescription,
-            "subscription": serialize(p.subscription),
-            "type": serialize(p.type)
+    return [
+        "debugDescription": serializeDebug( p.debugDescription),
+        "description": p.description,
+        "displayName": p.displayName,
+        "displayPrice": p.displayPrice,
+        "id": p.id,
+        "isFamilyShareable": p.isFamilyShareable,
+        "jsonRepresentation":serializeDebug(p.jsonRepresentation),
+        "price": p.price,
+        "subscription": serialize(p.subscription),
+        "type": serialize(p.type)
     ]
+}
+
+func serializeDebug (_ d: Data) -> String? {
+    #if DEBUG
+    return String( decoding: d, as: UTF8.self)
+    #else
+    return nil
+    #endif
+}
+
+func serializeDebug (_ s: String) -> String? {
+    #if DEBUG
+    return s
+    #else
+    return nil
+    #endif
 }
 
 func serialize(_ e: Error?) -> [String: Any?]? {
@@ -30,9 +47,9 @@ func serialize(_ e: Error?) -> [String: Any?]? {
 func serialize(_ si: Product.SubscriptionInfo?) -> [String: Any?]? {
     guard let si = si else {return nil}
     return [
-        "subscriptionGroupID": si.subscriptionGroupID,
-        "promotionalOffers": si.promotionalOffers.map {(offer: Product.SubscriptionOffer) in serialize(offer)},
         "introductoryOffer": serialize(si.introductoryOffer),
+        "promotionalOffers": si.promotionalOffers.map {(offer: Product.SubscriptionOffer) in serialize(offer)},
+        "subscriptionGroupID": si.subscriptionGroupID,
         "subscriptionPeriod": si.subscriptionPeriod
     ]
 }
@@ -40,41 +57,40 @@ func serialize(_ si: Product.SubscriptionInfo?) -> [String: Any?]? {
 func serialize(_ so: Product.SubscriptionOffer?) -> [String: Any?]? {
     guard let so = so else {return nil}
     return [
-        "id": so.id,
-        "price": so.price,
         "displayPrice": so.displayPrice,
-        "type": so.type,
+        "id": so.id,
         "paymentMode": so.paymentMode,
         "period": so.period,
-        "periodCount": so.periodCount
+        "periodCount": so.periodCount,
+        "price": so.price,
+        "type": so.type
     ]
 }
 
 // Transaction
 func serialize(_ t: Transaction) -> [String: Any?] {
-    return ["id": t.id,
+    return ["appAccountToken": t.appAccountToken,
             "appBundleID": t.appBundleID,
-            "offerID": t.offerID,
-            "subscriptionGroupID": t.subscriptionGroupID,
-            "appAccountToken": t.appAccountToken,
-            // "debugDescription": t.debugDescription,
+            "debugDescription": serializeDebug(t.debugDescription),
             "deviceVerification": t.deviceVerification,
             "deviceVerificationNonce": t.deviceVerificationNonce,
             "expirationDate": t.expirationDate,
+            "id": t.id,
             "isUpgraded": t.isUpgraded,
-            "jsonRepresentation": t.jsonRepresentation,
+            "jsonRepresentation": serializeDebug(t.jsonRepresentation),
+            "offerID": t.offerID,
             "offerType": serialize(t.offerType),
-            "expirationDate": t.expirationDate,
             "originalID": t.originalID,
             "originalPurchaseDate": t.originalPurchaseDate,
             "ownershipType": serialize(t.ownershipType),
-            "productType": serialize(t.productType),
             "productID": t.productID,
+            "productType": serialize(t.productType),
+            "purchaseDate": t.purchaseDate,
             "purchasedQuantity": t.purchasedQuantity,
             "revocationDate": t.revocationDate,
             "revocationReason": t.revocationReason,
-            "purchaseDate": t.purchaseDate,
             "signedDate": t.signedDate,
+            "subscriptionGroupID": t.subscriptionGroupID,
             "webOrderLineItemID": t.webOrderLineItemID
     ]
 }
