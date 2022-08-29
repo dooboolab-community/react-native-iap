@@ -26,7 +26,7 @@ import * as RNIap from 'react-native-iap';
 
   async componentDidMount() {
     try {
-      const products: Product[] = await RNIap.getProducts(productIds);
+      const products: Product[] = await RNIap.getProducts({skus: productIds});
       this.setState({ products });
     } catch(err) {
       console.warn(err); // standardized err.code and err.message available
