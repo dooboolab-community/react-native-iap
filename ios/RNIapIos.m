@@ -17,7 +17,7 @@ RCT_EXTERN_METHOD(getItems:
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(currentEntitlements:
+RCT_EXTERN_METHOD(getAvailableItems:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 

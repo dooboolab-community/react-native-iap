@@ -9,7 +9,7 @@ extension SKProductsRequest {
 }
 
 @objc(RNIapIos)
-class RNIapIos: RCTEventEmitter, SKRequestDelegate {
+class RNIapIos: RCTEventEmitter {
     private var hasListeners = false
     private var products: [String: Product]
     private var transactions: [String: Transaction]
@@ -129,61 +129,62 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate {
         }
     }
 
-    @objc public func currentEntitlements(
+    @objc public func getAvailableItems(
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-    ) async {
-        var purchasedItems: [ProductOrError] = []
-        // Iterate through all of the user's purchased products.
-        for await result in Transaction.currentEntitlements {
-            do {
-                // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
-                let transaction = try checkVerified(result)
-                // Check the `productType` of the transaction and get the corresponding product from the store.
-                switch transaction.productType {
-                case .nonConsumable:
-                    if let product = products[transaction.productID] {
-                        purchasedItems.append(ProductOrError(product: product, error: nil))
-                    }
-
-                case .nonRenewable:
-                    if let nonRenewable = products[transaction.productID] {
-                        // Non-renewing subscriptions have no inherent expiration date, so they're always
-                        // contained in `Transaction.currentEntitlements` after the user purchases them.
-                        // This app defines this non-renewing subscription's expiration date to be one year after purchase.
-                        // If the current date is within one year of the `purchaseDate`, the user is still entitled to this
-                        // product.
-                        let currentDate = Date()
-                        let expirationDate = Calendar(identifier: .gregorian).date(byAdding: DateComponents(year: 1),
-                                                                                   to: transaction.purchaseDate)!
-
-                        if currentDate < expirationDate {
-                            purchasedItems.append(ProductOrError(product: nonRenewable, error: nil))
+    ) {
+        Task {
+            var purchasedItems: [ProductOrError] = []
+            // Iterate through all of the user's purchased products.
+            for await result in Transaction.currentEntitlements {
+                do {
+                    // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
+                    let transaction = try checkVerified(result)
+                    // Check the `productType` of the transaction and get the corresponding product from the store.
+                    switch transaction.productType {
+                    case .nonConsumable:
+                        if let product = products[transaction.productID] {
+                            purchasedItems.append(ProductOrError(product: product, error: nil))
                         }
-                    }
 
-                case .autoRenewable:
-                    if let subscription = products[transaction.productID] {
-                        purchasedItems.append(ProductOrError(product: subscription, error: nil))
-                    }
+                    case .nonRenewable:
+                        if let nonRenewable = products[transaction.productID] {
+                            // Non-renewing subscriptions have no inherent expiration date, so they're always
+                            // contained in `Transaction.currentEntitlements` after the user purchases them.
+                            // This app defines this non-renewing subscription's expiration date to be one year after purchase.
+                            // If the current date is within one year of the `purchaseDate`, the user is still entitled to this
+                            // product.
+                            let currentDate = Date()
+                            let expirationDate = Calendar(identifier: .gregorian).date(byAdding: DateComponents(year: 1),
+                                                                                       to: transaction.purchaseDate)!
 
-                default:
-                    break
+                            if currentDate < expirationDate {
+                                purchasedItems.append(ProductOrError(product: nonRenewable, error: nil))
+                            }
+                        }
+
+                    case .autoRenewable:
+                        if let subscription = products[transaction.productID] {
+                            purchasedItems.append(ProductOrError(product: subscription, error: nil))
+                        }
+
+                    default:
+                        break
+                    }
+                } catch StoreError.failedVerification {
+                    purchasedItems.append(ProductOrError(product: nil, error: StoreError.failedVerification))
+                } catch {
+                    debugMessage(error)
+                    purchasedItems.append(ProductOrError(product: nil, error: error))
                 }
-            } catch StoreError.failedVerification {
-                purchasedItems.append(ProductOrError(product: nil, error: StoreError.failedVerification))
-            } catch {
-                debugMessage(error)
-                purchasedItems.append(ProductOrError(product: nil, error: error))
             }
+            // Check the `subscriptionGroupStatus` to learn the auto-renewable subscription state to determine whether the customer
+            // is new (never subscribed), active, or inactive (expired subscription). This app has only one subscription
+            // group, so products in the subscriptions array all belong to the same group. The statuses that
+            // `product.subscription.status` returns apply to the entire subscription group.
+            // subscriptionGroupStatus = try? await subscriptions.first?.subscription?.status.first?.state
+            resolve(purchasedItems.map({(p: ProductOrError) in ["product": p.product.flatMap { serialize($0)}, "error": serialize(p.error)]}))
         }
-
-        // Check the `subscriptionGroupStatus` to learn the auto-renewable subscription state to determine whether the customer
-        // is new (never subscribed), active, or inactive (expired subscription). This app has only one subscription
-        // group, so products in the subscriptions array all belong to the same group. The statuses that
-        // `product.subscription.status` returns apply to the entire subscription group.
-        // subscriptionGroupStatus = try? await subscriptions.first?.subscription?.status.first?.state
-        resolve(purchasedItems.map({(p: ProductOrError) in ["product": p.product.flatMap { serialize($0)}, "error": serialize(p.error)]}))
     }
 
     @objc public func buyProduct(

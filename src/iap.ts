@@ -198,7 +198,7 @@ export const getAvailablePurchases = (): Promise<
   (
     Platform.select({
       ios: async () => {
-        return getIosModule().currentEntitlements();
+        return getIosModule().getAvailableItems();
       },
       android: async () => {
         if (RNIapAmazonModule) {
