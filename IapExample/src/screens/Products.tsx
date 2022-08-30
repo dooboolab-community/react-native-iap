@@ -21,7 +21,6 @@ export const Products = () => {
     initConnectionError,
     finishTransaction,
     getProducts,
-    setCurrentPurchase,
   } = useIAP();
 
   const handleGetProducts = async () => {
@@ -34,8 +33,7 @@ export const Products = () => {
 
   const handleBuyProduct = async (sku: Sku) => {
     try {
-      const transaction = await requestPurchase({sku});
-      setCurrentPurchase(transaction);
+      await requestPurchase({sku});
     } catch (error) {
       if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
@@ -103,11 +101,11 @@ export const Products = () => {
 
           {products.map((product, index) => (
             <Row
-              key={product.id}
+              key={product.productId}
               fields={[
                 {
                   label: 'Product Id',
-                  value: product.id,
+                  value: product.productId,
                 },
                 {
                   label: 'type',
@@ -118,7 +116,7 @@ export const Products = () => {
             >
               <Button
                 title="Buy"
-                onPress={() => handleBuyProduct(product.id)}
+                onPress={() => handleBuyProduct(product.productId)}
               />
             </Row>
           ))}

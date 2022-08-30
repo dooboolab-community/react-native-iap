@@ -15,6 +15,7 @@ import {useIAPContext} from './withIAPContext';
 type IAP_STATUS = {
   connected: boolean;
   products: Product[];
+  promotedProductsIOS: Product[];
   subscriptions: Subscription[];
   purchaseHistory: Purchase[];
   availablePurchases: Purchase[];
@@ -34,13 +35,13 @@ type IAP_STATUS = {
   getPurchaseHistory: () => Promise<void>;
   getProducts: ({skus}: {skus: string[]}) => Promise<void>;
   getSubscriptions: ({skus}: {skus: string[]}) => Promise<void>;
-  setCurrentPurchase: (currentPurchase: Purchase | undefined) => void;
 };
 
 export function useIAP(): IAP_STATUS {
   const {
     connected,
     products,
+    promotedProductsIOS,
     subscriptions,
     purchaseHistory,
     availablePurchases,
@@ -57,9 +58,7 @@ export function useIAP(): IAP_STATUS {
 
   const getProducts = useCallback(
     async ({skus}: {skus: string[]}): Promise<void> => {
-      const prods = await iapGetProducts({skus});
-      console.log(prods);
-      setProducts(prods);
+      setProducts(await iapGetProducts({skus}));
     },
     [setProducts],
   );
@@ -98,18 +97,18 @@ export function useIAP(): IAP_STATUS {
       } catch (err) {
         throw err;
       } finally {
-        if (purchase.id === currentPurchase?.id) {
+        if (purchase.productId === currentPurchase?.productId) {
           setCurrentPurchase(undefined);
         }
 
-        if (purchase.id === currentPurchaseError?.id) {
+        if (purchase.productId === currentPurchaseError?.productId) {
           setCurrentPurchaseError(undefined);
         }
       }
     },
     [
-      currentPurchase?.id,
-      currentPurchaseError?.id,
+      currentPurchase?.productId,
+      currentPurchaseError?.productId,
       setCurrentPurchase,
       setCurrentPurchaseError,
     ],
@@ -118,6 +117,7 @@ export function useIAP(): IAP_STATUS {
   return {
     connected,
     products,
+    promotedProductsIOS,
     subscriptions,
     purchaseHistory,
     availablePurchases,
@@ -129,6 +129,5 @@ export function useIAP(): IAP_STATUS {
     getSubscriptions,
     getAvailablePurchases,
     getPurchaseHistory,
-    setCurrentPurchase,
   };
 }

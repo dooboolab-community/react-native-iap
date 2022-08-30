@@ -173,7 +173,7 @@ export class ClassSetup extends Component<{}, State> {
 
             {productList.map((product, index) => (
               <Row
-                key={product.id}
+                key={product.productId}
                 fields={[
                   {
                     label: 'Product JSON',
@@ -185,7 +185,7 @@ export class ClassSetup extends Component<{}, State> {
               >
                 <Button
                   title="Buy"
-                  onPress={() => this.requestSubscription(product.id)}
+                  onPress={() => this.requestSubscription(product.productId)}
                 />
               </Row>
             ))}

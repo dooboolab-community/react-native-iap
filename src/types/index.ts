@@ -26,6 +26,7 @@ export enum InstallSourceAndroid {
 
 export interface ProductCommon {
   type: 'subs' | 'sub' | 'inapp' | 'iap';
+  productId: string; //iOS
   productIds?: string[];
   title: string;
   description: string;
@@ -99,8 +100,6 @@ export interface ProductAndroid extends ProductCommon {
   };
 }
 export interface ProductIOS extends ProductCommon {
-  subscription: null;
-  id: string;
   type: 'inapp' | 'iap';
 }
 
@@ -132,7 +131,6 @@ export interface SubscriptionAndroid extends ProductCommon {
 
 export interface SubscriptionIOS extends ProductCommon {
   type: 'subs';
-  id: string;
   discounts?: Discount[];
   introductoryPrice?: string;
   introductoryPriceAsAmountIOS?: string;
