@@ -50,8 +50,6 @@ export const Subscriptions = () => {
   useEffect(() => {
     const checkCurrentPurchase = async () => {
       try {
-        console.warn(currentPurchase);
-
         if (currentPurchase?.transactionId) {
           await finishTransaction({
             purchase: currentPurchase,
