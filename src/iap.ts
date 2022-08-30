@@ -21,7 +21,7 @@ import type {
 } from './types';
 import {InstallSourceAndroid, PurchaseStateAndroid} from './types';
 
-const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
+const {RNIapIos, RNIapIosSk2, RNIapModule, RNIapAmazonModule} = NativeModules;
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
 
@@ -35,12 +35,18 @@ let androidNativeModule = RNIapModule;
 
 let iosNativeModule = RNIapIos;
 
-export let isIosStorekit2 = RNIapIos && RNIapIos === iosNativeModule;
+export let isIosStorekit2 = RNIapIosSk2 && RNIapIosSk2 === iosNativeModule;
 
 export const setAndroidNativeModule = (
   nativeModule: typeof RNIapModule,
 ): void => {
   androidNativeModule = nativeModule;
+};
+
+export const setIosNativeModule = (
+  nativeModule: typeof RNIapIos | typeof RNIapIosSk2,
+): void => {
+  iosNativeModule = nativeModule;
 };
 
 const checkNativeAndroidAvailable = (): void => {
@@ -62,7 +68,7 @@ export const getAndroidModule = ():
 };
 
 const checkNativeIOSAvailable = (): void => {
-  if (!RNIapIos) {
+  if (!RNIapIos && !RNIapIosSk2) {
     throw new Error('IAP_NOT_AVAILABLE');
   }
 };
@@ -70,7 +76,7 @@ const checkNativeIOSAvailable = (): void => {
 export const getIosModule = (): typeof RNIapIos => {
   checkNativeIOSAvailable();
 
-  return RNIapIos;
+  return iosNativeModule ? iosNativeModule : RNIapIos ? RNIapIos : RNIapIosSk2;
 };
 
 export const getNativeModule = ():
