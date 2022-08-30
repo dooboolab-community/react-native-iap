@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {PurchaseError, requestSubscription, useIAP} from 'react-native-iap';
 
@@ -6,8 +6,13 @@ import {Box, Button, Heading, Row, State} from '../components';
 import {constants, contentContainerStyle, errorLog} from '../utils';
 
 export const Subscriptions = () => {
-  const {connected, subscriptions, getSubscriptions, setCurrentPurchase} =
-    useIAP();
+  const {
+    connected,
+    subscriptions,
+    getSubscriptions,
+    currentPurchase,
+    finishTransaction,
+  } = useIAP();
   const [ownedSubscriptions, setOwnedSubscriptions] = useState(new Set());
   const handleGetSubscriptions = async () => {
     try {
@@ -27,17 +32,12 @@ export const Subscriptions = () => {
       );
     }
     try {
-      const transaction = await requestSubscription({
+      await requestSubscription({
         sku: productId,
         ...(offerToken && {
           subscriptionOffers: [{sku: productId, offerToken}],
         }),
       });
-      console.warn('transaction', transaction);
-      setOwnedSubscriptions((prev) => {
-        return new Set([...prev, transaction?.productID]);
-      });
-      transaction && setCurrentPurchase(transaction);
     } catch (error) {
       if (error instanceof PurchaseError) {
         errorLog({message: `[${error.code}]: ${error.message}`, error});
@@ -46,6 +46,31 @@ export const Subscriptions = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const checkCurrentPurchase = async () => {
+      try {
+        if (currentPurchase?.productId) {
+          await finishTransaction({
+            purchase: currentPurchase,
+            isConsumable: true,
+          });
+
+          setOwnedSubscriptions(
+            (prev) => new Set([...prev, currentPurchase?.productId]),
+          );
+        }
+      } catch (error) {
+        if (error instanceof PurchaseError) {
+          errorLog({message: `[${error.code}]: ${error.message}`, error});
+        } else {
+          errorLog({message: 'handleBuyProduct', error});
+        }
+      }
+    };
+
+    checkCurrentPurchase();
+  }, [currentPurchase, finishTransaction]);
 
   return (
     <ScrollView contentContainerStyle={contentContainerStyle}>
@@ -57,11 +82,11 @@ export const Subscriptions = () => {
 
           {subscriptions.map((subscription, index) => (
             <Row
-              key={subscription.id}
+              key={subscription.productId}
               fields={[
                 {
                   label: 'Subscription Id',
-                  value: subscription.id,
+                  value: subscription.productId,
                 },
                 {
                   label: 'type',
@@ -70,10 +95,10 @@ export const Subscriptions = () => {
               ]}
               isLast={subscriptions.length - 1 === index}
             >
-              {ownedSubscriptions.has(subscription.id) && (
+              {ownedSubscriptions.has(subscription.productId) && (
                 <Text>Subscribed</Text>
               )}
-              {!ownedSubscriptions.has(subscription.id) &&
+              {!ownedSubscriptions.has(subscription.productId) &&
                 Platform.OS === 'android' &&
                 // On Google Play Billing V5 you might have  multiple offers for a single sku
                 subscription?.subscriptionOfferDetails?.map((offer) => (
@@ -82,16 +107,19 @@ export const Subscriptions = () => {
                       .map((ppl) => ppl.billingPeriod)
                       .join(',')}`}
                     onPress={() => {
-                      handleBuySubscription(subscription.id, offer.offerToken);
+                      handleBuySubscription(
+                        subscription.productId,
+                        offer.offerToken,
+                      );
                     }}
                   />
                 ))}
-              {!ownedSubscriptions.has(subscription.id) &&
+              {!ownedSubscriptions.has(subscription.productId) &&
                 Platform.OS === 'ios' && (
                   <Button
                     title="Subscribe"
                     onPress={() => {
-                      handleBuySubscription(subscription.id);
+                      handleBuySubscription(subscription.productId);
                     }}
                   />
                 )}

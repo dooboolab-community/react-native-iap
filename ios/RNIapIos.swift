@@ -90,7 +90,7 @@ class RNIapIos: RCTEventEmitter {
     }
 
     override func supportedEvents() -> [String]? {
-        return [ "transaction-updated"]
+        return [ "iap-promoted-product", "purchase-updated", "purchase-error"]
     }
 
     @objc public func initConnection(
@@ -135,6 +135,15 @@ class RNIapIos: RCTEventEmitter {
     ) {
         Task {
             var purchasedItems: [ProductOrError] = []
+
+            func addPurchase(transaction: Transaction, product: Product) {
+                purchasedItems.append(ProductOrError(product: product, error: nil))
+                sendEvent(withName: "purchase-update", body: serialize(transaction))
+            }
+            func addError( error: Error, errorDict: [String: String]) {
+                purchasedItems.append(ProductOrError(product: nil, error: error))
+                sendEvent(withName: "purchase-error", body: errorDict)
+            }
             // Iterate through all of the user's purchased products.
             for await result in Transaction.currentEntitlements {
                 do {
@@ -144,7 +153,7 @@ class RNIapIos: RCTEventEmitter {
                     switch transaction.productType {
                     case .nonConsumable:
                         if let product = products[transaction.productID] {
-                            purchasedItems.append(ProductOrError(product: product, error: nil))
+                            addPurchase(transaction: transaction, product: product)
                         }
 
                     case .nonRenewable:
@@ -159,23 +168,35 @@ class RNIapIos: RCTEventEmitter {
                                                                                        to: transaction.purchaseDate)!
 
                             if currentDate < expirationDate {
-                                purchasedItems.append(ProductOrError(product: nonRenewable, error: nil))
+                                addPurchase(transaction: transaction, product: nonRenewable)
                             }
                         }
 
                     case .autoRenewable:
                         if let subscription = products[transaction.productID] {
-                            purchasedItems.append(ProductOrError(product: subscription, error: nil))
+                            addPurchase(transaction: transaction, product: subscription)
                         }
 
                     default:
                         break
                     }
                 } catch StoreError.failedVerification {
-                    purchasedItems.append(ProductOrError(product: nil, error: StoreError.failedVerification))
+                    let err = [ "responseCode": "1", // TODO
+                                "debugMessage": StoreError.failedVerification.localizedDescription,
+                                "code": "1", // TODO
+                                "message": StoreError.failedVerification.localizedDescription,
+                                "productId": "unknown"// TODO
+                    ]
+                    addError(error: StoreError.failedVerification, errorDict: err)
                 } catch {
                     debugMessage(error)
-                    purchasedItems.append(ProductOrError(product: nil, error: error))
+                    let err = [ "responseCode": "1", // TODO
+                                "debugMessage": error.localizedDescription,
+                                "code": "1", // TODO
+                                "message": error.localizedDescription,
+                                "productId": "unknown"// TODO
+                    ]
+                    addError(error: StoreError.failedVerification, errorDict: err)
                 }
             }
             // Check the `subscriptionGroupStatus` to learn the auto-renewable subscription state to determine whether the customer
@@ -282,7 +303,7 @@ class RNIapIos: RCTEventEmitter {
                         error)
                 }
             } else {
-                reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
+                reject("E_DEVELOPER_ERROR", "Invalid product ID. Did you call getProducts/Subscriptions", nil)
             }
         }
     }

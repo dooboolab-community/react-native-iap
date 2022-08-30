@@ -2,6 +2,7 @@ import {Linking, NativeModules, Platform} from 'react-native';
 
 import type * as Amazon from './types/amazon';
 import type * as Android from './types/android';
+import {productSk2Map, subscriptionSk2Map} from './types/appleSK2';
 import {
   enhancedFetch,
   fillProductsWithAdditionalData,
@@ -31,6 +32,10 @@ export const getInstallSourceAndroid = (): InstallSourceAndroid => {
 };
 
 let androidNativeModule = RNIapModule;
+
+let iosNativeModule = RNIapIos;
+
+let isIosStorekit2 = RNIapIos && RNIapIos === iosNativeModule;
 
 export const setAndroidNativeModule = (
   nativeModule: typeof RNIapModule,
@@ -110,9 +115,14 @@ export const getProducts = ({
   (
     Platform.select({
       ios: async () => {
-        const items = await getIosModule().getItems(skus);
-
-        return items.filter((item: Product) => item.subscription === null);
+        let items = await getIosModule().getItems(skus);
+        if (isIosStorekit2) {
+          items = items.map(productSk2Map);
+        }
+        return items.filter(
+          (item: Product) =>
+            skus.includes(item.productId) && item.type === 'iap',
+        );
       },
       android: async () => {
         const products = await getAndroidModule().getItemsByType(
@@ -138,13 +148,13 @@ export const getSubscriptions = ({
   (
     Platform.select({
       ios: async () => {
-        const items = await getIosModule().getItems(skus);
-
+        let items = await getIosModule().getItems(skus);
+        if (isIosStorekit2) {
+          items = items.map(subscriptionSk2Map);
+        }
         return items.filter(
           (item: Subscription) =>
-            skus.includes(
-              item.id,
-            ) /* TODO: only works for nonrenewable subs && !!item.subscription*/,
+            skus.includes(item.productId) && item.type === 'subs',
         );
       },
       android: async () => {
@@ -368,7 +378,7 @@ export const finishTransaction = ({
   return (
     Platform.select({
       ios: async () => {
-        return getIosModule().finishTransaction(purchase.id + '');
+        return getIosModule().finishTransaction(purchase.productId);
       },
       android: async () => {
         if (purchase) {
@@ -411,6 +421,27 @@ export const acknowledgePurchaseAndroid = ({
 }): Promise<PurchaseResult | void> => {
   return getAndroidModule().acknowledgePurchase(token, developerPayload);
 };
+
+/**
+ * Should Add Store Payment (iOS only)
+ *   Indicates the the App Store purchase should continue from the app instead of the App Store.
+ * @returns {Promise<Product | null>} promoted product
+ */
+export const getPromotedProductIOS = (): Promise<Product | null> => {
+  if (!isIosStorekit2) {
+    return getIosModule().promotedProduct();
+  } else {
+    return Promise.reject('Only available on SK1');
+  }
+};
+
+/**
+ * Buy the currently selected promoted product (iOS only)
+ *   Initiates the payment process for a promoted product. Should only be called in response to the `iap-promoted-product` event.
+ * @returns {Promise<void>}
+ */
+export const buyPromotedProductIOS = (): Promise<void> =>
+  getIosModule().buyPromotedProduct();
 
 /**
  * Deep link to subscriptions screen on Android. No-op on iOS.
