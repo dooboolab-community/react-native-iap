@@ -38,13 +38,11 @@ export interface ProductCommon {
 
 export interface ProductPurchase {
   productId: string;
-  productID: string; //iOS naming
   transactionId?: string;
   transactionDate: number;
   transactionReceipt: string;
   purchaseToken?: string;
   //iOS
-  id: String;
   quantityIOS?: number;
   originalTransactionDateIOS?: string;
   originalTransactionIdentifierIOS?: string;

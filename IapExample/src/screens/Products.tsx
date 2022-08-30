@@ -46,7 +46,7 @@ export const Products = () => {
   useEffect(() => {
     const checkCurrentPurchase = async () => {
       try {
-        if (currentPurchase?.id) {
+        if (currentPurchase?.productId) {
           await finishTransaction({
             purchase: currentPurchase,
             isConsumable: true,
