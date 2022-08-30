@@ -35,7 +35,7 @@ let androidNativeModule = RNIapModule;
 
 let iosNativeModule = RNIapIos;
 
-let isIosStorekit2 = RNIapIos && RNIapIos === iosNativeModule;
+export let isIosStorekit2 = RNIapIos && RNIapIos === iosNativeModule;
 
 export const setAndroidNativeModule = (
   nativeModule: typeof RNIapModule,
@@ -378,7 +378,7 @@ export const finishTransaction = ({
   return (
     Platform.select({
       ios: async () => {
-        return getIosModule().finishTransaction(purchase.productId);
+        return getIosModule().finishTransaction(purchase.transactionId);
       },
       android: async () => {
         if (purchase) {

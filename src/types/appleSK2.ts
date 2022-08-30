@@ -1,4 +1,4 @@
-import type {ProductIOS, SubscriptionIOS} from '.';
+import type {ProductIOS, Purchase, SubscriptionIOS} from '.';
 
 export type ProductSK2 = {
   description: string;
@@ -47,4 +47,49 @@ export const subscriptionSk2Map = ({
     currency: '', //TODO: Not avaiable on new API, use localizedPrice instead?
   };
   return prod;
+};
+
+export type TransactionSk2 = {
+  appAccountToken: string;
+  appBundleID: string;
+  debugDescription: string;
+  deviceVerification: string;
+  deviceVerificationNonce: string;
+  expirationDate: number;
+  id: number;
+  isUpgraded: boolean;
+  jsonRepresentation: string;
+  offerID: string;
+  offerType: string;
+  originalID: string;
+  originalPurchaseDate: number;
+  ownershipType: string;
+  productID: string;
+  productType: string;
+  purchaseDate: number;
+  purchasedQuantity: number;
+  revocationDate: number;
+  revocationReason: string;
+  signedDate: number;
+  subscriptionGroupID: number;
+  webOrderLineItemID: number;
+};
+export const transactionSk2Map = ({
+  id,
+  originalPurchaseDate,
+  productID,
+  purchaseDate,
+  purchasedQuantity,
+}: TransactionSk2): Purchase => {
+  const purchase: Purchase = {
+    productId: productID,
+    transactionId: String(id),
+    transactionDate: purchaseDate, //??
+    transactionReceipt: '', // Not available
+    purchaseToken: '', //Not avaiable
+    quantityIOS: purchasedQuantity,
+    originalTransactionDateIOS: String(originalPurchaseDate),
+    originalTransactionIdentifierIOS: String(id), // ??
+  };
+  return purchase;
 };
