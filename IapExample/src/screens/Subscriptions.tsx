@@ -50,7 +50,7 @@ export const Subscriptions = () => {
   useEffect(() => {
     const checkCurrentPurchase = async () => {
       try {
-        if (currentPurchase?.productId) {
+        if (currentPurchase?.transactionId) {
           await finishTransaction({
             purchase: currentPurchase,
             isConsumable: true,

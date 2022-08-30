@@ -259,6 +259,7 @@ class RNIapIos: RCTEventEmitter {
                             resolve(nil)
                         } else {
                             self.addTransaction(transaction)
+                            sendEvent(withName: "purchase-updated", body: serialize(transaction))
                             resolve(serialize(transaction))
                         }
                         return
