@@ -9,11 +9,13 @@ import com.facebook.react.bridge.Promise
  * want to crash in the case of it being resolved/rejected more than once
  */
 
+const val TAG = "IapPromises"
+
 fun Promise.safeResolve(value: Any) {
     try {
         this.resolve(value)
     } catch (oce: ObjectAlreadyConsumedException) {
-        Log.d(RNIapModule.TAG, "Already consumed ${oce.message}")
+        Log.d(TAG, "Already consumed ${oce.message}")
     }
 }
 
@@ -28,6 +30,6 @@ fun Promise.safeReject(code: String?, message: String?, throwable: Throwable?) {
     try {
         this.reject(code, message, throwable)
     } catch (oce: ObjectAlreadyConsumedException) {
-        Log.d(RNIapModule.TAG, "Already consumed ${oce.message}")
+        Log.d(TAG, "Already consumed ${oce.message}")
     }
 }

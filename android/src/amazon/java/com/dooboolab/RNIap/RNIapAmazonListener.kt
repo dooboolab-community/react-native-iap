@@ -333,6 +333,10 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     )
         }
     }
+    fun clear(){
+        skus.clear()
+
+    }
 
     private fun sendEvent(
         reactContext: ReactContext,

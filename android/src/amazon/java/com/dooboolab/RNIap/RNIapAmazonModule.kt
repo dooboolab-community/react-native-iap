@@ -15,6 +15,7 @@ import java.util.HashSet
 class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
     var hasListener = false
+    private var amazonListener: RNIapAmazonListener? = null
     override fun getName(): String {
         return TAG
     }
@@ -22,7 +23,9 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun initConnection(promise: Promise) {
         val context = reactApplicationContext
-        PurchasingService.registerListener(context, RNIapAmazonListener(context))
+        val amazonListener = RNIapAmazonListener(context)
+        this.amazonListener = amazonListener
+        PurchasingService.registerListener(context, amazonListener)
         hasListener = true
         // Prefetch user and purchases as per Amazon SDK documentation:
         PurchasingService.getUserData()
@@ -32,6 +35,9 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun endConnection(promise: Promise) {
+        DoobooUtils.instance.rejectAllPendingPromises()
+        amazonListener?.clear()
+        hasListener = false
         promise.resolve(true)
     }
 

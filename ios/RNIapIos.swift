@@ -133,6 +133,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         }
     }
 
+    func rejectAllPendingPromises() {
+        promisesByKey.values.reduce([], +).forEach({tuple in
+            let reject = tuple.1
+            reject("E_CONNECTION_CLOSED", "Connection has been closed", nil)
+        })
+        promisesByKey.removeAll()
+    }
+
     func paymentQueue(_ queue: SKPaymentQueue, shouldAddStorePayment payment: SKPayment, for product: SKProduct) -> Bool {
         promotedProduct = product
         promotedPayment = payment
@@ -160,6 +168,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         removeTransactionObserver()
+        stopObserving()
+        rejectAllPendingPromises()
+        receiptBlock = nil
+        validProducts.removeAll()
+        promotedPayment = nil
+        promotedProduct = nil
+        productsRequest = nil
+        countPendingTransaction = 0
         resolve(nil)
     }
     @objc public func getItems(
