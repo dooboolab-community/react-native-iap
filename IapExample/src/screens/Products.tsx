@@ -1,6 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {PurchaseError, requestPurchase, Sku, useIAP} from 'react-native-iap';
+import {
+  isIosStorekit2,
+  PurchaseError,
+  requestPurchase,
+  Sku,
+  useIAP,
+} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {
@@ -46,7 +52,10 @@ export const Products = () => {
   useEffect(() => {
     const checkCurrentPurchase = async () => {
       try {
-        if (currentPurchase?.transactionId) {
+        if (
+          (isIosStorekit2() && currentPurchase?.transactionId) ||
+          currentPurchase?.transactionReceipt
+        ) {
           await finishTransaction({
             purchase: currentPurchase,
             isConsumable: true,
