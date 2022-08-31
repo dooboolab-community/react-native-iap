@@ -127,6 +127,8 @@ class RNIapModule(
     fun endConnection(promise: Promise) {
         billingClientCache?.endConnection()
         billingClientCache = null
+        skus.clear()
+        DoobooUtils.instance.rejectAllPendingPromises()
         promise.safeResolve(true)
     }
 

@@ -49,6 +49,13 @@ class DoobooUtils {
         }
     }
 
+    fun rejectAllPendingPromises() {
+        promises.flatMap { it.value }.forEach { promise ->
+            promise.safeReject(E_CONNECTION_CLOSED, "Connection has been closed", null)
+        }
+        promises.clear()
+    }
+
     fun rejectPromisesForKey(
         key: String,
         code: String?,
@@ -175,6 +182,7 @@ class DoobooUtils {
         const val E_USER_ERROR = "E_USER_ERROR"
         const val E_DEVELOPER_ERROR = "E_DEVELOPER_ERROR"
         const val E_BILLING_RESPONSE_JSON_PARSE_ERROR = "E_BILLING_RESPONSE_JSON_PARSE_ERROR"
+        const val E_CONNECTION_CLOSED = "E_CONNECTION_CLOSED"
         val instance = DoobooUtils()
     }
 }
