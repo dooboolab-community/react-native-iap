@@ -19,7 +19,7 @@ const eventEmitter = new NativeEventEmitter(getNativeModule());
 export const purchaseUpdatedListener = (
   listener: (event: Purchase) => void,
 ) => {
-  const proxyListener = isIosStorekit2
+  const proxyListener = isIosStorekit2()
     ? (event: Purchase) => {
         listener(transactionSk2Map(event as any));
       }

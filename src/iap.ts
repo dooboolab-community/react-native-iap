@@ -35,7 +35,11 @@ let androidNativeModule = RNIapModule;
 
 let iosNativeModule = RNIapIos;
 
-export let isIosStorekit2 = RNIapIosSk2 && RNIapIosSk2 === iosNativeModule;
+export const isIosStorekit2 = () => iosNativeModule === RNIapIosSk2;
+
+export const storeKit2 = () => {
+  iosNativeModule = RNIapIosSk2;
+};
 
 export const setAndroidNativeModule = (
   nativeModule: typeof RNIapModule,
@@ -122,7 +126,8 @@ export const getProducts = ({
     Platform.select({
       ios: async () => {
         let items = await getIosModule().getItems(skus);
-        if (isIosStorekit2) {
+
+        if (isIosStorekit2()) {
           items = items.map(productSk2Map);
         }
         return items.filter(
@@ -155,7 +160,7 @@ export const getSubscriptions = ({
     Platform.select({
       ios: async () => {
         let items = await getIosModule().getItems(skus);
-        if (isIosStorekit2) {
+        if (isIosStorekit2()) {
           items = items.map(subscriptionSk2Map);
         }
         return items.filter(
