@@ -503,6 +503,56 @@ const requestAgnosticReceiptValidationIos = async (
 };
 
 /**
+ * Buy products or subscriptions with offers (iOS only)
+ *
+ * Runs the payment process with some info you must fetch
+ * from your server.
+ * @param {string} sku The product identifier
+ * @param {string} forUser  An user identifier on you system
+ * @param {Apple.PaymentDiscount} withOffer The offer information
+ * @param {string} withOffer.identifier The offer identifier
+ * @param {string} withOffer.keyIdentifier Key identifier that it uses to generate the signature
+ * @param {string} withOffer.nonce An UUID returned from the server
+ * @param {string} withOffer.signature The actual signature returned from the server
+ * @param {number} withOffer.timestamp The timestamp of the signature
+ * @returns {Promise<void>}
+ */
+export const requestPurchaseWithOfferIOS = ({
+  sku,
+  forUser,
+  withOffer,
+}: {
+  sku: Sku;
+  forUser: string;
+  withOffer: Apple.PaymentDiscount;
+}): Promise<void> =>
+  getIosModule().buyProductWithOffer(sku, forUser, withOffer);
+
+/**
+ * Validate receipt for iOS.
+ * @param {object} receiptBody the receipt body to send to apple server.
+ * @param {boolean} isTest whether this is in test environment which is sandbox.
+ * @returns {Promise<Apple.ReceiptValidationResponse | false>}
+ */
+export const validateReceiptIos = async ({
+  receiptBody,
+  isTest,
+}: {
+  receiptBody: Record<string, unknown>;
+  isTest?: boolean;
+}): Promise<Apple.ReceiptValidationResponse | false> => {
+  if (isTest == null) {
+    return await requestAgnosticReceiptValidationIos(receiptBody);
+  }
+
+  const url = isTest
+    ? 'https://sandbox.itunes.apple.com/verifyReceipt'
+    : 'https://buy.itunes.apple.com/verifyReceipt';
+
+  return await enhancedFetch<Apple.ReceiptValidationResponse>(url);
+};
+
+/**
  * Deep link to subscriptions screen on Android. No-op on iOS.
  * @param {string} sku The product's SKU (on Android)
  * @returns {Promise<void>}
