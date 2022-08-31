@@ -21,7 +21,7 @@ import type {
 } from './types';
 import {InstallSourceAndroid, PurchaseStateAndroid} from './types';
 
-const {RNIapIos, RNIapModule, RNIapAmazonModule} = NativeModules;
+const {RNIapIos, RNIapIosSk2, RNIapModule, RNIapAmazonModule} = NativeModules;
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = 'subs';
 const ANDROID_ITEM_TYPE_IAP = 'inapp';
 
@@ -35,12 +35,22 @@ let androidNativeModule = RNIapModule;
 
 let iosNativeModule = RNIapIos;
 
-export let isIosStorekit2 = RNIapIos && RNIapIos === iosNativeModule;
+export const isIosStorekit2 = () => iosNativeModule === RNIapIosSk2;
+
+export const storeKit2 = () => {
+  iosNativeModule = RNIapIosSk2;
+};
 
 export const setAndroidNativeModule = (
   nativeModule: typeof RNIapModule,
 ): void => {
   androidNativeModule = nativeModule;
+};
+
+export const setIosNativeModule = (
+  nativeModule: typeof RNIapIos | typeof RNIapIosSk2,
+): void => {
+  iosNativeModule = nativeModule;
 };
 
 const checkNativeAndroidAvailable = (): void => {
@@ -62,7 +72,7 @@ export const getAndroidModule = ():
 };
 
 const checkNativeIOSAvailable = (): void => {
-  if (!RNIapIos) {
+  if (!RNIapIos && !RNIapIosSk2) {
     throw new Error('IAP_NOT_AVAILABLE');
   }
 };
@@ -70,7 +80,7 @@ const checkNativeIOSAvailable = (): void => {
 export const getIosModule = (): typeof RNIapIos => {
   checkNativeIOSAvailable();
 
-  return RNIapIos;
+  return iosNativeModule ? iosNativeModule : RNIapIos ? RNIapIos : RNIapIosSk2;
 };
 
 export const getNativeModule = ():
@@ -116,7 +126,8 @@ export const getProducts = ({
     Platform.select({
       ios: async () => {
         let items = await getIosModule().getItems(skus);
-        if (isIosStorekit2) {
+
+        if (isIosStorekit2()) {
           items = items.map(productSk2Map);
         }
         return items.filter(
@@ -149,7 +160,7 @@ export const getSubscriptions = ({
     Platform.select({
       ios: async () => {
         let items = await getIosModule().getItems(skus);
-        if (isIosStorekit2) {
+        if (isIosStorekit2()) {
           items = items.map(subscriptionSk2Map);
         }
         return items.filter(
