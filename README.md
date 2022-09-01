@@ -34,7 +34,7 @@ Please [fund the project](https://opencollective.com/react-native-iap) if you ar
 
 ## Announcement
 
-- Version `11.0.0` is currently in alpha candidate. The module migrates OS sdk to [storekit2](https://developer.apple.com/videos/play/wwdc2021/10114).  [andresesfm](https://github.com/andresesfm) is working hard on this.
+- Version `11.0.0` is currently in alpha candidate. The module migrates OS sdk to [storekit2](https://developer.apple.com/videos/play/wwdc2021/10114). [andresesfm](https://github.com/andresesfm) is working hard on this.
 
   ```
   yarn add react-native-iap@next
@@ -43,7 +43,6 @@ Please [fund the project](https://opencollective.com/react-native-iap) if you ar
 - Version `10.0.0` is a maitenance build. Many internal refactorings and clean up of the code. Special thanks to [jeremybarbet](https://github.com/jeremybarbet) for his contributions. Most notably all methods now take an object parameter instead of separate parameters. Please help us test
 
 - Version `9.0.0` The module migrates android sdk to [play billing library v5](https://qonversion.io/blog/google-play-billing-library-5-0). Our core maintainers [andresesfm](https://github.com/andresesfm) and [jeremybarbet](https://github.com/jeremybarbet) worked hard on this.
-
 
 - Version `8.0.0` has finally landed in Jan 28th. Since this is early release, please use it with caution 🚧. We recommend user to use `>=8.0.0` with react-native `>=0.65.1`. The `next` package is no longer updated until we organize the roadmap for `9.0.0`.
 
