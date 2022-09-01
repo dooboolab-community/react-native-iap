@@ -7,7 +7,7 @@
 
 import Foundation
 import StoreKit
-
+@available(iOS 15.0, *)
 func serialize(_ p: Product) -> [String: Any?] {
     return [
         "debugDescription": serializeDebug( p.debugDescription),
@@ -43,7 +43,7 @@ func serialize(_ e: Error?) -> [String: Any?]? {
     guard let e = e else {return nil}
     return ["localizedDescription": e.localizedDescription]
 }
-
+@available(iOS 15.0, *)
 func serialize(_ si: Product.SubscriptionInfo?) -> [String: Any?]? {
     guard let si = si else {return nil}
     return [
@@ -53,7 +53,7 @@ func serialize(_ si: Product.SubscriptionInfo?) -> [String: Any?]? {
         "subscriptionPeriod": si.subscriptionPeriod
     ]
 }
-
+@available(iOS 15.0, *)
 func serialize(_ so: Product.SubscriptionOffer?) -> [String: Any?]? {
     guard let so = so else {return nil}
     return [
@@ -67,7 +67,7 @@ func serialize(_ so: Product.SubscriptionOffer?) -> [String: Any?]? {
     ]
 }
 
-// Transaction
+@available(iOS 15.0, *)
 func serialize(_ t: Transaction) -> [String: Any?] {
     return ["appAccountToken": t.appAccountToken,
             "appBundleID": t.appBundleID,
@@ -94,7 +94,7 @@ func serialize(_ t: Transaction) -> [String: Any?] {
             "webOrderLineItemID": t.webOrderLineItemID
     ]
 }
-
+@available(iOS 15.0, *)
 func serialize(_ ot: Transaction.OfferType?) -> String? {
     guard let ot = ot else {return nil}
     switch ot {
@@ -105,6 +105,7 @@ func serialize(_ ot: Transaction.OfferType?) -> String? {
         return nil
     }
 }
+@available(iOS 15.0, *)
 func serialize(_ ot: Transaction.OwnershipType?) -> String? {
     guard let ot = ot else {return nil}
     switch ot {
@@ -114,6 +115,7 @@ func serialize(_ ot: Transaction.OwnershipType?) -> String? {
         return nil
     }
 }
+@available(iOS 15.0, *)
 func serialize(_ pt: Product.ProductType?) -> String? {
     guard let pt = pt else {return nil}
     switch pt {
