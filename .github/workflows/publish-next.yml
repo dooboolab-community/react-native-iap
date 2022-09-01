@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/next' && github.event.release.prerelease
+    if: github.ref == 'refs/heads/next'
     runs-on: ubuntu-latest
     
     steps:
