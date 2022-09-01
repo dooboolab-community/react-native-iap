@@ -34,19 +34,20 @@ Please [fund the project](https://opencollective.com/react-native-iap) if you ar
 
 ## Announcement
 
-- Version `9.0.0` is currently in release candidate. The module migrates android sdk to [play billing library v5](https://qonversion.io/blog/google-play-billing-library-5-0) and iOS sdk to [storekit2](https://developer.apple.com/videos/play/wwdc2021/10114). Our core maintainers [andresesfm](https://github.com/andresesfm) and [jeremybarbet](https://github.com/jeremybarbet) are working hard on this.
+- Version `11.0.0` is currently in alpha candidate. The module migrates OS sdk to [storekit2](https://developer.apple.com/videos/play/wwdc2021/10114).  [andresesfm](https://github.com/andresesfm) is working hard on this.
 
   ```
   yarn add react-native-iap@next
   ```
+
+- Version `10.0.0` is a maitenance build. Many internal refactorings and clean up of the code. Special thanks to [jeremybarbet](https://github.com/jeremybarbet) for his contributions. Most notably all methods now take an object parameter instead of separate parameters. Please help us test
+
+- Version `9.0.0` The module migrates android sdk to [play billing library v5](https://qonversion.io/blog/google-play-billing-library-5-0). Our core maintainers [andresesfm](https://github.com/andresesfm) and [jeremybarbet](https://github.com/jeremybarbet) worked hard on this.
+
 
 - Version `8.0.0` has finally landed in Jan 28th. Since this is early release, please use it with caution 🚧. We recommend user to use `>=8.0.0` with react-native `>=0.65.1`. The `next` package is no longer updated until we organize the roadmap for `9.0.0`.
 
 - Version `8.0.0` is currently in release candidate. The module is completely rewritten with `Kotlin` and `Swift` for maintenenance issue by [andresesfm](https://github.com/andresesfm) 🔆. You may install this for early preview.
-
-  ```
-  yarn add react-native-iap@next
-  ```
 
 - React Native IAP hook is out. You can see [medium post](https://medium.com/dooboolab/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it.
 
