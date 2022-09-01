@@ -6,8 +6,9 @@ on:
 
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/next' && github.event.release.prerelease
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/next'
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
