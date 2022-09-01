@@ -2,6 +2,7 @@ import Foundation
 import React
 import StoreKit
 
+@available(iOS 15.0, *)
 @objc(RNIapIosSk2)
 class RNIapIosSk2: RCTEventEmitter {
     private var hasListeners = false
@@ -98,6 +99,8 @@ class RNIapIosSk2: RCTEventEmitter {
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
+        products.removeAll()
+        transactions.removeAll()
         updateListenerTask?.cancel()
         updateListenerTask = nil
         resolve(nil)

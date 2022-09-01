@@ -2,6 +2,8 @@ import {Linking, NativeModules, Platform} from 'react-native';
 
 import type * as Amazon from './types/amazon';
 import type * as Android from './types/android';
+import type * as Apple from './types/apple';
+import {ReceiptValidationStatus} from './types/apple';
 import {productSk2Map, subscriptionSk2Map} from './types/appleSK2';
 import {
   enhancedFetch,
@@ -419,6 +421,24 @@ export const finishTransaction = ({
 };
 
 /**
+ * Clear Transaction (iOS only)
+ *   Finish remaining transactions. Related to issue #257 and #801
+ *     link : https://github.com/dooboolab/react-native-iap/issues/257
+ *            https://github.com/dooboolab/react-native-iap/issues/801
+ * @returns {Promise<void>}
+ */
+export const clearTransactionIOS = (): Promise<void> =>
+  getIosModule().clearTransaction();
+
+/**
+ * Clear valid Products (iOS only)
+ *   Remove all products which are validated by Apple server.
+ * @returns {void}
+ */
+export const clearProductsIOS = (): Promise<void> =>
+  getIosModule().clearProducts();
+
+/**
  * Acknowledge a product (on Android.) No-op on iOS.
  * @param {string} token The product's token (on Android)
  * @returns {Promise<PurchaseResult | void>}
@@ -453,6 +473,84 @@ export const getPromotedProductIOS = (): Promise<Product | null> => {
  */
 export const buyPromotedProductIOS = (): Promise<void> =>
   getIosModule().buyPromotedProduct();
+
+const requestAgnosticReceiptValidationIos = async (
+  receiptBody: Record<string, unknown>,
+): Promise<Apple.ReceiptValidationResponse | false> => {
+  const response = await enhancedFetch<Apple.ReceiptValidationResponse>(
+    'https://buy.itunes.apple.com/verifyReceipt',
+    {
+      method: 'POST',
+      body: receiptBody,
+    },
+  );
+
+  // Best practice is to check for test receipt and check sandbox instead
+  // https://developer.apple.com/documentation/appstorereceipts/verifyreceipt
+  if (response && response.status === ReceiptValidationStatus.TEST_RECEIPT) {
+    const testResponse = await enhancedFetch<Apple.ReceiptValidationResponse>(
+      'https://sandbox.itunes.apple.com/verifyReceipt',
+      {
+        method: 'POST',
+        body: receiptBody,
+      },
+    );
+
+    return testResponse;
+  }
+
+  return response;
+};
+
+/**
+ * Buy products or subscriptions with offers (iOS only)
+ *
+ * Runs the payment process with some info you must fetch
+ * from your server.
+ * @param {string} sku The product identifier
+ * @param {string} forUser  An user identifier on you system
+ * @param {Apple.PaymentDiscount} withOffer The offer information
+ * @param {string} withOffer.identifier The offer identifier
+ * @param {string} withOffer.keyIdentifier Key identifier that it uses to generate the signature
+ * @param {string} withOffer.nonce An UUID returned from the server
+ * @param {string} withOffer.signature The actual signature returned from the server
+ * @param {number} withOffer.timestamp The timestamp of the signature
+ * @returns {Promise<void>}
+ */
+export const requestPurchaseWithOfferIOS = ({
+  sku,
+  forUser,
+  withOffer,
+}: {
+  sku: Sku;
+  forUser: string;
+  withOffer: Apple.PaymentDiscount;
+}): Promise<void> =>
+  getIosModule().buyProductWithOffer(sku, forUser, withOffer);
+
+/**
+ * Validate receipt for iOS.
+ * @param {object} receiptBody the receipt body to send to apple server.
+ * @param {boolean} isTest whether this is in test environment which is sandbox.
+ * @returns {Promise<Apple.ReceiptValidationResponse | false>}
+ */
+export const validateReceiptIos = async ({
+  receiptBody,
+  isTest,
+}: {
+  receiptBody: Record<string, unknown>;
+  isTest?: boolean;
+}): Promise<Apple.ReceiptValidationResponse | false> => {
+  if (isTest == null) {
+    return await requestAgnosticReceiptValidationIos(receiptBody);
+  }
+
+  const url = isTest
+    ? 'https://sandbox.itunes.apple.com/verifyReceipt'
+    : 'https://buy.itunes.apple.com/verifyReceipt';
+
+  return await enhancedFetch<Apple.ReceiptValidationResponse>(url);
+};
 
 /**
  * Deep link to subscriptions screen on Android. No-op on iOS.
@@ -531,6 +629,25 @@ export const validateReceiptAmazon = async ({
 
   return await enhancedFetch<Amazon.ReceiptType>(url);
 };
+
+/**
+ * Get the current receipt base64 encoded in IOS.
+ * @param {forceRefresh?:boolean}
+ * @returns {Promise<ProductPurchase[]>}
+ */
+export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> =>
+  getIosModule().getPendingTransactions();
+
+/**
+ * Get the current receipt base64 encoded in IOS.
+ * @param {forceRefresh?:boolean}
+ * @returns {Promise<string>}
+ */
+export const getReceiptIOS = async ({
+  forceRefresh,
+}: {
+  forceRefresh?: boolean;
+}): Promise<string> => getIosModule().requestReceipt(forceRefresh ?? false);
 
 /**
  * Launches a modal to register the redeem offer code in IOS.

@@ -1,7 +1,7 @@
 #import <StoreKit/StoreKit.h>
 
 #import <React/RCTBridgeModule.h>
-
+#ifdef __IPHONE_15_0
 @interface RCT_EXTERN_MODULE (RNIapIosSk2, NSObject)
 
 RCT_EXTERN_METHOD(initConnection:
@@ -63,3 +63,4 @@ RCT_EXTERN_METHOD(presentCodeRedemptionSheet:
                   reject:(RCTPromiseRejectBlock)reject)
 
 @end
+#endif

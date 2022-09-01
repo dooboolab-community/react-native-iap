@@ -15,7 +15,7 @@ public func debugMessage(_ object: Any...) {
     }
     #endif
 }
-
+@available(iOS 15.0, *)
 func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
     // Check whether the JWS passes StoreKit verification.
     switch result {
