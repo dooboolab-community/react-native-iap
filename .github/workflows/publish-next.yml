@@ -2,11 +2,11 @@ name: Publish next package
 
 on:
   release:
-    types: [published]
+    types: [created]
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/next'
+    if: github.ref == 'refs/heads/next' && github.event.release.prerelease
     runs-on: ubuntu-latest
     
     steps:
