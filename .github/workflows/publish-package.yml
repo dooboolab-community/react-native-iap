@@ -2,11 +2,11 @@ name: Publish main package
 
 on:
   release:
-    types: [published]
+    types: [created]
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/main' && !github.event.release.prerelease
+    if: "!github.event.release.prerelease"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
