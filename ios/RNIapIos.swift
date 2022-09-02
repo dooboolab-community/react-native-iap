@@ -724,15 +724,15 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 switch product.introductoryPrice?.paymentMode {
                 case .freeTrial:
                     introductoryPricePaymentMode = "FREETRIAL"
-                    introductoryPriceNumberOfPeriods = NSNumber(value: product.introductoryPrice?.subscriptionPeriod.numberOfUnits ?? 0).stringValue
+                    introductoryPriceNumberOfPeriods = String( product.introductoryPrice?.subscriptionPeriod.numberOfUnits ?? 0)
 
                 case .payAsYouGo:
                     introductoryPricePaymentMode = "PAYASYOUGO"
-                    introductoryPriceNumberOfPeriods = NSNumber(value: product.introductoryPrice?.numberOfPeriods ?? 0).stringValue
+                    introductoryPriceNumberOfPeriods = String( product.introductoryPrice?.numberOfPeriods ?? 0)
 
                 case .payUpFront:
                     introductoryPricePaymentMode = "PAYUPFRONT"
-                    introductoryPriceNumberOfPeriods = NSNumber(value: product.introductoryPrice?.subscriptionPeriod.numberOfUnits ?? 0).stringValue
+                    introductoryPriceNumberOfPeriods = String( product.introductoryPrice?.subscriptionPeriod.numberOfUnits ?? 0)
 
                 default:
                     introductoryPricePaymentMode = ""
@@ -809,8 +809,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 let formatter = NumberFormatter()
                 formatter.numberStyle = .currency
                 let priceLocale: Locale? = discount.priceLocale
-                if let pLocale = priceLocale {
-                    formatter.locale = pLocale
+                if let priceLocale = priceLocale {
+                    formatter.locale = priceLocale
                 }
                 localizedPrice = formatter.string(from: discount.price)
                 var numberOfPeriods: String?
@@ -818,17 +818,17 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 switch discount.paymentMode {
                 case .freeTrial:
                     paymendMode = "FREETRIAL"
-                    numberOfPeriods = NSNumber(value: discount.subscriptionPeriod.numberOfUnits ).stringValue
+                    numberOfPeriods = String(discount.subscriptionPeriod.numberOfUnits)
                     break
 
                 case .payAsYouGo:
                     paymendMode = "PAYASYOUGO"
-                    numberOfPeriods = NSNumber(value: discount.numberOfPeriods).stringValue
+                    numberOfPeriods = String(discount.numberOfPeriods)
                     break
 
                 case .payUpFront:
                     paymendMode = "PAYUPFRONT"
-                    numberOfPeriods = NSNumber(value: discount.subscriptionPeriod.numberOfUnits ).stringValue
+                    numberOfPeriods = String(discount.subscriptionPeriod.numberOfUnits )
                     break
 
                 default:
