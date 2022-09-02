@@ -550,7 +550,13 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 SKPaymentQueue.default().finishTransaction(transaction)
 
                 myQueue.sync(execute: { [self] in
-                    let nsError = transaction.error as NSError?
+                    var nsError = transaction.error as? NSError
+                    // From https://developer.apple.com/forums/thread/674081
+                    if let underlyingError = nsError?.userInfo["NSUnderlyingError"] as? NSError,
+                       underlyingError.code == 3038 {
+                        // General conditions have changed, don't display an error for the interrupted transaction
+                        nsError = underlyingError
+                    }
 
                     if hasListeners {
                         let code = nsError?.code
@@ -653,6 +659,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         guard let code = code else {
             return descriptions[0]
         }
+        if code == 3038 { // Purchase interrupted so user can accept terms and conditions
+            return "E_INTERRUPTED"
+        }
 
         if code > descriptions.count - 1 || code < 0 { // Fix crash app without internet connection
             return descriptions[0]
@@ -714,15 +723,15 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 switch product.introductoryPrice?.paymentMode {
                 case .freeTrial:
                     introductoryPricePaymentMode = "FREETRIAL"
-                    introductoryPriceNumberOfPeriods = NSNumber(value: product.introductoryPrice?.subscriptionPeriod.numberOfUnits ?? 0).stringValue
+                    introductoryPriceNumberOfPeriods = String( product.introductoryPrice?.subscriptionPeriod.numberOfUnits ?? 0)
 
                 case .payAsYouGo:
                     introductoryPricePaymentMode = "PAYASYOUGO"
-                    introductoryPriceNumberOfPeriods = NSNumber(value: product.introductoryPrice?.numberOfPeriods ?? 0).stringValue
+                    introductoryPriceNumberOfPeriods = String( product.introductoryPrice?.numberOfPeriods ?? 0)
 
                 case .payUpFront:
                     introductoryPricePaymentMode = "PAYUPFRONT"
-                    introductoryPriceNumberOfPeriods = NSNumber(value: product.introductoryPrice?.subscriptionPeriod.numberOfUnits ?? 0).stringValue
+                    introductoryPriceNumberOfPeriods = String( product.introductoryPrice?.subscriptionPeriod.numberOfUnits ?? 0)
 
                 default:
                     introductoryPricePaymentMode = ""
@@ -799,8 +808,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 let formatter = NumberFormatter()
                 formatter.numberStyle = .currency
                 let priceLocale: Locale? = discount.priceLocale
-                if let pLocale = priceLocale {
-                    formatter.locale = pLocale
+                if let priceLocale = priceLocale {
+                    formatter.locale = priceLocale
                 }
                 localizedPrice = formatter.string(from: discount.price)
                 var numberOfPeriods: String?
@@ -808,17 +817,17 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 switch discount.paymentMode {
                 case .freeTrial:
                     paymendMode = "FREETRIAL"
-                    numberOfPeriods = NSNumber(value: discount.subscriptionPeriod.numberOfUnits ).stringValue
+                    numberOfPeriods = String(discount.subscriptionPeriod.numberOfUnits)
                     break
 
                 case .payAsYouGo:
                     paymendMode = "PAYASYOUGO"
-                    numberOfPeriods = NSNumber(value: discount.numberOfPeriods).stringValue
+                    numberOfPeriods = String(discount.numberOfPeriods)
                     break
 
                 case .payUpFront:
                     paymendMode = "PAYUPFRONT"
-                    numberOfPeriods = NSNumber(value: discount.subscriptionPeriod.numberOfUnits ).stringValue
+                    numberOfPeriods = String(discount.subscriptionPeriod.numberOfUnits )
                     break
 
                 default:
