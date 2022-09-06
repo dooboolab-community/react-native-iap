@@ -2,9 +2,7 @@
 sidebar_position: 5
 ---
 
-# Validating receipts
-
-Since `react-native-iap@0.3.16`, we support receipt validation.
+# Receipts
 
 ### With [IAPHUB](https://www.iaphub.com)
 
