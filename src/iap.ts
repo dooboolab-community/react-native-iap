@@ -347,10 +347,9 @@ export const requestSubscription = ({
           return RNIapAmazonModule.buyItemByType(sku);
         } else {
           if (!subscriptionOffers?.length) {
-            Promise.reject(
+            return Promise.reject(
               'subscriptionOffers are required for Google Play Subscriptions',
             );
-            return;
           }
           return RNIapModule.buyItemByType(
             ANDROID_ITEM_TYPE_SUBSCRIPTION,

@@ -6,7 +6,7 @@ We want this community to be friendly and respectful to each other. Please follo
 
 To get started with the project, run `yarn` in the root directory to install the required dependencies for each package:
 
-```sh
+```bash
 yarn
 ```
 
@@ -16,38 +16,38 @@ While developing, you can run the [example app](/IapExample/) to test your chang
 
 To start the packager:
 
-```sh
+```bash
 yarn example start
 ```
 
 To run the example app on Android:
 
-```sh
+```bash
 yarn example android
 ```
 
 To run the example app on iOS:
 
-```sh
+```bash
 yarn example ios
 ```
 
 Make sure your code passes TypeScript and ESLint. Run the following to verify:
 
-```sh
+```bash
 yarn typescript
 yarn lint
 ```
 
 To fix formatting errors, run the following:
 
-```sh
+```bash
 yarn lint --fix
 ```
 
 Remember to add tests for your change if possible. Run the unit tests by:
 
-```sh
+```bash
 yarn test
 ```
 
@@ -82,7 +82,7 @@ We use [release-it](https://github.com/release-it/release-it) to make it easier 
 
 To publish new versions, run the following:
 
-```sh
+```bash
 yarn release
 ```
 

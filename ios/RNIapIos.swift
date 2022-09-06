@@ -1,6 +1,16 @@
 import React
 import StoreKit
 
+typealias RNIapIosPromise = (RCTPromiseResolveBlock, RCTPromiseRejectBlock)
+
+public func debugMessage(_ object: Any...) {
+    #if DEBUG
+    for item in object {
+        print("[react-native-iap] \(item)")
+    }
+    #endif
+}
+
 // Based on https://stackoverflow.com/a/40135192/570612
 extension Date {
     var millisecondsSince1970: Int64 {
