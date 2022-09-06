@@ -7,11 +7,17 @@ import {Box} from './Box';
 
 interface StateProps {
   connected: boolean;
+  storekit2: boolean;
 }
 
-export const State = ({connected}: StateProps) => (
-  <Box>
-    <Text style={theme.L1}>State</Text>
-    <Text style={theme.P1}>{connected ? 'connected' : 'not connected'}</Text>
-  </Box>
-);
+export const State = ({connected, storekit2}: StateProps) => {
+  const stateText =
+    (connected ? 'connected' : 'not connected') +
+    (storekit2 ? ' | Storekit 2' : '');
+  return (
+    <Box>
+      <Text style={theme.L1}>State</Text>
+      <Text style={theme.P1}>{stateText}</Text>
+    </Box>
+  );
+};
