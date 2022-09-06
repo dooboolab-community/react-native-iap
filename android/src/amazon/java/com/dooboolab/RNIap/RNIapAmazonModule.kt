@@ -9,10 +9,13 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.WritableNativeArray
+import com.facebook.react.module.annotations.ReactModule
 import java.util.HashSet
-
+@ReactModule(name = RNIapAmazonModule.TAG)
 class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
+    var hasListener = false
+    private var amazonListener: RNIapAmazonListener? = null
     override fun getName(): String {
         return TAG
     }
@@ -20,7 +23,10 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun initConnection(promise: Promise) {
         val context = reactApplicationContext
-        PurchasingService.registerListener(context, RNIapAmazonListener(context))
+        val amazonListener = RNIapAmazonListener(context)
+        this.amazonListener = amazonListener
+        PurchasingService.registerListener(context, amazonListener)
+        hasListener = true
         // Prefetch user and purchases as per Amazon SDK documentation:
         PurchasingService.getUserData()
         PurchasingService.getPurchaseUpdates(false)
@@ -29,6 +35,9 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun endConnection(promise: Promise) {
+        DoobooUtils.instance.rejectAllPendingPromises()
+        amazonListener?.clear()
+        hasListener = false
         promise.resolve(true)
     }
 
@@ -69,12 +78,7 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun buyItemByType(
-        type: String?,
         sku: String?,
-        purchaseToken: String?,
-        prorationMode: Int?,
-        obfuscatedAccountId: String?,
-        obfuscatedProfileId: String?,
         promise: Promise
     ) {
         DoobooUtils.instance.addPromiseForKey(PROMISE_BUY_ITEM, promise)
@@ -137,8 +141,10 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
              * We should fetch updates on resume
              */
             override fun onHostResume() {
-                PurchasingService.getUserData()
-                PurchasingService.getPurchaseUpdates(false)
+                if (hasListener) {
+                    PurchasingService.getUserData()
+                    PurchasingService.getPurchaseUpdates(false)
+                }
             }
             override fun onHostPause() {}
             override fun onHostDestroy() {

@@ -9,70 +9,43 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap?ref=badge_shield)
 
 ---
-
-## Introduction
-
-`react-native-iap` will help you access the In-App purchases capabilities of your device on `iOS`, and `Android` (Play Store and Amazon).
-
-**Keep in mind** This library will provide the basic features to consume In-App purchases on the client-side, however you'll have to implement the server-side to validate your receipts (which is probably the most time consuming part to do it correctly).
-
-## Installation
-
-```bash
-yarn add react-native-iap
-```
-
-For iOS:
-
-```bash
-cd ios; pod install; cd -
-```
-
-For manual instructions, see the [installation documentation](https://react-native-iap.dooboolab.com/docs/installation).
-
-## Usage
-
-```bash
-import React from 'react';
-import {View,Text,Button} from 'react-native';
-import {useIAP} from 'react-native-iap';
-
-export const App = () => {
-  const {products,getProducts,requestPurchase} = useIAP();
-
-  useEffect(() => {
-    await getProducts(['com.super.app.consumable'])
-  }, []);
-
-  return (
-    <>
-      {products.map((product) => (
-        <View key={product.productId}>
-          <Text>{product.productId}</Text>
-
-          <Button
-            key={product.id}
-            title={product.title}
-            onPress={() => requestPurchase(product.id)}
-          />
-        </View>
-      ))}
-    </>
-  );
-}
-```
-
 ## Documentation
 
 Read the [documentation](https://react-native-iap.dooboolab.com). See the [troubleshooting](https://react-native-iap.dooboolab.com/docs/guides/troubleshooting#common-issues) for the common issues to avoid.
+## Our maintainers
+
+Please [fund the project](https://opencollective.com/react-native-iap) if you are willing the maintainers to make the repository sustainable.
+
+- [andresesfm](https://github.com/andresesfm)
+- [jeremybarbet](https://github.com/jeremybarbet)
+
+> The fund goes to maintainers.
+
+### Supporter
+
+- [hyochan](https://github.com/hyochan)
 
 ## Announcement
 
-- Version `9.0.0` is currently in release candidate. The module migrates android sdk to [play billing library v5](https://qonversion.io/blog/google-play-billing-library-5-0) and iOS sdk to [storekit2](https://developer.apple.com/videos/play/wwdc2021/10114). Our core maintainers [andresesfm](https://github.com/andresesfm) and [jeremybarbet](https://github.com/jeremybarbet) are working hard on this.
+- Version `11.0.0` is currently in alpha candidate. The module migrates OS sdk to [storekit2](https://developer.apple.com/videos/play/wwdc2021/10114). [andresesfm](https://github.com/andresesfm) is working hard on this.
 
-```
-yarn add react-native-iap@next
-```
+  ```
+  yarn add react-native-iap@next
+  ```
+
+- Version `10.0.0` is a maitenance build. Many internal refactorings and clean up of the code. Special thanks to [jeremybarbet](https://github.com/jeremybarbet) for his contributions. Most notably all methods now take an object parameter instead of separate parameters. Please help us test
+
+- Version `9.0.0` The module migrates android sdk to [play billing library v5](https://qonversion.io/blog/google-play-billing-library-5-0). Our core maintainers [andresesfm](https://github.com/andresesfm) and [jeremybarbet](https://github.com/jeremybarbet) worked hard on this.
+
+- Version `8.0.0` has finally landed in Jan 28th. Since this is early release, please use it with caution 🚧. We recommend user to use `>=8.0.0` with react-native `>=0.65.1`. The `next` package is no longer updated until we organize the roadmap for `9.0.0`.
+
+- Version `8.0.0` is currently in release candidate. The module is completely rewritten with `Kotlin` and `Swift` for maintenenance issue by [andresesfm](https://github.com/andresesfm) 🔆. You may install this for early preview.
+
+- React Native IAP hook is out. You can see [medium post](https://medium.com/dooboolab/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it.
+
+- The `react-native-iap` module hasn't been maintained well recently. We are thinking of participating again and make the module healthier. Please refer to [2021 Maintenance plan](https://github.com/dooboolab/react-native-iap/issues/1241) and share with us how you or your organization is using it. Happy new year 🎉
+
+  - The sample code is out in [Sponsor page](https://github.com/hyochan/dooboolab.com/blob/main/src/components/pages/Sponsor.tsx) in [dooboolab.com](https://github.com/hyochan/dooboolab.com) repository which sadly is rejected by Apple because of lacking product features. I will work on another example project to support this module. More information in [#1241 commment](https://github.com/dooboolab/react-native-iap/issues/1241#issuecomment-798540785).
 
 ## Configuration of Play Store & App Store Connect
 

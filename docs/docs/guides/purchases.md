@@ -20,23 +20,25 @@ Once you have called `getProducts()`, and have a valid response, you can call `r
 
 Before you request any purchase, you should set `purchaseUpdatedListener` from `react-native-iap`. It is recommended that you start listening to updates as soon as your application launches. And don't forget that even at launch you may receive successful purchases that either completed while your app was closed or that failed to be finished, consumed or acknowledged due to network errors or bugs.
 
-```ts
-import RNIap, {
+```tsx
+import {
+  initConnection,
   purchaseErrorListener,
   purchaseUpdatedListener,
   type ProductPurchase,
   type PurchaseError,
+  flushFailedPurchasesCachedAsPendingAndroid,
 } from 'react-native-iap';
 
-class RootComponent extends Component<*> {
+class App extends Component {
   purchaseUpdateSubscription = null;
   purchaseErrorSubscription = null;
 
   componentDidMount() {
-    RNIap.initConnection().then(() => {
+    initConnection().then(() => {
       // we make sure that "ghost" pending payment are removed
       // (ghost = failed pending payment that are still marked as pending in Google's native Vending module cache)
-      RNIap.flushFailedPurchasesCachedAsPendingAndroid()
+      flushFailedPurchasesCachedAsPendingAndroid()
         .catch(() => {
           // exception can happen here if:
           // - there are pending purchases that are still pending (we can't consume a pending purchase)
@@ -61,13 +63,13 @@ class RootComponent extends Component<*> {
                       // the purchase event will reappear on every relaunch of the app until you succeed
                       // in doing the below. It will also be impossible for the user to purchase consumables
                       // again until you do this.
-                      await RNIap.finishTransaction(purchase);
+                      await finishTransaction(purchase);
 
                       // From react-native-iap@4.1.0 you can simplify above `method`. Try to wrap the statement with `try` and `catch` to also grab the `error` message.
                       // If consumable (can be purchased again)
-                      await RNIap.finishTransaction(purchase, true);
+                      await finishTransaction(purchase, true);
                       // If not consumable
-                      await RNIap.finishTransaction(purchase, false);
+                      await finishTransaction(purchase, false);
                     } else {
                       // Retry / conclude the purchase is fraudulent, etc...
                     }
@@ -90,6 +92,7 @@ class RootComponent extends Component<*> {
       this.purchaseUpdateSubscription.remove();
       this.purchaseUpdateSubscription = null;
     }
+
     if (this.purchaseErrorSubscription) {
       this.purchaseErrorSubscription.remove();
       this.purchaseErrorSubscription = null;
@@ -100,33 +103,66 @@ class RootComponent extends Component<*> {
 
 Then define the method like below and call it when user press the button.
 
-```ts
+```tsx
+class App extends Component {
   requestPurchase = async (sku: string) => {
     try {
-      await RNIap.requestPurchase({
+      await requestPurchase({
         sku,
         andDangerouslyFinishTransactionAutomaticallyIOS: false,
       });
     } catch (err) {
       console.warn(err.code, err.message);
     }
-  }
+  };
 
-  requestSubscription = async (sku: string) => {
+  requestSubscription = async (sku: string, offerToken: string?) => {
     try {
-      await RNIap.requestSubscription({ sku });
+      await requestSubscription(
+        {sku},
+        ...(offerToken && {subscriptionOfffers: {sku, offerToken}}),
+      );
     } catch (err) {
       console.warn(err.code, err.message);
     }
-  }
+  };
 
+  /**
+   * For one-time products
+   */
   render() {
     return (
       <Pressable onPress={() => this.requestPurchase(product.productId)}>
         {/* ... */}
       </Pressable>
-    )
+    );
   }
+
+  /**
+   * For subscriptions products
+   */
+  render() {
+    if (Platform.OS == 'android') {
+      return product.subscriptionOfferDetails.map((offer) => (
+        <Pressable
+          onPress={() =>
+            this.requestSubscription(product.productId, offer.offerToken)
+          }
+        >
+          {/* ... */}
+        </Pressable>
+      ));
+    } else {
+      return (
+        <Pressable
+          onPress={() => this.requestSubscription(product.productId, null)}
+        >
+          {/* ... */}
+        </Pressable>
+      );
+    }
+  }
+}
 ```
 
 ## New Purchase Flow
