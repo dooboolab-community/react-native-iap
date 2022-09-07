@@ -5,14 +5,13 @@ import {isAndroid, isIos} from './internal';
 import type {PurchaseError} from './purchaseError';
 import type {Purchase} from './types';
 
-const eventEmitter = new NativeEventEmitter(getNativeModule());
-
 /**
  * Add IAP purchase event
  */
 export const purchaseUpdatedListener = (
   listener: (event: Purchase) => void,
 ) => {
+  const eventEmitter = new NativeEventEmitter(getNativeModule());
   const emitterSubscription = eventEmitter.addListener(
     'purchase-updated',
     listener,
@@ -30,7 +29,10 @@ export const purchaseUpdatedListener = (
  */
 export const purchaseErrorListener = (
   listener: (error: PurchaseError) => void,
-): EmitterSubscription => eventEmitter.addListener('purchase-error', listener);
+): EmitterSubscription => {
+  const eventEmitter = new NativeEventEmitter(getNativeModule());
+  return eventEmitter.addListener('purchase-error', listener);
+};
 
 /**
  * Add IAP promoted subscription event
@@ -39,10 +41,8 @@ export const purchaseErrorListener = (
  */
 export const promotedProductListener = (listener: () => void) => {
   if (isIos) {
-    return new NativeEventEmitter(getIosModule()).addListener(
-      'iap-promoted-product',
-      listener,
-    );
+    const eventEmitter = new NativeEventEmitter(getIosModule());
+    return eventEmitter.addListener('iap-promoted-product', listener);
   }
 
   return null;
