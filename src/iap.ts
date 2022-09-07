@@ -35,13 +35,9 @@ export const getInstallSourceAndroid = (): InstallSourceAndroid => {
 
 let androidNativeModule = RNIapModule;
 
-let iosNativeModule = RNIapIos;
+let iosNativeModule = RNIapIosSk2;
 
 export const isIosStorekit2 = () => iosNativeModule === RNIapIosSk2;
-
-export const storeKit2 = () => {
-  iosNativeModule = RNIapIosSk2;
-};
 
 export const setAndroidNativeModule = (
   nativeModule: typeof RNIapModule,
@@ -82,7 +78,11 @@ const checkNativeIOSAvailable = (): void => {
 export const getIosModule = (): typeof RNIapIos => {
   checkNativeIOSAvailable();
 
-  return iosNativeModule ? iosNativeModule : RNIapIos ? RNIapIos : RNIapIosSk2;
+  return iosNativeModule
+    ? iosNativeModule
+    : RNIapIosSk2
+    ? RNIapIosSk2
+    : RNIapIos;
 };
 
 export const getNativeModule = ():
@@ -453,6 +453,23 @@ export const acknowledgePurchaseAndroid = ({
 };
 
 /**
+ * Deep link to subscriptions screen on Android. No-op on iOS.
+ * @param {string} sku The product's SKU (on Android)
+ * @returns {Promise<void>}
+ */
+export const deepLinkToSubscriptionsAndroid = async ({
+  sku,
+}: {
+  sku: Sku;
+}): Promise<void> => {
+  checkNativeAndroidAvailable();
+
+  return Linking.openURL(
+    `https://play.google.com/store/account/subscriptions?package=${await RNIapModule.getPackageName()}&sku=${sku}`,
+  );
+};
+
+/**
  * Should Add Store Payment (iOS only)
  *   Indicates the the App Store purchase should continue from the app instead of the App Store.
  * @returns {Promise<Product | null>} promoted product
@@ -549,23 +566,6 @@ export const validateReceiptIos = async ({
     : 'https://buy.itunes.apple.com/verifyReceipt';
 
   return await enhancedFetch<Apple.ReceiptValidationResponse>(url);
-};
-
-/**
- * Deep link to subscriptions screen on Android. No-op on iOS.
- * @param {string} sku The product's SKU (on Android)
- * @returns {Promise<void>}
- */
-export const deepLinkToSubscriptionsAndroid = async ({
-  sku,
-}: {
-  sku: Sku;
-}): Promise<void> => {
-  checkNativeAndroidAvailable();
-
-  return Linking.openURL(
-    `https://play.google.com/store/account/subscriptions?package=${await RNIapModule.getPackageName()}&sku=${sku}`,
-  );
 };
 
 /**

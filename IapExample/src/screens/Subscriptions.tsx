@@ -1,6 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {PurchaseError, requestSubscription, useIAP} from 'react-native-iap';
+import {
+  isIosStorekit2,
+  PurchaseError,
+  requestSubscription,
+  useIAP,
+} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {constants, contentContainerStyle, errorLog} from '../utils';
@@ -74,7 +79,7 @@ export const Subscriptions = () => {
 
   return (
     <ScrollView contentContainerStyle={contentContainerStyle}>
-      <State connected={connected} />
+      <State connected={connected} storekit2={isIosStorekit2()} />
 
       <Box>
         <View style={styles.container}>

@@ -77,7 +77,7 @@ export const Products = () => {
 
   return (
     <ScrollView contentContainerStyle={contentContainerStyle}>
-      <State connected={connected} />
+      <State connected={connected} storekit2={isIosStorekit2()} />
 
       {initConnectionError && (
         <Box>
