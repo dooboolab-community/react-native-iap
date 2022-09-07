@@ -7,7 +7,7 @@ import {Box} from './Box';
 
 interface StateProps {
   connected: boolean;
-  storekit2: boolean;
+  storekit2?: boolean;
 }
 
 export const State = ({connected, storekit2}: StateProps) => {
