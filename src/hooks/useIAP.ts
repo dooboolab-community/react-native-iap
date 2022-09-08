@@ -6,9 +6,11 @@ import {
   getProducts as iapGetProducts,
   getPurchaseHistory as iapGetPurchaseHistory,
   getSubscriptions as iapGetSubscriptions,
+  requestPurchase as iapRequestPurchase,
+  requestSubscription as iapRequestSubscription,
 } from '../iap';
 import type {PurchaseError} from '../purchaseError';
-import type {Product, Purchase, Subscription} from '../types';
+import type {Product, Purchase, PurchaseResult, Subscription} from '../types';
 
 import {useIAPContext} from './withIAPContext';
 
@@ -30,14 +32,16 @@ type IAP_STATUS = {
     purchase: Purchase;
     isConsumable?: boolean;
     developerPayloadAndroid?: string;
-  }) => Promise<string | void>;
+  }) => Promise<string | boolean | PurchaseResult | void>;
   getAvailablePurchases: () => Promise<void>;
   getPurchaseHistory: () => Promise<void>;
   getProducts: ({skus}: {skus: string[]}) => Promise<void>;
   getSubscriptions: ({skus}: {skus: string[]}) => Promise<void>;
+  requestPurchase: typeof iapRequestPurchase;
+  requestSubscription: typeof iapRequestSubscription;
 };
 
-export function useIAP(): IAP_STATUS {
+export const useIAP = (): IAP_STATUS => {
   const {
     connected,
     products,
@@ -87,7 +91,7 @@ export function useIAP(): IAP_STATUS {
       purchase: Purchase;
       isConsumable?: boolean;
       developerPayloadAndroid?: string;
-    }): Promise<string | void> => {
+    }): Promise<string | boolean | PurchaseResult | void> => {
       try {
         return await iapFinishTransaction({
           purchase,
@@ -129,5 +133,7 @@ export function useIAP(): IAP_STATUS {
     getSubscriptions,
     getAvailablePurchases,
     getPurchaseHistory,
+    requestPurchase: iapRequestPurchase,
+    requestSubscription: iapRequestSubscription,
   };
-}
+};
