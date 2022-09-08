@@ -1,3 +1,12 @@
+export interface UserDataAmazon {
+  userIdAmazon?: string;
+  userMarketplaceAmazon?: string;
+  userJsonAmazon?: string;
+}
+
+export interface ProductPurchaseAmazon extends UserDataAmazon {
+  isCanceledAmazon?: boolean;
+}
 /**
  * From: https://developer.amazon.com/es/docs/in-app-purchasing/iap-rvs-examples.html
  */
