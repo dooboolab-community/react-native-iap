@@ -50,8 +50,7 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun flushFailedPurchasesCachedAsPending(promise: Promise) {
         // No-op
-        val items = WritableNativeArray()
-        promise.resolve(items)
+        promise.resolve(true)
     }
 
     @ReactMethod

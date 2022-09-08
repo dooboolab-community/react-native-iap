@@ -1,4 +1,12 @@
+import type {
+  AmazonModuleProps,
+  AndroidModuleProps,
+  IosModuleProps,
+} from '../modules';
+import type {IosModulePropsSk2} from '../modules/iosSk2';
+
 import type * as Apple from './apple';
+
 export type Sku = string;
 
 export enum ProrationModesAndroid {
@@ -22,6 +30,20 @@ export enum InstallSourceAndroid {
   NOT_SET = 0,
   GOOGLE_PLAY = 1,
   AMAZON = 2,
+}
+
+export enum ProductType {
+  /** Subscription */
+  subs = 'subs',
+
+  /** Subscription */
+  sub = 'sub',
+
+  /** Consumable */
+  inapp = 'inapp',
+
+  /** Consumable */
+  iap = 'iap',
 }
 
 export interface ProductCommon {
@@ -69,6 +91,7 @@ export interface PurchaseResult {
   debugMessage?: string;
   code?: string;
   message?: string;
+  purchaseToken?: string;
 }
 
 export interface SubscriptionPurchase extends ProductPurchase {
@@ -192,3 +215,12 @@ export type RequestSubscriptionIOS = RequestPurchaseIOS;
 
 export type RequestSubscription = RequestSubscriptionAndroid &
   RequestSubscriptionIOS;
+
+declare module 'react-native' {
+  interface NativeModulesStatic {
+    RNIapIos: IosModuleProps;
+    RNIapIosSk2: IosModulePropsSk2;
+    RNIapModule: AndroidModuleProps;
+    RNIapAmazonModule: AmazonModuleProps;
+  }
+}

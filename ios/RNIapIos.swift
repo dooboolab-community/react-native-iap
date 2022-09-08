@@ -301,6 +301,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             }
         }
         if let prod = product {
+            addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
             let payment = SKMutablePayment(product: prod)
             payment.quantity = quantity
             SKPaymentQueue.default().add(payment)

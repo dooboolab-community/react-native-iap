@@ -1,6 +1,6 @@
 import type {ProductIOS, Purchase, SubscriptionIOS} from '.';
 
-export type ProductSK2 = {
+export type ProductSk2 = {
   description: string;
   displayName: string;
   displayPrice: string;
@@ -17,7 +17,7 @@ export const productSk2Map = ({
   displayName,
   price,
   displayPrice,
-}: ProductSK2): ProductIOS => {
+}: ProductSk2): ProductIOS => {
   const prod: ProductIOS = {
     title: displayName,
     productId: String(id),
@@ -36,7 +36,7 @@ export const subscriptionSk2Map = ({
   displayName,
   price,
   displayPrice,
-}: ProductSK2): SubscriptionIOS => {
+}: ProductSk2): SubscriptionIOS => {
   const prod: SubscriptionIOS = {
     title: displayName,
     productId: String(id),
