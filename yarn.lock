@@ -1689,6 +1689,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jeremybarbet/apple-api-types@npm:1.3.5":
+  version: 1.3.5
+  resolution: "@jeremybarbet/apple-api-types@npm:1.3.5"
+  checksum: a2539f4875966958d3f881a3e371c8ac6edd003906b37d14f0c37ab3181beb053e1828d5763c1f13b53b801db48578dccb9b3f607339e926a4e731c7c6d3e8f7
+  languageName: node
+  linkType: hard
+
+"@jeremybarbet/google-api-types@npm:1.3.5":
+  version: 1.3.5
+  resolution: "@jeremybarbet/google-api-types@npm:1.3.5"
+  checksum: 3d145e9cbb4763f01adef982920c4bc0d87e36f2d730aa86a4af4c784aa4f9f2dd78bafd8817588cffdffee313cae06675fbf58b4b6216d04e3e0855685d824d
+  languageName: node
+  linkType: hard
+
 "@jest/console@npm:^28.1.3":
   version: 28.1.3
   resolution: "@jest/console@npm:28.1.3"
@@ -10868,6 +10882,8 @@ __metadata:
   dependencies:
     "@babel/eslint-parser": 7.18.9
     "@firmnav/eslint-github-actions-formatter": 1.0.1
+    "@jeremybarbet/apple-api-types": 1.3.5
+    "@jeremybarbet/google-api-types": 1.3.5
     "@react-native-community/eslint-config": 3.1.0
     "@release-it/conventional-changelog": 5.0.0
     "@testing-library/jest-native": 4.0.5
