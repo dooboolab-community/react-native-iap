@@ -1,6 +1,6 @@
 import {EmitterSubscription, NativeEventEmitter} from 'react-native';
 
-import {transactionSk2Map} from './types/appleSK2';
+import {transactionSk2Map} from './types/appleSk2';
 import {
   getAndroidModule,
   getIosModule,

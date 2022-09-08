@@ -4,8 +4,7 @@ import type {ResponseBody as ReceiptValidationResponse} from '@jeremybarbet/appl
 import type * as Amazon from './types/amazon';
 import type * as Android from './types/android';
 import type * as Apple from './types/apple';
-import {ReceiptValidationStatus} from './types/apple';
-import {productSk2Map, subscriptionSk2Map} from './types/appleSK2';
+import {ProductSk2, productSk2Map, subscriptionSk2Map} from './types/appleSk2';
 import {
   enhancedFetch,
   fillProductsWithAdditionalData,
@@ -16,7 +15,6 @@ import {
   Product,
   ProductPurchase,
   ProductType,
-  ProrationModesAndroid,
   Purchase,
   PurchaseResult,
   RequestPurchase,
@@ -39,7 +37,7 @@ export const getInstallSourceAndroid = (): InstallSourceAndroid => {
 
 let androidNativeModule = RNIapModule;
 
-let iosNativeModule = RNIapIosSk2;
+let iosNativeModule: typeof RNIapIos | typeof RNIapIosSk2 = RNIapIosSk2;
 
 export const isIosStorekit2 = () => iosNativeModule === RNIapIosSk2;
 
@@ -79,7 +77,7 @@ const checkNativeIOSAvailable = (): void => {
   }
 };
 
-export const getIosModule = (): typeof RNIapIos => {
+export const getIosModule = (): typeof RNIapIos | typeof RNIapIosSk2 => {
   checkNativeIOSAvailable();
 
   return iosNativeModule
@@ -92,7 +90,8 @@ export const getIosModule = (): typeof RNIapIos => {
 export const getNativeModule = ():
   | typeof RNIapModule
   | typeof RNIapAmazonModule
-  | typeof RNIapIos => {
+  | typeof RNIapIos
+  | typeof RNIapIosSk2 => {
   return isAndroid ? getAndroidModule() : getIosModule();
 };
 
@@ -131,10 +130,13 @@ export const getProducts = ({
   (
     Platform.select({
       ios: async () => {
-        let items = (await getIosModule().getItems(skus)) as Product[];
-
+        let items: Product[];
         if (isIosStorekit2()) {
-          items = items.map(productSk2Map);
+          items = ((await RNIapIosSk2.getItems(skus)) as ProductSk2[]).map(
+            productSk2Map,
+          );
+        } else {
+          items = (await RNIapIos.getItems(skus)) as Product[];
         }
         return items.filter(
           (item: Product) =>
@@ -165,9 +167,13 @@ export const getSubscriptions = ({
   (
     Platform.select({
       ios: async () => {
-        let items = (await getIosModule().getItems(skus)) as Subscription[];
+        let items: Subscription[];
         if (isIosStorekit2()) {
-          items = items.map(subscriptionSk2Map);
+          items = ((await RNIapIosSk2.getItems(skus)) as ProductSk2[]).map(
+            subscriptionSk2Map,
+          );
+        } else {
+          items = (await RNIapIos.getItems(skus)) as Subscription[];
         }
 
         return items.filter(
