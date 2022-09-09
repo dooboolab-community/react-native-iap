@@ -1,4 +1,4 @@
-[react-native-iap](../README.md) / [Exports](../modules.md) / Discount
+[react-native-iap](../..) / [Exports](../modules.md) / Discount
 
 # Interface: Discount
 
@@ -22,7 +22,7 @@
 
 #### Defined in
 
-[types/index.ts:103](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L103)
+[types/index.ts:103](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L103)
 
 ___
 
@@ -32,7 +32,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:107](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L107)
+[types/index.ts:107](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L107)
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:105](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L105)
+[types/index.ts:105](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L105)
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:108](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L108)
+[types/index.ts:108](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L108)
 
 ___
 
@@ -62,7 +62,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:106](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L106)
+[types/index.ts:106](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L106)
 
 ___
 
@@ -72,7 +72,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:109](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L109)
+[types/index.ts:109](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L109)
 
 ___
 
@@ -82,4 +82,4 @@ ___
 
 #### Defined in
 
-[types/index.ts:104](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L104)
+[types/index.ts:104](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L104)

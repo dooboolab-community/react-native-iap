@@ -1,4 +1,4 @@
-[react-native-iap](../README.md) / [Exports](../modules.md) / Product
+[react-native-iap](../..) / [Exports](../modules.md) / Product
 
 # Interface: Product
 
@@ -35,7 +35,7 @@
 
 #### Defined in
 
-[types/index.ts:55](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L55)
+[types/index.ts:55](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L55)
 
 ___
 
@@ -49,7 +49,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:53](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L53)
+[types/index.ts:53](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L53)
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:51](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L51)
+[types/index.ts:51](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L51)
 
 ___
 
@@ -77,7 +77,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:54](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L54)
+[types/index.ts:54](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L54)
 
 ___
 
@@ -95,7 +95,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:115](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L115)
+[types/index.ts:115](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L115)
 
 ___
 
@@ -109,7 +109,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:52](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L52)
+[types/index.ts:52](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L52)
 
 ___
 
@@ -123,7 +123,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:48](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L48)
+[types/index.ts:48](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L48)
 
 ___
 
@@ -137,7 +137,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:49](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L49)
+[types/index.ts:49](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L49)
 
 ___
 
@@ -151,7 +151,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:50](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L50)
+[types/index.ts:50](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L50)
 
 ___
 
@@ -165,4 +165,4 @@ ___
 
 #### Defined in
 
-[types/index.ts:113](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L113)
+[types/index.ts:113](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L113)

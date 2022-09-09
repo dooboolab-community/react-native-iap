@@ -1,4 +1,4 @@
-[react-native-iap](../README.md) / [Exports](../modules.md) / InstallSourceAndroid
+[react-native-iap](../..) / [Exports](../modules.md) / InstallSourceAndroid
 
 # Enumeration: InstallSourceAndroid
 
@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[types/index.ts:29](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L29)
+[types/index.ts:29](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L29)
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:28](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L28)
+[types/index.ts:28](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L28)
 
 ___
 
@@ -38,4 +38,4 @@ ___
 
 #### Defined in
 
-[types/index.ts:27](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L27)
+[types/index.ts:27](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L27)

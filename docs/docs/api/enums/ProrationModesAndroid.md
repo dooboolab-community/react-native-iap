@@ -1,4 +1,4 @@
-[react-native-iap](../README.md) / [Exports](../modules.md) / ProrationModesAndroid
+[react-native-iap](../..) / [Exports](../modules.md) / ProrationModesAndroid
 
 # Enumeration: ProrationModesAndroid
 
@@ -21,7 +21,7 @@
 
 #### Defined in
 
-[types/index.ts:13](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L13)
+[types/index.ts:13](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L13)
 
 ___
 
@@ -31,7 +31,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:14](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L14)
+[types/index.ts:14](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L14)
 
 ___
 
@@ -41,7 +41,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:11](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L11)
+[types/index.ts:11](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L11)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:12](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L12)
+[types/index.ts:12](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L12)
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:10](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L10)
+[types/index.ts:10](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L10)
 
 ___
 
@@ -71,4 +71,4 @@ ___
 
 #### Defined in
 
-[types/index.ts:15](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L15)
+[types/index.ts:15](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L15)

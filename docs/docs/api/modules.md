@@ -1,4 +1,4 @@
-[react-native-iap](README.md) / Exports
+[react-native-iap](..) / Exports
 
 # react-native-iap
 
@@ -84,7 +84,7 @@
 
 #### Defined in
 
-[types/index.ts:100](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L100)
+[types/index.ts:100](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L100)
 
 ___
 
@@ -94,7 +94,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:7](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L7)
+[types/index.ts:7](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L7)
 
 ___
 
@@ -104,7 +104,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:169](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L169)
+[types/index.ts:169](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L169)
 
 ## Variables
 
@@ -114,7 +114,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:24](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L24)
+[types/index.ts:24](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L24)
 
 ## Functions
 
@@ -138,7 +138,7 @@ Acknowledge a product (on Android.) No-op on iOS.
 
 #### Defined in
 
-[iap.ts:487](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L487)
+[iap.ts:487](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L487)
 
 ___
 
@@ -155,7 +155,7 @@ Buy the currently selected promoted product (iOS only)
 
 #### Defined in
 
-[iap.ts:527](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L527)
+[iap.ts:527](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L527)
 
 ___
 
@@ -172,7 +172,7 @@ Clear valid Products (iOS only)
 
 #### Defined in
 
-[iap.ts:479](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L479)
+[iap.ts:479](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L479)
 
 ___
 
@@ -191,7 +191,7 @@ Clear Transaction (iOS only)
 
 #### Defined in
 
-[iap.ts:471](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L471)
+[iap.ts:471](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L471)
 
 ___
 
@@ -214,7 +214,7 @@ Deep link to subscriptions screen on Android. No-op on iOS.
 
 #### Defined in
 
-[iap.ts:502](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L502)
+[iap.ts:502](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L502)
 
 ___
 
@@ -230,7 +230,7 @@ End module for purchase flow.
 
 #### Defined in
 
-[iap.ts:93](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L93)
+[iap.ts:93](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L93)
 
 ___
 
@@ -260,7 +260,7 @@ Finish Transaction (both platforms)
 
 #### Defined in
 
-[iap.ts:413](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L413)
+[iap.ts:413](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L413)
 
 ___
 
@@ -276,7 +276,7 @@ Consume all 'ghost' purchases (that is, pending payment that already failed but 
 
 #### Defined in
 
-[iap.ts:101](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L101)
+[iap.ts:101](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L101)
 
 ___
 
@@ -290,7 +290,7 @@ ___
 
 #### Defined in
 
-[iap.ts:51](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L51)
+[iap.ts:51](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L51)
 
 ___
 
@@ -306,7 +306,7 @@ Get all purchases made by the user (either non-consumable, or haven't been consu
 
 #### Defined in
 
-[iap.ts:200](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L200)
+[iap.ts:200](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L200)
 
 ___
 
@@ -320,7 +320,7 @@ ___
 
 #### Defined in
 
-[iap.ts:31](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L31)
+[iap.ts:31](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L31)
 
 ___
 
@@ -334,7 +334,7 @@ ___
 
 #### Defined in
 
-[iap.ts:69](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L69)
+[iap.ts:69](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L69)
 
 ___
 
@@ -348,7 +348,7 @@ ___
 
 #### Defined in
 
-[iap.ts:75](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L75)
+[iap.ts:75](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L75)
 
 ___
 
@@ -364,7 +364,7 @@ Get the current receipt base64 encoded in IOS.
 
 #### Defined in
 
-[iap.ts:675](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L675)
+[iap.ts:675](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L675)
 
 ___
 
@@ -387,7 +387,7 @@ Get a list of products (consumable and non-consumable items, but not subscriptio
 
 #### Defined in
 
-[iap.ts:109](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L109)
+[iap.ts:109](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L109)
 
 ___
 
@@ -406,7 +406,7 @@ promoted product
 
 #### Defined in
 
-[iap.ts:519](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L519)
+[iap.ts:519](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L519)
 
 ___
 
@@ -422,7 +422,7 @@ Gets an inventory of purchases made by the user regardless of consumption status
 
 #### Defined in
 
-[iap.ts:170](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L170)
+[iap.ts:170](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L170)
 
 ___
 
@@ -445,7 +445,7 @@ Get the current receipt base64 encoded in IOS.
 
 #### Defined in
 
-[iap.ts:683](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L683)
+[iap.ts:683](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L683)
 
 ___
 
@@ -468,7 +468,7 @@ Get a list of subscriptions
 
 #### Defined in
 
-[iap.ts:140](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L140)
+[iap.ts:140](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L140)
 
 ___
 
@@ -484,7 +484,7 @@ Init module for purchase flow. Required on Android. In ios it will check whether
 
 #### Defined in
 
-[iap.ts:86](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L86)
+[iap.ts:86](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L86)
 
 ___
 
@@ -500,7 +500,7 @@ Launches a modal to register the redeem offer code in IOS.
 
 #### Defined in
 
-[iap.ts:693](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L693)
+[iap.ts:693](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L693)
 
 ___
 
@@ -526,7 +526,7 @@ iOS
 
 #### Defined in
 
-[eventEmitter.ts:42](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/eventEmitter.ts#L42)
+[eventEmitter.ts:42](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/eventEmitter.ts#L42)
 
 ___
 
@@ -548,7 +548,7 @@ Add IAP purchase error event
 
 #### Defined in
 
-[eventEmitter.ts:30](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/eventEmitter.ts#L30)
+[eventEmitter.ts:30](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/eventEmitter.ts#L30)
 
 ___
 
@@ -570,7 +570,7 @@ Add IAP purchase event
 
 #### Defined in
 
-[eventEmitter.ts:11](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/eventEmitter.ts#L11)
+[eventEmitter.ts:11](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/eventEmitter.ts#L11)
 
 ___
 
@@ -599,7 +599,7 @@ Request a purchase for product. This will be received in `PurchaseUpdatedListene
 
 #### Defined in
 
-[iap.ts:238](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L238)
+[iap.ts:238](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L238)
 
 ___
 
@@ -627,7 +627,7 @@ from your server.
 
 #### Defined in
 
-[iap.ts:574](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L574)
+[iap.ts:574](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L574)
 
 ___
 
@@ -651,7 +651,7 @@ Request a purchase for product. This will be received in `PurchaseUpdatedListene
 
 #### Defined in
 
-[iap.ts:392](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L392)
+[iap.ts:392](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L392)
 
 ___
 
@@ -684,7 +684,7 @@ Promise resolves to null when using proratioModesAndroid=DEFERRED, and to a Subs
 
 #### Defined in
 
-[iap.ts:315](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L315)
+[iap.ts:315](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L315)
 
 ___
 
@@ -704,7 +704,7 @@ ___
 
 #### Defined in
 
-[iap.ts:39](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L39)
+[iap.ts:39](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L39)
 
 ___
 
@@ -718,7 +718,7 @@ ___
 
 #### Defined in
 
-[hooks/useIAP.ts:44](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/hooks/useIAP.ts#L44)
+[hooks/useIAP.ts:44](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/hooks/useIAP.ts#L44)
 
 ___
 
@@ -732,7 +732,7 @@ ___
 
 #### Defined in
 
-[hooks/withIAPContext.tsx:41](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/hooks/withIAPContext.tsx#L41)
+[hooks/withIAPContext.tsx:41](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/hooks/withIAPContext.tsx#L41)
 
 ___
 
@@ -760,7 +760,7 @@ Use server side validation instead for your production builds
 
 #### Defined in
 
-[iap.ts:653](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L653)
+[iap.ts:653](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L653)
 
 ___
 
@@ -789,7 +789,7 @@ Use server side validation instead for your production builds
 
 #### Defined in
 
-[iap.ts:620](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L620)
+[iap.ts:620](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L620)
 
 ___
 
@@ -813,7 +813,7 @@ Validate receipt for iOS.
 
 #### Defined in
 
-[iap.ts:591](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/iap.ts#L591)
+[iap.ts:591](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/iap.ts#L591)
 
 ___
 
@@ -851,4 +851,4 @@ ___
 
 #### Defined in
 
-[hooks/withIAPContext.tsx:51](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/hooks/withIAPContext.tsx#L51)
+[hooks/withIAPContext.tsx:51](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/hooks/withIAPContext.tsx#L51)
