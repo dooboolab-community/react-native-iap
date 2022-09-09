@@ -65,7 +65,8 @@
     "lint:ci": "yarn lint:tsc && yarn lint:eslint -f ./node_modules/@firmnav/eslint-github-actions-formatter/dist/formatter.js && yarn lint:prettier",
     "lint:prettier": "prettier --write \"**/*.{md,js,jsx,ts,tsx}\"",
     "format": "git ls-files -m | xargs yarn prettier --write --ignore-unknown --no-error-on-unmatched-pattern",
-    "bootstrap": "yarn example && yarn && yarn example pods"
+    "bootstrap": "yarn example && yarn && yarn example pods",
+    "gen:doc": "typedoc"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.18.9",
