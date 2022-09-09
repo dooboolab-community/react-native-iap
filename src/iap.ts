@@ -14,12 +14,12 @@ import {
   Product,
   ProductPurchase,
   ProductType,
-  ProrationModesAndroid,
   Purchase,
   PurchaseResult,
+  RequestPurchase,
+  RequestSubscription,
   Sku,
   Subscription,
-  SubscriptionOffer,
   SubscriptionPurchase,
 } from './types';
 import {InstallSourceAndroid, PurchaseStateAndroid} from './types';
@@ -477,16 +477,7 @@ export const requestPurchase = ({
   obfuscatedProfileIdAndroid,
   skus,
   isOfferPersonalized,
-}: {
-  sku?: Sku;
-  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
-  applicationUsername?: string;
-  obfuscatedAccountIdAndroid?: string;
-  obfuscatedProfileIdAndroid?: string;
-  /** For Google Play Billing Library 5 https://developer.android.com/google/play/billing/integrate#personalized-price */
-  skus?: Sku[];
-  isOfferPersonalized?: boolean;
-}): Promise<ProductPurchase | void> =>
+}: RequestPurchase): Promise<ProductPurchase | void> =>
   (
     Platform.select({
       ios: async () => {
@@ -621,19 +612,7 @@ export const requestSubscription = ({
   obfuscatedAccountIdAndroid,
   obfuscatedProfileIdAndroid,
   isOfferPersonalized = undefined,
-}: {
-  sku?: Sku;
-  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
-  applicationUsername?: string;
-  purchaseTokenAndroid?: string;
-  prorationModeAndroid?: ProrationModesAndroid;
-  /** For Google Play Billing Library 5 */
-  subscriptionOffers?: SubscriptionOffer[];
-  obfuscatedAccountIdAndroid?: string;
-  obfuscatedProfileIdAndroid?: string;
-  /** For Google Play Billing Library 5 https://developer.android.com/google/play/billing/integrate#personalized-price */
-  isOfferPersonalized?: boolean;
-}): Promise<SubscriptionPurchase | null | void> =>
+}: RequestSubscription): Promise<SubscriptionPurchase | null | void> =>
   (
     Platform.select({
       ios: async () => {
