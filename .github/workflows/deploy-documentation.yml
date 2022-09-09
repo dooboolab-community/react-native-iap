@@ -24,8 +24,8 @@ jobs:
 
       - name: Install packages and generate docs
         run: |
-          yarn
-          yarn gen:doc || true
+          yarn install
+          yarn typedoc --plugin typedoc-plugin-markdown --out docs/docs/api --entryDocument '..' src
 
       - name: Install packages and build
         run: |
