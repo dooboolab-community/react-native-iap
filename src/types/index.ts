@@ -108,7 +108,9 @@ export interface Discount {
   paymentMode: '' | 'FREETRIAL' | 'PAYASYOUGO' | 'PAYUPFRONT';
   subscriptionPeriod: string;
 }
-
+/**
+ * A product can either be a consumable or a non-consumable product.
+ */
 export interface Product extends ProductCommon {
   type: 'inapp' | 'iap';
   // Android V5
@@ -166,6 +168,9 @@ export interface SubscriptionIOS extends ProductCommon {
   subscriptionPeriodUnitIOS?: '' | 'YEAR' | 'MONTH' | 'WEEK' | 'DAY';
 }
 
+/**
+ * A subscription is a product that can be renewed multiple times.
+ */
 export type Subscription = SubscriptionAndroid & SubscriptionIOS;
 
 /**
