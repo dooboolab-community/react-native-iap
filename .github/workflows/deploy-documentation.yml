@@ -28,7 +28,7 @@ jobs:
           pushd ./IapExample
           yarn install
           popd
-          yarn typedoc --plugin typedoc-plugin-markdown --out docs/docs/api --entryDocument '..' ./src
+          yarn typedoc --plugin typedoc-plugin-markdown --out docs/docs/api --entryDocument '..' ./src || true
 
       - name: Install packages and build
         run: |
