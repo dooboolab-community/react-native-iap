@@ -101,7 +101,7 @@ const config = {
     ],
   ],
   onBrokenLinks: 'log',
-  onBrokenMarkdownLinks:'log'
+  onBrokenMarkdownLinks: 'log',
 };
 
 module.exports = config;
