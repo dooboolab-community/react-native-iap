@@ -87,7 +87,23 @@ export const initConnection = (): Promise<boolean> =>
   getNativeModule().initConnection();
 
 /**
- * End module for purchase flow.
+ * Disconnects from native SDK
+ * Usage
+ * ```tsx
+import React, {useEffect} from 'react';
+import {View} from 'react-native';
+import {endConnection} from 'react-native-iap';
+
+const App = () => {
+  useEffect(() => {
+    return () => {
+      void endConnection();
+    };
+  }, []);
+
+  return <View />;
+};
+```
  * @returns {Promise<void>}
  */
 export const endConnection = (): Promise<boolean> =>
@@ -405,10 +421,22 @@ export const requestPurchaseWithQuantityIOS = ({
  *   Call this after you have persisted the purchased state to your server or local data in your app.
  *   `react-native-iap` will continue to deliver the purchase updated events with the successful purchase until you finish the transaction. **Even after the app has relaunched.**
  *   Android: it will consume purchase for consumables and acknowledge purchase for non-consumables.
- * @param {object} purchase The purchase that you would like to finish.
- * @param {boolean} isConsumable Checks if purchase is consumable. Has effect on `android`.
- * @param {string} developerPayloadAndroid Android developerPayload.
- * @returns {Promise<string | void> }
+ *   
+```tsx
+import React from 'react';
+import {Button} from 'react-native';
+import {finishTransaction} from 'react-native-iap';
+
+const App = () => {
+  const handlePurchase = async () => {
+    // ... handle the purchase request
+
+    const result = finishTransaction(purchase);
+  };
+
+  return <Button title="Buy product" onPress={handlePurchase} />;
+};
+``` 
  */
 export const finishTransaction = ({
   purchase,
