@@ -403,14 +403,70 @@ export const getAvailablePurchases = (): Promise<
 
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
- * @param {string} sku The product's sku/ID
- * @param {string} [applicationUsername] The purchaser's user ID
- * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
- * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
- * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
- * @param {string[]} [skus] Product Ids to purchase. Note that this is only for Android. iOS only uses a single SKU. If not provided, it'll default to using [sku] for backward-compatibility
- * @param {boolean} [isOfferPersonalized] Defaults to false, Only for Android V5
- * @returns {Promise<ProductPurchase>}
+ * Request a purchase for a product (consumables or non-consumables).
+
+The response will be received through the `PurchaseUpdatedListener`.
+
+:::note
+`andDangerouslyFinishTransactionAutomatically` defaults to false. We recommend
+always keeping at false, and verifying the transaction receipts on the server-side.
+:::
+
+## Signature
+
+```ts
+requestPurchase(
+ The product's sku/ID 
+  sku,
+
+  
+   * You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user.
+   * @default false
+   
+  andDangerouslyFinishTransactionAutomaticallyIOS = false,
+
+  /** Specifies an optional obfuscated string that is uniquely associated with the user's account in your app. 
+  obfuscatedAccountIdAndroid,
+
+  Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app. 
+  obfuscatedProfileIdAndroid,
+
+   The purchaser's user ID 
+  applicationUsername,
+): Promise<ProductPurchase>;
+```
+
+## Usage
+
+```tsx
+import React, {useCallback} from 'react';
+import {Button} from 'react-native';
+import {requestPurchase, Product, Sku, getProducts} from 'react-native-iap';
+
+const App = () => {
+  const products = useCallback(
+    async () => getProducts(['com.example.product']),
+    [],
+  );
+
+  const handlePurchase = async (sku: Sku) => {
+    await requestPurchase({sku});
+  };
+
+  return (
+    <>
+      {products.map((product) => (
+        <Button
+          key={product.productId}
+          title="Buy product"
+          onPress={() => handlePurchase(product.productId)}
+        />
+      ))}
+    </>
+  );
+};
+```
+
  */
 
 export const requestPurchase = ({
@@ -480,15 +536,80 @@ export const requestPurchase = ({
 
 /**
  * Request a purchase for product. This will be received in `PurchaseUpdatedListener`.
- * @param {string} [sku] The product's sku/ID
- * @param {string} [applicationUsername] The purchaser's user ID
- * @param {boolean} [andDangerouslyFinishTransactionAutomaticallyIOS] You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.
- * @param {string} [purchaseTokenAndroid] purchaseToken that the user is upgrading or downgrading from (Android).
- * @param {ProrationModesAndroid} [prorationModeAndroid] UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
- * @param {string} [obfuscatedAccountIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
- * @param {string} [obfuscatedProfileIdAndroid] Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
- * @param {SubscriptionOffers[]} [subscriptionOffers] Array of SubscriptionOffers. Every sku must be paired with a corresponding offerToken
- * @returns {Promise<SubscriptionPurchase | null>} Promise resolves to null when using proratioModesAndroid=DEFERRED, and to a SubscriptionPurchase otherwise
+ * Request a purchase for a subscription.
+
+The response will be received through the `PurchaseUpdatedListener`.
+
+:::note
+`andDangerouslyFinishTransactionAutomatically` defaults to false. We recommend
+always keeping at false, and verifying the transaction receipts on the server-side.
+:::
+
+## Signature
+
+```ts
+requestSubscription(
+  The product's sku/ID 
+  sku,
+
+
+   * You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user.
+   * @default false
+
+  andDangerouslyFinishTransactionAutomaticallyIOS = false,
+
+   purchaseToken that the user is upgrading or downgrading from (Android). 
+  purchaseTokenAndroid,
+
+  UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED 
+  prorationModeAndroid = -1,
+
+  /** Specifies an optional obfuscated string that is uniquely associated with the user's account in your app. 
+  obfuscatedAccountIdAndroid,
+
+  Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app. 
+  obfuscatedProfileIdAndroid,
+
+  The purchaser's user ID 
+  applicationUsername,
+): Promise<SubscriptionPurchase>
+```
+
+## Usage
+
+```tsx
+import React, {useCallback} from 'react';
+import {Button} from 'react-native';
+import {
+  requestSubscription,
+  Product,
+  Sku,
+  getSubscriptions,
+} from 'react-native-iap';
+
+const App = () => {
+  const subscriptions = useCallback(
+    async () => getSubscriptions(['com.example.subscription']),
+    [],
+  );
+
+  const handlePurchase = async (sku: Sku) => {
+    await requestSubscription({sku});
+  };
+
+  return (
+    <>
+      {subscriptions.map((subscription) => (
+        <Button
+          key={subscription.productId}
+          title="Buy subscription"
+          onPress={() => handlePurchase(subscription.productId)}
+        />
+      ))}
+    </>
+  );
+};
+```
  */
 export const requestSubscription = ({
   sku,
