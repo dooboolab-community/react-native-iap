@@ -66,7 +66,7 @@
     "lint:prettier": "prettier --write \"**/*.{md,js,jsx,ts,tsx}\"",
     "format": "git ls-files -m | xargs yarn prettier --write --ignore-unknown --no-error-on-unmatched-pattern",
     "bootstrap": "yarn example && yarn && yarn example pods",
-    "gen:doc": "typedoc"
+    "gen:doc": "typedoc --plugin typedoc-plugin-markdown --out docs/docs/api --entryDocument '..' src "
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.18.9",

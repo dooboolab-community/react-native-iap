@@ -22,10 +22,13 @@ jobs:
         with:
           cache: 'yarn'
 
+      - name: Install packages and generate docs
+        run: |
+          yarn
+          yarn gen:doc || true
+
       - name: Install packages and build
         run: |
-          yarn || true
-          yarn gen:doc || true
           pushd ./docs
           yarn
           yarn build
