@@ -1,4 +1,4 @@
-[react-native-iap](../README.md) / [Exports](../modules.md) / PurchaseError
+[react-native-iap](../..) / [Exports](../modules.md) / PurchaseError
 
 # Class: PurchaseError
 
@@ -40,7 +40,7 @@
 
 #### Defined in
 
-[purchaseError.ts:21](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L21)
+[purchaseError.ts:21](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L21)
 
 ## Properties
 
@@ -50,7 +50,7 @@
 
 #### Defined in
 
-[purchaseError.ts:26](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L26)
+[purchaseError.ts:26](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L26)
 
 ___
 
@@ -60,7 +60,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:25](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L25)
+[purchaseError.ts:25](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L25)
 
 ___
 
@@ -74,7 +74,7 @@ Error.message
 
 #### Defined in
 
-[purchaseError.ts:23](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L23)
+[purchaseError.ts:23](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L23)
 
 ___
 
@@ -88,7 +88,7 @@ Error.name
 
 #### Defined in
 
-[purchaseError.ts:22](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L22)
+[purchaseError.ts:22](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L22)
 
 ___
 
@@ -98,7 +98,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:27](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L27)
+[purchaseError.ts:27](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L27)
 
 ___
 
@@ -108,4 +108,4 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:24](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L24)
+[purchaseError.ts:24](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L24)

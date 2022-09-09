@@ -1,4 +1,4 @@
-[react-native-iap](../README.md) / [Exports](../modules.md) / ErrorCode
+[react-native-iap](../..) / [Exports](../modules.md) / ErrorCode
 
 # Enumeration: ErrorCode
 
@@ -31,7 +31,7 @@
 
 #### Defined in
 
-[purchaseError.ts:13](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L13)
+[purchaseError.ts:13](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L13)
 
 ___
 
@@ -41,7 +41,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:15](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L15)
+[purchaseError.ts:15](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L15)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:16](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L16)
+[purchaseError.ts:16](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L16)
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:14](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L14)
+[purchaseError.ts:14](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L14)
 
 ___
 
@@ -71,7 +71,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:17](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L17)
+[purchaseError.ts:17](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L17)
 
 ___
 
@@ -81,7 +81,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:5](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L5)
+[purchaseError.ts:5](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L5)
 
 ___
 
@@ -91,7 +91,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:7](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L7)
+[purchaseError.ts:7](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L7)
 
 ___
 
@@ -101,7 +101,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:12](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L12)
+[purchaseError.ts:12](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L12)
 
 ___
 
@@ -111,7 +111,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:11](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L11)
+[purchaseError.ts:11](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L11)
 
 ___
 
@@ -121,7 +121,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:9](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L9)
+[purchaseError.ts:9](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L9)
 
 ___
 
@@ -131,7 +131,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:10](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L10)
+[purchaseError.ts:10](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L10)
 
 ___
 
@@ -141,7 +141,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:6](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L6)
+[purchaseError.ts:6](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L6)
 
 ___
 
@@ -151,7 +151,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:8](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L8)
+[purchaseError.ts:8](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L8)
 
 ___
 
@@ -161,7 +161,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:2](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L2)
+[purchaseError.ts:2](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L2)
 
 ___
 
@@ -171,7 +171,7 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:3](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L3)
+[purchaseError.ts:3](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L3)
 
 ___
 
@@ -181,4 +181,4 @@ ___
 
 #### Defined in
 
-[purchaseError.ts:4](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/purchaseError.ts#L4)
+[purchaseError.ts:4](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/purchaseError.ts#L4)

@@ -100,6 +100,7 @@ const config = {
       },
     ],
   ],
+  onBrokenLinks:"warn"
 };
 
 module.exports = config;

@@ -1,4 +1,4 @@
-[react-native-iap](../README.md) / [Exports](../modules.md) / PurchaseResult
+[react-native-iap](../..) / [Exports](../modules.md) / PurchaseResult
 
 # Interface: PurchaseResult
 
@@ -20,7 +20,7 @@
 
 #### Defined in
 
-[types/index.ts:89](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L89)
+[types/index.ts:89](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L89)
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:88](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L88)
+[types/index.ts:88](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L88)
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:90](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L90)
+[types/index.ts:90](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L90)
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:91](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L91)
+[types/index.ts:91](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L91)
 
 ___
 
@@ -60,4 +60,4 @@ ___
 
 #### Defined in
 
-[types/index.ts:87](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L87)
+[types/index.ts:87](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L87)

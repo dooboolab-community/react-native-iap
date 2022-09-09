@@ -1,4 +1,4 @@
-[react-native-iap](../README.md) / [Exports](../modules.md) / SubscriptionOffer
+[react-native-iap](../..) / [Exports](../modules.md) / SubscriptionOffer
 
 # Interface: SubscriptionOffer
 
@@ -23,7 +23,7 @@ SubscriptionAndroid.subscriptionOfferDetails.offerToken
 
 #### Defined in
 
-[types/index.ts:177](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L177)
+[types/index.ts:177](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L177)
 
 ___
 
@@ -33,4 +33,4 @@ ___
 
 #### Defined in
 
-[types/index.ts:176](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L176)
+[types/index.ts:176](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L176)

@@ -1,4 +1,4 @@
-[react-native-iap](../README.md) / [Exports](../modules.md) / ProductType
+[react-native-iap](../..) / [Exports](../modules.md) / ProductType
 
 # Enumeration: ProductType
 
@@ -21,7 +21,7 @@ Consumable
 
 #### Defined in
 
-[types/index.ts:43](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L43)
+[types/index.ts:43](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L43)
 
 ___
 
@@ -33,7 +33,7 @@ Consumable
 
 #### Defined in
 
-[types/index.ts:40](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L40)
+[types/index.ts:40](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L40)
 
 ___
 
@@ -45,7 +45,7 @@ Subscription
 
 #### Defined in
 
-[types/index.ts:37](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L37)
+[types/index.ts:37](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L37)
 
 ___
 
@@ -57,4 +57,4 @@ Subscription
 
 #### Defined in
 
-[types/index.ts:34](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L34)
+[types/index.ts:34](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L34)

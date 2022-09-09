@@ -1,4 +1,4 @@
-[react-native-iap](../README.md) / [Exports](../modules.md) / PurchaseStateAndroid
+[react-native-iap](../..) / [Exports](../modules.md) / PurchaseStateAndroid
 
 # Enumeration: PurchaseStateAndroid
 
@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[types/index.ts:21](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L21)
+[types/index.ts:21](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L21)
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:20](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L20)
+[types/index.ts:20](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L20)
 
 ___
 
@@ -38,4 +38,4 @@ ___
 
 #### Defined in
 
-[types/index.ts:19](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L19)
+[types/index.ts:19](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L19)

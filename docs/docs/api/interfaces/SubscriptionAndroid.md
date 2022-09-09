@@ -1,4 +1,4 @@
-[react-native-iap](../README.md) / [Exports](../modules.md) / SubscriptionAndroid
+[react-native-iap](../..) / [Exports](../modules.md) / SubscriptionAndroid
 
 # Interface: SubscriptionAndroid
 
@@ -37,7 +37,7 @@
 
 #### Defined in
 
-[types/index.ts:55](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L55)
+[types/index.ts:55](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L55)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:53](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L53)
+[types/index.ts:53](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L53)
 
 ___
 
@@ -65,7 +65,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:51](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L51)
+[types/index.ts:51](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L51)
 
 ___
 
@@ -79,7 +79,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:54](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L54)
+[types/index.ts:54](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L54)
 
 ___
 
@@ -89,7 +89,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:127](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L127)
+[types/index.ts:127](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L127)
 
 ___
 
@@ -103,7 +103,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:52](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L52)
+[types/index.ts:52](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L52)
 
 ___
 
@@ -117,7 +117,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:48](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L48)
+[types/index.ts:48](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L48)
 
 ___
 
@@ -131,7 +131,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:49](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L49)
+[types/index.ts:49](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L49)
 
 ___
 
@@ -141,7 +141,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:126](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L126)
+[types/index.ts:126](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L126)
 
 ___
 
@@ -151,7 +151,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:128](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L128)
+[types/index.ts:128](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L128)
 
 ___
 
@@ -165,7 +165,7 @@ ___
 
 #### Defined in
 
-[types/index.ts:50](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L50)
+[types/index.ts:50](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L50)
 
 ___
 
@@ -179,4 +179,4 @@ ___
 
 #### Defined in
 
-[types/index.ts:124](https://github.com/dooboolab/react-native-iap/blob/d06ab43/src/types/index.ts#L124)
+[types/index.ts:124](https://github.com/dooboolab/react-native-iap/blob/fd959a5/src/types/index.ts#L124)
