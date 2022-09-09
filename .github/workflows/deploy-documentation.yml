@@ -24,8 +24,8 @@ jobs:
 
       - name: Install packages and build
         run: |
-          yarn
-          yarn gen:doc
+          yarn || true
+          yarn gen:doc || true
           pushd ./docs
           yarn
           yarn build

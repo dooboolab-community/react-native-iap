@@ -100,7 +100,8 @@ const config = {
       },
     ],
   ],
-  onBrokenLinks: 'warn',
+  onBrokenLinks: 'log',
+  onBrokenMarkdownLinks:'log'
 };
 
 module.exports = config;
