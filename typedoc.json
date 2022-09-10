@@ -1,0 +1,6 @@
+{
+  "plugin": "typedoc-plugin-markdown",
+  "out": "docs/docs/api",
+  "entryDocument": "..",
+  "entryPoints":["src"]
+}

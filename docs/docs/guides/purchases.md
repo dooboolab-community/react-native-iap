@@ -120,7 +120,7 @@ class App extends Component {
     try {
       await requestSubscription(
         {sku},
-        ...(offerToken && {subscriptionOfffers: {sku, offerToken}}),
+        ...(offerToken && {subscriptionOffers: [{sku, offerToken}]}),
       );
     } catch (err) {
       console.warn(err.code, err.message);

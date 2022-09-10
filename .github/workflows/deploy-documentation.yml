@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - 'docs/**'
+      - 'src/**'
 
 jobs:
   publish-documentation:
@@ -20,6 +21,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: 'yarn'
+
+      - name: Install packages and generate docs
+        run: |
+          yarn install
+          pushd ./IapExample
+          yarn install
+          popd
+          yarn typedoc --plugin typedoc-plugin-markdown --out docs/docs/api --entryDocument '..' ./src || true
 
       - name: Install packages and build
         run: |
