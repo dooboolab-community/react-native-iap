@@ -4,6 +4,8 @@ import type {
   IosModuleProps,
 } from '../modules';
 
+import type * as Apple from './apple';
+
 export type Sku = string;
 
 export enum ProrationModesAndroid {
@@ -45,7 +47,7 @@ export enum ProductType {
 
 export interface ProductCommon {
   type: 'subs' | 'sub' | 'inapp' | 'iap';
-  productId: string;
+  productId: string; //iOS
   productIds?: string[];
   title: string;
   description: string;
@@ -108,18 +110,20 @@ export interface Discount {
   paymentMode: '' | 'FREETRIAL' | 'PAYASYOUGO' | 'PAYUPFRONT';
   subscriptionPeriod: string;
 }
-/**
- * A product can either be a consumable or a non-consumable product.
- */
-export interface Product extends ProductCommon {
+
+export interface ProductAndroid extends ProductCommon {
   type: 'inapp' | 'iap';
-  // Android V5
   oneTimePurchaseOfferDetails?: {
     priceCurrencyCode: string;
     formattedPrice: string;
     priceAmountMicros: string;
   };
 }
+export interface ProductIOS extends ProductCommon {
+  type: 'inapp' | 'iap';
+}
+
+export type Product = ProductAndroid & ProductIOS;
 
 // Android V5
 export interface SubscriptionAndroid extends ProductCommon {
@@ -147,7 +151,6 @@ export interface SubscriptionAndroid extends ProductCommon {
 
 export interface SubscriptionIOS extends ProductCommon {
   type: 'subs';
-
   discounts?: Discount[];
   introductoryPrice?: string;
   introductoryPriceAsAmountIOS?: string;
@@ -168,10 +171,29 @@ export interface SubscriptionIOS extends ProductCommon {
   subscriptionPeriodUnitIOS?: '' | 'YEAR' | 'MONTH' | 'WEEK' | 'DAY';
 }
 
-/**
- * A subscription is a product that can be renewed multiple times.
- */
 export type Subscription = SubscriptionAndroid & SubscriptionIOS;
+export interface RequestPurchaseBaseAndroid {
+  obfuscatedAccountIdAndroid?: string;
+  obfuscatedProfileIdAndroid?: string;
+  isOfferPersonalized?: boolean; // For AndroidBilling V5 https://developer.android.com/google/play/billing/integrate#personalized-price
+}
+
+export interface RequestPurchaseAndroid extends RequestPurchaseBaseAndroid {
+  skus?: Sku[];
+}
+
+export interface RequestPurchaseIOS {
+  sku?: Sku;
+  andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
+  /**
+   * UUID representing user account
+   */
+  applicationUsername?: string;
+  quantity?: number;
+  withOffer?: Apple.PaymentDiscount;
+}
+
+export type RequestPurchase = RequestPurchaseAndroid & RequestPurchaseIOS;
 
 /**
  * In order to purchase a new subscription, every sku must have a selected offerToken
@@ -181,6 +203,17 @@ export interface SubscriptionOffer {
   sku: Sku;
   offerToken: string;
 }
+
+export interface RequestSubscriptionAndroid extends RequestPurchaseBaseAndroid {
+  purchaseTokenAndroid?: string;
+  prorationModeAndroid?: ProrationModesAndroid;
+  subscriptionOffers?: SubscriptionOffer[]; // For AndroidBilling V5
+}
+
+export type RequestSubscriptionIOS = RequestPurchaseIOS;
+
+export type RequestSubscription = RequestSubscriptionAndroid &
+  RequestSubscriptionIOS;
 
 declare module 'react-native' {
   interface NativeModulesStatic {
