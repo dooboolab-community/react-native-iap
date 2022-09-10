@@ -3,29 +3,6 @@ import StoreKit
 
 typealias RNIapIosPromise = (RCTPromiseResolveBlock, RCTPromiseRejectBlock)
 
-public func debugMessage(_ object: Any...) {
-    #if DEBUG
-    for item in object {
-        print("[react-native-iap] \(item)")
-    }
-    #endif
-}
-
-// Based on https://stackoverflow.com/a/40135192/570612
-extension Date {
-    var millisecondsSince1970: Int64 {
-        return Int64((self.timeIntervalSince1970 * 1000.0).rounded())
-    }
-
-    var millisecondsSince1970String: String {
-        return String((self.timeIntervalSince1970 * 1000.0).rounded())
-    }
-
-    init(milliseconds: Int64) {
-        self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)
-    }
-}
-
 extension SKProductsRequest {
     var key: String {
         return String(self.hashValue)
