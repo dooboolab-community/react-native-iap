@@ -3,7 +3,6 @@ import type {ResponseBody as ReceiptValidationResponse} from '@jeremybarbet/appl
 
 import type * as Amazon from './types/amazon';
 import type * as Android from './types/android';
-import type * as Apple from './types/apple';
 import {
   offerSk2Map,
   ProductSk2,
@@ -20,7 +19,6 @@ import {
   Product,
   ProductPurchase,
   ProductType,
-  Purchase,
   PurchaseResult,
   RequestPurchase,
   RequestSubscription,
@@ -44,7 +42,7 @@ let androidNativeModule = RNIapModule;
 
 let iosNativeModule: typeof RNIapIos | typeof RNIapIosSk2 = RNIapIos;
 
-const isIosStorekit2 = () => iosNativeModule === RNIapIosSk2;
+export const isIosStorekit2 = () => iosNativeModule === RNIapIosSk2;
 
 export const isStorekit2Avaiable = (): boolean => !!RNIapIosSk2;
 
