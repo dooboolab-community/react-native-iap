@@ -3,8 +3,12 @@ import type {ResponseBody as ReceiptValidationResponse} from '@jeremybarbet/appl
 
 import type * as Amazon from './types/amazon';
 import type * as Android from './types/android';
-import type * as Apple from './types/apple';
-import {ProductSk2, productSk2Map, subscriptionSk2Map} from './types/appleSk2';
+import {
+  offerSk2Map,
+  ProductSk2,
+  productSk2Map,
+  subscriptionSk2Map,
+} from './types/appleSk2';
 import {
   enhancedFetch,
   fillProductsWithAdditionalData,
@@ -15,7 +19,6 @@ import {
   Product,
   ProductPurchase,
   ProductType,
-  Purchase,
   PurchaseResult,
   RequestPurchase,
   RequestSubscription,
@@ -37,9 +40,21 @@ export const getInstallSourceAndroid = (): InstallSourceAndroid => {
 
 let androidNativeModule = RNIapModule;
 
-let iosNativeModule: typeof RNIapIos | typeof RNIapIosSk2 = RNIapIosSk2;
+let iosNativeModule: typeof RNIapIos | typeof RNIapIosSk2 = RNIapIos;
 
 export const isIosStorekit2 = () => iosNativeModule === RNIapIosSk2;
+
+export const isStorekit2Avaiable = (): boolean => !!RNIapIosSk2;
+
+export const enableStorekit2 = () => {
+  if (RNIapIosSk2) {
+    iosNativeModule = RNIapIosSk2;
+    return true;
+  }
+  console.warn('Storekit 2 is not available on this device');
+
+  return false;
+};
 
 export const setAndroidNativeModule = (
   nativeModule: typeof RNIapModule,
@@ -520,14 +535,25 @@ export const requestPurchase = ({
             'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
           );
         }
+        if (isIosStorekit2()) {
+          const offer = offerSk2Map(withOffer);
 
-        return getIosModule().buyProduct(
-          sku,
-          andDangerouslyFinishTransactionAutomaticallyIOS,
-          appAccountToken,
-          quantity ?? -1,
-          withOffer,
-        );
+          return RNIapIosSk2.buyProduct(
+            sku,
+            andDangerouslyFinishTransactionAutomaticallyIOS,
+            appAccountToken,
+            quantity ?? -1,
+            offer,
+          );
+        } else {
+          return RNIapIos.buyProduct(
+            sku,
+            andDangerouslyFinishTransactionAutomaticallyIOS,
+            appAccountToken,
+            quantity ?? -1,
+            withOffer,
+          );
+        }
       },
       android: async () => {
         if (isAmazon) {
@@ -662,13 +688,25 @@ export const requestSubscription = ({
           );
         }
 
-        return getIosModule().buyProduct(
-          sku,
-          andDangerouslyFinishTransactionAutomaticallyIOS,
-          appAccountToken,
-          quantity ?? -1,
-          withOffer,
-        );
+        if (isIosStorekit2()) {
+          const offer = offerSk2Map(withOffer);
+
+          return RNIapIosSk2.buyProduct(
+            sku,
+            andDangerouslyFinishTransactionAutomaticallyIOS,
+            appAccountToken,
+            quantity ?? -1,
+            offer,
+          );
+        } else {
+          return RNIapIos.buyProduct(
+            sku,
+            andDangerouslyFinishTransactionAutomaticallyIOS,
+            appAccountToken,
+            quantity ?? -1,
+            withOffer,
+          );
+        }
       },
       android: async () => {
         if (isAmazon) {
@@ -873,32 +911,6 @@ const requestAgnosticReceiptValidationIos = async (
 
   return response;
 };
-
-/**
- * Buy products or subscriptions with offers (iOS only)
- *
- * Runs the payment process with some info you must fetch
- * from your server.
- * @param {string} sku The product identifier
- * @param {string} forUser  An user identifier on you system
- * @param {Apple.PaymentDiscount} withOffer The offer information
- * @param {string} withOffer.identifier The offer identifier
- * @param {string} withOffer.keyIdentifier Key identifier that it uses to generate the signature
- * @param {string} withOffer.nonce An UUID returned from the server
- * @param {string} withOffer.signature The actual signature returned from the server
- * @param {number} withOffer.timestamp The timestamp of the signature
- * @returns {Promise<void>}
- */
-export const requestPurchaseWithOfferIOS = ({
-  sku,
-  forUser,
-  withOffer,
-}: {
-  sku: Sku;
-  forUser: string;
-  withOffer: Apple.PaymentDiscount;
-}): Promise<Purchase> =>
-  getIosModule().buyProductWithOffer(sku, forUser, withOffer);
 
 /**
  * Validate receipt for iOS.

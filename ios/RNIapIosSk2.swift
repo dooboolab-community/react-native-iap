@@ -51,7 +51,7 @@ class RNIapIosSk2: RCTEventEmitter {
                     // await self.updateCustomerProductStatus()
 
                     if self.hasListeners {
-                        self.sendEvent(withName: "transaction-updated", body: ["transaction": serialize(transaction)])
+                        self.sendEvent(withName: "purchase-updated", body: serialize(transaction))
                     }
                     // Always finish a transaction.
                     // await transaction.finish() //TODO: Document
@@ -66,7 +66,7 @@ class RNIapIosSk2: RCTEventEmitter {
                             "message": error.localizedDescription
                         ]
 
-                        self.sendEvent(withName: "transaction-updated", body: ["error": err])
+                        self.sendEvent(withName: "purchase-error", body: err)
                     }
                 }
             }
@@ -224,7 +224,7 @@ class RNIapIosSk2: RCTEventEmitter {
                         options.insert(.quantity(quantity))
                     }
 
-                    let offerID = withOffer["offerID"] // TODO: Adjust JS to match these new names
+                    let offerID = withOffer["offerID"]
                     let keyID = withOffer["keyID"]
                     let nonce = withOffer["nonce"]
                     let signature = withOffer["signature"]
