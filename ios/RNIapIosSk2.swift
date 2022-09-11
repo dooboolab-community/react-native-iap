@@ -66,7 +66,7 @@ class RNIapIosSk2: RCTEventEmitter {
                             "message": error.localizedDescription
                         ]
 
-                        self.sendEvent(withName: "purchase-error", body:  err)
+                        self.sendEvent(withName: "purchase-error", body: err)
                     }
                 }
             }
