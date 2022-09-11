@@ -16,19 +16,11 @@ type getAvailableItems = () => Promise<Purchase[]>;
 export type BuyProduct = (
   sku: Sku,
   andDangerouslyFinishTransactionAutomaticallyIOS: boolean,
-  applicationUsername?: string,
-) => Promise<Purchase>;
-
-type buyProductWithOffer = (
-  sku: Sku,
-  forUser: string,
-  withOffer: PaymentDiscount,
-) => Promise<Purchase>;
-
-type buyProductWithQuantity = (
-  sku: Sku,
+  applicationUsername: string | undefined,
   quantity: number,
-) => Promise<ProductPurchase>;
+  withOffer: PaymentDiscount | undefined,
+) => Promise<Purchase>;
+
 type clearTransaction = () => Promise<void>;
 type clearProducts = () => Promise<void>;
 type promotedProduct = () => Promise<Product | null>;
@@ -44,8 +36,6 @@ export interface IosModuleProps extends NativeModuleProps {
   getItems: getItems;
   getAvailableItems: getAvailableItems;
   buyProduct: BuyProduct;
-  buyProductWithOffer: buyProductWithOffer;
-  buyProductWithQuantityIOS: buyProductWithQuantity;
   clearTransaction: clearTransaction;
   clearProducts: clearProducts;
   promotedProduct: promotedProduct;

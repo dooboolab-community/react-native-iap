@@ -25,17 +25,8 @@ RCT_EXTERN_METHOD(buyProduct:
                   (NSString*)sku
                   andDangerouslyFinishTransactionAutomatically:(BOOL)andDangerouslyFinishTransactionAutomatically
                   applicationUsername:(NSString*)applicationUsername
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(buyProductWithOffer:
-                  (NSString*)sku
-                  forUser:(NSString*)usernameHash
-                  withOffer:(NSDictionary*)discountOffer
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(buyProductWithQuantityIOS:
-                  (NSString*)sku
                   quantity:(NSInteger)quantity
+                  withOffer:(NSDictionary*)discountOffer
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 

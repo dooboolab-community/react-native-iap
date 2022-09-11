@@ -196,6 +196,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         _ sku: String,
         andDangerouslyFinishTransactionAutomatically: Bool,
         applicationUsername: String?,
+        quantity: Int,
+        withOffer discountOffer: [String: String]?,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
@@ -214,10 +216,26 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
 
             let payment = SKMutablePayment(product: prod)
+            
+            if #available(iOS 12.2, tvOS 12.2, *) {
+                if let discountOffer = discountOffer, let identifier = discountOffer["identifier"], let keyIdentifier = discountOffer["keyIdentifier"], let nonce = discountOffer["nonce"], let signature = discountOffer["signature"], let timestamp = discountOffer["timestamp"] {
+                let discount = SKPaymentDiscount(
+                    identifier: identifier,
+                    keyIdentifier: keyIdentifier,
+                    nonce: UUID(uuidString: nonce)!,
+                    signature: signature,
+                    timestamp: NSNumber(value: Int(timestamp)!))
+                payment.paymentDiscount = discount
+                }
+            }
 
             if let applicationUsername = applicationUsername {
                 payment.applicationUsername = applicationUsername
             }
+            if(quantity > 0){
+                payment.quantity = quantity
+            }
+            
             SKPaymentQueue.default().add(payment)
         } else {
             if hasListeners {
@@ -231,90 +249,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 sendEvent(withName: "purchase-error", body: err)
             }
 
-            reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
-        }
-    }
-
-    @objc public func buyProductWithOffer(
-        _ sku: String,
-        forUser usernameHash: String,
-        withOffer discountOffer: [String: String],
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-    ) {
-        var product: SKProduct?
-        let lockQueue = DispatchQueue(label: "validProducts")
-        lockQueue.sync {
-            for p in validProducts {
-                if sku == p.productIdentifier {
-                    product = p
-                    break
-                }
-            }
-        }
-
-        if let prod = product {
-            addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
-
-            let payment = SKMutablePayment(product: prod)
-
-            if #available(iOS 12.2, tvOS 12.2, *) {
-                let discount = SKPaymentDiscount(
-                    identifier: discountOffer["identifier"]!,
-                    keyIdentifier: discountOffer["keyIdentifier"]!,
-                    nonce: UUID(uuidString: discountOffer["nonce"]!)!,
-                    signature: discountOffer["signature"]!,
-                    timestamp: NSNumber(value: Int(discountOffer["timestamp"]!)!))
-                payment.paymentDiscount = discount
-            }
-            payment.applicationUsername = usernameHash
-            SKPaymentQueue.default().add(payment)
-        } else {
-            if hasListeners {
-                let err = [
-                    "debugMessage": "Invalid product ID.",
-                    "message": "Invalid product ID.",
-                    "code": "E_DEVELOPER_ERROR",
-                    "productId": sku
-                ]
-                sendEvent(withName: "purchase-error", body: err)
-            }
-            reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
-        }
-    }
-
-    @objc public func buyProductWithQuantityIOS(
-        _ sku: String,
-        quantity: Int,
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-    ) {
-        debugMessage("buyProductWithQuantityIOS")
-        var product: SKProduct?
-        let lockQueue = DispatchQueue(label: "validProducts")
-        lockQueue.sync {
-            for p in validProducts {
-                if sku == p.productIdentifier {
-                    product = p
-                    break
-                }
-            }
-        }
-        if let prod = product {
-            addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
-            let payment = SKMutablePayment(product: prod)
-            payment.quantity = quantity
-            SKPaymentQueue.default().add(payment)
-        } else {
-            if hasListeners {
-                let err = [
-                    "debugMessage": "Invalid product ID.",
-                    "message": "Invalid product ID.",
-                    "code": "E_DEVELOPER_ERROR",
-                    "productId": sku
-                ]
-                sendEvent(withName: "purchase-error", body: err)
-            }
             reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
         }
     }
