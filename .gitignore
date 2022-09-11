@@ -80,3 +80,6 @@ lib/
 !**/.yarn/releases
 !**/.yarn/sdks
 !**/.yarn/versions
+
+# Docs
+docs/docs/api/*

@@ -100,6 +100,8 @@ const config = {
       },
     ],
   ],
+  onBrokenLinks: 'log',
+  onBrokenMarkdownLinks: 'log',
 };
 
 module.exports = config;
