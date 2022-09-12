@@ -19,7 +19,6 @@ Read the [documentation](https://react-native-iap.dooboolab.com). See the [troub
 Please [fund the project](https://opencollective.com/react-native-iap) if you are willing the maintainers to make the repository sustainable.
 
 - [andresesfm](https://github.com/andresesfm)
-- [jeremybarbet](https://github.com/jeremybarbet)
 
 > The fund goes to maintainers.
 
