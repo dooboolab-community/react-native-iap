@@ -70,6 +70,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.18.9",
+    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@firmnav/eslint-github-actions-formatter": "1.0.1",
     "@jeremybarbet/apple-api-types": "1.3.5",
     "@jeremybarbet/google-api-types": "1.3.5",
