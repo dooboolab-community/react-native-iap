@@ -1,10 +1,11 @@
 import {NativeModules} from 'react-native';
 
+import {enhancedFetch} from '../internal';
 import type {Product, Purchase, Sku} from '../types';
 import type {UserDataAmazon} from '../types/amazon';
+import type * as Amazon from '../types/amazon';
 
 import type {NativeModuleProps} from './common';
-
 // ----------
 
 type GetUser = () => Promise<UserDataAmazon>;
@@ -38,3 +39,30 @@ export interface AmazonModuleProps extends NativeModuleProps {
 
 export const AmazonModule =
   NativeModules.RNIapAmazonModule as AmazonModuleProps;
+
+/**
+ * Validate receipt for Amazon. NOTE: This method is here for debugging purposes only. Including
+ * your developer secret in the binary you ship to users is potentially dangerous.
+ * Use server side validation instead for your production builds
+ * @param {string} developerSecret: from the Amazon developer console.
+ * @param {string} userId who purchased the item.
+ * @param {string} receiptId long obfuscated string returned when purchasing the item
+ * @param {boolean} useSandbox Defaults to true, use sandbox environment or production.
+ * @returns {Promise<object>}
+ */
+export const validateReceiptAmazon = async ({
+  developerSecret,
+  userId,
+  receiptId,
+  useSandbox = true,
+}: {
+  developerSecret: string;
+  userId: string;
+  receiptId: string;
+  useSandbox: boolean;
+}): Promise<Amazon.ReceiptType> => {
+  const sandBoxUrl = useSandbox ? 'sandbox/' : '';
+  const url = `https://appstore-sdk.amazon.com/${sandBoxUrl}version/1.0/verifyReceiptId/developer/${developerSecret}/user/${userId}/receiptId/${receiptId}`;
+
+  return await enhancedFetch<Amazon.ReceiptType>(url);
+};

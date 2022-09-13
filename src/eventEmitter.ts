@@ -1,13 +1,14 @@
 import {EmitterSubscription, NativeEventEmitter} from 'react-native';
 
 import {transactionSk2Map} from './types/appleSk2';
+import {isIosStorekit2} from './iap';
 import {
   getAndroidModule,
   getIosModule,
   getNativeModule,
-  isIosStorekit2,
-} from './iap';
-import {isAndroid, isIos} from './internal';
+  isAndroid,
+  isIos,
+} from './internal';
 import type {PurchaseError} from './purchaseError';
 import type {Purchase} from './types';
 

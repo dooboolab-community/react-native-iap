@@ -5,7 +5,7 @@ import {
   purchaseErrorListener,
   purchaseUpdatedListener,
 } from '../eventEmitter';
-import {getPromotedProductIOS, initConnection} from '../iap';
+import {IapIos, initConnection} from '../iap';
 import type {PurchaseError} from '../purchaseError';
 import type {
   Product,
@@ -135,7 +135,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
       );
 
       const promotedProductSubscription = promotedProductListener(async () => {
-        const product = await getPromotedProductIOS();
+        const product = await IapIos.getPromotedProductIOS();
 
         setPromotedProductsIOS((prevProducts) => [
           ...prevProducts,
