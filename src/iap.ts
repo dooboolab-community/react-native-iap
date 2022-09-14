@@ -11,6 +11,7 @@ import {
   subscriptionSk2Map,
 } from './types/appleSk2';
 import {
+  enableStorekit2,
   fillProductsWithAdditionalData,
   getAndroidModule,
   getIosModule,
@@ -30,7 +31,14 @@ import {
 } from './types';
 import {PurchaseStateAndroid} from './types';
 
-export {IapAndroid, IapAmazon, IapIos, IapIosSk2, isIosStorekit2};
+export {
+  IapAndroid,
+  IapAmazon,
+  IapIos,
+  IapIosSk2,
+  isIosStorekit2,
+  enableStorekit2,
+};
 
 const {RNIapIos, RNIapIosSk2, RNIapModule, RNIapAmazonModule} = NativeModules;
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = ProductType.subs;
