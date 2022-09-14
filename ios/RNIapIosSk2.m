@@ -35,6 +35,11 @@ RCT_EXTERN_METHOD(isEligibleForIntroOffer:
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(subscriptionStatus:
+                  (NSString*)sku
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(currentEntitlement:
                   (NSString*)sku
                   resolve:(RCTPromiseResolveBlock)resolve
