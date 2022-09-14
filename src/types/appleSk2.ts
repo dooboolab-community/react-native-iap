@@ -74,6 +74,18 @@ export type TransactionSk2 = {
   subscriptionGroupID: number;
   webOrderLineItemID: number;
 };
+
+export type SubscriptionStatus =
+  | 'expired'
+  | 'inBillingRetryPeriod'
+  | 'inGracePeriod'
+  | 'revoked'
+  | 'subscribed';
+
+export type ProductStatus = {
+  state: SubscriptionStatus;
+};
+
 export const transactionSk2Map = ({
   id,
   originalPurchaseDate,

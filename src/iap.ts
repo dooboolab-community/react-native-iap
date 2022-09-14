@@ -3,6 +3,7 @@ import {NativeModules, Platform} from 'react-native';
 import * as IapAmazon from './modules/amazon';
 import * as IapAndroid from './modules/android';
 import * as IapIos from './modules/ios';
+import * as IapIosSk2 from './modules/iosSk2';
 import {
   offerSk2Map,
   ProductSk2,
@@ -29,7 +30,7 @@ import {
 } from './types';
 import {PurchaseStateAndroid} from './types';
 
-export {IapAndroid, IapAmazon, IapIos, isIosStorekit2};
+export {IapAndroid, IapAmazon, IapIos, IapIosSk2, isIosStorekit2};
 
 const {RNIapIos, RNIapIosSk2, RNIapModule, RNIapAmazonModule} = NativeModules;
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = ProductType.subs;
