@@ -53,17 +53,17 @@ func serialize(_ si: Product.SubscriptionInfo?) -> [String: Any?]? {
         "subscriptionPeriod": si.subscriptionPeriod
     ]
 }
-@available(iOS 15.0,*)
-func serialize(_ s: Product.SubscriptionInfo.Status?) -> [String: Any?]?{
+@available(iOS 15.0, *)
+func serialize(_ s: Product.SubscriptionInfo.Status?) -> [String: Any?]? {
     guard let s = s else {return nil}
-    return ["state": serialize( s.state),
-            //"renewalInfo": serialize(s.renewalInfo),
-            //"transaction": serialize(s.transaction),
+    return ["state": serialize( s.state)
+            // "renewalInfo": serialize(s.renewalInfo),
+            // "transaction": serialize(s.transaction),
     ]
 }
 
-@available(iOS 15.0,*)
-func serialize(_ rs: Product.SubscriptionInfo.RenewalState?) -> String?{
+@available(iOS 15.0, *)
+func serialize(_ rs: Product.SubscriptionInfo.RenewalState?) -> String? {
     guard let rs = rs else {return nil}
     switch rs {
     case .expired: return "expired"
@@ -76,13 +76,12 @@ func serialize(_ rs: Product.SubscriptionInfo.RenewalState?) -> String?{
     }
 }
 
-@available(iOS 15.0,*)
-func serialize(_ ri: Product.SubscriptionInfo.RenewalInfo?) -> [String: Any?]?{
+@available(iOS 15.0, *)
+func serialize(_ ri: Product.SubscriptionInfo.RenewalInfo?) -> [String: Any?]? {
     guard let ri = ri else {return nil}
     return ["signedDate": ri.signedDate
     ]
 }
-
 
 @available(iOS 15.0, *)
 func serialize(_ so: Product.SubscriptionOffer?) -> [String: Any?]? {

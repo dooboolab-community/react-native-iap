@@ -311,7 +311,7 @@ class RNIapIosSk2: RCTEventEmitter {
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        Task{
+        Task {
             let isEligibleForIntroOffer = await Product.SubscriptionInfo.isEligibleForIntroOffer(for: groupID)
             resolve(isEligibleForIntroOffer)
         }
@@ -322,9 +322,9 @@ class RNIapIosSk2: RCTEventEmitter {
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        Task{
+        Task {
             do {
-                let status:[Product.SubscriptionInfo.Status]? = try await products[sku]?.subscription?.status
+                let status: [Product.SubscriptionInfo.Status]? = try await products[sku]?.subscription?.status
                 guard let status = status else {
                     resolve(nil)
                     return
@@ -341,7 +341,7 @@ class RNIapIosSk2: RCTEventEmitter {
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        Task{
+        Task {
             if let product = products[sku] {
                 if let result = await product.currentEntitlement {
                     do {
@@ -367,7 +367,7 @@ class RNIapIosSk2: RCTEventEmitter {
         _ sku: String,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-    )  {
+    ) {
         Task {
             if let product = products[sku] {
                 if let result = await product.latestTransaction {
