@@ -71,7 +71,7 @@ dependencies {
 
 You can support either `Play Store`, `Amazon` or both.
 
-- To only support `Play Store`, go to `android/build.gradle`:
+- To only support `Play Store`, go to `android/app/build.gradle`:
 
 ```diff
 defaultConfig {
