@@ -54,9 +54,9 @@ func serialize(_ si: Product.SubscriptionInfo?) -> [String: Any?]? {
     ]
 }
 @available(iOS 15.0, *)
-func serialize(_ sp: Product.SubscriptionPeriod?) -> [String:Any?]? {
+func serialize(_ sp: Product.SubscriptionPeriod?) -> [String: Any?]? {
     guard let sp = sp else {return nil}
-    return ["value":sp.value,
+    return ["value": sp.value,
             "unit": serialize(sp.unit)]
 }
 @available(iOS 15.0, *)
@@ -71,7 +71,6 @@ func serialize(_ sp: Product.SubscriptionPeriod.Unit?) -> String? {
         return nil
     }
 }
-
 
 @available(iOS 15.0, *)
 func serialize(_ s: Product.SubscriptionInfo.Status?) -> [String: Any?]? {
