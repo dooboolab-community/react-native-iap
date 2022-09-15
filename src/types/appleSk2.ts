@@ -1,5 +1,30 @@
 import type {ProductIOS, Purchase, SubscriptionIOS} from '.';
 import type * as Apple from './apple';
+
+export type SubscriptionPeriod = {
+  unit: 'day' | 'week' | 'month' | 'year';
+  value: number;
+};
+
+export type PaymentMode = 'freeTrial' | 'payAsYouGo' | 'payUpFront';
+
+export type SubscriptionOffer = {
+  displayPrice: string;
+  id: string;
+  paymentMode: PaymentMode;
+  period: SubscriptionPeriod;
+  periodCount: number;
+  price: number;
+  type: 'introductory' | 'promotional';
+};
+
+export type SubscriptionInfo = {
+  introductoryOffer?: SubscriptionOffer;
+  promotionalOffers?: SubscriptionOffer[];
+  subscriptionGroupID: string;
+  subscriptionPeriod: SubscriptionPeriod;
+};
+
 export type ProductSk2 = {
   description: string;
   displayName: string;
@@ -8,7 +33,7 @@ export type ProductSk2 = {
   isFamilyShareable: boolean;
   jsonRepresentation: string;
   price: number;
-  subscription: any; //TODO
+  subscription: SubscriptionInfo;
   type: 'autoRenewable' | 'consumable' | 'nonConsumable' | 'nonRenewable';
 };
 export const productSk2Map = ({
@@ -25,7 +50,7 @@ export const productSk2Map = ({
     type: 'iap',
     price: String(price),
     localizedPrice: displayPrice,
-    currency: '', //TODO: Not avaiable on new API, use localizedPrice instead?
+    currency: '', // Not avaiable on new API, use localizedPrice instead
   };
   return prod;
 };
@@ -44,7 +69,7 @@ export const subscriptionSk2Map = ({
     type: 'subs',
     price: String(price),
     localizedPrice: displayPrice,
-    currency: '', //TODO: Not avaiable on new API, use localizedPrice instead?
+    currency: '', // Not avaiable on new API, use localizedPrice instead
   };
   return prod;
 };

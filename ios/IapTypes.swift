@@ -34,6 +34,7 @@ enum IapErrors: String, CaseIterable {
     case E_PURCHASE_ERROR = "E_PURCHASE_ERROR"
     case E_SYNC_ERROR = "E_SYNC_ERROR"
     case E_DEFERRED_PAYMENT = "E_DEFERRED_PAYMENT"
+    case E_TRANSACTION_VALIDATION_FAILED = "E_TRANSACTION_VALIDATION_FAILED"
     func asInt() -> Int {
         return IapErrors.allCases.firstIndex(of: self)!
     }

@@ -54,15 +54,17 @@ class RNIapIosSk2: RCTEventEmitter {
                         self.sendEvent(withName: "purchase-updated", body: serialize(transaction))
                     }
                     // Always finish a transaction.
-                    // await transaction.finish() //TODO: Document
+                    // await transaction.finish()
+                    // The transaction is returned to the user. Once it has fullfilled the order,
+                    // they can call finishTransaction
                 } catch {
                     // StoreKit has a transaction that fails verification. Don't deliver content to the user.
                     debugMessage("Transaction failed verification")
                     if self.hasListeners {
                         let err = [
-                            "responseCode": "-1",
+                            "responseCode": IapErrors.E_TRANSACTION_VALIDATION_FAILED.rawValue,
                             "debugMessage": error.localizedDescription,
-                            "code": "E_RECEIPT_FINISHED_FAILED",
+                            "code": IapErrors.E_TRANSACTION_VALIDATION_FAILED.rawValue,
                             "message": error.localizedDescription
                         ]
 
@@ -178,20 +180,20 @@ class RNIapIosSk2: RCTEventEmitter {
                         break
                     }
                 } catch StoreError.failedVerification {
-                    let err = [ "responseCode": "1", // TODO
+                    let err = [ "responseCode": IapErrors.E_TRANSACTION_VALIDATION_FAILED.rawValue,
                                 "debugMessage": StoreError.failedVerification.localizedDescription,
-                                "code": "1", // TODO
+                                "code": IapErrors.E_TRANSACTION_VALIDATION_FAILED.rawValue,
                                 "message": StoreError.failedVerification.localizedDescription,
-                                "productId": "unknown"// TODO
+                                "productId": "unknown"
                     ]
                     addError(error: StoreError.failedVerification, errorDict: err)
                 } catch {
                     debugMessage(error)
-                    let err = [ "responseCode": "1", // TODO
+                    let err = [ "responseCode": IapErrors.E_UNKNOWN.rawValue,
                                 "debugMessage": error.localizedDescription,
-                                "code": "1", // TODO
+                                "code": IapErrors.E_UNKNOWN.rawValue,
                                 "message": error.localizedDescription,
-                                "productId": "unknown"// TODO
+                                "productId": "unknown"
                     ]
                     addError(error: StoreError.failedVerification, errorDict: err)
                 }

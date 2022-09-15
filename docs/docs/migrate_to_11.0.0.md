@@ -59,4 +59,8 @@ The name of this parameter has changed to match the new API
 
 ## No longer available in Sk2:
 
-purchase promoted product. I haven't found the equivalent of promoted product purchase in the new SDK.
+- Purchase promoted product. I haven't found the equivalent of promoted product purchase in the new SDK.
+
+- `transactionReceipt`,`purchaseToken` are not available on Sk2's purchases
+
+- `currency` is no longer available, use `localizedPrice` instead
