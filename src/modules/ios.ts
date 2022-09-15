@@ -84,7 +84,7 @@ export const getPromotedProductIOS = (): Promise<Product | null> => {
   if (!isIosStorekit2()) {
     return getIosModule().promotedProduct();
   } else {
-    return Promise.reject('Only available on SK1');
+    return Promise.reject('Only available on Sk1');
   }
 };
 
