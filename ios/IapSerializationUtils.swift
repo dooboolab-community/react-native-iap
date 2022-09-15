@@ -50,9 +50,29 @@ func serialize(_ si: Product.SubscriptionInfo?) -> [String: Any?]? {
         "introductoryOffer": serialize(si.introductoryOffer),
         "promotionalOffers": si.promotionalOffers.map {(offer: Product.SubscriptionOffer) in serialize(offer)},
         "subscriptionGroupID": si.subscriptionGroupID,
-        "subscriptionPeriod": si.subscriptionPeriod
+        "subscriptionPeriod": serialize(si.subscriptionPeriod)
     ]
 }
+@available(iOS 15.0, *)
+func serialize(_ sp: Product.SubscriptionPeriod?) -> [String:Any?]? {
+    guard let sp = sp else {return nil}
+    return ["value":sp.value,
+            "unit": serialize(sp.unit)]
+}
+@available(iOS 15.0, *)
+func serialize(_ sp: Product.SubscriptionPeriod.Unit?) -> String? {
+    guard let sp = sp else {return nil}
+    switch sp {
+    case .day: return "day"
+    case .week: return "week"
+    case .month: return "month"
+    case .year: return "year"
+    default:
+        return nil
+    }
+}
+
+
 @available(iOS 15.0, *)
 func serialize(_ s: Product.SubscriptionInfo.Status?) -> [String: Any?]? {
     guard let s = s else {return nil}
@@ -79,7 +99,7 @@ func serialize(_ rs: Product.SubscriptionInfo.RenewalState?) -> String? {
 @available(iOS 15.0, *)
 func serialize(_ ri: Product.SubscriptionInfo.RenewalInfo?) -> [String: Any?]? {
     guard let ri = ri else {return nil}
-    return ["signedDate": ri.signedDate
+    return ["signedDate": ri.signedDate.millisecondsSince1970
     ]
 }
 
@@ -89,14 +109,34 @@ func serialize(_ so: Product.SubscriptionOffer?) -> [String: Any?]? {
     return [
         "displayPrice": so.displayPrice,
         "id": so.id,
-        "paymentMode": so.paymentMode,
-        "period": so.period,
+        "paymentMode": serialize(so.paymentMode),
+        "period": serialize(so.period),
         "periodCount": so.periodCount,
         "price": so.price,
-        "type": so.type
+        "type": serialize(so.type)
     ]
 }
-
+@available(iOS 15.0, *)
+func serialize(_ pm: Product.SubscriptionOffer.PaymentMode?) -> String? {
+    guard let pm = pm else {return nil}
+    switch pm {
+    case .freeTrial: return "freeTrial"
+    case .payAsYouGo: return "payAsYouGo"
+    case .payUpFront: return "payUpFront"
+    default:
+        return nil
+    }
+}
+@available(iOS 15.0, *)
+func serialize(_ ot: Product.SubscriptionOffer.OfferType?) -> String? {
+    guard let ot = ot else {return nil}
+    switch ot {
+    case .introductory: return "introductory"
+    case .promotional: return "promotional"
+    default:
+        return nil
+    }
+}
 @available(iOS 15.0, *)
 func serialize(_ t: Transaction) -> [String: Any?] {
     return ["appAccountToken": t.appAccountToken,
@@ -104,22 +144,22 @@ func serialize(_ t: Transaction) -> [String: Any?] {
             "debugDescription": serializeDebug(t.debugDescription),
             "deviceVerification": t.deviceVerification,
             "deviceVerificationNonce": t.deviceVerificationNonce,
-            "expirationDate": t.expirationDate,
+            "expirationDate": t.expirationDate?.millisecondsSince1970,
             "id": t.id,
             "isUpgraded": t.isUpgraded,
             "jsonRepresentation": serializeDebug(t.jsonRepresentation),
             "offerID": t.offerID,
             "offerType": serialize(t.offerType),
             "originalID": t.originalID,
-            "originalPurchaseDate": t.originalPurchaseDate,
+            "originalPurchaseDate": t.originalPurchaseDate.millisecondsSince1970,
             "ownershipType": serialize(t.ownershipType),
             "productID": t.productID,
             "productType": serialize(t.productType),
-            "purchaseDate": t.purchaseDate,
+            "purchaseDate": t.purchaseDate.millisecondsSince1970,
             "purchasedQuantity": t.purchasedQuantity,
-            "revocationDate": t.revocationDate,
+            "revocationDate": t.revocationDate?.millisecondsSince1970,
             "revocationReason": t.revocationReason,
-            "signedDate": t.signedDate,
+            "signedDate": t.signedDate.millisecondsSince1970,
             "subscriptionGroupID": t.subscriptionGroupID,
             "webOrderLineItemID": t.webOrderLineItemID
     ]
