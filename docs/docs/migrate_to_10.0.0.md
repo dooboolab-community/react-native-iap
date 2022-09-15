@@ -17,6 +17,7 @@ getProducts({skus: ['my_sku']});
 Methods are now exported outside of the main module:
 
 ## Before
+
 ```ts
 import IAP from 'react-native-iap'
 ...
@@ -25,11 +26,13 @@ IAP.requestPurchase(...)
 ```
 
 ## After
+
 ```ts
 import {requestPurchase} from 'react-native-iap';
 ...
 requestPurchase(...)
 ```
+
 If you want to import keeping the namespace, use:
 
 ```ts
