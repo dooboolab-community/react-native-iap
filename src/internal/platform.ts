@@ -46,7 +46,8 @@ export const getNativeModule = ():
 
 let iosNativeModule: typeof RNIapIos | typeof RNIapIosSk2 = RNIapIos;
 
-export const isIosStorekit2 = () => iosNativeModule === RNIapIosSk2;
+export const isIosStorekit2 = () =>
+  !!iosNativeModule && iosNativeModule === RNIapIosSk2;
 
 export const isStorekit2Avaiable = (): boolean => !!RNIapIosSk2;
 
