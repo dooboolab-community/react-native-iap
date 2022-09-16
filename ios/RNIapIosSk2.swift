@@ -52,7 +52,7 @@ class RNIapIosSk2: RCTEventEmitter {
 
                     if self.hasListeners {
                         self.sendEvent(withName: "purchase-updated", body: serialize(transaction))
-                        self.sendEvent(withName: "iap-transaction-updated", body: ["transaction":serialize(transaction)])
+                        self.sendEvent(withName: "iap-transaction-updated", body: ["transaction": serialize(transaction)])
                     }
                     // Always finish a transaction.
                     // await transaction.finish()
@@ -89,9 +89,9 @@ class RNIapIosSk2: RCTEventEmitter {
     }
 
     /**
-        "iap-transaction-updated" is unique to Sk2.
-        "iap-promoted-product" is only avaiable on Sk1
-        "purchase-updated", "purchase-error" are for backward compatibility
+     "iap-transaction-updated" is unique to Sk2.
+     "iap-promoted-product" is only avaiable on Sk1
+     "purchase-updated", "purchase-error" are for backward compatibility
      */
     override func supportedEvents() -> [String]? {
         return [ "purchase-updated", "purchase-error", "iap-transaction-updated"]
