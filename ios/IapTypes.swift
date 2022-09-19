@@ -10,12 +10,6 @@ import StoreKit
 
 typealias RNIapIosPromise = (RCTPromiseResolveBlock, RCTPromiseRejectBlock)
 
-@available(iOS 15.0, *)
-struct ProductOrError {
-    let product: Product?
-    let error: Error?
-}
-
 public enum StoreError: Error {
     case failedVerification
 }

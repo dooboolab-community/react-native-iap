@@ -70,7 +70,7 @@ class RNIapIosSk2: RCTEventEmitter {
                         ]
 
                         self.sendEvent(withName: "purchase-error", body: err)
-                        self.sendEvent(withName: "purchase-updated", body: ["error": err])
+                        self.sendEvent(withName: "iap-transaction-updated", body: ["error": err])
                     }
                 }
             }
@@ -136,19 +136,23 @@ class RNIapIosSk2: RCTEventEmitter {
     }
 
     @objc public func getAvailableItems(
+        alsoPublishToEventListener: Bool,
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         Task {
-            var purchasedItems: [ProductOrError] = []
+            var purchasedItems: [Transaction] = []
 
             func addPurchase(transaction: Transaction, product: Product) {
-                purchasedItems.append(ProductOrError(product: product, error: nil))
-                sendEvent(withName: "purchase-update", body: serialize(transaction))
+                purchasedItems.append( transaction)
+                if alsoPublishToEventListener {
+                    sendEvent(withName: "purchase-update", body: serialize(transaction))
+                }
             }
             func addError( error: Error, errorDict: [String: String]) {
-                purchasedItems.append(ProductOrError(product: nil, error: error))
-                sendEvent(withName: "purchase-error", body: errorDict)
+                if alsoPublishToEventListener {
+                    sendEvent(withName: "purchase-error", body: errorDict)
+                }
             }
             // Iterate through all of the user's purchased products.
             for await result in Transaction.currentEntitlements {
@@ -210,7 +214,7 @@ class RNIapIosSk2: RCTEventEmitter {
             // group, so products in the subscriptions array all belong to the same group. The statuses that
             // `product.subscription.status` returns apply to the entire subscription group.
             // subscriptionGroupStatus = try? await subscriptions.first?.subscription?.status.first?.state
-            resolve(purchasedItems.map({(p: ProductOrError) in ["product": p.product.flatMap { serialize($0)}, "error": serialize(p.error)]}))
+            resolve(purchasedItems.map({(t: Transaction) in serialize(t)}))
         }
     }
 

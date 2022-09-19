@@ -18,7 +18,8 @@ RCT_EXTERN_METHOD(getItems:
                   reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(getAvailableItems:
-                  (RCTPromiseResolveBlock)resolve
+                  alsoPublishToEventListener:(BOOL)alsoPublishToEventListener
+                  resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(buyProduct:

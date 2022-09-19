@@ -1,6 +1,6 @@
 import {EmitterSubscription, NativeEventEmitter} from 'react-native';
 
-import {TransactionOrError, transactionSk2Map} from './types/appleSk2';
+import {TransactionEvent, transactionSk2Map} from './types/appleSk2';
 import {isIosStorekit2} from './iap';
 import {
   getAndroidModule,
@@ -192,7 +192,7 @@ const App = () => {
  * @platform iOS (Sk2)
  */
 export const transactionListener = (
-  listener: (event: TransactionOrError) => void,
+  listener: (event: TransactionEvent) => void,
 ) => {
   if (isIos && isIosStorekit2()) {
     const eventEmitter = new NativeEventEmitter(getIosModule());

@@ -107,7 +107,7 @@ export type TransactionError = PurchaseError;
 /**
  * Only one of `transaction` and `error` is not undefined at the time
  */
-export type TransactionOrError = {
+export type TransactionEvent = {
   transaction?: TransactionSk2;
   error?: TransactionError;
 };

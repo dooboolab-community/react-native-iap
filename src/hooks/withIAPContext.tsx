@@ -15,7 +15,7 @@ import type {
   Subscription,
   SubscriptionPurchase,
 } from '../types';
-import type {TransactionOrError, TransactionSk2} from '../types/appleSk2';
+import type {TransactionEvent, TransactionSk2} from '../types/appleSk2';
 
 type IAPContextType = {
   connected: boolean;
@@ -135,7 +135,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
       );
 
       const transactionUpdateSubscription = transactionListener(
-        async (transactionOrError: TransactionOrError) => {
+        async (transactionOrError: TransactionEvent) => {
           setCurrentPurchaseError(transactionOrError?.error);
           setCurrentTransaction(transactionOrError?.transaction);
         },
