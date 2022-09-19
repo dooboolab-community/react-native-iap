@@ -248,14 +248,18 @@ const App = () => {
   return <View />;
 };
 ```
+@param {alsoPublishToEventListener}:boolean When `true`, every element will also be pushed to the purchaseUpdated listener.
+Note that this is only for backaward compatiblity. It won't publish to transactionUpdated (Storekit2) Defaults to `false`
  */
-export const getPurchaseHistory = (): Promise<
-  (ProductPurchase | SubscriptionPurchase)[]
-> =>
+export const getPurchaseHistory = ({
+  alsoPublishToEventListener = false,
+}: {
+  alsoPublishToEventListener?: boolean;
+} = {}): Promise<(ProductPurchase | SubscriptionPurchase)[]> =>
   (
     Platform.select({
       ios: async () => {
-        return getIosModule().getAvailableItems();
+        return getIosModule().getAvailableItems(alsoPublishToEventListener);
       },
       android: async () => {
         if (RNIapAmazonModule) {
@@ -351,15 +355,19 @@ const App = () => {
   )
 };
 ```
+@param {alsoPublishToEventListener}:boolean When `true`, every element will also be pushed to the purchaseUpdated listener.
+Note that this is only for backaward compatiblity. It won't publish to transactionUpdated (Storekit2) Defaults to `false`
  * 
  */
-export const getAvailablePurchases = (): Promise<
+export const getAvailablePurchases = ({
+  alsoPublishToEventListener = false,
+}: {alsoPublishToEventListener?: boolean} = {}): Promise<
   (ProductPurchase | SubscriptionPurchase)[]
 > =>
   (
     Platform.select({
       ios: async () => {
-        return getIosModule().getAvailableItems();
+        return getIosModule().getAvailableItems(alsoPublishToEventListener);
       },
       android: async () => {
         if (RNIapAmazonModule) {

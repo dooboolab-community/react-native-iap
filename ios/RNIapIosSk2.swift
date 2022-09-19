@@ -52,6 +52,7 @@ class RNIapIosSk2: RCTEventEmitter {
 
                     if self.hasListeners {
                         self.sendEvent(withName: "purchase-updated", body: serialize(transaction))
+                        self.sendEvent(withName: "iap-transaction-updated", body: ["transaction": serialize(transaction)])
                     }
                     // Always finish a transaction.
                     // await transaction.finish()
@@ -69,6 +70,7 @@ class RNIapIosSk2: RCTEventEmitter {
                         ]
 
                         self.sendEvent(withName: "purchase-error", body: err)
+                        self.sendEvent(withName: "iap-transaction-updated", body: ["error": err])
                     }
                 }
             }
@@ -86,8 +88,13 @@ class RNIapIosSk2: RCTEventEmitter {
         super.addListener(eventName)
     }
 
+    /**
+     "iap-transaction-updated" is unique to Sk2.
+     "iap-promoted-product" is only avaiable on Sk1
+     "purchase-updated", "purchase-error" are for backward compatibility
+     */
     override func supportedEvents() -> [String]? {
-        return [ "iap-promoted-product", "purchase-updated", "purchase-error"]
+        return [ "purchase-updated", "purchase-error", "iap-transaction-updated"]
     }
 
     @objc public func initConnection(
@@ -129,19 +136,23 @@ class RNIapIosSk2: RCTEventEmitter {
     }
 
     @objc public func getAvailableItems(
+        alsoPublishToEventListener: Bool,
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         Task {
-            var purchasedItems: [ProductOrError] = []
+            var purchasedItems: [Transaction] = []
 
             func addPurchase(transaction: Transaction, product: Product) {
-                purchasedItems.append(ProductOrError(product: product, error: nil))
-                sendEvent(withName: "purchase-update", body: serialize(transaction))
+                purchasedItems.append( transaction)
+                if alsoPublishToEventListener {
+                    sendEvent(withName: "purchase-update", body: serialize(transaction))
+                }
             }
             func addError( error: Error, errorDict: [String: String]) {
-                purchasedItems.append(ProductOrError(product: nil, error: error))
-                sendEvent(withName: "purchase-error", body: errorDict)
+                if alsoPublishToEventListener {
+                    sendEvent(withName: "purchase-error", body: errorDict)
+                }
             }
             // Iterate through all of the user's purchased products.
             for await result in Transaction.currentEntitlements {
@@ -203,7 +214,7 @@ class RNIapIosSk2: RCTEventEmitter {
             // group, so products in the subscriptions array all belong to the same group. The statuses that
             // `product.subscription.status` returns apply to the entire subscription group.
             // subscriptionGroupStatus = try? await subscriptions.first?.subscription?.status.first?.state
-            resolve(purchasedItems.map({(p: ProductOrError) in ["product": p.product.flatMap { serialize($0)}, "error": serialize(p.error)]}))
+            resolve(purchasedItems.map({(t: Transaction) in serialize(t)}))
         }
     }
 

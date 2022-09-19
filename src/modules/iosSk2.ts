@@ -13,7 +13,9 @@ const {RNIapIosSk2} = NativeModules;
 
 type getItems = (skus: Sku[]) => Promise<ProductSk2[]>;
 
-type getAvailableItems = () => Promise<Purchase[]>;
+type getAvailableItems = (
+  alsoPublishToEventListener?: boolean,
+) => Promise<Purchase[]>;
 
 export type BuyProduct = (
   sku: Sku,

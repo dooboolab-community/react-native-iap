@@ -1,3 +1,5 @@
+import type {PurchaseError} from '../purchaseError';
+
 import type {ProductIOS, Purchase, SubscriptionIOS} from '.';
 import type * as Apple from './apple';
 
@@ -98,6 +100,16 @@ export type TransactionSk2 = {
   signedDate: number;
   subscriptionGroupID: number;
   webOrderLineItemID: number;
+};
+
+export type TransactionError = PurchaseError;
+
+/**
+ * Only one of `transaction` and `error` is not undefined at the time
+ */
+export type TransactionEvent = {
+  transaction?: TransactionSk2;
+  error?: TransactionError;
 };
 
 export type SubscriptionStatus =

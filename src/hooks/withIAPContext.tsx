@@ -4,6 +4,7 @@ import {
   promotedProductListener,
   purchaseErrorListener,
   purchaseUpdatedListener,
+  transactionListener,
 } from '../eventEmitter';
 import {IapIos, initConnection} from '../iap';
 import type {PurchaseError} from '../purchaseError';
@@ -14,6 +15,7 @@ import type {
   Subscription,
   SubscriptionPurchase,
 } from '../types';
+import type {TransactionEvent, TransactionSk2} from '../types/appleSk2';
 
 type IAPContextType = {
   connected: boolean;
@@ -23,6 +25,7 @@ type IAPContextType = {
   purchaseHistory: Purchase[];
   availablePurchases: Purchase[];
   currentPurchase?: Purchase;
+  currentTransaction?: TransactionSk2;
   currentPurchaseError?: PurchaseError;
   initConnectionError?: Error;
   setProducts: (products: Product[]) => void;
@@ -63,6 +66,8 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
       [],
     );
     const [currentPurchase, setCurrentPurchase] = useState<Purchase>();
+    const [currentTransaction, setCurrentTransaction] =
+      useState<TransactionSk2>();
 
     const [currentPurchaseError, setCurrentPurchaseError] =
       useState<PurchaseError>();
@@ -78,6 +83,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         purchaseHistory,
         availablePurchases,
         currentPurchase,
+        currentTransaction,
         currentPurchaseError,
         initConnectionError,
         setProducts,
@@ -95,6 +101,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         purchaseHistory,
         availablePurchases,
         currentPurchase,
+        currentTransaction,
         currentPurchaseError,
         initConnectionError,
         setProducts,
@@ -127,6 +134,13 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         },
       );
 
+      const transactionUpdateSubscription = transactionListener(
+        async (transactionOrError: TransactionEvent) => {
+          setCurrentPurchaseError(transactionOrError?.error);
+          setCurrentTransaction(transactionOrError?.transaction);
+        },
+      );
+
       const purchaseErrorSubscription = purchaseErrorListener(
         (error: PurchaseError) => {
           setCurrentPurchase(undefined);
@@ -147,6 +161,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         purchaseUpdateSubscription.remove();
         purchaseErrorSubscription.remove();
         promotedProductSubscription?.remove();
+        transactionUpdateSubscription?.remove();
       };
     }, [connected]);
 
