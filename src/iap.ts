@@ -893,7 +893,10 @@ export const validateReceiptIos = async ({
     ? 'https://sandbox.itunes.apple.com/verifyReceipt'
     : 'https://buy.itunes.apple.com/verifyReceipt';
 
-  return await enhancedFetch<ReceiptValidationResponse>(url);
+  return await enhancedFetch<ReceiptValidationResponse>(url, {
+    method: 'POST',
+    body: receiptBody,
+  });
 };
 
 /**
