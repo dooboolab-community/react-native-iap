@@ -25,5 +25,5 @@ export interface PaymentDiscount {
   /**
    * The date and time of the signature's creation in milliseconds, formatted in Unix epoch time.
    */
-  timestamp: number;
+  timestamp: string;
 }

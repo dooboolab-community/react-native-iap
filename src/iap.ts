@@ -858,7 +858,7 @@ const requestAgnosticReceiptValidationIos = async (
  * @param {string} withOffer.keyIdentifier Key identifier that it uses to generate the signature
  * @param {string} withOffer.nonce An UUID returned from the server
  * @param {string} withOffer.signature The actual signature returned from the server
- * @param {number} withOffer.timestamp The timestamp of the signature
+ * @param {string} withOffer.timestamp The timestamp of the signature
  * @returns {Promise<void>}
  */
 export const requestPurchaseWithOfferIOS = ({
