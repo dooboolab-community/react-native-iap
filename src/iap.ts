@@ -4,6 +4,7 @@ import type {ResponseBody as ReceiptValidationResponse} from '@jeremybarbet/appl
 import type * as Amazon from './types/amazon';
 import type * as Android from './types/android';
 import type * as Apple from './types/apple';
+import {offerToRecord} from './types/apple';
 import {
   enhancedFetch,
   fillProductsWithAdditionalData,
@@ -870,7 +871,7 @@ export const requestPurchaseWithOfferIOS = ({
   forUser: string;
   withOffer: Apple.PaymentDiscount;
 }): Promise<Purchase> =>
-  getIosModule().buyProductWithOffer(sku, forUser, withOffer);
+  getIosModule().buyProductWithOffer(sku, forUser, offerToRecord(withOffer));
 
 /**
  * Validate receipt for iOS.
