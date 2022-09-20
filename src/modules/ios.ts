@@ -21,7 +21,7 @@ export type BuyProduct = (
   andDangerouslyFinishTransactionAutomaticallyIOS: boolean,
   applicationUsername: string | undefined,
   quantity: number,
-  withOffer: PaymentDiscount | undefined,
+  withOffer: Record<keyof PaymentDiscount, string> | undefined,
 ) => Promise<Purchase>;
 
 type clearTransaction = () => Promise<void>;

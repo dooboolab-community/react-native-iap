@@ -4,6 +4,7 @@ import * as IapAmazon from './modules/amazon';
 import * as IapAndroid from './modules/android';
 import * as IapIos from './modules/ios';
 import * as IapIosSk2 from './modules/iosSk2';
+import {offerToRecord} from './types/apple';
 import {
   offerSk2Map,
   ProductSk2,
@@ -493,7 +494,7 @@ export const requestPurchase = ({
             andDangerouslyFinishTransactionAutomaticallyIOS,
             appAccountToken,
             quantity ?? -1,
-            withOffer,
+            offerToRecord(withOffer),
           );
         }
       },
@@ -646,7 +647,7 @@ export const requestSubscription = ({
             andDangerouslyFinishTransactionAutomaticallyIOS,
             appAccountToken,
             quantity ?? -1,
-            withOffer,
+            offerToRecord(withOffer),
           );
         }
       },
