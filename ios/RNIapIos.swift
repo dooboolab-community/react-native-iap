@@ -390,7 +390,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     ) {
         requestReceiptData(withBlock: refresh) { [self] receiptData, error in
             if error == nil {
-                resolve(receiptData?.base64EncodedString(options: []))
+                resolve(receiptData?.base64EncodedString(options: [.endLineWithCarriageReturn]))
             } else {
                 reject(standardErrorCode(9), "Invalid receipt", nil)
             }
@@ -423,7 +423,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                         "transactionId": item.transactionIdentifier,
                         "productId": item.payment.productIdentifier,
                         "quantity": "\(item.payment.quantity)",
-                        "transactionReceipt": receipt.base64EncodedString(options: [])
+                        "transactionReceipt": receipt.base64EncodedString(options: [.endLineWithCarriageReturn])
                     ]
 
                     output.append(purchase)
@@ -907,7 +907,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                     "transactionDate": transaction.transactionDate?.millisecondsSince1970String,
                     "transactionId": transaction.transactionIdentifier,
                     "productId": transaction.payment.productIdentifier,
-                    "transactionReceipt": receiptData?.base64EncodedString(options: [])
+                    "transactionReceipt": receiptData?.base64EncodedString(options: [.endLineWithCarriageReturn])
                 ]
 
                 // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
