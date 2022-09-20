@@ -22,7 +22,7 @@ export type BuyProduct = (
 type buyProductWithOffer = (
   sku: Sku,
   forUser: string,
-  withOffer: PaymentDiscount,
+  withOffer: Record<keyof PaymentDiscount, string>,
 ) => Promise<Purchase>;
 
 type buyProductWithQuantity = (

@@ -27,3 +27,15 @@ export interface PaymentDiscount {
    */
   timestamp: number;
 }
+
+export const offerToRecord = (
+  offer: PaymentDiscount,
+): Record<keyof PaymentDiscount, string> => {
+  return {
+    identifier: offer.identifier,
+    keyIdentifier: offer.keyIdentifier,
+    nonce: offer.nonce,
+    signature: offer.signature,
+    timestamp: offer.timestamp.toString(),
+  };
+};
