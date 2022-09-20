@@ -146,6 +146,7 @@ export interface SubscriptionAndroid extends ProductCommon {
         recurrenceMode: number;
       }[];
     };
+    offerTags: string[];
   }[];
 }
 
