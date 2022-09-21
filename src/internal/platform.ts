@@ -57,14 +57,36 @@ export const setIosNativeModule = (
   iosNativeModule = nativeModule;
 };
 
-export const enableStorekit2 = () => {
+export const storekit2Mode = () => {
+  iosNativeModule = RNIapIosSk2;
   if (RNIapIosSk2) {
-    iosNativeModule = RNIapIosSk2;
+    RNIapIos.disable();
     return true;
   }
   console.warn('Storekit 2 is not available on this device');
 
   return false;
+};
+
+export const storekit1Mode = () => {
+  iosNativeModule = RNIapIos;
+  if (RNIapIosSk2) {
+    RNIapIosSk2.disable();
+    return true;
+  }
+  return false;
+};
+
+export const storekitHybridMode = () => {
+  if (RNIapIosSk2) {
+    iosNativeModule = RNIapIosSk2;
+    console.info('Using Storekit 2');
+    return true;
+  } else {
+    iosNativeModule = RNIapIos;
+    console.info('Using Storekit 1');
+    return true;
+  }
 };
 
 const checkNativeIOSAvailable = (): void => {

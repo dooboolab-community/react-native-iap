@@ -21,6 +21,14 @@ class RNIapIosSk2: RCTEventEmitter {
         removeTransactionObserver()
     }
 
+    @objc public func disable(
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        removeTransactionObserver()
+        resolve(nil)
+    }
+
     override class func requiresMainQueueSetup() -> Bool {
         return true
     }

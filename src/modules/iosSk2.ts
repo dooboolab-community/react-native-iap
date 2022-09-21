@@ -53,6 +53,7 @@ export interface IosModulePropsSk2 extends NativeModuleProps {
   finishTransaction: finishTransaction;
   getPendingTransactions: getPendingTransactions;
   presentCodeRedemptionSheet: presentCodeRedemptionSheet;
+  disable: () => Promise<null>;
 }
 
 /**

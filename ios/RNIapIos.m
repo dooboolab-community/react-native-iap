@@ -4,6 +4,9 @@
 
 @interface RCT_EXTERN_MODULE (RNIapIos, NSObject)
 
+RCT_EXTERN_METHOD(disable:
+                  (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(initConnection:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)

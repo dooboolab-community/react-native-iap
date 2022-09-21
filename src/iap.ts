@@ -12,13 +12,15 @@ import {
   subscriptionSk2Map,
 } from './types/appleSk2';
 import {
-  enableStorekit2,
   fillProductsWithAdditionalData,
   getAndroidModule,
   getIosModule,
   getNativeModule,
   isAmazon,
   isIosStorekit2,
+  storekit1Mode,
+  storekit2Mode,
+  storekitHybridMode,
 } from './internal';
 import {
   Product,
@@ -32,18 +34,45 @@ import {
 } from './types';
 import {PurchaseStateAndroid} from './types';
 
-export {
-  IapAndroid,
-  IapAmazon,
-  IapIos,
-  IapIosSk2,
-  isIosStorekit2,
-  enableStorekit2,
-};
+export {IapAndroid, IapAmazon, IapIos, IapIosSk2, isIosStorekit2};
 
 const {RNIapIos, RNIapIosSk2, RNIapModule, RNIapAmazonModule} = NativeModules;
 const ANDROID_ITEM_TYPE_SUBSCRIPTION = ProductType.subs;
 const ANDROID_ITEM_TYPE_IAP = ProductType.inapp;
+
+/**
+ * STOREKIT1_MODE: Will not enable Storekit 2 even if the device supports it. Thigs will work as before,
+ * minimum changes required in the migration guide (default)
+ * HYBRID_MODE: Will enable Storekit 2 for iOS devices > 15.0 but will fallback to Sk1 on older devices
+ * There are some edge cases that you need to handle in this case (described in migration guide). This mode
+ * is for developers that are migrating to Storekit 2 but want to keep supporting older versions.
+ * STOREKIT2_MODE: Will *only* enable Storekit 2. This disables Storekit 1. This is for apps that
+ * have already targeted a min version of 15 for their app.
+ */
+export type STOREKIT_OPTIONS =
+  | 'STOREKIT1_MODE'
+  | 'STOREKIT_HYBRID_MODE'
+  | 'STOREKIT2_MODE';
+
+export const setup = ({
+  storekitMode = 'STOREKIT1_MODE',
+}: {
+  storekitMode?: STOREKIT_OPTIONS;
+} = {}) => {
+  switch (storekitMode) {
+    case 'STOREKIT1_MODE':
+      storekit1Mode();
+      break;
+    case 'STOREKIT2_MODE':
+      storekit2Mode();
+      break;
+    case 'STOREKIT_HYBRID_MODE':
+      storekitHybridMode();
+      break;
+    default:
+      break;
+  }
+};
 
 /**
  * Init module for purchase flow. Required on Android. In ios it will check whether user canMakePayment.
