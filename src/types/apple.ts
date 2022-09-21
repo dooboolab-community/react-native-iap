@@ -29,8 +29,11 @@ export interface PaymentDiscount {
 }
 
 export const offerToRecord = (
-  offer: PaymentDiscount,
-): Record<keyof PaymentDiscount, string> => {
+  offer: PaymentDiscount | undefined,
+): Record<keyof PaymentDiscount, string> | undefined => {
+  if (!offer) {
+    return undefined;
+  }
   return {
     identifier: offer.identifier,
     keyIdentifier: offer.keyIdentifier,

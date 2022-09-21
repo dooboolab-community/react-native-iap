@@ -3,6 +3,7 @@ import type {
   AndroidModuleProps,
   IosModuleProps,
 } from '../modules';
+import type {IosModulePropsSk2} from '../modules/iosSk2';
 
 import type * as Apple from './apple';
 
@@ -189,7 +190,7 @@ export interface RequestPurchaseIOS {
   /**
    * UUID representing user account
    */
-  applicationUsername?: string;
+  appAccountToken?: string;
   quantity?: number;
   withOffer?: Apple.PaymentDiscount;
 }
@@ -219,6 +220,7 @@ export type RequestSubscription = RequestSubscriptionAndroid &
 declare module 'react-native' {
   interface NativeModulesStatic {
     RNIapIos: IosModuleProps;
+    RNIapIosSk2: IosModulePropsSk2;
     RNIapModule: AndroidModuleProps;
     RNIapAmazonModule: AmazonModuleProps;
   }

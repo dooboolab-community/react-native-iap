@@ -1,6 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {PurchaseError, requestPurchase, Sku, useIAP} from 'react-native-iap';
+import {
+  isIosStorekit2,
+  PurchaseError,
+  requestPurchase,
+  Sku,
+  useIAP,
+} from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
 import {
@@ -16,7 +22,6 @@ export const Products = () => {
   const {
     connected,
     products,
-    promotedProductsIOS,
     currentPurchase,
     currentPurchaseError,
     initConnectionError,
@@ -47,7 +52,10 @@ export const Products = () => {
   useEffect(() => {
     const checkCurrentPurchase = async () => {
       try {
-        if (currentPurchase?.transactionReceipt) {
+        if (
+          (isIosStorekit2() && currentPurchase?.transactionId) ||
+          currentPurchase?.transactionReceipt
+        ) {
           await finishTransaction({
             purchase: currentPurchase,
             isConsumable: true,
@@ -69,7 +77,7 @@ export const Products = () => {
 
   return (
     <ScrollView contentContainerStyle={contentContainerStyle}>
-      <State connected={connected} />
+      <State connected={connected} storekit2={isIosStorekit2()} />
 
       {initConnectionError && (
         <Box>
@@ -108,6 +116,10 @@ export const Products = () => {
                   label: 'Product Id',
                   value: product.productId,
                 },
+                {
+                  label: 'type',
+                  value: product.type,
+                },
               ]}
               isLast={products.length - 1 === index}
             >
@@ -120,28 +132,6 @@ export const Products = () => {
         </View>
 
         <Button title="Get the products" onPress={handleGetProducts} />
-      </Box>
-
-      <Box>
-        <Heading copy="Promoted products" label="iOS only" />
-
-        {promotedProductsIOS.map((product, index) => (
-          <Row
-            key={product.productId}
-            fields={[
-              {
-                label: 'Product Id',
-                value: product.productId,
-              },
-            ]}
-            isLast={promotedProductsIOS.length - 1 === index}
-          >
-            <Button
-              title="Buy a product"
-              onPress={() => handleBuyProduct(product.productId)}
-            />
-          </Row>
-        ))}
       </Box>
     </ScrollView>
   );

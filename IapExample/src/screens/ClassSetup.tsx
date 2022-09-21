@@ -113,7 +113,6 @@ export class ClassSetup extends Component<{}, State> {
       Alert.alert('Product promoted', productId),
     );
   }
-
   componentWillUnmount() {
     this.purchaseUpdate?.remove();
     this.purchaseError?.remove();
