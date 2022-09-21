@@ -21,7 +21,7 @@ export type BuyProduct = (
   andDangerouslyFinishTransactionAutomaticallyIOS: boolean,
   applicationUsername: string | undefined,
   quantity: number,
-  withOffer: PaymentDiscount | undefined,
+  withOffer: Record<keyof PaymentDiscount, string> | undefined,
 ) => Promise<Purchase>;
 
 type clearTransaction = () => Promise<void>;
@@ -47,6 +47,7 @@ export interface IosModuleProps extends NativeModuleProps {
   finishTransaction: finishTransaction;
   getPendingTransactions: getPendingTransactions;
   presentCodeRedemptionSheet: presentCodeRedemptionSheet;
+  disable: () => Promise<null>;
 }
 
 /**

@@ -4,6 +4,10 @@
 #ifdef __IPHONE_15_0
 @interface RCT_EXTERN_MODULE (RNIapIosSk2, NSObject)
 
+RCT_EXTERN_METHOD(disable:
+                  (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(initConnection:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)

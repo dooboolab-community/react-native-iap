@@ -175,7 +175,7 @@ export interface PaymentDiscountSk2 {
 
 export const offerSk2Map = (
   offer: Apple.PaymentDiscount | undefined,
-): PaymentDiscountSk2 | undefined => {
+): Record<keyof PaymentDiscountSk2, string> | undefined => {
   if (!offer) {
     return undefined;
   }
@@ -184,6 +184,6 @@ export const offerSk2Map = (
     keyID: offer.keyIdentifier,
     nonce: offer.nonce,
     signature: offer.signature,
-    timestamp: offer.timestamp,
+    timestamp: offer.timestamp.toString(),
   };
 };

@@ -49,6 +49,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         removeTransactionObserver()
     }
 
+    @objc public func disable(
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        removeTransactionObserver()
+        resolve(nil)
+    }
+
     override class func requiresMainQueueSetup() -> Bool {
         return true
     }
@@ -315,7 +323,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     ) {
         requestReceiptData(withBlock: refresh) { [self] receiptData, error in
             if error == nil {
-                resolve(receiptData?.base64EncodedString(options: []))
+                resolve(receiptData?.base64EncodedString(options: [.endLineWithCarriageReturn]))
             } else {
                 reject(standardErrorCode(9), "Invalid receipt", nil)
             }
@@ -348,7 +356,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                         "transactionId": item.transactionIdentifier,
                         "productId": item.payment.productIdentifier,
                         "quantity": "\(item.payment.quantity)",
-                        "transactionReceipt": receipt.base64EncodedString(options: [])
+                        "transactionReceipt": receipt.base64EncodedString(options: [.endLineWithCarriageReturn])
                     ]
 
                     output.append(purchase)
