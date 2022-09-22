@@ -22,7 +22,7 @@ RCT_EXTERN_METHOD(getItems:
                   reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(getAvailableItems:
-                  alsoPublishToEventListener:(BOOL)alsoPublishToEventListener
+                  (BOOL)alsoPublishToEventListener
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
