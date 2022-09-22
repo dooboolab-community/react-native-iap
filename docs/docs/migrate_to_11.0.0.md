@@ -54,7 +54,7 @@ platform :ios, '15.0'
 Call `setup` before you initialize your connection as follows:
 
 ```ts
-import setup from 'react-native-iap'
+import {setup} from 'react-native-iap'
 ...
 setup({storekitMode:'___Selected Mode___'})// See above for available options
 await initConnection()
