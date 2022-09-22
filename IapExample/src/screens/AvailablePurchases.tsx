@@ -26,7 +26,7 @@ export const AvailablePurchases = () => {
 
           {availablePurchases.map((availablePurchase, index) => (
             <Row
-              key={availablePurchase.productId}
+              key={availablePurchase.productId + `${index}`}
               fields={[
                 {
                   label: 'Product Id',

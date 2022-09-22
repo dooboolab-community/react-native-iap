@@ -10,6 +10,7 @@ import {
   ProductSk2,
   productSk2Map,
   subscriptionSk2Map,
+  transactionSk2Map,
 } from './types/appleSk2';
 import {
   fillProductsWithAdditionalData,
@@ -289,7 +290,15 @@ export const getPurchaseHistory = ({
   (
     Platform.select({
       ios: async () => {
-        return getIosModule().getAvailableItems(alsoPublishToEventListener);
+        if (isIosStorekit2()) {
+          return Promise.resolve(
+            (
+              await RNIapIosSk2.getAvailableItems(alsoPublishToEventListener)
+            ).map(transactionSk2Map),
+          );
+        } else {
+          return RNIapIos.getAvailableItems();
+        }
       },
       android: async () => {
         if (RNIapAmazonModule) {
@@ -397,7 +406,15 @@ export const getAvailablePurchases = ({
   (
     Platform.select({
       ios: async () => {
-        return getIosModule().getAvailableItems(alsoPublishToEventListener);
+        if (isIosStorekit2()) {
+          return Promise.resolve(
+            (
+              await RNIapIosSk2.getAvailableItems(alsoPublishToEventListener)
+            ).map(transactionSk2Map),
+          );
+        } else {
+          return RNIapIos.getAvailableItems();
+        }
       },
       android: async () => {
         if (RNIapAmazonModule) {
