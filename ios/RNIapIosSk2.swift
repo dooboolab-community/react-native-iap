@@ -131,9 +131,9 @@ class RNIapIosSk2: RCTEventEmitter {
         Task {
             do {
                 let products = try await Product.products(for: skus)
-                self.products = products.reduce(into: [String: Product]()) {(res, prod) in
-                    res[prod.id] = prod
-                }
+                products.forEach({(prod) in
+                    self.products[prod.id] = prod
+                })
                 resolve(products.map({ (prod: Product) -> [String: Any?]? in
                     return serialize(prod)
                 }).compactMap({$0}))
@@ -144,8 +144,8 @@ class RNIapIosSk2: RCTEventEmitter {
     }
 
     @objc public func getAvailableItems(
-        alsoPublishToEventListener: Bool,
-        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ alsoPublishToEventListener: Bool,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         Task {
