@@ -2,8 +2,7 @@ import Foundation
 import React
 import StoreKit
 
-protocol Sk2Delegate{
-    
+protocol Sk2Delegate {
     func disable(
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
@@ -13,7 +12,7 @@ protocol Sk2Delegate{
         _ resolve: @escaping RCTPromiseResolveBlock ,
         reject: @escaping RCTPromiseRejectBlock
     )
-    
+
     func endConnection(
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
@@ -30,7 +29,7 @@ protocol Sk2Delegate{
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
-    
+
     func buyProduct(
         _ sku: String,
         andDangerouslyFinishTransactionAutomatically: Bool,
@@ -40,7 +39,7 @@ protocol Sk2Delegate{
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
-    
+
     func isEligibleForIntroOffer(
         _ groupID: String,
         resolve: @escaping RCTPromiseResolveBlock ,
@@ -58,7 +57,7 @@ protocol Sk2Delegate{
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
-    
+
     func latestTransaction(
         _ sku: String,
         resolve: @escaping RCTPromiseResolveBlock,
@@ -75,7 +74,7 @@ protocol Sk2Delegate{
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
-    
+
     func sync(
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
@@ -85,54 +84,52 @@ protocol Sk2Delegate{
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
-    
+
     func startObserving()
     func stopObserving()
 }
 
-class DummySk2: Sk2Delegate{
-
+class DummySk2: Sk2Delegate {
     let errorCode = IapErrors.E_DEVELOPER_ERROR.rawValue
     let errorMessage = "Method only available on iOS 15 and up"
-    
-    
+
     func disable(
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
 
     func initConnection(
         _ resolve: @escaping RCTPromiseResolveBlock ,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
-    
+
     func endConnection(
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
 
     func getItems(
         _ skus: [String],
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
 
     func getAvailableItems(
         _ alsoPublishToEventListener: Bool,
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
-    
+
     func buyProduct(
         _ sku: String,
         andDangerouslyFinishTransactionAutomatically: Bool,
@@ -141,79 +138,76 @@ class DummySk2: Sk2Delegate{
         withOffer: [String: String],
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
-    
+
     func isEligibleForIntroOffer(
         _ groupID: String,
         resolve: @escaping RCTPromiseResolveBlock ,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
 
     func subscriptionStatus(
         _ sku: String,
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
 
     func currentEntitlement(
         _ sku: String,
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
-    
+
     func latestTransaction(
         _ sku: String,
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
 
     func  finishTransaction(
         _ transactionIdentifier: String,
         resolve: @escaping RCTPromiseResolveBlock ,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
 
     func pendingTransactions (
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
-    
+
     func sync(
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
 
     func  presentCodeRedemptionSheet(
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
-    ){
-        reject(errorCode,errorMessage,nil)
+    ) {
+        reject(errorCode, errorMessage, nil)
     }
-    
+
     func startObserving() {
-        
     }
-    
+
     func stopObserving() {
-        
     }
-    
 }
 
 @objc(RNIapIosSk2)
@@ -222,25 +216,21 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
 
     override init() {
         super.init()
-        if #available(iOS 15.0, *){
-            delegate = RNIapIosSk2iOS15(sendEvent:self.sendEvent)
+        if #available(iOS 15.0, *) {
+            delegate = RNIapIosSk2iOS15(sendEvent: self.sendEvent)
         }
     }
-
 
     @objc public func disable(
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        delegate.disable(resolve, reject:reject)
+        delegate.disable(resolve, reject: reject)
     }
 
     override class func requiresMainQueueSetup() -> Bool {
         return true
     }
-    
-
-
 
     override func startObserving() {
         delegate.startObserving()
@@ -249,7 +239,7 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
     override func stopObserving() {
         delegate.stopObserving()
     }
-    
+
     override func addListener(_ eventName: String?) {
         super.addListener(eventName)
     }
@@ -267,13 +257,13 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        delegate.initConnection(resolve,reject:reject)
+        delegate.initConnection(resolve, reject: reject)
     }
     @objc public func endConnection(
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        delegate.endConnection(resolve,reject:reject)
+        delegate.endConnection(resolve, reject: reject)
     }
 
     @objc public func getItems(
@@ -281,7 +271,7 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        delegate.getItems(skus,resolve:resolve,reject:reject)
+        delegate.getItems(skus, resolve: resolve, reject: reject)
     }
 
     @objc public func getAvailableItems(
@@ -289,7 +279,7 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        delegate.getAvailableItems(alsoPublishToEventListener,resolve:resolve,reject:reject)
+        delegate.getAvailableItems(alsoPublishToEventListener, resolve: resolve, reject: reject)
     }
 
     @objc public func buyProduct(
@@ -303,12 +293,12 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
     ) {
         delegate.buyProduct(
             sku,
-            andDangerouslyFinishTransactionAutomatically:andDangerouslyFinishTransactionAutomatically,
-            appAccountToken:appAccountToken,
-            quantity:quantity,
-            withOffer:withOffer,
+            andDangerouslyFinishTransactionAutomatically: andDangerouslyFinishTransactionAutomatically,
+            appAccountToken: appAccountToken,
+            quantity: quantity,
+            withOffer: withOffer,
             resolve: resolve,
-            reject:reject)
+            reject: reject)
     }
 
     @objc public func isEligibleForIntroOffer(
@@ -316,7 +306,7 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        delegate.isEligibleForIntroOffer(groupID, resolve:resolve, reject: reject)
+        delegate.isEligibleForIntroOffer(groupID, resolve: resolve, reject: reject)
     }
 
     @objc public func subscriptionStatus(
@@ -379,8 +369,8 @@ class RNIapIosSk2iOS15: Sk2Delegate {
     private var products: [String: Product]
     private var transactions: [String: Transaction]
     private var updateListenerTask: Task<Void, Error>?
-    fileprivate var sendEvent: ((String?, Any?) -> Void)? = nil
-    init(sendEvent:((String?, Any?) -> Void)? ) {
+    fileprivate var sendEvent: ((String?, Any?) -> Void)?
+    init(sendEvent: ((String?, Any?) -> Void)? ) {
         self.sendEvent = sendEvent
         products = [String: Product]()
         transactions = [String: Transaction]()
@@ -452,11 +442,11 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         }
     }
 
-     func startObserving() {
+    func startObserving() {
         hasListeners = true
     }
 
-     func stopObserving() {
+    func stopObserving() {
         hasListeners = false
     }
 
@@ -821,4 +811,3 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         #endif
     }
 }
-
