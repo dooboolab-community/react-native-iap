@@ -2,18 +2,378 @@ import Foundation
 import React
 import StoreKit
 
-@available(iOS 15.0, *)
+protocol Sk2Delegate {
+    func disable(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func initConnection(
+        _ resolve: @escaping RCTPromiseResolveBlock ,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func endConnection(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func getItems(
+        _ skus: [String],
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func getAvailableItems(
+        _ alsoPublishToEventListener: Bool,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func buyProduct(
+        _ sku: String,
+        andDangerouslyFinishTransactionAutomatically: Bool,
+        appAccountToken: String?,
+        quantity: Int,
+        withOffer: [String: String],
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func isEligibleForIntroOffer(
+        _ groupID: String,
+        resolve: @escaping RCTPromiseResolveBlock ,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func subscriptionStatus(
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func currentEntitlement(
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func latestTransaction(
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func  finishTransaction(
+        _ transactionIdentifier: String,
+        resolve: @escaping RCTPromiseResolveBlock ,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func pendingTransactions (
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func sync(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func  presentCodeRedemptionSheet(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
+    func startObserving()
+    func stopObserving()
+}
+
+class DummySk2: Sk2Delegate {
+    let errorCode = IapErrors.E_DEVELOPER_ERROR.rawValue
+    let errorMessage = "Method only available on iOS 15 and up"
+
+    func disable(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func initConnection(
+        _ resolve: @escaping RCTPromiseResolveBlock ,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func endConnection(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func getItems(
+        _ skus: [String],
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func getAvailableItems(
+        _ alsoPublishToEventListener: Bool,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func buyProduct(
+        _ sku: String,
+        andDangerouslyFinishTransactionAutomatically: Bool,
+        appAccountToken: String?,
+        quantity: Int,
+        withOffer: [String: String],
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func isEligibleForIntroOffer(
+        _ groupID: String,
+        resolve: @escaping RCTPromiseResolveBlock ,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func subscriptionStatus(
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func currentEntitlement(
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func latestTransaction(
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func  finishTransaction(
+        _ transactionIdentifier: String,
+        resolve: @escaping RCTPromiseResolveBlock ,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func pendingTransactions (
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func sync(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func  presentCodeRedemptionSheet(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func startObserving() {
+    }
+
+    func stopObserving() {
+    }
+}
+
 @objc(RNIapIosSk2)
-class RNIapIosSk2: RCTEventEmitter {
+class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
+    private var delegate: Sk2Delegate = DummySk2()
+
+    override init() {
+        super.init()
+        if #available(iOS 15.0, *) {
+            delegate = RNIapIosSk2iOS15(sendEvent: self.sendEvent)
+        }
+    }
+
+    @objc public func disable(
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.disable(resolve, reject: reject)
+    }
+
+    override class func requiresMainQueueSetup() -> Bool {
+        return true
+    }
+
+    override func startObserving() {
+        delegate.startObserving()
+    }
+
+    override func stopObserving() {
+        delegate.stopObserving()
+    }
+
+    override func addListener(_ eventName: String?) {
+        super.addListener(eventName)
+    }
+
+    /**
+     "iap-transaction-updated" is unique to Sk2.
+     "iap-promoted-product" is only avaiable on Sk1
+     "purchase-updated", "purchase-error" are for backward compatibility
+     */
+    override func supportedEvents() -> [String]? {
+        return [ "purchase-updated", "purchase-error", "iap-transaction-updated"]
+    }
+
+    @objc public func initConnection(
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.initConnection(resolve, reject: reject)
+    }
+    @objc public func endConnection(
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.endConnection(resolve, reject: reject)
+    }
+
+    @objc public func getItems(
+        _ skus: [String],
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.getItems(skus, resolve: resolve, reject: reject)
+    }
+
+    @objc public func getAvailableItems(
+        _ alsoPublishToEventListener: Bool,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.getAvailableItems(alsoPublishToEventListener, resolve: resolve, reject: reject)
+    }
+
+    @objc public func buyProduct(
+        _ sku: String,
+        andDangerouslyFinishTransactionAutomatically: Bool,
+        appAccountToken: String?,
+        quantity: Int,
+        withOffer: [String: String],
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.buyProduct(
+            sku,
+            andDangerouslyFinishTransactionAutomatically: andDangerouslyFinishTransactionAutomatically,
+            appAccountToken: appAccountToken,
+            quantity: quantity,
+            withOffer: withOffer,
+            resolve: resolve,
+            reject: reject)
+    }
+
+    @objc public func isEligibleForIntroOffer(
+        _ groupID: String,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.isEligibleForIntroOffer(groupID, resolve: resolve, reject: reject)
+    }
+
+    @objc public func subscriptionStatus(
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.subscriptionStatus(sku, resolve: resolve, reject: reject)
+    }
+
+    @objc public func currentEntitlement(
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.currentEntitlement(sku, resolve: resolve, reject: reject)
+    }
+
+    @objc public func latestTransaction(
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.latestTransaction(sku, resolve: resolve, reject: reject)
+    }
+
+    @objc public func  finishTransaction(
+        _ transactionIdentifier: String,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.finishTransaction(transactionIdentifier, resolve: resolve, reject: reject)
+    }
+
+    @objc public func pendingTransactions (
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.pendingTransactions(resolve, reject: reject)
+    }
+
+    @objc public func sync(
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in},
+        reject: @escaping RCTPromiseRejectBlock = {_, _, _ in}
+    ) {
+        delegate.sync(resolve, reject: reject)
+    }
+
+    @objc public func  presentCodeRedemptionSheet(
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.presentCodeRedemptionSheet(resolve, reject: reject)
+    }
+}
+
+@available(iOS 15.0, *)
+class RNIapIosSk2iOS15: Sk2Delegate {
     private var hasListeners = false
     private var products: [String: Product]
     private var transactions: [String: Transaction]
     private var updateListenerTask: Task<Void, Error>?
-
-    override init() {
+    fileprivate var sendEvent: ((String?, Any?) -> Void)?
+    init(sendEvent: ((String?, Any?) -> Void)? ) {
+        self.sendEvent = sendEvent
         products = [String: Product]()
         transactions = [String: Transaction]()
-        super.init()
         addTransactionObserver()
     }
 
@@ -29,9 +389,6 @@ class RNIapIosSk2: RCTEventEmitter {
         resolve(nil)
     }
 
-    override class func requiresMainQueueSetup() -> Bool {
-        return true
-    }
     func addTransactionObserver() {
         if updateListenerTask == nil {
             updateListenerTask = listenForTransactions()
@@ -59,8 +416,8 @@ class RNIapIosSk2: RCTEventEmitter {
                     // await self.updateCustomerProductStatus()
 
                     if self.hasListeners {
-                        self.sendEvent(withName: "purchase-updated", body: serialize(transaction))
-                        self.sendEvent(withName: "iap-transaction-updated", body: ["transaction": serialize(transaction)])
+                        self.sendEvent?("purchase-updated", serialize(transaction))
+                        self.sendEvent?("iap-transaction-updated", ["transaction": serialize(transaction)])
                     }
                     // Always finish a transaction.
                     // await transaction.finish()
@@ -77,32 +434,20 @@ class RNIapIosSk2: RCTEventEmitter {
                             "message": error.localizedDescription
                         ]
 
-                        self.sendEvent(withName: "purchase-error", body: err)
-                        self.sendEvent(withName: "iap-transaction-updated", body: ["error": err])
+                        self.sendEvent?("purchase-error", err)
+                        self.sendEvent?("iap-transaction-updated", ["error": err])
                     }
                 }
             }
         }
     }
 
-    override func startObserving() {
+    func startObserving() {
         hasListeners = true
     }
 
-    override func stopObserving() {
+    func stopObserving() {
         hasListeners = false
-    }
-    override func addListener(_ eventName: String?) {
-        super.addListener(eventName)
-    }
-
-    /**
-     "iap-transaction-updated" is unique to Sk2.
-     "iap-promoted-product" is only avaiable on Sk1
-     "purchase-updated", "purchase-error" are for backward compatibility
-     */
-    override func supportedEvents() -> [String]? {
-        return [ "purchase-updated", "purchase-error", "iap-transaction-updated"]
     }
 
     @objc public func initConnection(
@@ -154,12 +499,12 @@ class RNIapIosSk2: RCTEventEmitter {
             func addPurchase(transaction: Transaction, product: Product) {
                 purchasedItems.append( transaction)
                 if alsoPublishToEventListener {
-                    sendEvent(withName: "purchase-update", body: serialize(transaction))
+                    self.sendEvent?("purchase-update", serialize(transaction))
                 }
             }
             func addError( error: Error, errorDict: [String: String]) {
                 if alsoPublishToEventListener {
-                    sendEvent(withName: "purchase-error", body: errorDict)
+                    self.sendEvent?("purchase-error", errorDict)
                 }
             }
             // Iterate through all of the user's purchased products.
@@ -277,7 +622,7 @@ class RNIapIosSk2: RCTEventEmitter {
                             resolve(nil)
                         } else {
                             self.addTransaction(transaction)
-                            sendEvent(withName: "purchase-updated", body: serialize(transaction))
+                            self.sendEvent?("purchase-updated", serialize(transaction))
                             resolve(serialize(transaction))
                         }
                         return
