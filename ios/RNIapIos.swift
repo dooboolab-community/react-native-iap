@@ -634,7 +634,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         var itemType = "iap"
 
         if #available(iOS 11.2, tvOS 11.2, *) {
-            
             let numOfUnits = UInt(product.subscriptionPeriod?.numberOfUnits ?? 0)
             let unit = product.subscriptionPeriod?.unit
 
@@ -649,12 +648,12 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             }
 
             periodNumberIOS = String(format: "%lu", numOfUnits)
-            if numOfUnits != 0  {
+            if numOfUnits != 0 {
                 itemType = "subs"
             }
             // More reliable way of determining a subs on newer iOS versions
             if #available(iOS 12.0, *) {
-                if product.subscriptionGroupIdentifier != nil{
+                if product.subscriptionGroupIdentifier != nil {
                     itemType = "subs"
                 }
             }
@@ -758,10 +757,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 let formatter = NumberFormatter()
                 formatter.numberStyle = .currency
                 // This causes a crash on certain versions of iOS.
-//                let priceLocale: Locale? = discount.priceLocale
-//                if let priceLocale = priceLocale {
-//                    formatter.locale = priceLocale
-//                }
+                //                let priceLocale: Locale? = discount.priceLocale
+                //                if let priceLocale = priceLocale {
+                //                    formatter.locale = priceLocale
+                //                }
                 localizedPrice = formatter.string(from: discount.price)
                 var numberOfPeriods: String?
 
