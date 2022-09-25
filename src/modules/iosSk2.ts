@@ -37,6 +37,7 @@ type getPendingTransactions = () => Promise<ProductPurchase[]>;
 type presentCodeRedemptionSheet = () => Promise<null>;
 
 export interface IosModulePropsSk2 extends NativeModuleProps {
+  isAvailable(): number;
   latestTransaction(sku: string): Promise<TransactionSk2>;
   currentEntitlement(sku: string): Promise<TransactionSk2>;
   subscriptionStatus(sku: string): Promise<ProductStatus[]>;
