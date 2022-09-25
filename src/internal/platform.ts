@@ -46,10 +46,11 @@ export const getNativeModule = ():
 
 let iosNativeModule: typeof RNIapIos | typeof RNIapIosSk2 = RNIapIos;
 
-export const isIosStorekit2 = () =>
-  !!iosNativeModule && iosNativeModule === RNIapIosSk2;
+export const isStorekit2Avaiable = (): boolean =>
+  RNIapIosSk2?.isAvailable() === 1;
 
-export const isStorekit2Avaiable = (): boolean => !!RNIapIosSk2;
+export const isIosStorekit2 = () =>
+  !!iosNativeModule && iosNativeModule === RNIapIosSk2 && isStorekit2Avaiable();
 
 export const setIosNativeModule = (
   nativeModule: typeof RNIapIos | typeof RNIapIosSk2,
@@ -59,7 +60,7 @@ export const setIosNativeModule = (
 
 export const storekit2Mode = () => {
   iosNativeModule = RNIapIosSk2;
-  if (RNIapIosSk2) {
+  if (isStorekit2Avaiable()) {
     RNIapIos.disable();
     return true;
   }
@@ -70,7 +71,7 @@ export const storekit2Mode = () => {
 
 export const storekit1Mode = () => {
   iosNativeModule = RNIapIos;
-  if (RNIapIosSk2) {
+  if (isStorekit2Avaiable()) {
     RNIapIosSk2.disable();
     return true;
   }
@@ -78,7 +79,7 @@ export const storekit1Mode = () => {
 };
 
 export const storekitHybridMode = () => {
-  if (RNIapIosSk2) {
+  if (isStorekit2Avaiable()) {
     iosNativeModule = RNIapIosSk2;
     console.info('Using Storekit 2');
     return true;
@@ -90,7 +91,7 @@ export const storekitHybridMode = () => {
 };
 
 const checkNativeIOSAvailable = (): void => {
-  if (!RNIapIos && !RNIapIosSk2) {
+  if (!RNIapIos && !isStorekit2Avaiable()) {
     throw new Error('IAP_NOT_AVAILABLE');
   }
 };

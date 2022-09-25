@@ -651,6 +651,12 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             if numOfUnits != 0 {
                 itemType = "subs"
             }
+            // More reliable way of determining a subs on newer iOS versions
+            if #available(iOS 12.0, *) {
+                if product.subscriptionGroupIdentifier != nil {
+                    itemType = "subs"
+                }
+            }
 
             // subscriptionPeriod = product.subscriptionPeriod ? [product.subscriptionPeriod stringValue] : @"";
             // introductoryPrice = product.introductoryPrice != nil ? [NSString stringWithFormat:@"%@", product.introductoryPrice] : @"";
@@ -750,10 +756,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             for discount in product.discounts {
                 let formatter = NumberFormatter()
                 formatter.numberStyle = .currency
-                let priceLocale: Locale? = discount.priceLocale
-                if let priceLocale = priceLocale {
-                    formatter.locale = priceLocale
-                }
+                // This causes a crash on certain versions of iOS.
+                //                let priceLocale: Locale? = discount.priceLocale
+                //                if let priceLocale = priceLocale {
+                //                    formatter.locale = priceLocale
+                //                }
                 localizedPrice = formatter.string(from: discount.price)
                 var numberOfPeriods: String?
 
