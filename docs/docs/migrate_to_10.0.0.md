@@ -1,4 +1,4 @@
-# Migrating to 10.x.x
+# Migrating to 10.0.0
 
 Starting with 10.0.0, the parameters to some of the methods are now objects instead of positional parameters.
 
