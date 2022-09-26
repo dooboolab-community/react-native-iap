@@ -1,16 +1,6 @@
 import React
 import StoreKit
 
-typealias RNIapIosPromise = (RCTPromiseResolveBlock, RCTPromiseRejectBlock)
-
-public func debugMessage(_ object: Any...) {
-    #if DEBUG
-    for item in object {
-        print("[react-native-iap] \(item)")
-    }
-    #endif
-}
-
 // Based on https://stackoverflow.com/a/40135192/570612
 extension Date {
     var millisecondsSince1970: Int64 {
@@ -57,6 +47,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
     deinit {
         removeTransactionObserver()
+    }
+
+    @objc public func disable(
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        removeTransactionObserver()
+        resolve(nil)
     }
 
     override class func requiresMainQueueSetup() -> Bool {
@@ -206,6 +204,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         _ sku: String,
         andDangerouslyFinishTransactionAutomatically: Bool,
         applicationUsername: String?,
+        quantity: Int,
+        withOffer discountOffer: [String: String]?,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
@@ -225,9 +225,25 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
             let payment = SKMutablePayment(product: prod)
 
+            if #available(iOS 12.2, tvOS 12.2, *) {
+                if let discountOffer = discountOffer, let identifier = discountOffer["identifier"], let keyIdentifier = discountOffer["keyIdentifier"], let nonce = discountOffer["nonce"], let signature = discountOffer["signature"], let timestamp = discountOffer["timestamp"] {
+                    let discount = SKPaymentDiscount(
+                        identifier: identifier,
+                        keyIdentifier: keyIdentifier,
+                        nonce: UUID(uuidString: nonce)!,
+                        signature: signature,
+                        timestamp: NSNumber(value: Int(timestamp)!))
+                    payment.paymentDiscount = discount
+                }
+            }
+
             if let applicationUsername = applicationUsername {
                 payment.applicationUsername = applicationUsername
             }
+            if quantity > 0 {
+                payment.quantity = quantity
+            }
+
             SKPaymentQueue.default().add(payment)
         } else {
             if hasListeners {
@@ -241,90 +257,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 sendEvent(withName: "purchase-error", body: err)
             }
 
-            reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
-        }
-    }
-
-    @objc public func buyProductWithOffer(
-        _ sku: String,
-        forUser usernameHash: String,
-        withOffer discountOffer: [String: String],
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-    ) {
-        var product: SKProduct?
-        let lockQueue = DispatchQueue(label: "validProducts")
-        lockQueue.sync {
-            for p in validProducts {
-                if sku == p.productIdentifier {
-                    product = p
-                    break
-                }
-            }
-        }
-
-        if let prod = product {
-            addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
-
-            let payment = SKMutablePayment(product: prod)
-
-            if #available(iOS 12.2, tvOS 12.2, *) {
-                let discount = SKPaymentDiscount(
-                    identifier: discountOffer["identifier"]!,
-                    keyIdentifier: discountOffer["keyIdentifier"]!,
-                    nonce: UUID(uuidString: discountOffer["nonce"]!)!,
-                    signature: discountOffer["signature"]!,
-                    timestamp: NSNumber(value: Int(discountOffer["timestamp"]!)!))
-                payment.paymentDiscount = discount
-            }
-            payment.applicationUsername = usernameHash
-            SKPaymentQueue.default().add(payment)
-        } else {
-            if hasListeners {
-                let err = [
-                    "debugMessage": "Invalid product ID.",
-                    "message": "Invalid product ID.",
-                    "code": "E_DEVELOPER_ERROR",
-                    "productId": sku
-                ]
-                sendEvent(withName: "purchase-error", body: err)
-            }
-            reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
-        }
-    }
-
-    @objc public func buyProductWithQuantityIOS(
-        _ sku: String,
-        quantity: Int,
-        resolve: @escaping RCTPromiseResolveBlock = { _ in },
-        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
-    ) {
-        debugMessage("buyProductWithQuantityIOS")
-        var product: SKProduct?
-        let lockQueue = DispatchQueue(label: "validProducts")
-        lockQueue.sync {
-            for p in validProducts {
-                if sku == p.productIdentifier {
-                    product = p
-                    break
-                }
-            }
-        }
-        if let prod = product {
-            addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
-            let payment = SKMutablePayment(product: prod)
-            payment.quantity = quantity
-            SKPaymentQueue.default().add(payment)
-        } else {
-            if hasListeners {
-                let err = [
-                    "debugMessage": "Invalid product ID.",
-                    "message": "Invalid product ID.",
-                    "code": "E_DEVELOPER_ERROR",
-                    "productId": sku
-                ]
-                sendEvent(withName: "purchase-error", body: err)
-            }
             reject("E_DEVELOPER_ERROR", "Invalid product ID.", nil)
         }
     }
@@ -719,6 +651,12 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             if numOfUnits != 0 {
                 itemType = "subs"
             }
+            // More reliable way of determining a subs on newer iOS versions
+            if #available(iOS 12.0, *) {
+                if product.subscriptionGroupIdentifier != nil {
+                    itemType = "subs"
+                }
+            }
 
             // subscriptionPeriod = product.subscriptionPeriod ? [product.subscriptionPeriod stringValue] : @"";
             // introductoryPrice = product.introductoryPrice != nil ? [NSString stringWithFormat:@"%@", product.introductoryPrice] : @"";
@@ -818,10 +756,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             for discount in product.discounts {
                 let formatter = NumberFormatter()
                 formatter.numberStyle = .currency
-                let priceLocale: Locale? = discount.priceLocale
-                if let priceLocale = priceLocale {
-                    formatter.locale = priceLocale
-                }
+                // This causes a crash on certain versions of iOS.
+                //                let priceLocale: Locale? = discount.priceLocale
+                //                if let priceLocale = priceLocale {
+                //                    formatter.locale = priceLocale
+                //                }
                 localizedPrice = formatter.string(from: discount.price)
                 var numberOfPeriods: String?
 
