@@ -151,6 +151,7 @@ export interface SubscriptionAndroid extends ProductCommon {
   }[];
 }
 
+export type SubscriptionIosPeriod = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | '';
 export interface SubscriptionIOS extends ProductCommon {
   type: 'subs';
   discounts?: Discount[];
@@ -162,15 +163,10 @@ export interface SubscriptionIOS extends ProductCommon {
     | 'PAYASYOUGO'
     | 'PAYUPFRONT';
   introductoryPriceNumberOfPeriodsIOS?: string;
-  introductoryPriceSubscriptionPeriodIOS?:
-    | 'DAY'
-    | 'WEEK'
-    | 'MONTH'
-    | 'YEAR'
-    | '';
+  introductoryPriceSubscriptionPeriodIOS?: SubscriptionIosPeriod;
 
   subscriptionPeriodNumberIOS?: string;
-  subscriptionPeriodUnitIOS?: '' | 'YEAR' | 'MONTH' | 'WEEK' | 'DAY';
+  subscriptionPeriodUnitIOS?: SubscriptionIosPeriod;
 }
 
 export type Subscription = SubscriptionAndroid & SubscriptionIOS;
