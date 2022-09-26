@@ -193,9 +193,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         }
     }
     @objc public func getAvailableItems(
-        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        _ automaticallyFinishRestoredTransactions: Bool,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
+        pendingTransactionWithAutoFinish = automaticallyFinishRestoredTransactions
         addPromise(forKey: "availableItems", resolve: resolve, reject: reject)
         SKPaymentQueue.default().restoreCompletedTransactions()
     }
@@ -547,12 +549,13 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                     if let restored = restored {
                         items.append(restored)
                     }
-
-                    SKPaymentQueue.default().finishTransaction(transaction)
+                    if self.pendingTransactionWithAutoFinish {
+                        SKPaymentQueue.default().finishTransaction(transaction)
+                    }
                 }
             }
         }
-
+        pendingTransactionWithAutoFinish = false
         resolvePromises(forKey: "availableItems", value: items)
     }
 

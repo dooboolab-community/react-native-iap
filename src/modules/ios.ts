@@ -14,7 +14,9 @@ import type {NativeModuleProps} from './common';
 
 type getItems = (skus: Sku[]) => Promise<Product[] | Subscription[]>;
 
-type getAvailableItems = () => Promise<Purchase[]>;
+type getAvailableItems = (
+  automaticallyFinishRestoredTransactions: boolean,
+) => Promise<Purchase[]>;
 
 export type BuyProduct = (
   sku: Sku,

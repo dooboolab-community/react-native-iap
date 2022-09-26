@@ -21,6 +21,7 @@ RCT_EXTERN_METHOD(getItems:
                   reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(getAvailableItems:
+                  (BOOL)automaticallyFinishRestoredTransactions
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
