@@ -47,10 +47,13 @@ export const getNativeModule = ():
 let iosNativeModule: typeof RNIapIos | typeof RNIapIosSk2 = RNIapIos;
 
 export const isStorekit2Avaiable = (): boolean =>
-  RNIapIosSk2?.isAvailable() === 1;
+  isIos && RNIapIosSk2?.isAvailable() === 1;
 
 export const isIosStorekit2 = () =>
-  !!iosNativeModule && iosNativeModule === RNIapIosSk2 && isStorekit2Avaiable();
+  isIos &&
+  !!iosNativeModule &&
+  iosNativeModule === RNIapIosSk2 &&
+  isStorekit2Avaiable();
 
 export const setIosNativeModule = (
   nativeModule: typeof RNIapIos | typeof RNIapIosSk2,
@@ -64,9 +67,11 @@ export const storekit2Mode = () => {
     RNIapIos.disable();
     return true;
   }
-  console.warn('Storekit 2 is not available on this device');
-
-  return false;
+  if (isIos) {
+    console.warn('Storekit 2 is not available on this device');
+    return false;
+  }
+  return true;
 };
 
 export const storekit1Mode = () => {
