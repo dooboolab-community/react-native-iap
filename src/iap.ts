@@ -279,13 +279,18 @@ const App = () => {
   return <View />;
 };
 ```
-@param {alsoPublishToEventListener}:boolean When `true`, every element will also be pushed to the purchaseUpdated listener.
+@param {alsoPublishToEventListener}:boolean. (IOS Sk2 only) When `true`, every element will also be pushed to the purchaseUpdated listener.
 Note that this is only for backaward compatiblity. It won't publish to transactionUpdated (Storekit2) Defaults to `false`
+@param {automaticallyFinishRestoredTransactions}:boolean. (IOS Sk1 only) When `true`, all the transactions that are returned are automatically 
+finished. This means that if you call this method again you won't get the same result on the same device. On the other hand, if `false` you'd 
+have to manually finish the returned transaction once you have delivered the content to your user.
  */
 export const getPurchaseHistory = ({
   alsoPublishToEventListener = false,
+  automaticallyFinishRestoredTransactions = true,
 }: {
   alsoPublishToEventListener?: boolean;
+  automaticallyFinishRestoredTransactions?: boolean;
 } = {}): Promise<(ProductPurchase | SubscriptionPurchase)[]> =>
   (
     Platform.select({
@@ -297,7 +302,9 @@ export const getPurchaseHistory = ({
             ).map(transactionSk2Map),
           );
         } else {
-          return RNIapIos.getAvailableItems();
+          return RNIapIos.getAvailableItems(
+            automaticallyFinishRestoredTransactions,
+          );
         }
       },
       android: async () => {
@@ -400,9 +407,11 @@ Note that this is only for backaward compatiblity. It won't publish to transacti
  */
 export const getAvailablePurchases = ({
   alsoPublishToEventListener = false,
-}: {alsoPublishToEventListener?: boolean} = {}): Promise<
-  (ProductPurchase | SubscriptionPurchase)[]
-> =>
+  automaticallyFinishRestoredTransactions = false,
+}: {
+  alsoPublishToEventListener?: boolean;
+  automaticallyFinishRestoredTransactions?: boolean;
+} = {}): Promise<(ProductPurchase | SubscriptionPurchase)[]> =>
   (
     Platform.select({
       ios: async () => {
@@ -413,7 +422,9 @@ export const getAvailablePurchases = ({
             ).map(transactionSk2Map),
           );
         } else {
-          return RNIapIos.getAvailableItems();
+          return RNIapIos.getAvailableItems(
+            automaticallyFinishRestoredTransactions,
+          );
         }
       },
       android: async () => {
