@@ -1,6 +1,11 @@
 import type {PurchaseError} from '../purchaseError';
 
-import type {ProductIOS, Purchase, SubscriptionIOS} from '.';
+import type {
+  ProductIOS,
+  Purchase,
+  SubscriptionIOS,
+  SubscriptionIosPeriod,
+} from '.';
 import type * as Apple from './apple';
 
 export type SubscriptionPeriod = {
@@ -63,6 +68,7 @@ export const subscriptionSk2Map = ({
   displayName,
   price,
   displayPrice,
+  subscription,
 }: ProductSk2): SubscriptionIOS => {
   const prod: SubscriptionIOS = {
     title: displayName,
@@ -72,6 +78,9 @@ export const subscriptionSk2Map = ({
     price: String(price),
     localizedPrice: displayPrice,
     currency: '', // Not avaiable on new API, use localizedPrice instead
+    subscriptionPeriodNumberIOS: `${subscription?.subscriptionPeriod?.value}`,
+    subscriptionPeriodUnitIOS:
+      subscription?.subscriptionPeriod?.unit.toUpperCase() as SubscriptionIosPeriod,
   };
   return prod;
 };
