@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.UiThreadUtil
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.module.annotations.ReactModule
 import java.util.HashSet
@@ -25,12 +26,14 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
         val context = reactApplicationContext
         val amazonListener = RNIapAmazonListener(context)
         this.amazonListener = amazonListener
-        PurchasingService.registerListener(context, amazonListener)
-        hasListener = true
-        // Prefetch user and purchases as per Amazon SDK documentation:
-        PurchasingService.getUserData()
-        PurchasingService.getPurchaseUpdates(false)
-        promise.resolve(true)
+        UiThreadUtil.runOnUiThread {
+            PurchasingService.registerListener(context, amazonListener)
+            hasListener = true
+            // Prefetch user and purchases as per Amazon SDK documentation:
+            PurchasingService.getUserData()
+            PurchasingService.getPurchaseUpdates(false)
+            promise.resolve(true)
+        }
     }
 
     @ReactMethod
