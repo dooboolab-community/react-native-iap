@@ -1,5 +1,7 @@
 import {NativeModules, Platform} from 'react-native';
 
+import {ErrorCode} from '../purchaseError';
+
 const {RNIapIos, RNIapIosSk2, RNIapModule, RNIapAmazonModule} = NativeModules;
 
 export const isIos = Platform.OS === 'ios';
@@ -18,7 +20,7 @@ export const setAndroidNativeModule = (
 
 export const checkNativeAndroidAvailable = (): void => {
   if (!RNIapModule && !RNIapAmazonModule) {
-    throw new Error('IAP_NOT_AVAILABLE');
+    throw new Error(ErrorCode.E_IAP_NOT_AVAILABLE);
   }
 };
 
@@ -97,7 +99,7 @@ export const storekitHybridMode = () => {
 
 const checkNativeIOSAvailable = (): void => {
   if (!RNIapIos && !isStorekit2Avaiable()) {
-    throw new Error('IAP_NOT_AVAILABLE');
+    throw new Error(ErrorCode.E_IAP_NOT_AVAILABLE);
   }
 };
 
