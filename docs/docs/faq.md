@@ -119,3 +119,9 @@ Here are some resources you might get help out of.
 
 - For Android, hope you to check this one.
   https://github.com/dooboolab/react-native-iap/issues/124#issuecomment-386593185
+
+  ### Update listener called many times on iOS (Storekit 1)
+
+  This is caused by using the same account over and over to test locally. This is not what happens typically in prod. This is a design flaw in the native API. Some developers opt to create a new account everytime. Some others filter out the duplicate transactions.
+  **_Note_**
+  This is not a problem caused by react-native-iap.
