@@ -41,6 +41,7 @@ If your app supports older iOS versions, you'll have two options 1) `STOREKIT1_M
 :::warning
 Please consider the edgecases of using both (See differnces below).
 :::
+
 ### How do I know what's the minimum version of iOS my app supports?
 
 Open `ios/Podfile` file
