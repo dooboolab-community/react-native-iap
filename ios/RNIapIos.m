@@ -22,7 +22,7 @@ RCT_EXTERN_METHOD(getItems:
 
 RCT_EXTERN_METHOD(getAvailableItems:
                   (BOOL)automaticallyFinishRestoredTransactions
-                  (RCTPromiseResolveBlock)resolve
+                  resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(buyProduct:

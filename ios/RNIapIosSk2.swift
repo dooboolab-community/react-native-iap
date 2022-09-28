@@ -216,7 +216,7 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
 
     override init() {
         super.init()
-        if #available(iOS 15.0, *) {
+        if #available(iOS 15.0, tvOS 15.0, *) {
             delegate = RNIapIosSk2iOS15(sendEvent: self.sendEvent)
         }
     }
@@ -363,7 +363,7 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
     }
 }
 
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 class RNIapIosSk2iOS15: Sk2Delegate {
     private var hasListeners = false
     private var products: [String: Product]

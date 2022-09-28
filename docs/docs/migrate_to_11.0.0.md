@@ -30,15 +30,17 @@ This allows for greater flexibility to use methods that are specific to a platfo
 
 ## Using Storekit 2
 
-:::Note
+:::note
 Storekit 2 (Sk2) requires iOS 15 as a minimum.
+:::
 
 If your app supports only iOS 15 and above (see below hot to determine that). And you want to use storekit 2 new features such as subscription groups then use `STOREKIT2_MODE` during setup (see below)
 
 If your app supports older iOS versions, you'll have two options 1) `STOREKIT1_MODE` will let you use the legacy code to all interactions with the library (i.e. no changes, this is the default). And 2) `STOREKIT_HYBRID_MODE` Will use Sk2 on devices that support it. The library will use the old implementation (Storekit 1) as a default on devices with older versions of iOS
 
-:::Warning
+:::warning
 Please consider the edgecases of using both (See differnces below).
+:::
 
 ### How do I know what's the minimum version of iOS my app supports?
 
