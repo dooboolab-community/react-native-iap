@@ -655,7 +655,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 itemType = "subs"
             }
             // More reliable way of determining a subs on newer iOS versions
-            if #available(iOS 12.0, *) {
+            if #available(iOS 12.0, tvOS 12.0, *) {
                 if product.subscriptionGroupIdentifier != nil {
                     itemType = "subs"
                 }
