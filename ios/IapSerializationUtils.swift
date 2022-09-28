@@ -7,7 +7,7 @@
 
 import Foundation
 import StoreKit
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ p: Product) -> [String: Any?] {
     return [
         "debugDescription": serializeDebug( p.debugDescription),
@@ -43,7 +43,7 @@ func serialize(_ e: Error?) -> [String: Any?]? {
     guard let e = e else {return nil}
     return ["localizedDescription": e.localizedDescription]
 }
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ si: Product.SubscriptionInfo?) -> [String: Any?]? {
     guard let si = si else {return nil}
     return [
@@ -53,13 +53,13 @@ func serialize(_ si: Product.SubscriptionInfo?) -> [String: Any?]? {
         "subscriptionPeriod": serialize(si.subscriptionPeriod)
     ]
 }
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ sp: Product.SubscriptionPeriod?) -> [String: Any?]? {
     guard let sp = sp else {return nil}
     return ["value": sp.value,
             "unit": serialize(sp.unit)]
 }
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ sp: Product.SubscriptionPeriod.Unit?) -> String? {
     guard let sp = sp else {return nil}
     switch sp {
@@ -72,7 +72,7 @@ func serialize(_ sp: Product.SubscriptionPeriod.Unit?) -> String? {
     }
 }
 
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ s: Product.SubscriptionInfo.Status?) -> [String: Any?]? {
     guard let s = s else {return nil}
     return ["state": serialize( s.state)
@@ -81,7 +81,7 @@ func serialize(_ s: Product.SubscriptionInfo.Status?) -> [String: Any?]? {
     ]
 }
 
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ rs: Product.SubscriptionInfo.RenewalState?) -> String? {
     guard let rs = rs else {return nil}
     switch rs {
@@ -95,14 +95,14 @@ func serialize(_ rs: Product.SubscriptionInfo.RenewalState?) -> String? {
     }
 }
 
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ ri: Product.SubscriptionInfo.RenewalInfo?) -> [String: Any?]? {
     guard let ri = ri else {return nil}
     return ["signedDate": ri.signedDate.millisecondsSince1970
     ]
 }
 
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ so: Product.SubscriptionOffer?) -> [String: Any?]? {
     guard let so = so else {return nil}
     return [
@@ -115,7 +115,7 @@ func serialize(_ so: Product.SubscriptionOffer?) -> [String: Any?]? {
         "type": serialize(so.type)
     ]
 }
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ pm: Product.SubscriptionOffer.PaymentMode?) -> String? {
     guard let pm = pm else {return nil}
     switch pm {
@@ -126,7 +126,7 @@ func serialize(_ pm: Product.SubscriptionOffer.PaymentMode?) -> String? {
         return nil
     }
 }
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ ot: Product.SubscriptionOffer.OfferType?) -> String? {
     guard let ot = ot else {return nil}
     switch ot {
@@ -136,7 +136,7 @@ func serialize(_ ot: Product.SubscriptionOffer.OfferType?) -> String? {
         return nil
     }
 }
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ t: Transaction) -> [String: Any?] {
     return ["appAccountToken": t.appAccountToken,
             "appBundleID": t.appBundleID,
@@ -163,7 +163,7 @@ func serialize(_ t: Transaction) -> [String: Any?] {
             "webOrderLineItemID": t.webOrderLineItemID
     ]
 }
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ ot: Transaction.OfferType?) -> String? {
     guard let ot = ot else {return nil}
     switch ot {
@@ -174,7 +174,7 @@ func serialize(_ ot: Transaction.OfferType?) -> String? {
         return nil
     }
 }
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ ot: Transaction.OwnershipType?) -> String? {
     guard let ot = ot else {return nil}
     switch ot {
@@ -184,7 +184,7 @@ func serialize(_ ot: Transaction.OwnershipType?) -> String? {
         return nil
     }
 }
-@available(iOS 15.0, *)
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ pt: Product.ProductType?) -> String? {
     guard let pt = pt else {return nil}
     switch pt {
