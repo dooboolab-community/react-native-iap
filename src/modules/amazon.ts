@@ -70,3 +70,9 @@ export const validateReceiptAmazon = async ({
 
   return await enhancedFetch<ReceiptType>(url);
 };
+
+/**
+ * Returns the status of verifying app's license @see AmazonLicensingStatus
+ */
+export const verifyLicense = async (): Promise<AmazonLicensingStatus> =>
+  AmazonModule.verifyLicense();

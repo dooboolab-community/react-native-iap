@@ -6,14 +6,12 @@ This migration will focus on integrating the latest store sdk for Amazon
 
 add `android:exported="true"` to `ResponseReceiver`
 
-# build.gradle
-
-change your `targetSdk` and `compileSdk` to match the expected Amazon SDK values. Note that these will likely be different from your google Play target
-
 ## The new SDK needs you to include your public key.
-Instructins: https://github.dm.nfl.com/NFL/nfl-rn/pull/12436
+
+Instructions: https://github.dm.nfl.com/NFL/nfl-rn/pull/12436
 
 # Added verifyLicense method
+
 It will return a status of the app see: AmazonLicensingStatus for values returned
 
 ```ts
