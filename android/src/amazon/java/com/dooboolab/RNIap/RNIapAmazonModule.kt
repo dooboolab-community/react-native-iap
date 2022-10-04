@@ -1,5 +1,9 @@
 package com.dooboolab.RNIap
 
+import android.util.Log
+import com.amazon.device.drm.LicensingListener
+import com.amazon.device.drm.LicensingService
+import com.amazon.device.drm.model.LicenseResponse
 import com.amazon.device.iap.PurchasingService
 import com.amazon.device.iap.model.FulfillmentResult
 import com.facebook.react.bridge.LifecycleEventListener
@@ -9,9 +13,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.UiThreadUtil
-import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.module.annotations.ReactModule
-import java.util.HashSet
+
+
 @ReactModule(name = RNIapAmazonModule.TAG)
 class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
@@ -27,12 +31,54 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
         val amazonListener = RNIapAmazonListener(context)
         this.amazonListener = amazonListener
         UiThreadUtil.runOnUiThread {
-            PurchasingService.registerListener(context, amazonListener)
-            hasListener = true
-            // Prefetch user and purchases as per Amazon SDK documentation:
-            PurchasingService.getUserData()
-            PurchasingService.getPurchaseUpdates(false)
-            promise.resolve(true)
+            try {
+                    PurchasingService.registerListener(context.applicationContext, amazonListener)
+                    hasListener = true
+                    // Prefetch user and purchases as per Amazon SDK documentation:
+                    PurchasingService.getUserData()
+                    PurchasingService.getPurchaseUpdates(false)
+                    promise.safeResolve(true)
+
+            }catch (e:Exception){
+                promise.safeReject("Error initializing Amazon appstore sdk", e)
+            }
+        }
+    }
+
+    @ReactMethod
+    fun verifyLicense(promise: Promise){
+        try {
+            LicensingService.verifyLicense(reactApplicationContext) { licenseResponse ->
+                when (val status: LicenseResponse.RequestStatus =
+                    licenseResponse.requestStatus) {
+                    LicenseResponse.RequestStatus.LICENSED -> {
+                        Log.d(TAG, "LicenseResponse status: $status")
+                        promise.resolve("LICENSED")
+                    }
+                    LicenseResponse.RequestStatus.NOT_LICENSED -> {
+                        Log.d(TAG, "LicenseResponse status: $status")
+                        promise.resolve("NOT_LICENSED")
+                    }
+                    LicenseResponse.RequestStatus.EXPIRED -> {
+                        Log.d(TAG, "LicenseResponse status: $status")
+                        promise.resolve("EXPIRED")
+                    }
+                    LicenseResponse.RequestStatus.ERROR_VERIFICATION -> {
+                        Log.d(TAG, "LicenseResponse status: $status")
+                        promise.resolve("ERROR_VERIFICATION")
+                    }
+                    LicenseResponse.RequestStatus.ERROR_INVALID_LICENSING_KEYS -> {
+                        Log.d(TAG, "LicenseResponse status: $status")
+                        promise.resolve("ERROR_INVALID_LICENSING_KEYS")
+                    }
+                    LicenseResponse.RequestStatus.UNKNOWN_ERROR -> {
+                        Log.d(TAG, "LicenseResponse status: $status")
+                        promise.resolve("UNKNOWN_ERROR")
+                    }
+                }
+            }
+        }catch (exception: Exception){
+            promise.reject("Error while attempting to check for License",exception)
         }
     }
 

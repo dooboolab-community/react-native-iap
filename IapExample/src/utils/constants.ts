@@ -1,5 +1,7 @@
 import {Platform} from 'react-native';
 
+import {isAmazon} from '../../../src/internal';
+
 const productSkus = Platform.select({
   ios: ['com.cooni.point1000', 'com.cooni.point5000'],
 
@@ -15,7 +17,12 @@ const productSkus = Platform.select({
 
 const subscriptionSkus = Platform.select({
   ios: ['com.cooni.sub1000', 'com.cooni.sub5000'],
-  android: ['test.sub1'],
+  android: isAmazon
+    ? [
+        'com.amazon.sample.iap.subscription.mymagazine.month',
+        'com.amazon.sample.iap.subscription.mymagazine.quarter',
+      ]
+    : ['test.sub1'],
   default: [],
 }) as string[];
 

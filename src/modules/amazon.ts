@@ -2,8 +2,11 @@ import {NativeModules} from 'react-native';
 
 import {enhancedFetch} from '../internal';
 import type {Product, Purchase, Sku} from '../types';
-import type {UserDataAmazon} from '../types/amazon';
-import type * as Amazon from '../types/amazon';
+import type {
+  AmazonLicensingStatus,
+  ReceiptType,
+  UserDataAmazon,
+} from '../types/amazon';
 
 import type {NativeModuleProps} from './common';
 // ----------
@@ -35,6 +38,7 @@ export interface AmazonModuleProps extends NativeModuleProps {
   acknowledgePurchase: AcknowledgePurchase;
   consumeProduct: ConsumeProduct;
   startListening: StartListening;
+  verifyLicense: () => Promise<AmazonLicensingStatus>;
 }
 
 export const AmazonModule =
@@ -60,9 +64,9 @@ export const validateReceiptAmazon = async ({
   userId: string;
   receiptId: string;
   useSandbox: boolean;
-}): Promise<Amazon.ReceiptType> => {
+}): Promise<ReceiptType> => {
   const sandBoxUrl = useSandbox ? 'sandbox/' : '';
   const url = `https://appstore-sdk.amazon.com/${sandBoxUrl}version/1.0/verifyReceiptId/developer/${developerSecret}/user/${userId}/receiptId/${receiptId}`;
 
-  return await enhancedFetch<Amazon.ReceiptType>(url);
+  return await enhancedFetch<ReceiptType>(url);
 };

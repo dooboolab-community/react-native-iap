@@ -48,7 +48,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     var priceNumber: Number = 0.00
                     val priceString = product.price
                     try {
-                        if (priceString != null && !priceString.isEmpty()) {
+                        if (priceString?.isNotEmpty()== true) {
                             priceNumber = priceString.replace("[^\\d.,]+".toRegex(), "").toDouble()
                         }
                     } catch (e: NumberFormatException) {

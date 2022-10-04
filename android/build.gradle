@@ -150,6 +150,7 @@ def supportLibVersion = getExtOrDefault("supportLibVersion")
 def androidXVersion = getExtOrDefault("androidXVersion")
 def androidXAnnotation = getExtOrDefault("androidXAnnotation")
 def androidXBrowser = getExtOrDefault("androidXBrowser")
+def amazonSdkVersion = getExtOrDefault("amazonSdkVersion")
 
 dependencies {
   implementation "com.facebook.react:react-native:+"
@@ -161,7 +162,7 @@ dependencies {
   playImplementation "com.android.billingclient:billing-ktx:5.0.0"
   playImplementation "com.google.android.gms:play-services-base:$playServicesVersion"
 
-  amazonImplementation  'com.amazon.device:amazon-appstore-sdk:3.0.3'
+  amazonImplementation  "com.amazon.device:amazon-appstore-sdk:$amazonSdkVersion"
 
   if (supportLibVersion && androidXVersion == null) {
     implementation "com.android.support:support-annotations:$supportLibVersion"
