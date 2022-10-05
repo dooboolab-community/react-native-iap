@@ -85,6 +85,11 @@ protocol Sk2Delegate {
         reject: @escaping RCTPromiseRejectBlock
     )
 
+    func clearTransaction(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
     func startObserving()
     func stopObserving()
 }
@@ -200,6 +205,10 @@ class DummySk2: Sk2Delegate {
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func clearTransaction(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         reject(errorCode, errorMessage, nil)
     }
 
@@ -360,6 +369,12 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         delegate.presentCodeRedemptionSheet(resolve, reject: reject)
+    }
+
+    @objc func clearTransaction(
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }) {
+        delegate.clearTransaction(resolve, reject: reject)
     }
 }
 
@@ -809,5 +824,23 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         #else
         reject(IapErrors.E_USER_CANCELLED.rawValue, "This method is not available on tvOS", nil)
         #endif
+    }
+
+    func clearTransaction(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        Task {
+            for await result in Transaction.unfinished {
+                do {
+                    // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
+                    let transaction = try checkVerified(result)
+                    debugMessage("Finishing transaction")
+                    await transaction.finish()
+                    debugMessage("Finished transaction")
+                    transactions.removeValue(forKey: String(transaction.id))
+                } catch {
+                    debugMessage("Failed to finish transaction")
+                }
+            }
+            resolve(nil)
+        }
     }
 }
