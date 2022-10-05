@@ -25,8 +25,9 @@ const subscriptionSkus = Platform.select({
     : ['test.sub1'],
   default: [],
 }) as string[];
-
+const amazonBaseSku = 'com.amazon.sample.iap.subscription.mymagazine';
 export const constants = {
   productSkus,
   subscriptionSkus,
+  amazonBaseSku,
 };

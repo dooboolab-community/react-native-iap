@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
   isIosStorekit2,
   PurchaseError,
@@ -8,7 +8,14 @@ import {
 } from 'react-native-iap';
 
 import {Box, Button, Heading, Row, State} from '../components';
-import {constants, contentContainerStyle, errorLog} from '../utils';
+import {
+  constants,
+  contentContainerStyle,
+  errorLog,
+  isAmazon,
+  isIos,
+  isPlay,
+} from '../utils';
 
 export const Subscriptions = () => {
   const {
@@ -18,7 +25,7 @@ export const Subscriptions = () => {
     currentPurchase,
     finishTransaction,
   } = useIAP();
-  const [ownedSubscriptions, setOwnedSubscriptions] = useState(new Set());
+  const [ownedSubscriptions, setOwnedSubscriptions] = useState<string[]>([]);
   const handleGetSubscriptions = async () => {
     try {
       await getSubscriptions({skus: constants.subscriptionSkus});
@@ -31,7 +38,7 @@ export const Subscriptions = () => {
     productId: string,
     offerToken?: string,
   ) => {
-    if (Platform.OS === 'android' && !offerToken) {
+    if (isPlay && !offerToken) {
       console.warn(
         `There are no subscription Offers for selected product (Only requiered for Google Play purchases): ${productId}`,
       );
@@ -55,15 +62,16 @@ export const Subscriptions = () => {
   useEffect(() => {
     const checkCurrentPurchase = async () => {
       try {
-        if (currentPurchase?.transactionId) {
+        if (currentPurchase?.productId) {
           await finishTransaction({
             purchase: currentPurchase,
             isConsumable: true,
           });
 
-          setOwnedSubscriptions(
-            (prev) => new Set([...prev, currentPurchase?.productId]),
-          );
+          setOwnedSubscriptions((prev) => [
+            ...prev,
+            currentPurchase?.productId,
+          ]);
         }
       } catch (error) {
         if (error instanceof PurchaseError) {
@@ -85,42 +93,45 @@ export const Subscriptions = () => {
         <View style={styles.container}>
           <Heading copy="Subscriptions" />
 
-          {subscriptions.map((subscription, index) => (
-            <Row
-              key={subscription.productId}
-              fields={[
-                {
-                  label: 'Subscription Id',
-                  value: subscription.productId,
-                },
-                {
-                  label: 'type',
-                  value: subscription.type,
-                },
-              ]}
-              isLast={subscriptions.length - 1 === index}
-            >
-              {ownedSubscriptions.has(subscription.productId) && (
-                <Text>Subscribed</Text>
-              )}
-              {!ownedSubscriptions.has(subscription.productId) &&
-                Platform.OS === 'android' &&
-                // On Google Play Billing V5 you might have  multiple offers for a single sku
-                subscription?.subscriptionOfferDetails?.map((offer) => (
-                  <Button
-                    title={`Subscribe ${offer.pricingPhases.pricingPhaseList
-                      .map((ppl) => ppl.billingPeriod)
-                      .join(',')}`}
-                    onPress={() => {
-                      handleBuySubscription(
-                        subscription.productId,
-                        offer.offerToken,
-                      );
-                    }}
-                  />
-                ))}
-              {!ownedSubscriptions.has(subscription.productId) &&
-                Platform.OS === 'ios' && (
+          {subscriptions.map((subscription, index) => {
+            const owned = ownedSubscriptions.find((pId) => {
+              return isAmazon
+                ? pId === constants.amazonBaseSku
+                : pId === subscription.productId;
+            });
+            return (
+              <Row
+                key={subscription.productId}
+                fields={[
+                  {
+                    label: 'Subscription Id',
+                    value: subscription.productId,
+                  },
+                  {
+                    label: 'type',
+                    value: subscription.type,
+                  },
+                ]}
+                isLast={subscriptions.length - 1 === index}
+              >
+                {owned && <Text>Subscribed</Text>}
+                {!owned &&
+                  isPlay &&
+                  // On Google Play Billing V5 you might have  multiple offers for a single sku
+                  subscription?.subscriptionOfferDetails?.map((offer) => (
+                    <Button
+                      title={`Subscribe ${offer.pricingPhases.pricingPhaseList
+                        .map((ppl) => ppl.billingPeriod)
+                        .join(',')}`}
+                      onPress={() => {
+                        handleBuySubscription(
+                          subscription.productId,
+                          offer.offerToken,
+                        );
+                      }}
+                    />
+                  ))}
+                {!owned && (isIos || isAmazon) && (
                   <Button
                     title="Subscribe"
                     onPress={() => {
@@ -128,8 +139,9 @@ export const Subscriptions = () => {
                     }}
                   />
                 )}
-            </Row>
-          ))}
+              </Row>
+            );
+          })}
         </View>
 
         <Button

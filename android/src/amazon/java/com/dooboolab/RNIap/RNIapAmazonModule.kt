@@ -154,8 +154,8 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     }
 
     private fun sendUnconsumedPurchases(promise: Promise) {
-        PurchasingService.getPurchaseUpdates(false)
         DoobooUtils.instance.addPromiseForKey(PROMISE_QUERY_PURCHASES, promise)
+        PurchasingService.getPurchaseUpdates(false)
     }
 
     @ReactMethod
