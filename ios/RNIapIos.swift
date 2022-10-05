@@ -1,27 +1,6 @@
 import React
 import StoreKit
 
-// Based on https://stackoverflow.com/a/40135192/570612
-extension Date {
-    var millisecondsSince1970: Int64 {
-        return Int64((self.timeIntervalSince1970 * 1000.0).rounded())
-    }
-
-    var millisecondsSince1970String: String {
-        return String((self.timeIntervalSince1970 * 1000.0).rounded())
-    }
-
-    init(milliseconds: Int64) {
-        self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)
-    }
-}
-
-extension SKProductsRequest {
-    var key: String {
-        return String(self.hashValue)
-    }
-}
-
 @objc(RNIapIos)
 class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver, SKProductsRequestDelegate {
     private var promisesByKey: [String: [RNIapIosPromise]]
@@ -29,7 +8,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     private var hasListeners = false
     private var pendingTransactionWithAutoFinish = false
     private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
-    private var validProducts: [SKProduct]
+    private var validProducts: [String: SKProduct]
     private var promotedPayment: SKPayment?
     private var promotedProduct: SKProduct?
     private var productsRequest: SKProductsRequest?
@@ -40,7 +19,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         promisesByKey = [String: [RNIapIosPromise]]()
         pendingTransactionWithAutoFinish = false
         myQueue = DispatchQueue(label: "reject")
-        validProducts = [SKProduct]()
+        validProducts = [String: SKProduct]()
         super.init()
         addTransactionObserver()
     }
@@ -212,16 +191,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
-        var product: SKProduct?
-        let lockQueue = DispatchQueue(label: "validProducts")
-        lockQueue.sync {
-            for p in validProducts {
-                if sku == p.productIdentifier {
-                    product = p
-                    break
-                }
-            }
-        }
+        var product: SKProduct? = validProducts[sku]
+
         if let prod = product {
             addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
 
@@ -391,12 +362,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         }
 
         var items: [[String: Any?]] = [[:]]
-        let lockQueue = DispatchQueue(label: "validProducts")
-
-        lockQueue.sync {
-            for product in validProducts {
-                items.append(getProductObject(product))
-            }
+        for product in validProducts.values {
+            items.append(getProductObject(product))
         }
 
         resolvePromises(forKey: request.key, value: items)
@@ -405,25 +372,8 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     // Add to valid products from Apple server response. Allowing getProducts, getSubscriptions call several times.
     // Doesn't allow duplication. Replace new product.
     func add(_ aProd: SKProduct) {
-        let lockQueue = DispatchQueue(label: "validProducts")
-
-        lockQueue.sync {
-            debugMessage("Add new object: \(aProd.productIdentifier)")
-            var delTar = -1
-
-            for k in 0..<validProducts.count {
-                let cur = validProducts[k]
-                if cur.productIdentifier == aProd.productIdentifier {
-                    delTar = k
-                }
-            }
-
-            if delTar >= 0 {
-                validProducts.remove(at: delTar)
-            }
-
-            validProducts.append(aProd)
-        }
+        debugMessage("Add new object: \(aProd.productIdentifier)")
+        validProducts[aProd.productIdentifier] = aProd
     }
 
     func request(_ request: SKRequest, didFailWithError error: Error) {
