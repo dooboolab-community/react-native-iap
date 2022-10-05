@@ -1,4 +1,2 @@
-import {Platform} from 'react-native';
-
-export const isIos = Platform.OS === 'ios';
-export const isAndroid = Platform.OS === 'android';
+import {isAmazon, isAndroid, isIos, isPlay} from '../../../src/internal';
+export {isAmazon, isIos, isAndroid, isPlay};
