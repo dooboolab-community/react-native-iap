@@ -28,7 +28,9 @@ Please [fund the project](https://opencollective.com/react-native-iap) if you ar
 
 ## Announcement
 
-- Version `11.0.0` is currently in alpha candidate. The module migrates OS sdk to [storekit2](https://developer.apple.com/videos/play/wwdc2021/10114). [andresesfm](https://github.com/andresesfm) is working hard on this.
+- Version `12.0.0`: Implements Amazon 3.x SDK including the new DRM verification.
+
+- Version `11.0.0`: The module migrates OS sdk to [storekit2](https://developer.apple.com/videos/play/wwdc2021/10114). [andresesfm](https://github.com/andresesfm) is working hard on this.
 
   ```
   yarn add react-native-iap@next
