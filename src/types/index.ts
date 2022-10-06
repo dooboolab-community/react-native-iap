@@ -54,7 +54,10 @@ export interface ProductCommon {
   description: string;
   price: string;
   currency: string;
-  localizedPrice: string;
+  /**
+   * For Android use subscription.subscriptionOfferDetails[*].pricingPhases.pricingPhaseList[*].formattedPrice
+   */
+  localizedPrice?: string;
   countryCode?: string;
 }
 
