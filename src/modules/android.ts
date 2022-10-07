@@ -1,10 +1,6 @@
 import {Linking, NativeModules} from 'react-native';
 
-import {
-  checkNativeAndroidAvailable,
-  enhancedFetch,
-  getAndroidModule,
-} from '../internal';
+import {checkNativeAndroidAvailable, getAndroidModule} from '../internal';
 import {
   InstallSourceAndroid,
   Product,
@@ -127,7 +123,20 @@ export const validateReceiptAndroid = async ({
     `/${packageName}/purchases/${type}/${productId}` +
     `/tokens/${productToken}?access_token=${accessToken}`;
 
-  return await enhancedFetch<Android.ReceiptType>(url);
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw Object.assign(new Error(response.statusText), {
+      statusCode: response.status,
+    });
+  }
+
+  return response.json();
 };
 
 /**
