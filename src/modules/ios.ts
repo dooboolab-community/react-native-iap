@@ -1,6 +1,6 @@
 import type {ResponseBody as ReceiptValidationResponse} from '@jeremybarbet/apple-api-types';
 
-import {enhancedFetch, getIosModule, isIosStorekit2} from '../internal';
+import {getIosModule, isIosStorekit2} from '../internal';
 import type {
   Product,
   ProductPurchase,

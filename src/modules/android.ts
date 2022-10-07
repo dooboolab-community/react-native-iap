@@ -1,10 +1,6 @@
 import {Linking, NativeModules} from 'react-native';
 
-import {
-  checkNativeAndroidAvailable,
-  enhancedFetch,
-  getAndroidModule,
-} from '../internal';
+import {checkNativeAndroidAvailable, getAndroidModule} from '../internal';
 import {
   InstallSourceAndroid,
   Product,
