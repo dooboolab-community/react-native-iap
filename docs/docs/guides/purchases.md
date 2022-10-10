@@ -65,9 +65,9 @@ class App extends Component {
                       // again until you do this.
 
                       // If consumable (can be purchased again)
-                      await finishTransaction({purchase, isConsumable:true});
+                      await finishTransaction({purchase, isConsumable: true});
                       // If not consumable
-                      await finishTransaction({purchase, isConsumable:false});
+                      await finishTransaction({purchase, isConsumable: false});
                     } else {
                       // Retry / conclude the purchase is fraudulent, etc...
                     }
