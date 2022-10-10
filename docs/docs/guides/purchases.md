@@ -63,13 +63,11 @@ class App extends Component {
                       // the purchase event will reappear on every relaunch of the app until you succeed
                       // in doing the below. It will also be impossible for the user to purchase consumables
                       // again until you do this.
-                      await finishTransaction(purchase);
 
-                      // From react-native-iap@4.1.0 you can simplify above `method`. Try to wrap the statement with `try` and `catch` to also grab the `error` message.
                       // If consumable (can be purchased again)
-                      await finishTransaction(purchase, true);
+                      await finishTransaction({purchase, isConsumable: true});
                       // If not consumable
-                      await finishTransaction(purchase, false);
+                      await finishTransaction({purchase, isConsumable: false});
                     } else {
                       // Retry / conclude the purchase is fraudulent, etc...
                     }
