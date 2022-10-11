@@ -7,6 +7,7 @@ import type {
   SubscriptionIosPeriod,
 } from '.';
 import type * as Apple from './apple';
+import {SubscriptionPlatform} from '.';
 
 export type SubscriptionPeriod = {
   unit: 'day' | 'week' | 'month' | 'year';
@@ -71,6 +72,7 @@ export const subscriptionSk2Map = ({
   subscription,
 }: ProductSk2): SubscriptionIOS => {
   const prod: SubscriptionIOS = {
+    platform: SubscriptionPlatform.ios,
     title: displayName,
     productId: String(id),
     description,

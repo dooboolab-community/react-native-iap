@@ -54,10 +54,7 @@ export interface ProductCommon {
   description: string;
   price: string;
   currency: string;
-  /**
-   * For Android use subscription.subscriptionOfferDetails[*].pricingPhases.pricingPhaseList[*].formattedPrice
-   */
-  localizedPrice?: string;
+  localizedPrice: string;
   countryCode?: string;
 }
 
@@ -127,35 +124,63 @@ export interface ProductIOS extends ProductCommon {
   type: 'inapp' | 'iap';
 }
 
-export type Product = ProductAndroid & ProductIOS;
+export type Product = ProductAndroid | ProductIOS;
 
-// Android V5
-export interface SubscriptionAndroid extends ProductCommon {
+/**
+ * Can be used to distinguish the different platforms' subscription information
+ */
+export enum SubscriptionPlatform {
+  android = 'android',
+  amazon = 'amazon',
+  ios = 'ios',
+}
+
+/** Android Billing v5 type */
+export interface SubscriptionAndroid {
+  platform: SubscriptionPlatform.android;
+  productType: 'subs';
+  name: string;
+  title: string;
+  description: string;
+  productId: string;
+  subscriptionOfferDetails: SubscriptionOfferAndroid[];
+}
+
+export interface SubscriptionOfferAndroid {
+  offerToken: string;
+  pricingPhases: {
+    pricingPhaseList: PricingPhaseAndroid[];
+  };
+  offerTags: string[];
+}
+
+export interface PricingPhaseAndroid {
+  formattedPrice: string;
+  priceCurrencyCode: string;
+  /**
+   * P1W, P1M, P1Y
+   */
+  billingPeriod: string;
+  billingCycleCount: number;
+  priceAmountMicros: string;
+  recurrenceMode: number;
+}
+
+/**
+ * TODO: As of 2022-10-10, this typing is not verified against the real
+ * Amazon API. Please update this if you have a more accurate type.
+ */
+export interface SubscriptionAmazon extends ProductCommon {
+  platform: SubscriptionPlatform.amazon;
   type: 'subs';
 
   productType?: string;
   name?: string;
-  subscriptionOfferDetails?: {
-    offerToken: string;
-    pricingPhases: {
-      pricingPhaseList: {
-        formattedPrice: string;
-        priceCurrencyCode: string;
-        /**
-         * P1W, P1M, P1Y
-         */
-        billingPeriod: string;
-        billingCycleCount: number;
-        priceAmountMicros: string;
-        recurrenceMode: number;
-      }[];
-    };
-    offerTags: string[];
-  }[];
 }
 
 export type SubscriptionIosPeriod = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | '';
 export interface SubscriptionIOS extends ProductCommon {
+  platform: SubscriptionPlatform.ios;
   type: 'subs';
   discounts?: Discount[];
   introductoryPrice?: string;
@@ -172,7 +197,11 @@ export interface SubscriptionIOS extends ProductCommon {
   subscriptionPeriodUnitIOS?: SubscriptionIosPeriod;
 }
 
-export type Subscription = SubscriptionAndroid & SubscriptionIOS;
+export type Subscription =
+  | SubscriptionAndroid
+  | SubscriptionAmazon
+  | SubscriptionIOS;
+
 export interface RequestPurchaseBaseAndroid {
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;

@@ -25,6 +25,10 @@ export const checkNativeAndroidAvailable = (): void => {
   }
 };
 
+/**
+ * If changing the typings of `getAndroidModule` to accommodate extra modules,
+ * make sure to update `getAndroidModuleType`.
+ */
 export const getAndroidModule = ():
   | typeof RNIapModule
   | typeof RNIapAmazonModule => {
@@ -35,6 +39,22 @@ export const getAndroidModule = ():
     : RNIapModule
     ? RNIapModule
     : RNIapAmazonModule;
+};
+
+/**
+ * Returns whether the Android in-app-purchase code is using the Android,
+ * Amazon, or another store.
+ */
+export const getAndroidModuleType = (): 'android' | 'amazon' | null => {
+  const module = getAndroidModule();
+  switch (module) {
+    case RNIapModule:
+      return 'android';
+    case RNIapAmazonModule:
+      return 'amazon';
+    default:
+      return null;
+  }
 };
 
 export const getNativeModule = ():

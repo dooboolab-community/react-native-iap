@@ -5,11 +5,12 @@ import type {ProductCommon} from '../types';
 const {RNIapAmazonModule} = NativeModules;
 
 /**
- * Fill products with additional data
+ * For Amazon products, we add the currency code from the user's information
+ * since it isn't included in the product information.
  */
 export const fillProductsWithAdditionalData = async <T extends ProductCommon>(
   items: T[],
-) => {
+): Promise<T[]> => {
   if (RNIapAmazonModule) {
     // On amazon we must get the user marketplace to detect the currency
     const user = await RNIapAmazonModule.getUser();
