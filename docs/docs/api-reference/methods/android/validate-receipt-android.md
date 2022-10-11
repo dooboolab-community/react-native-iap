@@ -38,13 +38,13 @@ import {validateReceiptAndroid} from 'react-native-iap';
 
 const App = () => {
   const handlePurchase = async () => {
-    const response = await validateReceiptAndroid(
-      'your-package-name',
-      'your-product-id',
-      'your-product-token',
-      'your-access-token',
-      true,
-    );
+    const response = await validateReceiptAndroid({
+      packageName: purchase.packageNameAndroid, 
+      productId: purchase.productId, 
+      productToken: purchase.purchaseToken, 
+      accessToken: 'your-access-token', 
+      isSub: true
+  });
   };
 
   return <Button title="Purchase" onPress={handlePurchase} />;
