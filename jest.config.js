@@ -2,7 +2,7 @@ module.exports = {
   clearMocks: true,
   coverageDirectory: 'coverage',
   moduleDirectories: ['node_modules', 'src'],
-  modulePathIgnorePatterns: ['IapExample'],
+  modulePathIgnorePatterns: ['IapExample', 'lib'],
   preset: 'react-native',
   setupFiles: ['<rootDir>/test/mocks/react-native-modules.js'],
   setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
