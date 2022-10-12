@@ -1,6 +1,8 @@
+import {NativeModules} from 'react-native';
 import type {ResponseBody as ReceiptValidationResponse} from '@jeremybarbet/apple-api-types';
 
 import {getIosModule, isIosStorekit2} from '../internal';
+const {RNIapIos} = NativeModules;
 import type {
   ProductIOS,
   ProductPurchase,
@@ -69,8 +71,13 @@ export const getReceiptIOS = async ({
   forceRefresh,
 }: {
   forceRefresh?: boolean;
-}): Promise<string> => getIosModule().requestReceipt(forceRefresh ?? false);
-
+}): Promise<string> => {
+  if (!isIosStorekit2()) {
+    return RNIapIos.requestReceipt(forceRefresh ?? false);
+  } else {
+    return Promise.reject('Only available on Sk1');
+  }
+};
 /**
  * Launches a modal to register the redeem offer code in IOS.
  * @returns {Promise<null>}
@@ -85,7 +92,7 @@ export const presentCodeRedemptionSheetIOS = async (): Promise<null> =>
  */
 export const getPromotedProductIOS = (): Promise<ProductIOS | null> => {
   if (!isIosStorekit2()) {
-    return getIosModule().promotedProduct();
+    return RNIapIos.promotedProduct();
   } else {
     return Promise.reject('Only available on Sk1');
   }
