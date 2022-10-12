@@ -209,11 +209,11 @@ export interface RequestPurchaseBaseAndroid {
 }
 
 export interface RequestPurchaseAndroid extends RequestPurchaseBaseAndroid {
-  skus?: Sku[];
+  skus: Sku[];
 }
 
 export interface RequestPurchaseIOS {
-  sku?: Sku;
+  sku: Sku;
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
   /**
    * UUID representing user account
@@ -223,7 +223,13 @@ export interface RequestPurchaseIOS {
   withOffer?: Apple.PaymentDiscount;
 }
 
-export type RequestPurchase = RequestPurchaseAndroid & RequestPurchaseIOS;
+/** As of 2022-10-12, we only use the `sku` field for Amazon purchases */
+export type RequestPurchaseAmazon = RequestPurchaseIOS;
+
+export type RequestPurchase =
+  | RequestPurchaseAndroid
+  | RequestPurchaseAmazon
+  | RequestPurchaseIOS;
 
 /**
  * In order to purchase a new subscription, every sku must have a selected offerToken
@@ -237,13 +243,18 @@ export interface SubscriptionOffer {
 export interface RequestSubscriptionAndroid extends RequestPurchaseBaseAndroid {
   purchaseTokenAndroid?: string;
   prorationModeAndroid?: ProrationModesAndroid;
-  subscriptionOffers?: SubscriptionOffer[]; // For AndroidBilling V5
+  subscriptionOffers: SubscriptionOffer[];
 }
 
 export type RequestSubscriptionIOS = RequestPurchaseIOS;
 
-export type RequestSubscription = RequestSubscriptionAndroid &
-  RequestSubscriptionIOS;
+/** As of 2022-10-12, we only use the `sku` field for Amazon subscriptions */
+export type RequestSubscriptionAmazon = RequestSubscriptionIOS;
+
+export type RequestSubscription =
+  | RequestSubscriptionAndroid
+  | RequestSubscriptionAmazon
+  | RequestSubscriptionIOS;
 
 declare module 'react-native' {
   interface NativeModulesStatic {

@@ -555,23 +555,24 @@ const App = () => {
 
  */
 
-export const requestPurchase = ({
-  sku,
-  andDangerouslyFinishTransactionAutomaticallyIOS = false,
-  obfuscatedAccountIdAndroid,
-  obfuscatedProfileIdAndroid,
-  appAccountToken,
-  skus, // Android Billing V5
-  isOfferPersonalized = undefined, // Android Billing V5
-  quantity,
-  withOffer,
-}: RequestPurchase): Promise<ProductPurchase | void> =>
+export const requestPurchase = (
+  request: RequestPurchase,
+): Promise<ProductPurchase | void> =>
   (
     Platform.select({
       ios: async () => {
-        if (!sku) {
-          return Promise.reject(new Error('sku is required for iOS purchase'));
+        if (!('sku' in request)) {
+          throw new Error('sku is required for iOS purchase');
         }
+
+        const {
+          sku,
+          andDangerouslyFinishTransactionAutomaticallyIOS = false,
+          appAccountToken,
+          quantity,
+          withOffer,
+        } = request;
+
         if (andDangerouslyFinishTransactionAutomaticallyIOS) {
           console.warn(
             'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
@@ -599,21 +600,25 @@ export const requestPurchase = ({
       },
       android: async () => {
         if (isAmazon) {
-          if (!sku) {
-            return Promise.reject(
-              new Error('sku is required for Amazon purchase'),
-            );
+          if (!('sku' in request)) {
+            throw new Error('sku is required for Amazon purchase');
           }
+          const {sku} = request;
           return RNIapAmazonModule.buyItemByType(sku);
         } else {
-          if (!sku?.length && !sku) {
-            return Promise.reject(
-              new Error('skus is required for Android purchase'),
-            );
+          if (!('skus' in request) || !request.skus.length) {
+            throw new Error('skus is required for Android purchase');
           }
+
+          const {
+            skus,
+            obfuscatedAccountIdAndroid,
+            obfuscatedProfileIdAndroid,
+            isOfferPersonalized,
+          } = request;
           return getAndroidModule().buyItemByType(
             ANDROID_ITEM_TYPE_IAP,
-            skus?.length ? skus : [sku],
+            skus,
             undefined,
             -1,
             obfuscatedAccountIdAndroid,
@@ -703,27 +708,24 @@ const App = () => {
 };
 ```
  */
-export const requestSubscription = ({
-  sku,
-  andDangerouslyFinishTransactionAutomaticallyIOS = false,
-  purchaseTokenAndroid,
-  prorationModeAndroid = -1,
-  obfuscatedAccountIdAndroid,
-  obfuscatedProfileIdAndroid,
-  subscriptionOffers = undefined, // Android Billing V5
-  isOfferPersonalized = undefined, // Android Billing V5
-  appAccountToken,
-  quantity,
-  withOffer,
-}: RequestSubscription): Promise<SubscriptionPurchase | null | void> =>
+export const requestSubscription = (
+  request: RequestSubscription,
+): Promise<SubscriptionPurchase | null | void> =>
   (
     Platform.select({
       ios: async () => {
-        if (!sku) {
-          return Promise.reject(
-            new Error('sku is required for iOS subscription'),
-          );
+        if (!('sku' in request)) {
+          throw new Error('sku is required for iOS subscriptions');
         }
+
+        const {
+          sku,
+          andDangerouslyFinishTransactionAutomaticallyIOS = false,
+          appAccountToken,
+          quantity,
+          withOffer,
+        } = request;
+
         if (andDangerouslyFinishTransactionAutomaticallyIOS) {
           console.warn(
             'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
@@ -752,18 +754,29 @@ export const requestSubscription = ({
       },
       android: async () => {
         if (isAmazon) {
-          if (!sku) {
-            return Promise.reject(
-              new Error('sku is required for Amazon purchase'),
-            );
+          if (!('sku' in request)) {
+            throw new Error('sku is required for Amazon subscriptions');
           }
-          return RNIapAmazonModule.buyItemByType(sku);
+          return RNIapAmazonModule.buyItemByType(request.sku);
         } else {
-          if (!subscriptionOffers?.length) {
-            return Promise.reject(
-              'subscriptionOffers are required for Google Play Subscriptions',
+          if (
+            !('subscriptionOffers' in request) ||
+            request.subscriptionOffers.length === 0
+          ) {
+            throw new Error(
+              'subscriptionOffers are required for Google Play subscriptions',
             );
           }
+
+          const {
+            subscriptionOffers,
+            purchaseTokenAndroid,
+            prorationModeAndroid,
+            obfuscatedAccountIdAndroid,
+            obfuscatedProfileIdAndroid,
+            isOfferPersonalized,
+          } = request;
+
           return RNIapModule.buyItemByType(
             ANDROID_ITEM_TYPE_SUBSCRIPTION,
             subscriptionOffers?.map((so) => so.sku),
