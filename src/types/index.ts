@@ -124,7 +124,7 @@ export interface ProductIOS extends ProductCommon {
   type: 'inapp' | 'iap';
 }
 
-export type Product = ProductAndroid | ProductIOS;
+export type Product = ProductAndroid & ProductIOS;
 
 /**
  * Can be used to distinguish the different platforms' subscription information

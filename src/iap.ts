@@ -757,7 +757,8 @@ export const requestSubscription = (
           if (!('sku' in request)) {
             throw new Error('sku is required for Amazon subscriptions');
           }
-          return RNIapAmazonModule.buyItemByType(request.sku);
+          const {sku} = request;
+          return RNIapAmazonModule.buyItemByType(sku);
         } else {
           if (
             !('subscriptionOffers' in request) ||
