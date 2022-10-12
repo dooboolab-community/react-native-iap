@@ -29,7 +29,6 @@ type clearTransaction = () => Promise<void>;
 type clearProducts = () => Promise<void>;
 type promotedProduct = () => Promise<Product | null>;
 type buyPromotedProduct = () => Promise<void>;
-type requestReceipt = (refresh: boolean) => Promise<string>;
 
 type finishTransaction = (transactionIdentifier: string) => Promise<boolean>;
 
@@ -50,7 +49,6 @@ export interface IosModulePropsSk2 extends NativeModuleProps {
   clearProducts: clearProducts;
   promotedProduct: promotedProduct;
   buyPromotedProduct: buyPromotedProduct;
-  requestReceipt: requestReceipt;
   finishTransaction: finishTransaction;
   getPendingTransactions: getPendingTransactions;
   presentCodeRedemptionSheet: presentCodeRedemptionSheet;
