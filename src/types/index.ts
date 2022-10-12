@@ -54,10 +54,7 @@ export interface ProductCommon {
   description: string;
   price: string;
   currency: string;
-  /**
-   * For Android use subscription.subscriptionOfferDetails[*].pricingPhases.pricingPhaseList[*].formattedPrice
-   */
-  localizedPrice?: string;
+  localizedPrice: string;
   countryCode?: string;
 }
 
@@ -129,33 +126,61 @@ export interface ProductIOS extends ProductCommon {
 
 export type Product = ProductAndroid & ProductIOS;
 
-// Android V5
-export interface SubscriptionAndroid extends ProductCommon {
+/**
+ * Can be used to distinguish the different platforms' subscription information
+ */
+export enum SubscriptionPlatform {
+  android = 'android',
+  amazon = 'amazon',
+  ios = 'ios',
+}
+
+/** Android Billing v5 type */
+export interface SubscriptionAndroid {
+  platform: SubscriptionPlatform.android;
+  productType: 'subs';
+  name: string;
+  title: string;
+  description: string;
+  productId: string;
+  subscriptionOfferDetails: SubscriptionOfferAndroid[];
+}
+
+export interface SubscriptionOfferAndroid {
+  offerToken: string;
+  pricingPhases: {
+    pricingPhaseList: PricingPhaseAndroid[];
+  };
+  offerTags: string[];
+}
+
+export interface PricingPhaseAndroid {
+  formattedPrice: string;
+  priceCurrencyCode: string;
+  /**
+   * P1W, P1M, P1Y
+   */
+  billingPeriod: string;
+  billingCycleCount: number;
+  priceAmountMicros: string;
+  recurrenceMode: number;
+}
+
+/**
+ * TODO: As of 2022-10-10, this typing is not verified against the real
+ * Amazon API. Please update this if you have a more accurate type.
+ */
+export interface SubscriptionAmazon extends ProductCommon {
+  platform: SubscriptionPlatform.amazon;
   type: 'subs';
 
   productType?: string;
   name?: string;
-  subscriptionOfferDetails?: {
-    offerToken: string;
-    pricingPhases: {
-      pricingPhaseList: {
-        formattedPrice: string;
-        priceCurrencyCode: string;
-        /**
-         * P1W, P1M, P1Y
-         */
-        billingPeriod: string;
-        billingCycleCount: number;
-        priceAmountMicros: string;
-        recurrenceMode: number;
-      }[];
-    };
-    offerTags: string[];
-  }[];
 }
 
 export type SubscriptionIosPeriod = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | '';
 export interface SubscriptionIOS extends ProductCommon {
+  platform: SubscriptionPlatform.ios;
   type: 'subs';
   discounts?: Discount[];
   introductoryPrice?: string;
@@ -172,7 +197,11 @@ export interface SubscriptionIOS extends ProductCommon {
   subscriptionPeriodUnitIOS?: SubscriptionIosPeriod;
 }
 
-export type Subscription = SubscriptionAndroid & SubscriptionIOS;
+export type Subscription =
+  | SubscriptionAndroid
+  | SubscriptionAmazon
+  | SubscriptionIOS;
+
 export interface RequestPurchaseBaseAndroid {
   obfuscatedAccountIdAndroid?: string;
   obfuscatedProfileIdAndroid?: string;
@@ -180,11 +209,11 @@ export interface RequestPurchaseBaseAndroid {
 }
 
 export interface RequestPurchaseAndroid extends RequestPurchaseBaseAndroid {
-  skus?: Sku[];
+  skus: Sku[];
 }
 
 export interface RequestPurchaseIOS {
-  sku?: Sku;
+  sku: Sku;
   andDangerouslyFinishTransactionAutomaticallyIOS?: boolean;
   /**
    * UUID representing user account
@@ -194,7 +223,13 @@ export interface RequestPurchaseIOS {
   withOffer?: Apple.PaymentDiscount;
 }
 
-export type RequestPurchase = RequestPurchaseAndroid & RequestPurchaseIOS;
+/** As of 2022-10-12, we only use the `sku` field for Amazon purchases */
+export type RequestPurchaseAmazon = RequestPurchaseIOS;
+
+export type RequestPurchase =
+  | RequestPurchaseAndroid
+  | RequestPurchaseAmazon
+  | RequestPurchaseIOS;
 
 /**
  * In order to purchase a new subscription, every sku must have a selected offerToken
@@ -208,13 +243,18 @@ export interface SubscriptionOffer {
 export interface RequestSubscriptionAndroid extends RequestPurchaseBaseAndroid {
   purchaseTokenAndroid?: string;
   prorationModeAndroid?: ProrationModesAndroid;
-  subscriptionOffers?: SubscriptionOffer[]; // For AndroidBilling V5
+  subscriptionOffers: SubscriptionOffer[];
 }
 
 export type RequestSubscriptionIOS = RequestPurchaseIOS;
 
-export type RequestSubscription = RequestSubscriptionAndroid &
-  RequestSubscriptionIOS;
+/** As of 2022-10-12, we only use the `sku` field for Amazon subscriptions */
+export type RequestSubscriptionAmazon = RequestSubscriptionIOS;
+
+export type RequestSubscription =
+  | RequestSubscriptionAndroid
+  | RequestSubscriptionAmazon
+  | RequestSubscriptionIOS;
 
 declare module 'react-native' {
   interface NativeModulesStatic {

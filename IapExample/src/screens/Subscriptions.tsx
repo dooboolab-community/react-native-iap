@@ -109,7 +109,10 @@ export const Subscriptions = () => {
                   },
                   {
                     label: 'type',
-                    value: subscription.type,
+                    value:
+                      'type' in subscription
+                        ? subscription.type
+                        : subscription.productType,
                   },
                 ]}
                 isLast={subscriptions.length - 1 === index}
@@ -118,6 +121,7 @@ export const Subscriptions = () => {
                 {!owned &&
                   isPlay &&
                   // On Google Play Billing V5 you might have  multiple offers for a single sku
+                  'subscriptionOfferDetails' in subscription &&
                   subscription?.subscriptionOfferDetails?.map((offer) => (
                     <Button
                       title={`Subscribe ${offer.pricingPhases.pricingPhaseList

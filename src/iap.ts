@@ -15,6 +15,7 @@ import {
 import {
   fillProductsWithAdditionalData,
   getAndroidModule,
+  getAndroidModuleType,
   getIosModule,
   getNativeModule,
   isAmazon,
@@ -28,12 +29,16 @@ import {
   ProductPurchase,
   ProductType,
   PurchaseResult,
+  PurchaseStateAndroid,
   RequestPurchase,
   RequestSubscription,
   Subscription,
+  SubscriptionAmazon,
+  SubscriptionAndroid,
+  SubscriptionIOS,
+  SubscriptionPlatform,
   SubscriptionPurchase,
 } from './types';
-import {PurchaseStateAndroid} from './types';
 
 export {IapAndroid, IapAmazon, IapIos, IapIosSk2, isIosStorekit2};
 
@@ -231,31 +236,68 @@ export const getSubscriptions = ({
 }): Promise<Subscription[]> =>
   (
     Platform.select({
-      ios: async () => {
-        let items: Subscription[];
+      ios: async (): Promise<SubscriptionIOS[]> => {
+        let items: SubscriptionIOS[];
         if (isIosStorekit2()) {
           items = ((await RNIapIosSk2.getItems(skus)) as ProductSk2[]).map(
             subscriptionSk2Map,
           );
         } else {
-          items = (await RNIapIos.getItems(skus)) as Subscription[];
+          items = (await RNIapIos.getItems(skus)) as SubscriptionIOS[];
         }
 
-        return items.filter(
-          (item: Subscription) =>
+        items = items.filter(
+          (item: SubscriptionIOS) =>
             skus.includes(item.productId) && item.type === 'subs',
         );
+
+        return addSubscriptionPlatform(items, SubscriptionPlatform.ios);
       },
-      android: async () => {
-        const subscriptions = (await getAndroidModule().getItemsByType(
+      android: async (): Promise<Subscription[]> => {
+        const androidPlatform = getAndroidModuleType();
+
+        let subscriptions = (await getAndroidModule().getItemsByType(
           ANDROID_ITEM_TYPE_SUBSCRIPTION,
           skus,
-        )) as Subscription[];
+        )) as SubscriptionAndroid[] | SubscriptionAmazon[];
 
-        return fillProductsWithAdditionalData(subscriptions);
+        switch (androidPlatform) {
+          case 'android': {
+            const castSubscriptions = subscriptions as SubscriptionAndroid[];
+            return addSubscriptionPlatform(
+              castSubscriptions,
+              SubscriptionPlatform.android,
+            );
+          }
+          case 'amazon':
+            let castSubscriptions = subscriptions as SubscriptionAmazon[];
+            castSubscriptions = await fillProductsWithAdditionalData(
+              castSubscriptions,
+            );
+            return addSubscriptionPlatform(
+              castSubscriptions,
+              SubscriptionPlatform.amazon,
+            );
+          case null:
+          default:
+            throw new Error(
+              `getSubscriptions received unknown platform ${androidPlatform}. Verify the logic in getAndroidModuleType`,
+            );
+        }
       },
     }) || (() => Promise.reject(new Error('Unsupported Platform')))
   )();
+
+/**
+ * Adds an extra property to subscriptions so we can distinguish the platform
+ * we retrieved them on.
+ */
+const addSubscriptionPlatform = <T>(
+  subscriptions: T[],
+  platform: SubscriptionPlatform,
+): T[] => {
+  return subscriptions.map((subscription) => ({...subscription, platform}));
+};
 
 /**
  * Gets an inventory of purchases made by the user regardless of consumption status
@@ -281,8 +323,8 @@ const App = () => {
 ```
 @param {alsoPublishToEventListener}:boolean. (IOS Sk2 only) When `true`, every element will also be pushed to the purchaseUpdated listener.
 Note that this is only for backaward compatiblity. It won't publish to transactionUpdated (Storekit2) Defaults to `false`
-@param {automaticallyFinishRestoredTransactions}:boolean. (IOS Sk1 only) When `true`, all the transactions that are returned are automatically 
-finished. This means that if you call this method again you won't get the same result on the same device. On the other hand, if `false` you'd 
+@param {automaticallyFinishRestoredTransactions}:boolean. (IOS Sk1 only) When `true`, all the transactions that are returned are automatically
+finished. This means that if you call this method again you won't get the same result on the same device. On the other hand, if `false` you'd
 have to manually finish the returned transaction once you have delivered the content to your user.
  */
 export const getPurchaseHistory = ({
@@ -403,7 +445,7 @@ const App = () => {
 ```
 @param {alsoPublishToEventListener}:boolean When `true`, every element will also be pushed to the purchaseUpdated listener.
 Note that this is only for backaward compatiblity. It won't publish to transactionUpdated (Storekit2) Defaults to `false`
- * 
+ *
  */
 export const getAvailablePurchases = ({
   alsoPublishToEventListener = false,
@@ -460,22 +502,22 @@ always keeping at false, and verifying the transaction receipts on the server-si
 
 ```ts
 requestPurchase(
- The product's sku/ID 
+ The product's sku/ID
   sku,
 
-  
+
    * You should set this to false and call finishTransaction manually when you have delivered the purchased goods to the user.
    * @default false
-   
+
   andDangerouslyFinishTransactionAutomaticallyIOS = false,
 
-  /** Specifies an optional obfuscated string that is uniquely associated with the user's account in your app. 
+  /** Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
   obfuscatedAccountIdAndroid,
 
-  Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app. 
+  Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
   obfuscatedProfileIdAndroid,
 
-   The purchaser's user ID 
+   The purchaser's user ID
   applicationUsername,
 ): Promise<ProductPurchase>;
 ```
@@ -513,23 +555,24 @@ const App = () => {
 
  */
 
-export const requestPurchase = ({
-  sku,
-  andDangerouslyFinishTransactionAutomaticallyIOS = false,
-  obfuscatedAccountIdAndroid,
-  obfuscatedProfileIdAndroid,
-  appAccountToken,
-  skus, // Android Billing V5
-  isOfferPersonalized = undefined, // Android Billing V5
-  quantity,
-  withOffer,
-}: RequestPurchase): Promise<ProductPurchase | void> =>
+export const requestPurchase = (
+  request: RequestPurchase,
+): Promise<ProductPurchase | void> =>
   (
     Platform.select({
       ios: async () => {
-        if (!sku) {
-          return Promise.reject(new Error('sku is required for iOS purchase'));
+        if (!('sku' in request)) {
+          throw new Error('sku is required for iOS purchase');
         }
+
+        const {
+          sku,
+          andDangerouslyFinishTransactionAutomaticallyIOS = false,
+          appAccountToken,
+          quantity,
+          withOffer,
+        } = request;
+
         if (andDangerouslyFinishTransactionAutomaticallyIOS) {
           console.warn(
             'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
@@ -557,21 +600,25 @@ export const requestPurchase = ({
       },
       android: async () => {
         if (isAmazon) {
-          if (!sku) {
-            return Promise.reject(
-              new Error('sku is required for Amazon purchase'),
-            );
+          if (!('sku' in request)) {
+            throw new Error('sku is required for Amazon purchase');
           }
+          const {sku} = request;
           return RNIapAmazonModule.buyItemByType(sku);
         } else {
-          if (!sku?.length && !sku) {
-            return Promise.reject(
-              new Error('skus is required for Android purchase'),
-            );
+          if (!('skus' in request) || !request.skus.length) {
+            throw new Error('skus is required for Android purchase');
           }
+
+          const {
+            skus,
+            obfuscatedAccountIdAndroid,
+            obfuscatedProfileIdAndroid,
+            isOfferPersonalized,
+          } = request;
           return getAndroidModule().buyItemByType(
             ANDROID_ITEM_TYPE_IAP,
-            skus?.length ? skus : [sku],
+            skus,
             undefined,
             -1,
             obfuscatedAccountIdAndroid,
@@ -599,7 +646,7 @@ always keeping at false, and verifying the transaction receipts on the server-si
 
 ```ts
 requestSubscription(
-  The product's sku/ID 
+  The product's sku/ID
   sku,
 
 
@@ -608,19 +655,19 @@ requestSubscription(
 
   andDangerouslyFinishTransactionAutomaticallyIOS = false,
 
-   purchaseToken that the user is upgrading or downgrading from (Android). 
+   purchaseToken that the user is upgrading or downgrading from (Android).
   purchaseTokenAndroid,
 
-  UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED 
+  UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY, IMMEDIATE_WITH_TIME_PRORATION, IMMEDIATE_AND_CHARGE_PRORATED_PRICE, IMMEDIATE_WITHOUT_PRORATION, DEFERRED
   prorationModeAndroid = -1,
 
-  /** Specifies an optional obfuscated string that is uniquely associated with the user's account in your app. 
+  /** Specifies an optional obfuscated string that is uniquely associated with the user's account in your app.
   obfuscatedAccountIdAndroid,
 
-  Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app. 
+  Specifies an optional obfuscated string that is uniquely associated with the user's profile in your app.
   obfuscatedProfileIdAndroid,
 
-  The purchaser's user ID 
+  The purchaser's user ID
   applicationUsername,
 ): Promise<SubscriptionPurchase>
 ```
@@ -661,27 +708,24 @@ const App = () => {
 };
 ```
  */
-export const requestSubscription = ({
-  sku,
-  andDangerouslyFinishTransactionAutomaticallyIOS = false,
-  purchaseTokenAndroid,
-  prorationModeAndroid = -1,
-  obfuscatedAccountIdAndroid,
-  obfuscatedProfileIdAndroid,
-  subscriptionOffers = undefined, // Android Billing V5
-  isOfferPersonalized = undefined, // Android Billing V5
-  appAccountToken,
-  quantity,
-  withOffer,
-}: RequestSubscription): Promise<SubscriptionPurchase | null | void> =>
+export const requestSubscription = (
+  request: RequestSubscription,
+): Promise<SubscriptionPurchase | null | void> =>
   (
     Platform.select({
       ios: async () => {
-        if (!sku) {
-          return Promise.reject(
-            new Error('sku is required for iOS subscription'),
-          );
+        if (!('sku' in request)) {
+          throw new Error('sku is required for iOS subscriptions');
         }
+
+        const {
+          sku,
+          andDangerouslyFinishTransactionAutomaticallyIOS = false,
+          appAccountToken,
+          quantity,
+          withOffer,
+        } = request;
+
         if (andDangerouslyFinishTransactionAutomaticallyIOS) {
           console.warn(
             'You are dangerously allowing react-native-iap to finish your transaction automatically. You should set andDangerouslyFinishTransactionAutomatically to false when calling requestPurchase and call finishTransaction manually when you have delivered the purchased goods to the user. It defaults to true to provide backwards compatibility. Will default to false in version 4.0.0.',
@@ -710,18 +754,30 @@ export const requestSubscription = ({
       },
       android: async () => {
         if (isAmazon) {
-          if (!sku) {
-            return Promise.reject(
-              new Error('sku is required for Amazon purchase'),
-            );
+          if (!('sku' in request)) {
+            throw new Error('sku is required for Amazon subscriptions');
           }
+          const {sku} = request;
           return RNIapAmazonModule.buyItemByType(sku);
         } else {
-          if (!subscriptionOffers?.length) {
-            return Promise.reject(
-              'subscriptionOffers are required for Google Play Subscriptions',
+          if (
+            !('subscriptionOffers' in request) ||
+            request.subscriptionOffers.length === 0
+          ) {
+            throw new Error(
+              'subscriptionOffers are required for Google Play subscriptions',
             );
           }
+
+          const {
+            subscriptionOffers,
+            purchaseTokenAndroid,
+            prorationModeAndroid,
+            obfuscatedAccountIdAndroid,
+            obfuscatedProfileIdAndroid,
+            isOfferPersonalized,
+          } = request;
+
           return RNIapModule.buyItemByType(
             ANDROID_ITEM_TYPE_SUBSCRIPTION,
             subscriptionOffers?.map((so) => so.sku),
@@ -744,7 +800,7 @@ export const requestSubscription = ({
  *   Call this after you have persisted the purchased state to your server or local data in your app.
  *   `react-native-iap` will continue to deliver the purchase updated events with the successful purchase until you finish the transaction. **Even after the app has relaunched.**
  *   Android: it will consume purchase for consumables and acknowledge purchase for non-consumables.
- *   
+ *
 ```tsx
 import React from 'react';
 import {Button} from 'react-native';
@@ -759,7 +815,7 @@ const App = () => {
 
   return <Button title="Buy product" onPress={handlePurchase} />;
 };
-``` 
+```
  */
 export const finishTransaction = ({
   purchase,

@@ -2,17 +2,17 @@ import type {ResponseBody as ReceiptValidationResponse} from '@jeremybarbet/appl
 
 import {getIosModule, isIosStorekit2} from '../internal';
 import type {
-  Product,
+  ProductIOS,
   ProductPurchase,
   Purchase,
   Sku,
-  Subscription,
+  SubscriptionIOS,
 } from '../types';
 import type {PaymentDiscount} from '../types/apple';
 
 import type {NativeModuleProps} from './common';
 
-type getItems = (skus: Sku[]) => Promise<Product[] | Subscription[]>;
+type getItems = (skus: Sku[]) => Promise<ProductIOS[] | SubscriptionIOS[]>;
 
 type getAvailableItems = (
   automaticallyFinishRestoredTransactions: boolean,
@@ -28,7 +28,7 @@ export type BuyProduct = (
 
 type clearTransaction = () => Promise<void>;
 type clearProducts = () => Promise<void>;
-type promotedProduct = () => Promise<Product | null>;
+type promotedProduct = () => Promise<ProductIOS | null>;
 type buyPromotedProduct = () => Promise<void>;
 type requestReceipt = (refresh: boolean) => Promise<string>;
 
@@ -83,7 +83,7 @@ export const presentCodeRedemptionSheetIOS = async (): Promise<null> =>
  *   Indicates the the App Store purchase should continue from the app instead of the App Store.
  * @returns {Promise<Product | null>} promoted product
  */
-export const getPromotedProductIOS = (): Promise<Product | null> => {
+export const getPromotedProductIOS = (): Promise<ProductIOS | null> => {
   if (!isIosStorekit2()) {
     return getIosModule().promotedProduct();
   } else {
