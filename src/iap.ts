@@ -772,7 +772,7 @@ export const requestSubscription = (
           const {
             subscriptionOffers,
             purchaseTokenAndroid,
-            prorationModeAndroid,
+            prorationModeAndroid = -1,
             obfuscatedAccountIdAndroid,
             obfuscatedProfileIdAndroid,
             isOfferPersonalized,
