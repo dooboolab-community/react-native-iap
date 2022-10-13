@@ -35,7 +35,7 @@ export type BuyItemByType = (
   type: string,
   skus: Sku[],
   purchaseToken: string | undefined,
-  prorationMode: ProrationModesAndroid | undefined,
+  prorationMode: ProrationModesAndroid | -1,
   obfuscatedAccountId: string | undefined,
   obfuscatedProfileId: string | undefined,
   subscriptionOffers: string[],
