@@ -84,7 +84,7 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun endConnection(promise: Promise) {
-        DoobooUtils.instance.rejectAllPendingPromises()
+        PromiseUtils.rejectAllPendingPromises()
         amazonListener?.clear()
         hasListener = false
         promise.resolve(true)
@@ -93,7 +93,7 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun getUser(promise: Promise) {
         val requestId = PurchasingService.getUserData()
-        DoobooUtils.instance.addPromiseForKey(PROMISE_GET_USER_DATA, promise)
+        PromiseUtils.addPromiseForKey(PROMISE_GET_USER_DATA, promise)
     }
 
     @ReactMethod
@@ -114,13 +114,13 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
             }
             ii++
         }
-        DoobooUtils.instance.addPromiseForKey(PROMISE_GET_PRODUCT_DATA, promise)
+        PromiseUtils.addPromiseForKey(PROMISE_GET_PRODUCT_DATA, promise)
         val requestId = PurchasingService.getProductData(productSkus)
     }
 
     @ReactMethod
     fun getAvailableItems(promise: Promise) {
-        DoobooUtils.instance.addPromiseForKey(PROMISE_QUERY_AVAILABLE_ITEMS, promise)
+        PromiseUtils.addPromiseForKey(PROMISE_QUERY_AVAILABLE_ITEMS, promise)
         PurchasingService.getPurchaseUpdates(true)
     }
 
@@ -129,7 +129,7 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
         sku: String?,
         promise: Promise
     ) {
-        DoobooUtils.instance.addPromiseForKey(PROMISE_BUY_ITEM, promise)
+        PromiseUtils.addPromiseForKey(PROMISE_BUY_ITEM, promise)
         val requestId = PurchasingService.purchase(sku)
     }
 
@@ -154,7 +154,7 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     }
 
     private fun sendUnconsumedPurchases(promise: Promise) {
-        DoobooUtils.instance.addPromiseForKey(PROMISE_QUERY_PURCHASES, promise)
+        PromiseUtils.addPromiseForKey(PROMISE_QUERY_PURCHASES, promise)
         PurchasingService.getPurchaseUpdates(false)
     }
 
