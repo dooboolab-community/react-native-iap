@@ -11,7 +11,7 @@ import com.facebook.react.bridge.Promise
 
 const val TAG = "IapPromises"
 
-fun Promise.safeResolve(value: Any) {
+fun Promise.safeResolve(value: Any?) {
     try {
         this.resolve(value)
     } catch (oce: ObjectAlreadyConsumedException) {

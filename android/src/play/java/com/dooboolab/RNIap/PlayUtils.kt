@@ -67,7 +67,7 @@ object PlayUtils {
     }
 
     fun rejectPromisesWithBillingError(key: String, responseCode: Int) {
-        val error = getBillingResponseData(responseCode)
-        PromiseUtils.rejectPromisesForKey(key, error.code, error.message, null)
+        val errorData = getBillingResponseData(responseCode)
+        PromiseUtils.rejectPromisesForKey(key, errorData.code, errorData.message, null)
     }
 }

@@ -1,41 +1,20 @@
 package com.dooboolab.RNIap
 
-import android.util.Log
-import com.facebook.react.bridge.ObjectAlreadyConsumedException
 import com.facebook.react.bridge.Promise
 import java.lang.Exception
-import java.util.ArrayList
 import java.util.HashMap
 
 object PromiseUtils {
-    private val promises = HashMap<String, ArrayList<Promise>>()
+    private val promises = HashMap<String, MutableList<Promise>>()
     fun addPromiseForKey(key: String, promise: Promise) {
-        try {
-            val list: ArrayList<Promise>
-            if (promises.containsKey(key)) {
-                list = promises[key]!!
-            } else {
-                list = ArrayList()
-            }
-            list.add(promise)
-            promises[key] = list
-        } catch (oce: ObjectAlreadyConsumedException) {
-            Log.e(TAG, oce.message!!)
-        }
+        promises.getOrPut(key) { mutableListOf() }.add(promise)
     }
 
     fun resolvePromisesForKey(key: String, value: Any?) {
-        try {
-            if (promises.containsKey(key)) {
-                val list = promises[key]!!
-                for (promise in list) {
-                    promise.resolve(value)
-                }
-                promises.remove(key)
-            }
-        } catch (oce: ObjectAlreadyConsumedException) {
-            Log.e(TAG, oce.message!!)
+        promises[key]?.forEach{ promise ->
+            promise.safeResolve(value)
         }
+        promises.remove(key)
     }
 
     fun rejectAllPendingPromises() {
@@ -51,17 +30,11 @@ object PromiseUtils {
         message: String?,
         err: Exception?
     ) {
-        try {
-            if (promises.containsKey(key)) {
-                val list = promises[key]!!
-                for (promise in list) {
-                    promise.reject(code, message, err)
-                }
-                promises.remove(key)
-            }
-        } catch (oce: ObjectAlreadyConsumedException) {
-            Log.e(TAG, oce.message!!)
+        promises[key]?.forEach{ promise ->
+            promise.safeReject(code, message, err)
         }
+        promises.remove(key)
+
     }
 
         private const val TAG = "PromiseUtils"

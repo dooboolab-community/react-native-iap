@@ -21,7 +21,7 @@ import java.lang.NumberFormatException
 import java.util.ArrayList
 
 class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingListener {
-    val TAG = "RNIapAmazonListener"
+    const val TAG = "RNIapAmazonListener"
     private val skus: MutableList<Product>
     private var availableItems: WritableNativeArray
     private var availableItemsType: String?
