@@ -5,6 +5,7 @@ import type {
   PaymentDiscountSk2,
   ProductSk2,
   ProductStatus,
+  RefundRequestStatus,
   TransactionSk2,
 } from '../types/appleSk2';
 
@@ -53,6 +54,7 @@ export interface IosModulePropsSk2 extends NativeModuleProps {
   getPendingTransactions: getPendingTransactions;
   presentCodeRedemptionSheet: presentCodeRedemptionSheet;
   disable: () => Promise<null>;
+  beginRefundRequest: (sku: string) => Promise<RefundRequestStatus>;
 }
 
 /**
@@ -85,3 +87,9 @@ export const currentEntitlement = (sku: string): Promise<TransactionSk2> =>
  */
 export const latestTransaction = (sku: string): Promise<TransactionSk2> =>
   RNIapIosSk2.latestTransaction(sku);
+
+/**
+ *
+ */
+export const beginRefundRequest = (sku: string): Promise<RefundRequestStatus> =>
+  RNIapIosSk2.beginRefundRequest(sku);

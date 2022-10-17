@@ -33,6 +33,8 @@ export type SubscriptionInfo = {
   subscriptionPeriod: SubscriptionPeriod;
 };
 
+export type RefundRequestStatus = 'success' | 'userCancelled';
+
 export type ProductSk2 = {
   description: string;
   displayName: string;
