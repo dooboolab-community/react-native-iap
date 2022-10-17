@@ -73,14 +73,14 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     }
                     items.pushMap(item)
                 }
-                DoobooUtils.instance
+                PromiseUtils
                     .resolvePromisesForKey(
                         RNIapAmazonModule.PROMISE_GET_PRODUCT_DATA,
                         items
                     )
             }
             ProductDataResponse.RequestStatus.FAILED ->
-                DoobooUtils.instance
+                PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_GET_PRODUCT_DATA,
                         E_PRODUCT_DATA_RESPONSE_FAILED,
@@ -88,7 +88,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                         null
                     )
             ProductDataResponse.RequestStatus.NOT_SUPPORTED ->
-                DoobooUtils.instance
+                PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_GET_PRODUCT_DATA,
                         E_PRODUCT_DATA_RESPONSE_NOT_SUPPORTED,
@@ -100,8 +100,8 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
 
     override fun onPurchaseUpdatesResponse(response: PurchaseUpdatesResponse) {
         // Info for potential error reporting
-        var debugMessage: String? = null
-        var errorCode = DoobooUtils.E_UNKNOWN
+        val debugMessage: String?
+        var errorCode = PromiseUtils.E_UNKNOWN
         val error = Arguments.createMap()
         when (response.requestStatus) {
             PurchaseUpdatesResponse.RequestStatus.SUCCESSFUL -> {
@@ -124,18 +124,18 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     PurchasingService.getPurchaseUpdates(false)
                 } else {
                     if (purchases.size > 0 && promiseItem != null) {
-                        DoobooUtils.instance
+                        PromiseUtils
                             .resolvePromisesForKey(
                                 RNIapAmazonModule.PROMISE_BUY_ITEM,
                                 promiseItem
                             )
                     }
-                    DoobooUtils.instance
+                    PromiseUtils
                         .resolvePromisesForKey(
                             RNIapAmazonModule.PROMISE_QUERY_PURCHASES,
                             true
                         )
-                    DoobooUtils.instance
+                    PromiseUtils
                         .resolvePromisesForKey(
                             RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS,
                             availableItems
@@ -146,20 +146,20 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
             }
             PurchaseUpdatesResponse.RequestStatus.FAILED -> {
                 debugMessage = "An unknown or unexpected error has occured. Please try again later."
-                errorCode = DoobooUtils.E_UNKNOWN
+                errorCode = PromiseUtils.E_UNKNOWN
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
                 error.putString("message", debugMessage)
                 sendEvent(reactContext, "purchase-error", error)
-                DoobooUtils.instance
+                PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_QUERY_PURCHASES,
                         errorCode,
                         debugMessage,
                         null
                     )
-                DoobooUtils.instance
+                PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS,
                         errorCode,
@@ -171,20 +171,20 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
             }
             PurchaseUpdatesResponse.RequestStatus.NOT_SUPPORTED -> {
                 debugMessage = "This feature is not available on your device."
-                errorCode = DoobooUtils.E_SERVICE_ERROR
+                errorCode = PromiseUtils.E_SERVICE_ERROR
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
                 error.putString("message", debugMessage)
                 sendEvent(reactContext, "purchase-error", error)
-                DoobooUtils.instance
+                PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_QUERY_PURCHASES,
                         errorCode,
                         debugMessage,
                         null
                     )
-                DoobooUtils.instance
+                PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS,
                         errorCode,
@@ -217,8 +217,8 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
         val status = response.requestStatus
 
         // Info for potential error reporting
-        var debugMessage: String? = null
-        var errorCode = DoobooUtils.E_UNKNOWN
+        val debugMessage: String?
+        var errorCode = PromiseUtils.E_UNKNOWN
         val error = Arguments.createMap()
         when (status) {
             PurchaseResponse.RequestStatus.SUCCESSFUL -> {
@@ -228,7 +228,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                 val promiseItem: WritableMap = WritableNativeMap()
                 promiseItem.merge(item)
                 sendEvent(reactContext, "purchase-updated", item)
-                DoobooUtils.instance
+                PromiseUtils
                     .resolvePromisesForKey(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
                         promiseItem
@@ -236,13 +236,13 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
             }
             PurchaseResponse.RequestStatus.ALREADY_PURCHASED -> {
                 debugMessage = "You already own this item."
-                errorCode = DoobooUtils.E_ALREADY_OWNED
+                errorCode = PromiseUtils.E_ALREADY_OWNED
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
                 error.putString("message", debugMessage)
                 sendEvent(reactContext, "purchase-error", error)
-                DoobooUtils.instance
+                PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
                         errorCode,
@@ -253,13 +253,13 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
             PurchaseResponse.RequestStatus.FAILED -> {
                 debugMessage =
                     "An unknown or unexpected error has occurred. Please try again later."
-                errorCode = DoobooUtils.E_UNKNOWN
+                errorCode = PromiseUtils.E_UNKNOWN
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
                 error.putString("message", debugMessage)
                 sendEvent(reactContext, "purchase-error", error)
-                DoobooUtils.instance
+                PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
                         errorCode,
@@ -269,13 +269,13 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
             }
             PurchaseResponse.RequestStatus.INVALID_SKU -> {
                 debugMessage = "That item is unavailable."
-                errorCode = DoobooUtils.E_ITEM_UNAVAILABLE
+                errorCode = PromiseUtils.E_ITEM_UNAVAILABLE
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
                 error.putString("message", debugMessage)
                 sendEvent(reactContext, "purchase-error", error)
-                DoobooUtils.instance
+                PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
                         errorCode,
@@ -285,13 +285,13 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
             }
             PurchaseResponse.RequestStatus.NOT_SUPPORTED -> {
                 debugMessage = "This feature is not available on your device."
-                errorCode = DoobooUtils.E_SERVICE_ERROR
+                errorCode = PromiseUtils.E_SERVICE_ERROR
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
                 error.putString("message", debugMessage)
                 sendEvent(reactContext, "purchase-error", error)
-                DoobooUtils.instance
+                PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
                         errorCode,
@@ -310,11 +310,11 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                 item.putString("userIdAmazon", userData.userId)
                 item.putString("userMarketplaceAmazon", userData.marketplace)
                 item.putString("userJsonAmazon", userData.toJSON().toString())
-                DoobooUtils.instance
+                PromiseUtils
                     .resolvePromisesForKey(RNIapAmazonModule.PROMISE_GET_USER_DATA, item)
             }
             UserDataResponse.RequestStatus.NOT_SUPPORTED ->
-                DoobooUtils.instance
+                PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_GET_USER_DATA,
                         E_USER_DATA_RESPONSE_NOT_SUPPORTED,
@@ -322,7 +322,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                         null
                     )
             UserDataResponse.RequestStatus.FAILED ->
-                DoobooUtils.instance
+                PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_GET_USER_DATA,
                         E_USER_DATA_RESPONSE_FAILED,
