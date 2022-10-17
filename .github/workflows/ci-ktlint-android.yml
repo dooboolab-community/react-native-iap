@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/ci-ktlint-android.yml
-      - 'src/**/*.kt'
+      - 'android/src/**/*.kt'
       - '**.kts'
 
 jobs:

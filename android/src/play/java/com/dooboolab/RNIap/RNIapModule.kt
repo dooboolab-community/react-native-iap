@@ -148,9 +148,9 @@ class RNIapModule(
                     ConsumeResponseListener { billingResult: BillingResult, outToken: String? ->
                         if (billingResult.responseCode != expectedResponseCode) {
                             PlayUtils.rejectPromiseWithBillingError(
-                                    promise,
-                                    billingResult.responseCode
-                                )
+                                promise,
+                                billingResult.responseCode
+                            )
                             return@ConsumeResponseListener
                         }
 

@@ -1,7 +1,6 @@
 package com.dooboolab.RNIap
 
 import android.util.Log
-import com.amazon.device.drm.LicensingListener
 import com.amazon.device.drm.LicensingService
 import com.amazon.device.drm.model.LicenseResponse
 import com.amazon.device.iap.PurchasingService
@@ -14,7 +13,6 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.UiThreadUtil
 import com.facebook.react.module.annotations.ReactModule
-
 
 @ReactModule(name = RNIapAmazonModule.TAG)
 class RNIapAmazonModule(reactContext: ReactApplicationContext) :
@@ -32,25 +30,26 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
         this.amazonListener = amazonListener
         UiThreadUtil.runOnUiThread {
             try {
-                    PurchasingService.registerListener(context.applicationContext, amazonListener)
-                    hasListener = true
-                    // Prefetch user and purchases as per Amazon SDK documentation:
-                    PurchasingService.getUserData()
-                    PurchasingService.getPurchaseUpdates(false)
-                    promise.safeResolve(true)
-
-            }catch (e:Exception){
+                PurchasingService.registerListener(context.applicationContext, amazonListener)
+                hasListener = true
+                // Prefetch user and purchases as per Amazon SDK documentation:
+                PurchasingService.getUserData()
+                PurchasingService.getPurchaseUpdates(false)
+                promise.safeResolve(true)
+            } catch (e: Exception) {
                 promise.safeReject("Error initializing Amazon appstore sdk", e)
             }
         }
     }
 
     @ReactMethod
-    fun verifyLicense(promise: Promise){
+    fun verifyLicense(promise: Promise) {
         try {
             LicensingService.verifyLicense(reactApplicationContext) { licenseResponse ->
-                when (val status: LicenseResponse.RequestStatus =
-                    licenseResponse.requestStatus) {
+                when (
+                    val status: LicenseResponse.RequestStatus =
+                        licenseResponse.requestStatus
+                ) {
                     LicenseResponse.RequestStatus.LICENSED -> {
                         Log.d(TAG, "LicenseResponse status: $status")
                         promise.resolve("LICENSED")
@@ -77,8 +76,8 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
                     }
                 }
             }
-        }catch (exception: Exception){
-            promise.reject("Error while attempting to check for License",exception)
+        } catch (exception: Exception) {
+            promise.reject("Error while attempting to check for License", exception)
         }
     }
 
