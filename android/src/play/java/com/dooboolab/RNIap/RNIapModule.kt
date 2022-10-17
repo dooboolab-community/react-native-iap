@@ -66,7 +66,7 @@ class RNIapModule(
                         if (connectedBillingClient?.isReady == true) {
                             callback(connectedBillingClient)
                         } else {
-                            promise.safeReject(DoobooUtils.E_NOT_PREPARED, "Unable to auto-initialize connection")
+                            promise.safeReject(PromiseUtils.E_NOT_PREPARED, "Unable to auto-initialize connection")
                         }
                     } else {
                         Log.i(TAG, "Incorrect parameter in resolve")
@@ -93,7 +93,7 @@ class RNIapModule(
             != ConnectionResult.SUCCESS
         ) {
             Log.i(TAG, "Google Play Services are not available on this device")
-            promise.safeReject(DoobooUtils.E_NOT_PREPARED, "Google Play Services are not available on this device")
+            promise.safeReject(PromiseUtils.E_NOT_PREPARED, "Google Play Services are not available on this device")
             return
         }
 
@@ -128,7 +128,7 @@ class RNIapModule(
         billingClientCache?.endConnection()
         billingClientCache = null
         skus.clear()
-        DoobooUtils.instance.rejectAllPendingPromises()
+        PromiseUtils.rejectAllPendingPromises()
         promise.safeResolve(true)
     }
 
@@ -147,8 +147,7 @@ class RNIapModule(
                 val listener =
                     ConsumeResponseListener { billingResult: BillingResult, outToken: String? ->
                         if (billingResult.responseCode != expectedResponseCode) {
-                            PlayUtils.instance
-                                .rejectPromiseWithBillingError(
+                            PlayUtils.rejectPromiseWithBillingError(
                                     promise,
                                     billingResult.responseCode
                                 )
@@ -301,8 +300,7 @@ class RNIapModule(
     ): Boolean {
         Log.d(TAG, "responseCode: " + billingResult.responseCode)
         if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
-            PlayUtils.instance
-                .rejectPromiseWithBillingError(promise, billingResult.responseCode)
+            PlayUtils.rejectPromiseWithBillingError(promise, billingResult.responseCode)
             return false
         }
         return true
@@ -403,13 +401,13 @@ class RNIapModule(
     ) {
         val activity = currentActivity
         if (activity == null) {
-            promise.safeReject(DoobooUtils.E_UNKNOWN, "getCurrentActivity returned null")
+            promise.safeReject(PromiseUtils.E_UNKNOWN, "getCurrentActivity returned null")
             return
         }
         ensureConnection(
             promise
         ) { billingClient ->
-            DoobooUtils.instance.addPromiseForKey(
+            PromiseUtils.addPromiseForKey(
                 PROMISE_BUY_ITEM,
                 promise
             )
@@ -520,9 +518,8 @@ class RNIapModule(
                 promise.safeResolve(true)
                 return@ensureConnection
             } else {
-                val errorData: Array<String?> =
-                    PlayUtils.instance.getBillingResponseData(billingResultCode)
-                promise.safeReject(errorData[0], errorData[1])
+                val errorData = PlayUtils.getBillingResponseData(billingResultCode)
+                promise.safeReject(errorData.code, errorData.message)
             }
         }
     }
@@ -548,10 +545,9 @@ class RNIapModule(
                 val map = Arguments.createMap()
                 map.putInt("responseCode", billingResult.responseCode)
                 map.putString("debugMessage", billingResult.debugMessage)
-                val errorData: Array<String?> = PlayUtils.instance
-                    .getBillingResponseData(billingResult.responseCode)
-                map.putString("code", errorData[0])
-                map.putString("message", errorData[1])
+                val errorData = PlayUtils.getBillingResponseData(billingResult.responseCode)
+                map.putString("code", errorData.code)
+                map.putString("message", errorData.message)
                 promise.safeResolve(map)
             }
         }
@@ -575,10 +571,9 @@ class RNIapModule(
                 val map = Arguments.createMap()
                 map.putInt("responseCode", billingResult.responseCode)
                 map.putString("debugMessage", billingResult.debugMessage)
-                val errorData: Array<String?> = PlayUtils.instance
-                    .getBillingResponseData(billingResult.responseCode)
-                map.putString("code", errorData[0])
-                map.putString("message", errorData[1])
+                val errorData = PlayUtils.getBillingResponseData(billingResult.responseCode)
+                map.putString("code", errorData.code)
+                map.putString("message", errorData.message)
                 map.putString("purchaseToken", purchaseToken)
                 promise.safeResolve(map)
             }
@@ -591,12 +586,11 @@ class RNIapModule(
             val error = Arguments.createMap()
             error.putInt("responseCode", responseCode)
             error.putString("debugMessage", billingResult.debugMessage)
-            val errorData: Array<String?> =
-                PlayUtils.instance.getBillingResponseData(responseCode)
-            error.putString("code", errorData[0])
-            error.putString("message", errorData[1])
+            val errorData = PlayUtils.getBillingResponseData(responseCode)
+            error.putString("code", errorData.code)
+            error.putString("message", errorData.message)
             sendEvent(reactContext, "purchase-error", error)
-            PlayUtils.instance.rejectPromisesWithBillingError(PROMISE_BUY_ITEM, responseCode)
+            PlayUtils.rejectPromisesWithBillingError(PROMISE_BUY_ITEM, responseCode)
             return
         }
         if (purchases != null) {
@@ -632,7 +626,7 @@ class RNIapModule(
                 promiseItems.pushMap(item.copy())
                 sendEvent(reactContext, "purchase-updated", item)
             }
-            DoobooUtils.instance.resolvePromisesForKey(PROMISE_BUY_ITEM, promiseItems)
+            PromiseUtils.resolvePromisesForKey(PROMISE_BUY_ITEM, promiseItems)
         } else {
             val result = Arguments.createMap()
             result.putInt("responseCode", billingResult.responseCode)
@@ -643,7 +637,7 @@ class RNIapModule(
                     " proration. If not please report an issue."
             )
             sendEvent(reactContext, "purchase-updated", result)
-            DoobooUtils.instance.resolvePromisesForKey(PROMISE_BUY_ITEM, null)
+            PromiseUtils.resolvePromisesForKey(PROMISE_BUY_ITEM, null)
         }
     }
 
