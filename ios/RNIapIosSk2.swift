@@ -90,6 +90,12 @@ protocol Sk2Delegate {
         reject: @escaping RCTPromiseRejectBlock
     )
 
+    func beginRefundRequest(
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
     func startObserving()
     func stopObserving()
 }
@@ -209,6 +215,14 @@ class DummySk2: Sk2Delegate {
     }
 
     func clearTransaction(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func beginRefundRequest(
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
         reject(errorCode, errorMessage, nil)
     }
 
@@ -375,6 +389,14 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }) {
         delegate.clearTransaction(resolve, reject: reject)
+    }
+
+    @objc public func beginRefundRequest(
+        _ sku: String,
+        resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.beginRefundRequest(sku, resolve: resolve, reject: reject)
     }
 }
 
@@ -841,6 +863,35 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                 }
             }
             resolve(nil)
+        }
+    }
+
+    // TODO: Duplicated code to get the latest transaction, can be cleaned up.
+    func beginRefundRequest(_ sku: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        Task {
+            if let windowScene = await  UIApplication.shared.keyWindow?.windowScene {
+                if let product = products[sku] {
+                    if let result = await product.latestTransaction {
+                        do {
+                            // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
+                            let transaction = try checkVerified(result)
+                            let refund = try await transaction.beginRefundRequest(in: windowScene )
+                            resolve(serialize(refund))
+                        } catch StoreError.failedVerification {
+                            reject(IapErrors.E_UNKNOWN.rawValue, "Failed to verify transaction for sku \(sku)", StoreError.failedVerification)
+                        } catch {
+                            debugMessage(error)
+                            reject(IapErrors.E_UNKNOWN.rawValue, "Failed to refund purchase", error)
+                        }
+                    } else {
+                        reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Can't find latest transaction for sku \(sku)", nil)
+                    }
+                } else {
+                    reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Can't find product for sku \(sku)", nil)
+                }
+            } else {
+                reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Cannon find window Scene", nil)
+            }
         }
     }
 }

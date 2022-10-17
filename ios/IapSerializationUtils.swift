@@ -196,3 +196,14 @@ func serialize(_ pt: Product.ProductType?) -> String? {
         return nil
     }
 }
+
+@available(iOS 15.0, tvOS 15.0, *)
+func serialize(_ rs: Transaction.RefundRequestStatus?) -> String? {
+    guard let rs = rs else {return nil}
+    switch rs {
+    case .success: return "success"
+    case .userCancelled: return "userCancelled"
+    default:
+        return nil
+    }
+}

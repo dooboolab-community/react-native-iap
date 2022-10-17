@@ -89,5 +89,9 @@ RCT_EXTERN_METHOD(clearTransaction:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(beginRefundRequest:
+                  (NSString*)sku
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end
 #endif
