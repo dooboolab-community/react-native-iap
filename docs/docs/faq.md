@@ -120,8 +120,9 @@ Here are some resources you might get help out of.
 - For Android, hope you to check this one.
   https://github.com/dooboolab/react-native-iap/issues/124#issuecomment-386593185
 
-  ### Update listener called many times on iOS (Storekit 1)
+### Update listener called many times on iOS (Storekit 1)
 
-  This is caused by using the same account over and over to test locally. This is not what happens typically in prod. This is a design flaw in the native API. Some developers opt to create a new account everytime. Some others filter out the duplicate transactions.
-  **_Note_**
-  This is not a problem caused by react-native-iap.
+This is not what happens typically in production. This is a design flaw in the native API. Some developers opt to create a new account everytime. Some others filter out the duplicate transactions.
+
+What you're seeing with multiple process purchase calls is actually normal in the case of auto-renewing subscriptions. When you test in the sandbox those subscriptions renew very quickly (how fast depends on sub period) and you can often see several of those appear in the queue after an app restart. Also, if a purchase hasn't been successfully completed (which is likely given those exceptions) then they can remain in the queue and result in multiple calls to your ProcessPurchase on every app restart until the problem is resolved. **_Note_**
+This is not a problem caused by react-native-iap.
