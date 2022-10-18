@@ -46,7 +46,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     var priceNumber: Number = 0.00
                     val priceString = product.price
                     try {
-                        if (priceString?.isNotEmpty()== true) {
+                        if (priceString?.isNotEmpty() == true) {
                             priceNumber = priceString.replace("[^\\d.,]+".toRegex(), "").toDouble()
                         }
                     } catch (e: NumberFormatException) {
@@ -206,7 +206,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
         item.putString("userMarketplaceAmazon", userData.marketplace)
         item.putString("userJsonAmazon", userData.toJSON().toString())
         item.putBoolean("isCanceledAmazon", receipt.isCanceled)
-        item.putString("termSku",receipt.termSku)
+        item.putString("termSku", receipt.termSku)
         return item
     }
 
@@ -330,9 +330,8 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     )
         }
     }
-    fun clear(){
+    fun clear() {
         skus.clear()
-
     }
 
     private fun sendEvent(
