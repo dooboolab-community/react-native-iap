@@ -85,6 +85,11 @@ protocol Sk2Delegate {
         reject: @escaping RCTPromiseRejectBlock
     )
 
+    func  showManageSubscriptions(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    )
+
     func clearTransaction(
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
@@ -208,6 +213,13 @@ class DummySk2: Sk2Delegate {
     }
 
     func  presentCodeRedemptionSheet(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        reject(errorCode, errorMessage, nil)
+    }
+
+    func  showManageSubscriptions(
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
@@ -356,7 +368,7 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
         delegate.latestTransaction(sku, resolve: resolve, reject: reject)
     }
 
-    @objc public func  finishTransaction(
+    @objc public func finishTransaction(
         _ transactionIdentifier: String,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
@@ -378,11 +390,18 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
         delegate.sync(resolve, reject: reject)
     }
 
-    @objc public func  presentCodeRedemptionSheet(
+    @objc public func presentCodeRedemptionSheet(
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         delegate.presentCodeRedemptionSheet(resolve, reject: reject)
+    }
+
+    @objc public func showManageSubscriptions(
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        delegate.showManageSubscriptions(resolve, reject: reject)
     }
 
     @objc func clearTransaction(
@@ -842,6 +861,30 @@ class RNIapIosSk2iOS15: Sk2Delegate {
     ) {
         #if !os(tvOS)
         SKPaymentQueue.default().presentCodeRedemptionSheet()
+        resolve(nil)
+        #else
+        reject(IapErrors.E_USER_CANCELLED.rawValue, "This method is not available on tvOS", nil)
+        #endif
+    }
+
+    @objc public func showManageSubscriptions(
+        _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
+        reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
+    ) {
+        #if !os(tvOS)
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              !ProcessInfo.processInfo.isiOSAppOnMac else {
+            return
+        }
+
+        Task {
+            do {
+                try await AppStore.showManageSubscriptions(in: scene)
+            } catch {
+                print("Error:(error)")
+            }
+        }
+
         resolve(nil)
         #else
         reject(IapErrors.E_USER_CANCELLED.rawValue, "This method is not available on tvOS", nil)
