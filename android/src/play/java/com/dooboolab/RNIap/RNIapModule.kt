@@ -514,10 +514,7 @@ class RNIapModule(
             }
             val flowParams = builder.build()
             val billingResultCode = billingClient.launchBillingFlow(activity, flowParams).responseCode
-            if (billingResultCode == BillingClient.BillingResponseCode.OK) {
-                promise.safeResolve(true)
-                return@ensureConnection
-            } else {
+            if (billingResultCode != BillingClient.BillingResponseCode.OK) {
                 val errorData = PlayUtils.getBillingResponseData(billingResultCode)
                 promise.safeReject(errorData.code, errorData.message)
             }
