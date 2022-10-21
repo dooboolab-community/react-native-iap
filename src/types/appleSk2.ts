@@ -142,6 +142,7 @@ export const transactionSk2Map = ({
   productID,
   purchaseDate,
   purchasedQuantity,
+  originalID,
 }: TransactionSk2): Purchase => {
   const purchase: Purchase = {
     productId: productID,
@@ -151,7 +152,7 @@ export const transactionSk2Map = ({
     purchaseToken: '', //Not avaiable
     quantityIOS: purchasedQuantity,
     originalTransactionDateIOS: String(originalPurchaseDate),
-    originalTransactionIdentifierIOS: String(id), // ??
+    originalTransactionIdentifierIOS: originalID,
   };
   return purchase;
 };
