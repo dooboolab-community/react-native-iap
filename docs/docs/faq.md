@@ -13,7 +13,9 @@
 - You can do this on Android:
 
   ```ts
-  Linking.openURL('https://play.google.com/store/account/subscriptions?package=YOUR_PACKAGE_NAME&sku=YOUR_PRODUCT_ID')
+  Linking.openURL(
+    'https://play.google.com/store/account/subscriptions?package=YOUR_PACKAGE_NAME&sku=YOUR_PRODUCT_ID',
+  );
   ```
 
   (change `YOUR_PACKAGE_NAME` and `YOUR_PRODUCT_ID`)
