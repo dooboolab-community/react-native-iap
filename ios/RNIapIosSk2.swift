@@ -911,7 +911,6 @@ class RNIapIosSk2iOS15: Sk2Delegate {
 
     // TODO: Duplicated code to get the latest transaction, can be cleaned up.
     func beginRefundRequest(_ sku: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        #if !os(tvOS)
         Task {
             if let windowScene = await  UIApplication.shared.keyWindow?.windowScene {
                 if let product = products[sku] {
@@ -937,8 +936,5 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                 reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Cannon find window Scene", nil)
             }
         }
-        #else
-        reject(IapErrors.E_USER_CANCELLED.rawValue, "This method is not available on tvOS", nil)
-        #endif
     }
 }
