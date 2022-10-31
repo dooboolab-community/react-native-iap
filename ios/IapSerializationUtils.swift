@@ -196,4 +196,3 @@ func serialize(_ pt: Product.ProductType?) -> String? {
         return nil
     }
 }
-
