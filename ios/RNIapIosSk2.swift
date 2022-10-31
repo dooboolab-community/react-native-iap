@@ -9,7 +9,7 @@ protocol Sk2Delegate {
     )
 
     func initConnection(
-        _ resolve: @escaping RCTPromiseResolveBlock ,
+        _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
 
@@ -42,7 +42,7 @@ protocol Sk2Delegate {
 
     func isEligibleForIntroOffer(
         _ groupID: String,
-        resolve: @escaping RCTPromiseResolveBlock ,
+        resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
 
@@ -66,7 +66,7 @@ protocol Sk2Delegate {
 
     func  finishTransaction(
         _ transactionIdentifier: String,
-        resolve: @escaping RCTPromiseResolveBlock ,
+        resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
 
@@ -117,7 +117,7 @@ class DummySk2: Sk2Delegate {
     }
 
     func initConnection(
-        _ resolve: @escaping RCTPromiseResolveBlock ,
+        _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
         reject(errorCode, errorMessage, nil)
@@ -160,7 +160,7 @@ class DummySk2: Sk2Delegate {
 
     func isEligibleForIntroOffer(
         _ groupID: String,
-        resolve: @escaping RCTPromiseResolveBlock ,
+        resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
         reject(errorCode, errorMessage, nil)
@@ -192,7 +192,7 @@ class DummySk2: Sk2Delegate {
 
     func  finishTransaction(
         _ transactionIdentifier: String,
-        resolve: @escaping RCTPromiseResolveBlock ,
+        resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
         reject(errorCode, errorMessage, nil)
