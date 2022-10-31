@@ -70,7 +70,7 @@ protocol Sk2Delegate {
         reject: @escaping RCTPromiseRejectBlock
     )
 
-    func pendingTransactions (
+    func getPendingTransactions (
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
@@ -198,7 +198,7 @@ class DummySk2: Sk2Delegate {
         reject(errorCode, errorMessage, nil)
     }
 
-    func pendingTransactions (
+    func getPendingTransactions (
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
@@ -376,11 +376,11 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
         delegate.finishTransaction(transactionIdentifier, resolve: resolve, reject: reject)
     }
 
-    @objc public func pendingTransactions (
+    @objc public func getPendingTransactions (
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        delegate.pendingTransactions(resolve, reject: reject)
+        delegate.getPendingTransactions(resolve, reject: reject)
     }
 
     @objc public func sync(
@@ -830,7 +830,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         }
     }
 
-    @objc public func pendingTransactions (
+    @objc public func getPendingTransactions (
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
@@ -911,6 +911,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
 
     // TODO: Duplicated code to get the latest transaction, can be cleaned up.
     func beginRefundRequest(_ sku: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        #if !os(tvOS)
         Task {
             if let windowScene = await  UIApplication.shared.keyWindow?.windowScene {
                 if let product = products[sku] {
@@ -936,5 +937,8 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                 reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Cannon find window Scene", nil)
             }
         }
+        #else
+        reject(IapErrors.E_USER_CANCELLED.rawValue, "This method is not available on tvOS", nil)
+        #endif
     }
 }
