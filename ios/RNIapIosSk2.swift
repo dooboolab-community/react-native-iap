@@ -9,7 +9,7 @@ protocol Sk2Delegate {
     )
 
     func initConnection(
-        _ resolve: @escaping RCTPromiseResolveBlock ,
+        _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
 
@@ -42,7 +42,7 @@ protocol Sk2Delegate {
 
     func isEligibleForIntroOffer(
         _ groupID: String,
-        resolve: @escaping RCTPromiseResolveBlock ,
+        resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
 
@@ -66,11 +66,11 @@ protocol Sk2Delegate {
 
     func  finishTransaction(
         _ transactionIdentifier: String,
-        resolve: @escaping RCTPromiseResolveBlock ,
+        resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
 
-    func pendingTransactions (
+    func getPendingTransactions (
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     )
@@ -117,7 +117,7 @@ class DummySk2: Sk2Delegate {
     }
 
     func initConnection(
-        _ resolve: @escaping RCTPromiseResolveBlock ,
+        _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
         reject(errorCode, errorMessage, nil)
@@ -160,7 +160,7 @@ class DummySk2: Sk2Delegate {
 
     func isEligibleForIntroOffer(
         _ groupID: String,
-        resolve: @escaping RCTPromiseResolveBlock ,
+        resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
         reject(errorCode, errorMessage, nil)
@@ -192,13 +192,13 @@ class DummySk2: Sk2Delegate {
 
     func  finishTransaction(
         _ transactionIdentifier: String,
-        resolve: @escaping RCTPromiseResolveBlock ,
+        resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
         reject(errorCode, errorMessage, nil)
     }
 
-    func pendingTransactions (
+    func getPendingTransactions (
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
@@ -376,11 +376,11 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
         delegate.finishTransaction(transactionIdentifier, resolve: resolve, reject: reject)
     }
 
-    @objc public func pendingTransactions (
+    @objc public func getPendingTransactions (
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        delegate.pendingTransactions(resolve, reject: reject)
+        delegate.getPendingTransactions(resolve, reject: reject)
     }
 
     @objc public func sync(
@@ -830,7 +830,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         }
     }
 
-    @objc public func pendingTransactions (
+    @objc public func getPendingTransactions (
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
