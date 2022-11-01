@@ -46,9 +46,7 @@ class App extends Component {
         })
         .then(() => {
           this.purchaseUpdateSubscription = purchaseUpdatedListener(
-            (
-              purchase: InAppPurchase | SubscriptionPurchase | ProductPurchase,
-            ) => {
+            (purchase: SubscriptionPurchase | ProductPurchase) => {
               console.log('purchaseUpdatedListener', purchase);
               const receipt = purchase.transactionReceipt;
               if (receipt) {
