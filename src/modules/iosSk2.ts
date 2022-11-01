@@ -16,6 +16,7 @@ type getItems = (skus: Sku[]) => Promise<ProductSk2[]>;
 
 type getAvailableItems = (
   alsoPublishToEventListener?: boolean,
+  onlyIncludeActiveItems?: boolean,
 ) => Promise<TransactionSk2[]>;
 
 export type BuyProduct = (
