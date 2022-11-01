@@ -317,7 +317,7 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        delegate.getAvailableItems(alsoPublishToEventListener,onlyIncludeActiveItems: onlyIncludeActiveItems, resolve: resolve, reject: reject)
+        delegate.getAvailableItems(alsoPublishToEventListener, onlyIncludeActiveItems: onlyIncludeActiveItems, resolve: resolve, reject: reject)
     }
 
     @objc public func buyProduct(
@@ -603,8 +603,12 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                         if products[transaction.productID] != nil {
                             addTransaction(transaction: transaction)
                         }
+
                     case .consumable:
-                        addTransaction(transaction: transaction)
+                        if products[transaction.productID] != nil {
+                            addTransaction(transaction: transaction)
+                        }
+
                     default:
                         break
                     }
