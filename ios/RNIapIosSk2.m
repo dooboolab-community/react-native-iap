@@ -36,6 +36,7 @@ RCT_EXTERN_METHOD(getItems:
 
 RCT_EXTERN_METHOD(getAvailableItems:
                   (BOOL)alsoPublishToEventListener
+                  (BOOL)onlyIncludeActiveItems
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
