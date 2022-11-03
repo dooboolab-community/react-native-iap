@@ -20,14 +20,11 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
 import java.lang.NumberFormatException
 import java.util.ArrayList
 
+val ProductType.typeString: String
+    get() = if (this == ProductType.ENTITLED || this == ProductType.CONSUMABLE) "inapp" else "subs"
+
 class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingListener {
     private val skus: MutableList<Product>
-    private var availableItems: WritableNativeArray
-    private var availableItemsType: String?
-    fun getPurchaseUpdatesByType(type: String?) {
-        availableItemsType = type
-        PurchasingService.getPurchaseUpdates(true)
-    }
 
     override fun onProductDataResponse(response: ProductDataResponse) {
         val requestId = response.requestId.toString()
@@ -40,9 +37,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     if (!skus.contains(product)) {
                         skus.add(product)
                     }
-                    val productType = product.productType
-                    val productTypeString =
-                        if (productType == ProductType.ENTITLED || productType == ProductType.CONSUMABLE) "inapp" else "subs"
+
                     var priceNumber: Number = 0.00
                     val priceString = product.price
                     try {
@@ -59,7 +54,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     val coinsReward = product.coinsReward
                     item.putString("productId", product.sku)
                     item.putString("price", priceNumber.toString())
-                    item.putString("type", productTypeString)
+                    item.putString("type", product.productType.typeString)
                     item.putString("localizedPrice", priceString)
                     item.putString("title", product.title)
                     item.putString("description", product.description)
@@ -98,12 +93,9 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
     }
 
     override fun onPurchaseUpdatesResponse(response: PurchaseUpdatesResponse) {
-        // Info for potential error reporting
-        val debugMessage: String?
-        var errorCode = PromiseUtils.E_UNKNOWN
-        val error = Arguments.createMap()
         when (response.requestStatus) {
             PurchaseUpdatesResponse.RequestStatus.SUCCESSFUL -> {
+                val availableItems = Arguments.createArray()
                 val userData = response.userData
                 var promiseItem: WritableMap? = null
                 val purchases = response.receipts
@@ -112,12 +104,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     promiseItem = WritableNativeMap()
                     promiseItem.merge(item)
                     sendEvent(reactContext, "purchase-updated", item)
-                    val productType = receipt.productType
-                    val productTypeString =
-                        if (productType == ProductType.ENTITLED || productType == ProductType.CONSUMABLE) "inapp" else "subs"
-                    if (productTypeString == availableItemsType) {
-                        availableItems.pushMap(promiseItem)
-                    }
+                    availableItems.pushMap(promiseItem)
                 }
                 if (response.hasMore()) {
                     PurchasingService.getPurchaseUpdates(false)
@@ -139,13 +126,12 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                             RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS,
                             availableItems
                         )
-                    availableItems = WritableNativeArray()
-                    availableItemsType = null
                 }
             }
             PurchaseUpdatesResponse.RequestStatus.FAILED -> {
-                debugMessage = "An unknown or unexpected error has occured. Please try again later."
-                errorCode = PromiseUtils.E_UNKNOWN
+                val error = Arguments.createMap()
+                val debugMessage = "An unknown or unexpected error has occured. Please try again later."
+                val errorCode = PromiseUtils.E_UNKNOWN
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
@@ -165,12 +151,11 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                         debugMessage,
                         null
                     )
-                availableItems = WritableNativeArray()
-                availableItemsType = null
             }
             PurchaseUpdatesResponse.RequestStatus.NOT_SUPPORTED -> {
-                debugMessage = "This feature is not available on your device."
-                errorCode = PromiseUtils.E_SERVICE_ERROR
+                val error = Arguments.createMap()
+                val debugMessage = "This feature is not available on your device."
+                val errorCode = PromiseUtils.E_SERVICE_ERROR
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
@@ -190,8 +175,6 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                         debugMessage,
                         null
                     )
-                availableItems = WritableNativeArray()
-                availableItemsType = null
             }
         }
     }
@@ -207,6 +190,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
         item.putString("userJsonAmazon", userData.toJSON().toString())
         item.putBoolean("isCanceledAmazon", receipt.isCanceled)
         item.putString("termSku", receipt.termSku)
+        item.putString("productType", receipt.productType.typeString)
         return item
     }
 
@@ -224,7 +208,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                 val receipt = response.receipt
                 val userData = response.userData
                 val item = receiptToMap(userData, receipt)
-                val promiseItem: WritableMap = WritableNativeMap()
+                val promiseItem: WritableMap = Arguments.createMap()
                 promiseItem.merge(item)
                 sendEvent(reactContext, "purchase-updated", item)
                 PromiseUtils
@@ -363,7 +347,5 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
 
     init {
         skus = ArrayList()
-        availableItems = WritableNativeArray()
-        availableItemsType = null
     }
 }
