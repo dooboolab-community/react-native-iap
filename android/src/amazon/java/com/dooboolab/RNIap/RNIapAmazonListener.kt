@@ -20,7 +20,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
 import java.lang.NumberFormatException
 import java.util.ArrayList
 
-
 val ProductType.typeString: String
     get() = if (this == ProductType.ENTITLED || this == ProductType.CONSUMABLE) "inapp" else "subs"
 
@@ -132,7 +131,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
             PurchaseUpdatesResponse.RequestStatus.FAILED -> {
                 val error = Arguments.createMap()
                 val debugMessage = "An unknown or unexpected error has occured. Please try again later."
-                val errorCode  = PromiseUtils.E_UNKNOWN
+                val errorCode = PromiseUtils.E_UNKNOWN
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
@@ -191,7 +190,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
         item.putString("userJsonAmazon", userData.toJSON().toString())
         item.putBoolean("isCanceledAmazon", receipt.isCanceled)
         item.putString("termSku", receipt.termSku)
-        item.putString("productType" ,receipt.productType.typeString)
+        item.putString("productType", receipt.productType.typeString)
         return item
     }
 
