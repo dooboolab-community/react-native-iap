@@ -180,8 +180,11 @@ export const getProducts = ({
   skus,
 }: {
   skus: string[];
-}): Promise<Array<Product>> =>
-  (
+}): Promise<Array<Product>> => {
+  if (!skus?.length) {
+    return Promise.reject('"skus" is required');
+  }
+  return (
     Platform.select({
       ios: async () => {
         let items: Product[];
@@ -207,6 +210,7 @@ export const getProducts = ({
       },
     }) || (() => Promise.reject(new Error('Unsupported Platform')))
   )();
+};
 
 /**
  * Get a list of subscriptions
@@ -233,8 +237,11 @@ export const getSubscriptions = ({
   skus,
 }: {
   skus: string[];
-}): Promise<Subscription[]> =>
-  (
+}): Promise<Subscription[]> => {
+  if (!skus?.length) {
+    return Promise.reject('"skus" is required');
+  }
+  return (
     Platform.select({
       ios: async (): Promise<SubscriptionIOS[]> => {
         let items: SubscriptionIOS[];
@@ -287,6 +294,7 @@ export const getSubscriptions = ({
       },
     }) || (() => Promise.reject(new Error('Unsupported Platform')))
   )();
+};
 
 /**
  * Adds an extra property to subscriptions so we can distinguish the platform
