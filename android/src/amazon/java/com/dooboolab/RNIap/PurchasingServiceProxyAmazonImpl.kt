@@ -6,9 +6,9 @@ import com.amazon.device.iap.PurchasingService
 import com.amazon.device.iap.model.FulfillmentResult
 import com.amazon.device.iap.model.RequestId
 
-class PurchasingServiceProxyAmazonImpl : PurchasingServiceProxy{
-    override fun registerListener(var0: Context?, var1: PurchasingListener?){
-        return PurchasingService.registerListener(var0,var1)
+class PurchasingServiceProxyAmazonImpl : PurchasingServiceProxy {
+    override fun registerListener(var0: Context?, var1: PurchasingListener?) {
+        return PurchasingService.registerListener(var0, var1)
     }
 
     override fun getUserData(): RequestId {
@@ -27,7 +27,7 @@ class PurchasingServiceProxyAmazonImpl : PurchasingServiceProxy{
         return PurchasingService.getPurchaseUpdates(var0)
     }
 
-    override fun notifyFulfillment(var0: String?, var1: FulfillmentResult?){
-        return PurchasingService.notifyFulfillment(var0,var1)
+    override fun notifyFulfillment(var0: String?, var1: FulfillmentResult?) {
+        return PurchasingService.notifyFulfillment(var0, var1)
     }
 }

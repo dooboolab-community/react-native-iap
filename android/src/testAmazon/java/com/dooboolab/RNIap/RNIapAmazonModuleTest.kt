@@ -34,7 +34,7 @@ class RNIapAmazonModuleTest {
     lateinit var purchasingServiceProxy: PurchasingServiceProxy
 
     @MockK
-    lateinit var  mainThreadHandler: Handler
+    lateinit var mainThreadHandler: Handler
 
     private lateinit var listener: RNIapAmazonListener
 
@@ -43,8 +43,8 @@ class RNIapAmazonModuleTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
-        listener = spyk( RNIapAmazonListener(context,purchasingServiceProxy))
-        module = RNIapAmazonModule(context, purchasingServiceProxy, mainThreadHandler,listener)
+        listener = spyk(RNIapAmazonListener(context, purchasingServiceProxy))
+        module = RNIapAmazonModule(context, purchasingServiceProxy, mainThreadHandler, listener)
     }
 
     @Test
@@ -53,40 +53,40 @@ class RNIapAmazonModuleTest {
 
         val promise = mockk<Promise>(relaxed = true)
         val slot = slot<Runnable>()
-        every { mainThreadHandler.postDelayed(capture(slot),any()) } answers { slot.captured.run(); true }
+        every { mainThreadHandler.postDelayed(capture(slot), any()) } answers { slot.captured.run(); true }
         module.initConnection(promise)
         verify(exactly = 0) { promise.reject(any(), any<String>()) }
         verify { promise.resolve(true) }
-        verify { purchasingServiceProxy.registerListener(any(),any()) }
+        verify { purchasingServiceProxy.registerListener(any(), any()) }
     }
 
     @Test
     fun `Purchase Item`() {
-
-        val purchaseResponse = mockk<PurchaseResponse>(){
+        val purchaseResponse = mockk<PurchaseResponse>() {
             every { requestId } returns RequestId.fromString("0")
 
             every { requestStatus } returns PurchaseResponse.RequestStatus.SUCCESSFUL
-            val mReceipt = mockk<Receipt>(relaxed = true){
-                every {  sku } returns "mySku"
+            val mReceipt = mockk<Receipt>(relaxed = true) {
+                every { sku } returns "mySku"
                 every { purchaseDate } returns Date()
                 every { receiptId } returns "rId"
-
             }
             every { receipt } returns mReceipt
-            val mUserData = mockk<UserData>(relaxed = true){
+            val mUserData = mockk<UserData>(relaxed = true) {
                 every { userId } returns "uid1"
             }
             every { userData } returns mUserData
         }
 
-        every { listener.sendEvent(any(),any(), any()) } just Runs
+        every { listener.sendEvent(any(), any(), any()) } just Runs
 
-        every { purchasingServiceProxy.purchase(any()) } answers { listener.onPurchaseResponse(
-            purchaseResponse
-        ); RequestId.fromString("0");}
+        every { purchasingServiceProxy.purchase(any()) } answers {
+            listener.onPurchaseResponse(
+                purchaseResponse
+            ); RequestId.fromString("0")
+        }
 
-        val itemsMap = mockk<WritableMap>(relaxed = true){
+        val itemsMap = mockk<WritableMap>(relaxed = true) {
             every { getString("productId") } returns "mySku"
         }
         mockkStatic(Arguments::class)
@@ -95,15 +95,13 @@ class RNIapAmazonModuleTest {
 
         val promise = mockk<Promise>(relaxed = true)
 
-        module.buyItemByType("mySku",promise)
+        module.buyItemByType("mySku", promise)
         verify(exactly = 0) { promise.reject(any(), any<String>()) }
         val response = slot<WritableMap>()
         verify { promise.resolve(capture(response)) }
         assertEquals("mySku", response.captured.getString("productId"))
-        verify { listener.sendEvent(any(),"purchase-updated",any()) }
-        verify(exactly = 0){ purchasingServiceProxy.getPurchaseUpdates(false) }
-
-
+        verify { listener.sendEvent(any(), "purchase-updated", any()) }
+        verify(exactly = 0) { purchasingServiceProxy.getPurchaseUpdates(false) }
     }
 
 //    @Test

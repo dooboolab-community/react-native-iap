@@ -2,8 +2,6 @@ package com.dooboolab.RNIap
 
 import android.util.Log
 import com.amazon.device.iap.PurchasingListener
-import com.amazon.device.iap.PurchasingService
-import com.amazon.device.iap.model.Product
 import com.amazon.device.iap.model.ProductDataResponse
 import com.amazon.device.iap.model.ProductType
 import com.amazon.device.iap.model.PurchaseResponse
@@ -18,14 +16,14 @@ import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import java.lang.NumberFormatException
-import java.util.ArrayList
 
 val ProductType.typeString: String
     get() = if (this == ProductType.ENTITLED || this == ProductType.CONSUMABLE) "inapp" else "subs"
 
 class RNIapAmazonListener(
     private val reactContext: ReactContext,
-    private val purchasingService: PurchasingServiceProxy) : PurchasingListener {
+    private val purchasingService: PurchasingServiceProxy
+) : PurchasingListener {
 
     override fun onProductDataResponse(response: ProductDataResponse) {
         when (response.requestStatus) {
