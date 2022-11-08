@@ -23,21 +23,16 @@ import java.util.ArrayList
 val ProductType.typeString: String
     get() = if (this == ProductType.ENTITLED || this == ProductType.CONSUMABLE) "inapp" else "subs"
 
-class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingListener {
-    private val skus: MutableList<Product>
+class RNIapAmazonListener(
+    private val reactContext: ReactContext,
+    private val purchasingService: PurchasingServiceProxy) : PurchasingListener {
 
     override fun onProductDataResponse(response: ProductDataResponse) {
-        val requestId = response.requestId.toString()
         when (response.requestStatus) {
             ProductDataResponse.RequestStatus.SUCCESSFUL -> {
                 val productData = response.productData
-                val unavailableSkus = response.unavailableSkus
                 val items = WritableNativeArray()
                 for ((_, product) in productData) {
-                    if (!skus.contains(product)) {
-                        skus.add(product)
-                    }
-
                     var priceNumber: Number = 0.00
                     val priceString = product.price
                     try {
@@ -107,7 +102,7 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     availableItems.pushMap(promiseItem)
                 }
                 if (response.hasMore()) {
-                    PurchasingService.getPurchaseUpdates(false)
+                    purchasingService.getPurchaseUpdates(false)
                 } else {
                     if (purchases.size > 0 && promiseItem != null) {
                         PromiseUtils
@@ -197,13 +192,8 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
     override fun onPurchaseResponse(response: PurchaseResponse) {
         val requestId = response.requestId.toString()
         val userId = response.userData.userId
-        val status = response.requestStatus
 
-        // Info for potential error reporting
-        val debugMessage: String?
-        var errorCode = PromiseUtils.E_UNKNOWN
-        val error = Arguments.createMap()
-        when (status) {
+        when (response.requestStatus) {
             PurchaseResponse.RequestStatus.SUCCESSFUL -> {
                 val receipt = response.receipt
                 val userData = response.userData
@@ -218,8 +208,9 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     )
             }
             PurchaseResponse.RequestStatus.ALREADY_PURCHASED -> {
-                debugMessage = "You already own this item."
-                errorCode = PromiseUtils.E_ALREADY_OWNED
+                val error = Arguments.createMap()
+                val debugMessage = "You already own this item."
+                val errorCode = PromiseUtils.E_ALREADY_OWNED
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
@@ -234,9 +225,10 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     )
             }
             PurchaseResponse.RequestStatus.FAILED -> {
-                debugMessage =
+                val error = Arguments.createMap()
+                val debugMessage =
                     "An unknown or unexpected error has occurred. Please try again later."
-                errorCode = PromiseUtils.E_UNKNOWN
+                val errorCode = PromiseUtils.E_UNKNOWN
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
@@ -251,8 +243,9 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     )
             }
             PurchaseResponse.RequestStatus.INVALID_SKU -> {
-                debugMessage = "That item is unavailable."
-                errorCode = PromiseUtils.E_ITEM_UNAVAILABLE
+                val error = Arguments.createMap()
+                val debugMessage = "That item is unavailable."
+                val errorCode = PromiseUtils.E_ITEM_UNAVAILABLE
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
@@ -267,8 +260,9 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     )
             }
             PurchaseResponse.RequestStatus.NOT_SUPPORTED -> {
-                debugMessage = "This feature is not available on your device."
-                errorCode = PromiseUtils.E_SERVICE_ERROR
+                val error = Arguments.createMap()
+                val debugMessage = "This feature is not available on your device."
+                val errorCode = PromiseUtils.E_SERVICE_ERROR
                 error.putInt("responseCode", 0)
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
@@ -314,11 +308,8 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
                     )
         }
     }
-    fun clear() {
-        skus.clear()
-    }
 
-    private fun sendEvent(
+    fun sendEvent(
         reactContext: ReactContext,
         eventName: String,
         params: WritableMap?
@@ -343,9 +334,5 @@ class RNIapAmazonListener(private val reactContext: ReactContext) : PurchasingLi
         private const val E_USER_DATA_RESPONSE_FAILED = "E_USER_DATA_RESPONSE_FAILED"
         private const val E_USER_DATA_RESPONSE_NOT_SUPPORTED = "E_USER_DATA_RESPONSE_NOT_SUPPORTED"
         const val TAG = "RNIapAmazonListener"
-    }
-
-    init {
-        skus = ArrayList()
     }
 }
