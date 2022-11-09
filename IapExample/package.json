@@ -7,7 +7,7 @@
     "android:amazon": "react-native run-android --variant=AmazonDebug",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "pods": "pod-install --quiet",
+    "pods": "cd ios && pod install",
     "test": "jest"
   },
   "dependencies": {

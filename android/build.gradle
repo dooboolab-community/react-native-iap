@@ -70,6 +70,9 @@ android {
   }
 
   testOptions {
+    unitTests.all {
+      jvmArgs '-noverify'
+    }
     unitTests.returnDefaultValues = true
   }
 }

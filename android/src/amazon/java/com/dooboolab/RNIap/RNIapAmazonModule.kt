@@ -1,9 +1,11 @@
 package com.dooboolab.RNIap
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import com.amazon.device.drm.LicensingService
 import com.amazon.device.drm.model.LicenseResponse
-import com.amazon.device.iap.PurchasingService
+import com.amazon.device.iap.PurchasingListener
 import com.amazon.device.iap.model.FulfillmentResult
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.Promise
@@ -11,14 +13,17 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.UiThreadUtil
 import com.facebook.react.module.annotations.ReactModule
 
 @ReactModule(name = RNIapAmazonModule.TAG)
-class RNIapAmazonModule(reactContext: ReactApplicationContext) :
+class RNIapAmazonModule(
+    reactContext: ReactApplicationContext,
+    private val purchasingService: PurchasingServiceProxy = PurchasingServiceProxyAmazonImpl(),
+    private val handler: Handler = Handler(Looper.getMainLooper()),
+    private val amazonListener: PurchasingListener = RNIapAmazonListener(reactContext, purchasingService)
+) :
     ReactContextBaseJavaModule(reactContext) {
     var hasListener = false
-    private var amazonListener: RNIapAmazonListener? = null
     override fun getName(): String {
         return TAG
     }
@@ -26,20 +31,19 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun initConnection(promise: Promise) {
         val context = reactApplicationContext
-        val amazonListener = RNIapAmazonListener(context)
-        this.amazonListener = amazonListener
-        UiThreadUtil.runOnUiThread {
+
+        handler.postDelayed({
             try {
-                PurchasingService.registerListener(context.applicationContext, amazonListener)
+                purchasingService.registerListener(context.applicationContext, amazonListener)
                 hasListener = true
                 // Prefetch user and purchases as per Amazon SDK documentation:
-                PurchasingService.getUserData()
-                PurchasingService.getPurchaseUpdates(false)
+                purchasingService.getUserData()
+                purchasingService.getPurchaseUpdates(false)
                 promise.safeResolve(true)
             } catch (e: Exception) {
                 promise.safeReject("Error initializing Amazon appstore sdk", e)
             }
-        }
+        }, 0L)
     }
 
     @ReactMethod
@@ -84,14 +88,13 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun endConnection(promise: Promise) {
         PromiseUtils.rejectAllPendingPromises()
-        amazonListener?.clear()
         hasListener = false
         promise.resolve(true)
     }
 
     @ReactMethod
     fun getUser(promise: Promise) {
-        val requestId = PurchasingService.getUserData()
+        val requestId = purchasingService.getUserData()
         PromiseUtils.addPromiseForKey(PROMISE_GET_USER_DATA, promise)
     }
 
@@ -114,13 +117,13 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
             ii++
         }
         PromiseUtils.addPromiseForKey(PROMISE_GET_PRODUCT_DATA, promise)
-        val requestId = PurchasingService.getProductData(productSkus)
+        val requestId = purchasingService.getProductData(productSkus)
     }
 
     @ReactMethod
     fun getAvailableItems(promise: Promise) {
         PromiseUtils.addPromiseForKey(PROMISE_QUERY_AVAILABLE_ITEMS, promise)
-        PurchasingService.getPurchaseUpdates(true)
+        purchasingService.getPurchaseUpdates(true)
     }
 
     @ReactMethod
@@ -129,7 +132,7 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
         promise: Promise
     ) {
         PromiseUtils.addPromiseForKey(PROMISE_BUY_ITEM, promise)
-        val requestId = PurchasingService.purchase(sku)
+        val requestId = purchasingService.purchase(sku)
     }
 
     @ReactMethod
@@ -138,7 +141,7 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
         developerPayLoad: String?,
         promise: Promise
     ) {
-        PurchasingService.notifyFulfillment(token, FulfillmentResult.FULFILLED)
+        purchasingService.notifyFulfillment(token, FulfillmentResult.FULFILLED)
         promise.resolve(true)
     }
 
@@ -148,13 +151,13 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
         developerPayLoad: String?,
         promise: Promise
     ) {
-        PurchasingService.notifyFulfillment(token, FulfillmentResult.FULFILLED)
+        purchasingService.notifyFulfillment(token, FulfillmentResult.FULFILLED)
         promise.resolve(true)
     }
 
     private fun sendUnconsumedPurchases(promise: Promise) {
         PromiseUtils.addPromiseForKey(PROMISE_QUERY_PURCHASES, promise)
-        PurchasingService.getPurchaseUpdates(false)
+        purchasingService.getPurchaseUpdates(false)
     }
 
     @ReactMethod
@@ -189,8 +192,8 @@ class RNIapAmazonModule(reactContext: ReactApplicationContext) :
              */
             override fun onHostResume() {
                 if (hasListener) {
-                    PurchasingService.getUserData()
-                    PurchasingService.getPurchaseUpdates(false)
+                    purchasingService.getUserData()
+                    purchasingService.getPurchaseUpdates(false)
                 }
             }
             override fun onHostPause() {}
