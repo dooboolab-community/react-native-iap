@@ -28,13 +28,13 @@ import {requestPurchaseWithOfferIOS} from 'react-native-iap';
 
 const App = () => {
   const handlePurchase = async () => {
-    await requestPurchaseWithOfferIOS('productId', 'user-id', {
+    await requestPurchaseWithOfferIOS({sku: 'productId', forUser: 'user-id', withOffer: {
       identifier: 'string',
       keyIdentifier: 'string',
       nonce: 'string',
       signature: 'string',
       timestamp: Date.now(),
-    });
+    }});
   }
 
   return (
