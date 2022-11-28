@@ -41,7 +41,7 @@ extension Date {
     }
 
     var millisecondsSince1970String: String {
-        return String((self.timeIntervalSince1970 * 1000.0).rounded())
+        return String(self.millisecondsSince1970)
     }
 
     init(milliseconds: Int64) {
