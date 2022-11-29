@@ -25,7 +25,7 @@ export type BuyProduct = (
   applicationUsername: string | undefined,
   quantity: number,
   withOffer: Record<keyof PaymentDiscountSk2, string> | undefined,
-) => Promise<Purchase>;
+) => Promise<TransactionSk2>;
 
 type clearTransaction = () => Promise<void>;
 type clearProducts = () => Promise<void>;

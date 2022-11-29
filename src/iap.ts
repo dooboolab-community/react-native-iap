@@ -28,6 +28,7 @@ import {
   Product,
   ProductPurchase,
   ProductType,
+  Purchase,
   PurchaseResult,
   PurchaseStateAndroid,
   RequestPurchase,
@@ -345,7 +346,7 @@ export const getPurchaseHistory = ({
   alsoPublishToEventListener?: boolean;
   automaticallyFinishRestoredTransactions?: boolean;
   onlyIncludeActiveItems?: boolean;
-} = {}): Promise<(ProductPurchase | SubscriptionPurchase)[]> =>
+} = {}): Promise<Purchase[]> =>
   (
     Platform.select({
       ios: async () => {
@@ -472,7 +473,7 @@ export const getAvailablePurchases = ({
   alsoPublishToEventListener?: boolean;
   automaticallyFinishRestoredTransactions?: boolean;
   onlyIncludeActiveItems?: boolean;
-} = {}): Promise<(ProductPurchase | SubscriptionPurchase)[]> =>
+} = {}): Promise<Purchase[]> =>
   (
     Platform.select({
       ios: async () => {
@@ -603,13 +604,16 @@ export const requestPurchase = (
         if (isIosStorekit2()) {
           const offer = offerSk2Map(withOffer);
 
-          return RNIapIosSk2.buyProduct(
-            sku,
-            andDangerouslyFinishTransactionAutomaticallyIOS,
-            appAccountToken,
-            quantity ?? -1,
-            offer,
+          const purchase = transactionSk2Map(
+            await RNIapIosSk2.buyProduct(
+              sku,
+              andDangerouslyFinishTransactionAutomaticallyIOS,
+              appAccountToken,
+              quantity ?? -1,
+              offer,
+            ),
           );
+          return Promise.resolve(purchase);
         } else {
           return RNIapIos.buyProduct(
             sku,
@@ -757,13 +761,16 @@ export const requestSubscription = (
         if (isIosStorekit2()) {
           const offer = offerSk2Map(withOffer);
 
-          return RNIapIosSk2.buyProduct(
-            sku,
-            andDangerouslyFinishTransactionAutomaticallyIOS,
-            appAccountToken,
-            quantity ?? -1,
-            offer,
+          const purchase = transactionSk2Map(
+            await RNIapIosSk2.buyProduct(
+              sku,
+              andDangerouslyFinishTransactionAutomaticallyIOS,
+              appAccountToken,
+              quantity ?? -1,
+              offer,
+            ),
           );
+          return Promise.resolve(purchase);
         } else {
           return RNIapIos.buyProduct(
             sku,
@@ -844,7 +851,7 @@ export const finishTransaction = ({
   isConsumable,
   developerPayloadAndroid,
 }: {
-  purchase: ProductPurchase | SubscriptionPurchase;
+  purchase: Purchase;
   isConsumable?: boolean;
   developerPayloadAndroid?: string;
 }): Promise<PurchaseResult | boolean> => {
