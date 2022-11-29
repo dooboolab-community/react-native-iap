@@ -10,7 +10,7 @@ import {
   ProductSk2,
   productSk2Map,
   subscriptionSk2Map,
-  transactionSk2Map,
+  transactionSk2ToPurchaseMap,
 } from './types/appleSk2';
 import {
   fillProductsWithAdditionalData,
@@ -357,7 +357,7 @@ export const getPurchaseHistory = ({
                 alsoPublishToEventListener,
                 onlyIncludeActiveItems,
               )
-            ).map(transactionSk2Map),
+            ).map(transactionSk2ToPurchaseMap),
           );
         } else {
           return RNIapIos.getAvailableItems(
@@ -484,7 +484,7 @@ export const getAvailablePurchases = ({
                 alsoPublishToEventListener,
                 onlyIncludeActiveItems,
               )
-            ).map(transactionSk2Map),
+            ).map(transactionSk2ToPurchaseMap),
           );
         } else {
           return RNIapIos.getAvailableItems(
@@ -604,7 +604,7 @@ export const requestPurchase = (
         if (isIosStorekit2()) {
           const offer = offerSk2Map(withOffer);
 
-          const purchase = transactionSk2Map(
+          const purchase = transactionSk2ToPurchaseMap(
             await RNIapIosSk2.buyProduct(
               sku,
               andDangerouslyFinishTransactionAutomaticallyIOS,
@@ -761,7 +761,7 @@ export const requestSubscription = (
         if (isIosStorekit2()) {
           const offer = offerSk2Map(withOffer);
 
-          const purchase = transactionSk2Map(
+          const purchase = transactionSk2ToPurchaseMap(
             await RNIapIosSk2.buyProduct(
               sku,
               andDangerouslyFinishTransactionAutomaticallyIOS,

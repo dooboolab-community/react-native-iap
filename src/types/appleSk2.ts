@@ -136,7 +136,7 @@ export type ProductStatus = {
   state: SubscriptionStatus;
 };
 
-export const transactionSk2Map = ({
+export const transactionSk2ToPurchaseMap = ({
   id,
   originalPurchaseDate,
   productID,
