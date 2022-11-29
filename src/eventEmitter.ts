@@ -1,6 +1,6 @@
 import {EmitterSubscription, NativeEventEmitter} from 'react-native';
 
-import {TransactionEvent, transactionSk2Map} from './types/appleSk2';
+import {TransactionEvent, transactionSk2ToPurchaseMap} from './types/appleSk2';
 import {isIosStorekit2} from './iap';
 import {
   getAndroidModule,
@@ -50,7 +50,7 @@ export const purchaseUpdatedListener = (
   const eventEmitter = new NativeEventEmitter(getNativeModule());
   const proxyListener = isIosStorekit2()
     ? (event: Purchase) => {
-        listener(transactionSk2Map(event as any));
+        listener(transactionSk2ToPurchaseMap(event as any));
       }
     : listener;
   const emitterSubscription = eventEmitter.addListener(

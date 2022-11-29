@@ -10,7 +10,7 @@ import {
   ProductSk2,
   productSk2Map,
   subscriptionSk2Map,
-  transactionSk2Map,
+  transactionSk2ToPurchaseMap,
 } from './types/appleSk2';
 import {
   fillProductsWithAdditionalData,
@@ -28,6 +28,7 @@ import {
   Product,
   ProductPurchase,
   ProductType,
+  Purchase,
   PurchaseResult,
   PurchaseStateAndroid,
   RequestPurchase,
@@ -345,7 +346,7 @@ export const getPurchaseHistory = ({
   alsoPublishToEventListener?: boolean;
   automaticallyFinishRestoredTransactions?: boolean;
   onlyIncludeActiveItems?: boolean;
-} = {}): Promise<(ProductPurchase | SubscriptionPurchase)[]> =>
+} = {}): Promise<Purchase[]> =>
   (
     Platform.select({
       ios: async () => {
@@ -356,7 +357,7 @@ export const getPurchaseHistory = ({
                 alsoPublishToEventListener,
                 onlyIncludeActiveItems,
               )
-            ).map(transactionSk2Map),
+            ).map(transactionSk2ToPurchaseMap),
           );
         } else {
           return RNIapIos.getAvailableItems(
@@ -472,7 +473,7 @@ export const getAvailablePurchases = ({
   alsoPublishToEventListener?: boolean;
   automaticallyFinishRestoredTransactions?: boolean;
   onlyIncludeActiveItems?: boolean;
-} = {}): Promise<(ProductPurchase | SubscriptionPurchase)[]> =>
+} = {}): Promise<Purchase[]> =>
   (
     Platform.select({
       ios: async () => {
@@ -483,7 +484,7 @@ export const getAvailablePurchases = ({
                 alsoPublishToEventListener,
                 onlyIncludeActiveItems,
               )
-            ).map(transactionSk2Map),
+            ).map(transactionSk2ToPurchaseMap),
           );
         } else {
           return RNIapIos.getAvailableItems(
@@ -603,13 +604,16 @@ export const requestPurchase = (
         if (isIosStorekit2()) {
           const offer = offerSk2Map(withOffer);
 
-          return RNIapIosSk2.buyProduct(
-            sku,
-            andDangerouslyFinishTransactionAutomaticallyIOS,
-            appAccountToken,
-            quantity ?? -1,
-            offer,
+          const purchase = transactionSk2ToPurchaseMap(
+            await RNIapIosSk2.buyProduct(
+              sku,
+              andDangerouslyFinishTransactionAutomaticallyIOS,
+              appAccountToken,
+              quantity ?? -1,
+              offer,
+            ),
           );
+          return Promise.resolve(purchase);
         } else {
           return RNIapIos.buyProduct(
             sku,
@@ -757,13 +761,16 @@ export const requestSubscription = (
         if (isIosStorekit2()) {
           const offer = offerSk2Map(withOffer);
 
-          return RNIapIosSk2.buyProduct(
-            sku,
-            andDangerouslyFinishTransactionAutomaticallyIOS,
-            appAccountToken,
-            quantity ?? -1,
-            offer,
+          const purchase = transactionSk2ToPurchaseMap(
+            await RNIapIosSk2.buyProduct(
+              sku,
+              andDangerouslyFinishTransactionAutomaticallyIOS,
+              appAccountToken,
+              quantity ?? -1,
+              offer,
+            ),
           );
+          return Promise.resolve(purchase);
         } else {
           return RNIapIos.buyProduct(
             sku,
@@ -845,7 +852,7 @@ export const finishTransaction = ({
   isConsumable,
   developerPayloadAndroid,
 }: {
-  purchase: ProductPurchase | SubscriptionPurchase;
+  purchase: Purchase;
   isConsumable?: boolean;
   developerPayloadAndroid?: string;
 }): Promise<PurchaseResult | boolean> => {
