@@ -838,6 +838,7 @@ const App = () => {
   return <Button title="Buy product" onPress={handlePurchase} />;
 };
 ```
+ @returns {Promise<PurchaseResult | boolean>} Android: PurchaseResult, iOS: true
  */
 export const finishTransaction = ({
   purchase,
@@ -858,7 +859,8 @@ export const finishTransaction = ({
             new Error('transactionId required to finish iOS transaction'),
           );
         }
-        return getIosModule().finishTransaction(transactionId);
+        await getIosModule().finishTransaction(transactionId);
+        return Promise.resolve(true);
       },
       android: async () => {
         if (purchase?.purchaseToken) {
