@@ -838,6 +838,7 @@ const App = () => {
   return <Button title="Buy product" onPress={handlePurchase} />;
 };
 ```
+ @returns {Promise<PurchaseResult | boolean>} Android: PurchaseResult, iOS: true
  */
 export const finishTransaction = ({
   purchase,
