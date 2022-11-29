@@ -858,7 +858,8 @@ export const finishTransaction = ({
             new Error('transactionId required to finish iOS transaction'),
           );
         }
-        return getIosModule().finishTransaction(transactionId);
+        await getIosModule().finishTransaction(transactionId);
+        return Promise.resolve(true);
       },
       android: async () => {
         if (purchase?.purchaseToken) {
