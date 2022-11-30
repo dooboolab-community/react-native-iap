@@ -224,7 +224,7 @@ import {getSubscriptions} from 'react-native-iap';
 const App = () => {
   const subscriptions = useCallback(
     async () =>
-      await getSubscriptions(['com.example.product1', 'com.example.product2']),
+      await getSubscriptions({skus:['com.example.product1', 'com.example.product2']}),
     [],
   );
 
@@ -553,7 +553,7 @@ import {requestPurchase, Product, Sku, getProducts} from 'react-native-iap';
 
 const App = () => {
   const products = useCallback(
-    async () => getProducts(['com.example.product']),
+    async () => getProducts({skus:['com.example.product']}),
     [],
   );
 
