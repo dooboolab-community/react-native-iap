@@ -790,12 +790,12 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         return nil
     }
 
-    func getPurchaseData(_ transaction: SKPaymentTransaction, withBlock block: @escaping (_ transactionDict: [String: Any]?) -> Void) {
+    func getPurchaseData(_ transaction: SKPaymentTransaction, withBlock block: @escaping (_ transactionDict: [String: Any?]?) -> Void) {
         requestReceiptData(withBlock: false) { receiptData, _ in
             if receiptData == nil {
                 block(nil)
             } else {
-                var purchase = [
+                var purchase: [String: Any?] = [
                     "transactionDate": transaction.transactionDate?.millisecondsSince1970,
                     "transactionId": transaction.transactionIdentifier,
                     "productId": transaction.payment.productIdentifier,
@@ -808,7 +808,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                     purchase["originalTransactionIdentifierIOS"] = originalTransaction.transactionIdentifier
                 }
 
-                block(purchase as [String: Any])
+                block(purchase)
             }
         }
     }
