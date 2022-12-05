@@ -136,7 +136,7 @@ export type ProductStatus = {
   state: SubscriptionStatus;
 };
 
-export const transactionSk2Map = ({
+export const transactionSk2ToPurchaseMap = ({
   id,
   originalPurchaseDate,
   productID,
@@ -151,7 +151,7 @@ export const transactionSk2Map = ({
     transactionReceipt: '', // Not available
     purchaseToken: '', //Not avaiable
     quantityIOS: purchasedQuantity,
-    originalTransactionDateIOS: String(originalPurchaseDate),
+    originalTransactionDateIOS: originalPurchaseDate,
     originalTransactionIdentifierIOS: originalID,
   };
   return purchase;

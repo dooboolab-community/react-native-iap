@@ -796,7 +796,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 block(nil)
             } else {
                 var purchase: [String: Any?] = [
-                    "transactionDate": transaction.transactionDate?.millisecondsSince1970String,
+                    "transactionDate": transaction.transactionDate?.millisecondsSince1970,
                     "transactionId": transaction.transactionIdentifier,
                     "productId": transaction.payment.productIdentifier,
                     "transactionReceipt": receiptData?.base64EncodedString(options: [.endLineWithCarriageReturn])
@@ -804,7 +804,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
                 // originalTransaction is available for restore purchase and purchase of cancelled/expired subscriptions
                 if let originalTransaction = transaction.original {
-                    purchase["originalTransactionDateIOS"] = originalTransaction.transactionDate?.millisecondsSince1970String
+                    purchase["originalTransactionDateIOS"] = originalTransaction.transactionDate?.millisecondsSince1970
                     purchase["originalTransactionIdentifierIOS"] = originalTransaction.transactionIdentifier
                 }
 

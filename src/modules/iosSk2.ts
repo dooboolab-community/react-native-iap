@@ -1,6 +1,6 @@
 import {NativeModules} from 'react-native';
 
-import type {Product, ProductPurchase, Purchase, Sku} from '../types';
+import type {Product, ProductPurchase, Sku} from '../types';
 import type {
   PaymentDiscountSk2,
   ProductSk2,
@@ -25,7 +25,7 @@ export type BuyProduct = (
   applicationUsername: string | undefined,
   quantity: number,
   withOffer: Record<keyof PaymentDiscountSk2, string> | undefined,
-) => Promise<Purchase>;
+) => Promise<TransactionSk2>;
 
 type clearTransaction = () => Promise<void>;
 type clearProducts = () => Promise<void>;
