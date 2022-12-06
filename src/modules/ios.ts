@@ -64,8 +64,19 @@ export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> =>
 
 /**
  * Get the current receipt base64 encoded in IOS.
- * @param {forceRefresh?:boolean}
- * @returns {Promise<string>}
+ * From: https://apphud.com/blog/app-store-receipt-validation#what-is-app-store-receipt
+ > Does a receipt always exist in the app?
+ > If a user downloaded the app from the App Store – yes. However, in sandbox if your app was installed via Xcode or Testflight, then there won't be a receipt until you make a purchase or restore.
+ * 
+ ## Usage 
+ ```tsx
+import {useCallback} from 'react';
+import {getReceiptIOS} from 'react-native-iap';
+
+const receipt = useCallback(async () => await getReceiptIOS({forceRefresh: false}));
+```
+ * @param {forceRefresh?:boolean} Requests the receipt from Bundle.main.appStoreReceiptURL. Based on the note above, looks like forceRefresh only makes sense when testing an app not downloaded from the Appstore.
+ * @returns {Promise<string>} The receipt data
  */
 export const getReceiptIOS = async ({
   forceRefresh,
