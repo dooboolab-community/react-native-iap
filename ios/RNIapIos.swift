@@ -601,14 +601,9 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             }
 
             periodNumberIOS = String(format: "%lu", numOfUnits)
-            if numOfUnits != 0 {
+            
+            if product.subscriptionPeriod != nil {
                 itemType = "subs"
-            }
-            // More reliable way of determining a subs on newer iOS versions
-            if #available(iOS 12.0, tvOS 12.0, *) {
-                if product.subscriptionGroupIdentifier != nil {
-                    itemType = "subs"
-                }
             }
 
             // subscriptionPeriod = product.subscriptionPeriod ? [product.subscriptionPeriod stringValue] : @"";
