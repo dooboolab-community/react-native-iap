@@ -4,6 +4,7 @@ import * as IapAmazon from './modules/amazon';
 import * as IapAndroid from './modules/android';
 import * as IapIos from './modules/ios';
 import * as IapIosSk2 from './modules/iosSk2';
+import {singleProductAndroidMap} from './types/android';
 import {offerToRecord} from './types/apple';
 import {
   offerSk2Map,
@@ -202,10 +203,9 @@ export const getProducts = ({
         );
       },
       android: async () => {
-        const products = await getAndroidModule().getItemsByType(
-          ANDROID_ITEM_TYPE_IAP,
-          skus,
-        );
+        const products = (
+          await getAndroidModule().getItemsByType(ANDROID_ITEM_TYPE_IAP, skus)
+        ).map(singleProductAndroidMap);
 
         return fillProductsWithAdditionalData(products);
       },
