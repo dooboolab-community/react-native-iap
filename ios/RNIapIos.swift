@@ -601,7 +601,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             }
 
             periodNumberIOS = String(format: "%lu", numOfUnits)
-            
+
             if product.subscriptionPeriod != nil {
                 itemType = "subs"
             }
