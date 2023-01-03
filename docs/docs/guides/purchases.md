@@ -100,8 +100,10 @@ class App extends Component {
 Then define the method like below and call it when user press the button.
 
 ```tsx
+import { requestSubscription, requestSubscription } from 'react-native-iap';
+...
 class App extends Component {
-  requestPurchase = async (sku: string) => {
+  purchase = async (sku: string) => {
     try {
       await requestPurchase({
         sku,
@@ -112,7 +114,7 @@ class App extends Component {
     }
   };
 
-  requestSubscription = async (sku: string, offerToken: string?) => {
+  subscribe = async (sku: string, offerToken: string?) => {
     try {
       await requestSubscription(
         {sku},
