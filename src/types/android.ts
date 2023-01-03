@@ -1,3 +1,5 @@
+import type {ProductAndroid, Subscription, SubscriptionAndroid} from '.';
+
 export enum AndroidPurchaseState {
   purchased = 0,
   canceled = 1,
@@ -49,3 +51,23 @@ export type ReceiptType = {
   acknowledgementState: AndroidAcknowledgementState;
   kind: string;
 } & Record<string, unknown>;
+
+/** Added to maintain backwards compatibility */
+export const singleProductAndroidMap = (
+  originalProd: ProductAndroid,
+): ProductAndroid => {
+  const prod: ProductAndroid = {
+    ...originalProd,
+    //legacy properties
+    price:
+      originalProd.oneTimePurchaseOfferDetails?.formattedPrice ??
+      originalProd.price,
+    localizedPrice:
+      originalProd.oneTimePurchaseOfferDetails?.formattedPrice ??
+      originalProd.price,
+    currency:
+      originalProd.oneTimePurchaseOfferDetails?.priceCurrencyCode ??
+      originalProd.currency,
+  };
+  return prod;
+};
