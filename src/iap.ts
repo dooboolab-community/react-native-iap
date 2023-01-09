@@ -431,7 +431,7 @@ const App = () => {
             break;
 
           case 'com.example.coins100':
-            await finishTransaction(purchase.purchaseToken);
+            await finishTransaction({purchase});
             CoinStore.addCoins(100);
         }
       })
@@ -831,7 +831,7 @@ const App = () => {
   const handlePurchase = async () => {
     // ... handle the purchase request
 
-    const result = finishTransaction(purchase);
+    const result = finishTransaction({purchase});
   };
 
   return <Button title="Buy product" onPress={handlePurchase} />;
