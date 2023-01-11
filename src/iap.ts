@@ -199,7 +199,7 @@ export const getProducts = ({
         }
         return items.filter(
           (item: Product) =>
-            skus.includes(item.productId) && item.type === 'iap',
+            skus.includes(item.productId),
         );
       },
       android: async () => {
@@ -256,7 +256,7 @@ export const getSubscriptions = ({
 
         items = items.filter(
           (item: SubscriptionIOS) =>
-            skus.includes(item.productId) && item.type === 'subs',
+            skus.includes(item.productId),
         );
 
         return addSubscriptionPlatform(items, SubscriptionPlatform.ios);
