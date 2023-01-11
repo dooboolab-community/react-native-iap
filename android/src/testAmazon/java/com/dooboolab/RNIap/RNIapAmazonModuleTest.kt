@@ -36,6 +36,9 @@ class RNIapAmazonModuleTest {
     @MockK
     lateinit var mainThreadHandler: Handler
 
+    @MockK
+    lateinit var eventSender: EventSender
+
     private lateinit var listener: RNIapAmazonListener
 
     private lateinit var module: RNIapAmazonModule
@@ -43,7 +46,7 @@ class RNIapAmazonModuleTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
-        listener = spyk(RNIapAmazonListener(context, purchasingServiceProxy))
+        listener = spyk(RNIapAmazonListener(eventSender, purchasingServiceProxy))
         module = RNIapAmazonModule(context, purchasingServiceProxy, mainThreadHandler, listener)
     }
 
@@ -78,7 +81,7 @@ class RNIapAmazonModuleTest {
             every { userData } returns mUserData
         }
 
-        every { listener.sendEvent(any(), any(), any()) } just Runs
+        every { eventSender.sendEvent(any(), any()) } just Runs
 
         every { purchasingServiceProxy.purchase(any()) } answers {
             listener.onPurchaseResponse(
@@ -100,7 +103,7 @@ class RNIapAmazonModuleTest {
         val response = slot<WritableMap>()
         verify { promise.resolve(capture(response)) }
         assertEquals("mySku", response.captured.getString("productId"))
-        verify { listener.sendEvent(any(), "purchase-updated", any()) }
+        verify { eventSender.sendEvent("purchase-updated", any()) }
         verify(exactly = 0) { purchasingServiceProxy.getPurchaseUpdates(false) }
     }
 
