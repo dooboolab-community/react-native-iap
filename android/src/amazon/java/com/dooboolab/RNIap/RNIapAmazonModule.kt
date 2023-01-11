@@ -24,9 +24,11 @@ class RNIapAmazonModule(
     private val handler: Handler = Handler(Looper.getMainLooper()),
     private val amazonListener: PurchasingListener = RNIapAmazonListener(
         object : EventSender {
+            private val rctDeviceEventEmitter = reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+
             override fun sendEvent(eventName: String, params: WritableMap?) {
-                reactContext
-                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                rctDeviceEventEmitter
                     .emit(eventName, params)
             }
         },
