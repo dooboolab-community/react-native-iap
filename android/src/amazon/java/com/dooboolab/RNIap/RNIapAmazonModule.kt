@@ -22,13 +22,16 @@ class RNIapAmazonModule(
     reactContext: ReactApplicationContext,
     private val purchasingService: PurchasingServiceProxy = PurchasingServiceProxyAmazonImpl(),
     private val handler: Handler = Handler(Looper.getMainLooper()),
-    private val amazonListener: PurchasingListener = RNIapAmazonListener(object : EventSender {
-        override fun sendEvent(eventName: String, params: WritableMap?) {
-            reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-                .emit(eventName, params)
-        }
-    }, purchasingService)
+    private val amazonListener: PurchasingListener = RNIapAmazonListener(
+        object : EventSender {
+            override fun sendEvent(eventName: String, params: WritableMap?) {
+                reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                    .emit(eventName, params)
+            }
+        },
+        purchasingService
+    )
 ) :
     ReactContextBaseJavaModule(reactContext) {
     var hasListener = false
