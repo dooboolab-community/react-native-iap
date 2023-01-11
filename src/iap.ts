@@ -197,10 +197,7 @@ export const getProducts = ({
         } else {
           items = (await RNIapIos.getItems(skus)) as Product[];
         }
-        return items.filter(
-          (item: Product) =>
-            skus.includes(item.productId),
-        );
+        return items.filter((item: Product) => skus.includes(item.productId));
       },
       android: async () => {
         const products = (
@@ -254,9 +251,8 @@ export const getSubscriptions = ({
           items = (await RNIapIos.getItems(skus)) as SubscriptionIOS[];
         }
 
-        items = items.filter(
-          (item: SubscriptionIOS) =>
-            skus.includes(item.productId),
+        items = items.filter((item: SubscriptionIOS) =>
+          skus.includes(item.productId),
         );
 
         return addSubscriptionPlatform(items, SubscriptionPlatform.ios);
