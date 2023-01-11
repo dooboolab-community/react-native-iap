@@ -13,14 +13,22 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.WritableMap
 import com.facebook.react.module.annotations.ReactModule
+import com.facebook.react.modules.core.DeviceEventManagerModule
 
 @ReactModule(name = RNIapAmazonModule.TAG)
 class RNIapAmazonModule(
     reactContext: ReactApplicationContext,
     private val purchasingService: PurchasingServiceProxy = PurchasingServiceProxyAmazonImpl(),
     private val handler: Handler = Handler(Looper.getMainLooper()),
-    private val amazonListener: PurchasingListener = RNIapAmazonListener(reactContext, purchasingService)
+    private val amazonListener: PurchasingListener = RNIapAmazonListener(object : EventSender {
+        override fun sendEvent(eventName: String, params: WritableMap?) {
+            reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                .emit(eventName, params)
+        }
+    }, purchasingService)
 ) :
     ReactContextBaseJavaModule(reactContext) {
     var hasListener = false

@@ -21,8 +21,8 @@ val ProductType.typeString: String
     get() = if (this == ProductType.ENTITLED || this == ProductType.CONSUMABLE) "inapp" else "subs"
 
 class RNIapAmazonListener(
-    private val reactContext: ReactContext,
-    private val purchasingService: PurchasingServiceProxy
+    private val eventSender: EventSender?,
+    private val purchasingService: PurchasingServiceProxy?
 ) : PurchasingListener {
 
     override fun onProductDataResponse(response: ProductDataResponse) {
@@ -96,11 +96,11 @@ class RNIapAmazonListener(
                     val item = receiptToMap(userData, receipt)
                     promiseItem = WritableNativeMap()
                     promiseItem.merge(item)
-                    sendEvent(reactContext, "purchase-updated", item)
+                    eventSender?.sendEvent( "purchase-updated", item)
                     availableItems.pushMap(promiseItem)
                 }
                 if (response.hasMore()) {
-                    purchasingService.getPurchaseUpdates(false)
+                    purchasingService?.getPurchaseUpdates(false)
                 } else {
                     if (purchases.size > 0 && promiseItem != null) {
                         PromiseUtils
@@ -129,7 +129,7 @@ class RNIapAmazonListener(
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
                 error.putString("message", debugMessage)
-                sendEvent(reactContext, "purchase-error", error)
+                eventSender?.sendEvent( "purchase-error", error)
                 PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_QUERY_PURCHASES,
@@ -153,7 +153,7 @@ class RNIapAmazonListener(
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
                 error.putString("message", debugMessage)
-                sendEvent(reactContext, "purchase-error", error)
+                eventSender?.sendEvent( "purchase-error", error)
                 PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_QUERY_PURCHASES,
@@ -198,7 +198,7 @@ class RNIapAmazonListener(
                 val item = receiptToMap(userData, receipt)
                 val promiseItem: WritableMap = Arguments.createMap()
                 promiseItem.merge(item)
-                sendEvent(reactContext, "purchase-updated", item)
+                eventSender?.sendEvent( "purchase-updated", item)
                 PromiseUtils
                     .resolvePromisesForKey(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
@@ -213,7 +213,7 @@ class RNIapAmazonListener(
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
                 error.putString("message", debugMessage)
-                sendEvent(reactContext, "purchase-error", error)
+                eventSender?.sendEvent( "purchase-error", error)
                 PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
@@ -231,7 +231,7 @@ class RNIapAmazonListener(
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
                 error.putString("message", debugMessage)
-                sendEvent(reactContext, "purchase-error", error)
+                eventSender?.sendEvent( "purchase-error", error)
                 PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
@@ -248,7 +248,7 @@ class RNIapAmazonListener(
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
                 error.putString("message", debugMessage)
-                sendEvent(reactContext, "purchase-error", error)
+                eventSender?.sendEvent( "purchase-error", error)
                 PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
@@ -265,7 +265,7 @@ class RNIapAmazonListener(
                 error.putString("debugMessage", debugMessage)
                 error.putString("code", errorCode)
                 error.putString("message", debugMessage)
-                sendEvent(reactContext, "purchase-error", error)
+                eventSender?.sendEvent( "purchase-error", error)
                 PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
@@ -307,15 +307,6 @@ class RNIapAmazonListener(
         }
     }
 
-    fun sendEvent(
-        reactContext: ReactContext,
-        eventName: String,
-        params: WritableMap?
-    ) {
-        reactContext
-            .getJSModule(RCTDeviceEventEmitter::class.java)
-            .emit(eventName, params)
-    }
 
     companion object {
         private const val E_PRODUCT_DATA_RESPONSE_FAILED = "E_PRODUCT_DATA_RESPONSE_FAILED"
