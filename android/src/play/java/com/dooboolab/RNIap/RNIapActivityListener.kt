@@ -7,6 +7,7 @@ import android.app.Activity
  */
 class RNIapActivityListener {
     companion object {
+        @JvmStatic
         fun registerActivity(activity: Activity) {
             // No op
         }
