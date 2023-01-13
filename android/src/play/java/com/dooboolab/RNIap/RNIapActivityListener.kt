@@ -7,7 +7,7 @@ import android.app.Activity
  */
 class RNIapActivityListener {
     companion object {
-        fun registerActivity(activity: Activity){
+        fun registerActivity(activity: Activity) {
             // No op
         }
     }
