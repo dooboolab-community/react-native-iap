@@ -1,6 +1,5 @@
 package com.dooboolab.RNIap
 
-import android.os.Handler
 import com.amazon.device.iap.model.PurchaseResponse
 import com.amazon.device.iap.model.Receipt
 import com.amazon.device.iap.model.RequestId
@@ -21,6 +20,7 @@ import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import java.util.*
@@ -34,9 +34,6 @@ class RNIapAmazonModuleTest {
     lateinit var purchasingServiceProxy: PurchasingServiceProxy
 
     @MockK
-    lateinit var mainThreadHandler: Handler
-
-    @MockK
     lateinit var eventSender: EventSender
 
     private lateinit var listener: RNIapAmazonListener
@@ -47,20 +44,35 @@ class RNIapAmazonModuleTest {
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
         listener = spyk(RNIapAmazonListener(eventSender, purchasingServiceProxy))
-        module = RNIapAmazonModule(context, purchasingServiceProxy, mainThreadHandler, listener)
+        module = RNIapAmazonModule(context, purchasingServiceProxy, eventSender)
     }
 
     @Test
-    fun `initConnection should resolve to true`() {
+    fun `initConnection should resolve to true if RNIapActivityListener is configured`() {
         every { context.applicationContext } returns mockk()
 
         val promise = mockk<Promise>(relaxed = true)
-        val slot = slot<Runnable>()
-        every { mainThreadHandler.postDelayed(capture(slot), any()) } answers { slot.captured.run(); true }
+
+        verify(exactly = 0) { promise.reject(any(), any<String>()) }
+
+        RNIapActivityListener.registerActivity(mockk())
+
+        module.initConnection(promise)
+        // should set eventSender and purchase service
+        assertNotNull(RNIapActivityListener.amazonListener?.purchasingService)
+        assertNotNull(RNIapActivityListener.amazonListener?.eventSender)
+
+        verify { promise.resolve(true) }
+    }
+
+    @Test
+    fun `initConnection should reject if RNIapActivityListener is not configured`() {
+        every { context.applicationContext } returns mockk()
+
+        val promise = mockk<Promise>(relaxed = true)
         module.initConnection(promise)
         verify(exactly = 0) { promise.reject(any(), any<String>()) }
-        verify { promise.resolve(true) }
-        verify { purchasingServiceProxy.registerListener(any(), any()) }
+        verify { promise.reject(PromiseUtils.E_DEVELOPER_ERROR, any(), any<Throwable>()) }
     }
 
     @Test

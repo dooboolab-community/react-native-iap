@@ -19,8 +19,8 @@ val ProductType.typeString: String
     get() = if (this == ProductType.ENTITLED || this == ProductType.CONSUMABLE) "inapp" else "subs"
 
 class RNIapAmazonListener(
-    private val eventSender: EventSender?,
-    private val purchasingService: PurchasingServiceProxy?
+    var eventSender: EventSender?,
+    var purchasingService: PurchasingServiceProxy?
 ) : PurchasingListener {
 
     override fun onProductDataResponse(response: ProductDataResponse) {

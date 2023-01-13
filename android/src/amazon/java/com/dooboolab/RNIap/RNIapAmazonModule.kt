@@ -1,11 +1,8 @@
 package com.dooboolab.RNIap
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import com.amazon.device.drm.LicensingService
 import com.amazon.device.drm.model.LicenseResponse
-import com.amazon.device.iap.PurchasingListener
 import com.amazon.device.iap.model.FulfillmentResult
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.Promise
@@ -19,44 +16,32 @@ import com.facebook.react.modules.core.DeviceEventManagerModule
 
 @ReactModule(name = RNIapAmazonModule.TAG)
 class RNIapAmazonModule(
-    reactContext: ReactApplicationContext,
+    private val reactContext: ReactApplicationContext,
     private val purchasingService: PurchasingServiceProxy = PurchasingServiceProxyAmazonImpl(),
-    private val handler: Handler = Handler(Looper.getMainLooper()),
-    private val amazonListener: PurchasingListener = RNIapAmazonListener(
-        object : EventSender {
-            private val rctDeviceEventEmitter = reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+    private val eventSender: EventSender = object : EventSender {
+        private val rctDeviceEventEmitter = reactContext
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
 
-            override fun sendEvent(eventName: String, params: WritableMap?) {
-                rctDeviceEventEmitter
-                    .emit(eventName, params)
-            }
-        },
-        purchasingService
-    )
+        override fun sendEvent(eventName: String, params: WritableMap?) {
+            rctDeviceEventEmitter
+                .emit(eventName, params)
+        }
+    }
 ) :
     ReactContextBaseJavaModule(reactContext) {
-    var hasListener = false
     override fun getName(): String {
         return TAG
     }
 
     @ReactMethod
     fun initConnection(promise: Promise) {
-        val context = reactApplicationContext
-
-        handler.postDelayed({
-            try {
-                purchasingService.registerListener(context.applicationContext, amazonListener)
-                hasListener = true
-                // Prefetch user and purchases as per Amazon SDK documentation:
-                purchasingService.getUserData()
-                purchasingService.getPurchaseUpdates(false)
-                promise.safeResolve(true)
-            } catch (e: Exception) {
-                promise.safeReject("Error initializing Amazon appstore sdk", e)
-            }
-        }, 0L)
+        if (RNIapActivityListener.amazonListener == null) {
+            promise.safeReject(PromiseUtils.E_DEVELOPER_ERROR, Exception("RNIapActivityListener is not registered in your MainActivity.onCreate"))
+            return
+        }
+        RNIapActivityListener.amazonListener?.eventSender = eventSender
+        RNIapActivityListener.amazonListener?.purchasingService = purchasingService
+        promise.resolve(true)
     }
 
     @ReactMethod
@@ -101,7 +86,7 @@ class RNIapAmazonModule(
     @ReactMethod
     fun endConnection(promise: Promise) {
         PromiseUtils.rejectAllPendingPromises()
-        hasListener = false
+        RNIapActivityListener.hasListener = false
         promise.resolve(true)
     }
 
@@ -204,7 +189,7 @@ class RNIapAmazonModule(
              * We should fetch updates on resume
              */
             override fun onHostResume() {
-                if (hasListener) {
+                if (RNIapActivityListener.hasListener) {
                     purchasingService.getUserData()
                     purchasingService.getPurchaseUpdates(false)
                 }
