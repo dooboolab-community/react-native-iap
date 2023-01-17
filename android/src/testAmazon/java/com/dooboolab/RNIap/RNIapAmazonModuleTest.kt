@@ -44,7 +44,7 @@ class RNIapAmazonModuleTest {
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
         listener = spyk(RNIapAmazonListener(eventSender, purchasingServiceProxy))
-        module = RNIapAmazonModule(context, purchasingServiceProxy, eventSender)
+        module = RNIapAmazonModule(context, purchasingServiceProxy,  eventSender)
     }
 
     @Test

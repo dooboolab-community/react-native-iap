@@ -18,15 +18,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule
 class RNIapAmazonModule(
     private val reactContext: ReactApplicationContext,
     private val purchasingService: PurchasingServiceProxy = PurchasingServiceProxyAmazonImpl(),
-    private val eventSender: EventSender = object : EventSender {
-        private val rctDeviceEventEmitter = reactContext
-            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-
-        override fun sendEvent(eventName: String, params: WritableMap?) {
-            rctDeviceEventEmitter
-                .emit(eventName, params)
-        }
-    }
+    private var eventSender: EventSender? = null
 ) :
     ReactContextBaseJavaModule(reactContext) {
     override fun getName(): String {
@@ -38,6 +30,17 @@ class RNIapAmazonModule(
         if (RNIapActivityListener.amazonListener == null) {
             promise.safeReject(PromiseUtils.E_DEVELOPER_ERROR, Exception("RNIapActivityListener is not registered in your MainActivity.onCreate"))
             return
+        }
+        if(eventSender == null) {
+            eventSender = object : EventSender {
+                private val rctDeviceEventEmitter = reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+
+                override fun sendEvent(eventName: String, params: WritableMap?) {
+                    rctDeviceEventEmitter
+                        .emit(eventName, params)
+                }
+            }
         }
         RNIapActivityListener.amazonListener?.eventSender = eventSender
         RNIapActivityListener.amazonListener?.purchasingService = purchasingService
