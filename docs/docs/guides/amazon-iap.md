@@ -25,7 +25,6 @@ public class MainActivity extends ReactActivity {
         RNIapActivityListener.registerActivity(this);
     }
 ```
-  
 
 3. Add new `SKU` strings to your `Iap.getProducts` or `Iap.getSubscriptions` calls.
 
