@@ -31,7 +31,7 @@ class RNIapAmazonModule(
             promise.safeReject(PromiseUtils.E_DEVELOPER_ERROR, Exception("RNIapActivityListener is not registered in your MainActivity.onCreate"))
             return
         }
-        if(eventSender == null) {
+        if (eventSender == null) {
             eventSender = object : EventSender {
                 private val rctDeviceEventEmitter = reactContext
                     .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
