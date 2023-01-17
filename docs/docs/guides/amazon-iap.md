@@ -10,7 +10,24 @@ The guide assumes that `react-native-iap` is implemented in your app and works w
 
 1. Create "In-App Items" using Amazon Developer portal for your app. Amazon put up detailed instructions at https://developer.amazon.com/docs/in-app-purchasing/iap-create-and-submit-iap-items.html
 
-2. Add new `SKU` strings to your `Iap.getProducts` or `Iap.getSubscriptions` calls.
+2. Add this a call to `RNIapActivityListener.registerActivity(this);` inside your `MainActivity`'s `onCreate` method. This is a necessary step only when using Amazon, but adding it will not affect negatively your Google Play Android builds. E.g.:
+
+```java
+
+import com.dooboolab.RNIap.RNIapActivityListener;
+...
+public class MainActivity extends ReactActivity {
+    ...
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //Needed for Amazon IAP
+        RNIapActivityListener.registerActivity(this);
+    }
+```
+  
+
+3. Add new `SKU` strings to your `Iap.getProducts` or `Iap.getSubscriptions` calls.
 
 ### App configuration
 
