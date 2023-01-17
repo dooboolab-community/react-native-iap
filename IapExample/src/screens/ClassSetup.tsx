@@ -162,7 +162,7 @@ export class ClassSetup extends Component<{}, State> {
     }
   };
 
-  requestPurchase = async (sku: Sku) => {
+  purchase = async (sku: Sku) => {
     try {
       requestPurchase({sku});
     } catch (error) {
@@ -174,7 +174,7 @@ export class ClassSetup extends Component<{}, State> {
     }
   };
 
-  requestSubscription = async (sku: Sku) => {
+  subscribe = async (sku: Sku) => {
     try {
       requestSubscription({sku});
     } catch (error) {
@@ -210,7 +210,7 @@ export class ClassSetup extends Component<{}, State> {
               >
                 <Button
                   title="Buy"
-                  onPress={() => this.requestSubscription(product.productId)}
+                  onPress={() => this.subscribe(product.productId)}
                 />
               </Row>
             ))}
