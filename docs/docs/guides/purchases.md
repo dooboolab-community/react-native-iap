@@ -130,7 +130,7 @@ class App extends Component {
    */
   render() {
     return (
-      <Pressable onPress={() => this.requestPurchase(product.productId)}>
+      <Pressable onPress={() => this.purchase(product.productId)}>
         {/* ... */}
       </Pressable>
     );
@@ -144,7 +144,7 @@ class App extends Component {
       return product.subscriptionOfferDetails.map((offer) => (
         <Pressable
           onPress={() =>
-            this.requestSubscription(product.productId, offer.offerToken)
+            this.subscribe(product.productId, offer.offerToken)
           }
         >
           {/* ... */}
@@ -153,7 +153,7 @@ class App extends Component {
     } else {
       return (
         <Pressable
-          onPress={() => this.requestSubscription(product.productId, null)}
+          onPress={() => this.subscribe(product.productId, null)}
         >
           {/* ... */}
         </Pressable>
