@@ -100,7 +100,7 @@ class App extends Component {
 Then define the method like below and call it when user press the button.
 
 ```tsx
-import { requestSubscription, requestSubscription } from 'react-native-iap';
+import { requestPurchase, requestSubscription } from 'react-native-iap';
 ...
 class App extends Component {
   purchase = async (sku: string) => {
