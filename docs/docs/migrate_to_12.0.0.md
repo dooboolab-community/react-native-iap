@@ -6,9 +6,9 @@ This migration will focus on integrating the latest store sdk for Amazon
 
 add `android:exported="true"` to `ResponseReceiver`
 
-## The new SDK needs you to include your public key.
+## The new Amazon IAP SDK needs you to include your public key.
 
-Instructions: https://github.dm.nfl.com/NFL/nfl-rn/pull/12436
+Instructions: https://developer.amazon.com/docs/in-app-purchasing/integrate-appstore-sdk.html#configure_key
 
 # Added verifyLicense method
 
