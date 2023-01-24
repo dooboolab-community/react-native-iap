@@ -154,6 +154,7 @@ def androidXVersion = getExtOrDefault("androidXVersion")
 def androidXAnnotation = getExtOrDefault("androidXAnnotation")
 def androidXBrowser = getExtOrDefault("androidXBrowser")
 def amazonSdkVersion = getExtOrDefault("amazonSdkVersion")
+def playBillingSdkVersion = getExtOrDefault("playBillingSdkVersion")
 
 dependencies {
   implementation "com.facebook.react:react-native:+"
@@ -162,7 +163,7 @@ dependencies {
   testImplementation "junit:junit:4.13.2"
   testImplementation "io.mockk:mockk:1.12.4"
 
-  playImplementation "com.android.billingclient:billing-ktx:5.0.0"
+  playImplementation "com.android.billingclient:billing-ktx:$playBillingSdkVersion"
   playImplementation "com.google.android.gms:play-services-base:$playServicesVersion"
 
   amazonImplementation  "com.amazon.device:amazon-appstore-sdk:$amazonSdkVersion"
