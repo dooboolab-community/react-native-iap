@@ -154,7 +154,7 @@ def androidXVersion = getExtOrDefault("androidXVersion")
 def androidXAnnotation = getExtOrDefault("androidXAnnotation")
 def androidXBrowser = getExtOrDefault("androidXBrowser")
 def amazonSdkVersion = getExtOrDefault("amazonSdkVersion")
-def playBillingSdkVersion = getExtOfDefault("playBillingSdkVersion")
+def playBillingSdkVersion = getExtOrDefault("playBillingSdkVersion")
 
 dependencies {
   implementation "com.facebook.react:react-native:+"
