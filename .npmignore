@@ -20,3 +20,6 @@ docs/
 .gitattributes
 .yarn/cache
 package/
+plugin/src
+plugin/jest.config.js
+plugin/tsconfig.json
