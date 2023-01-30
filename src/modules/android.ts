@@ -76,7 +76,7 @@ export const getInstallSourceAndroid = (): InstallSourceAndroid => {
 };
 
 /**
- * Deep link to subscriptions screen on Android. No-op on iOS.
+ * Deep link to subscriptions screen on Android.
  * @param {string} sku The product's SKU (on Android)
  * @returns {Promise<void>}
  */

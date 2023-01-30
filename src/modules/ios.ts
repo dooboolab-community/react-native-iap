@@ -1,4 +1,4 @@
-import {NativeModules} from 'react-native';
+import {Linking, NativeModules} from 'react-native';
 import type {ResponseBody as ReceiptValidationResponse} from '@jeremybarbet/apple-api-types';
 
 import {getIosModule, isIosStorekit2} from '../internal';
@@ -205,3 +205,6 @@ export const clearTransactionIOS = (): Promise<void> =>
  */
 export const clearProductsIOS = (): Promise<void> =>
   getIosModule().clearProducts();
+
+export const deepLinkToSubscriptionsIos = (): Promise<void> =>
+  Linking.openURL('https://apps.apple.com/account/subscriptions');

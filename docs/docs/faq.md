@@ -2,25 +2,13 @@
 
 ### How can a user cancel a subscription in my app?
 
-- For both iOS and Android your users cannot cancel subscriptions inside your app. You need to direct your users to iTunes/the App Store or Google Play.
+- For all: iOS, Amazon and Android, your users cannot cancel subscriptions inside your app. You need to direct your users to the App Store or Google Play.
 
-- You can do this on iOS 12 or later (for earlier iOS versions, use [this URL](https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions)):
+We provide a convinience method to handle the opening of the native UI, call:
 
-  ```ts
-  Linking.openURL('https://apps.apple.com/account/subscriptions');
-  ```
-
-- You can do this on Android:
-
-  ```ts
-  Linking.openURL(
-    'https://play.google.com/store/account/subscriptions?package=YOUR_PACKAGE_NAME&sku=YOUR_PRODUCT_ID',
-  );
-  ```
-
-  (change `YOUR_PACKAGE_NAME` and `YOUR_PRODUCT_ID`)
-
-- More on `Linking` in React Native: https://facebook.github.io/react-native/docs/linking
+```ts
+deepLinkToSubscriptions();
+```
 
 ### Can I buy product right away skipping fetching products if I already know productId?
 
