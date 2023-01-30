@@ -5,6 +5,7 @@
 - For all: iOS, Amazon and Android, your users cannot cancel subscriptions inside your app. You need to direct your users to the App Store or Google Play.
 
 We provide a convinience method to handle the opening of the native UI, call:
+
 ```ts
 deepLinkToSubscriptions();
 ```
