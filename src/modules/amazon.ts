@@ -39,6 +39,7 @@ export interface AmazonModuleProps extends NativeModuleProps {
   consumeProduct: ConsumeProduct;
   startListening: StartListening;
   verifyLicense: () => Promise<AmazonLicensingStatus>;
+  deepLinkToSubscriptions: (isAmazonDevice: boolean) => Promise<void>;
 }
 
 export const AmazonModule =
@@ -76,3 +77,14 @@ export const validateReceiptAmazon = async ({
  */
 export const verifyLicense = async (): Promise<AmazonLicensingStatus> =>
   AmazonModule.verifyLicense();
+
+/**
+ * Deep link to subscriptions screen on Android.
+ * @param {string} sku The product's SKU (on Android)
+ * @returns {Promise<void>}
+ */
+export const deepLinkToSubscriptions = async ({
+  isAmazonDevice,
+}: {
+  isAmazonDevice: boolean;
+}): Promise<void> => AmazonModule.deepLinkToSubscriptions(isAmazonDevice);

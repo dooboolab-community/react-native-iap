@@ -894,3 +894,36 @@ export const finishTransaction = ({
     }) || (() => Promise.reject(new Error('Unsupported Platform')))
   )();
 };
+
+/**
+ * Deeplinks to native interface that allows users to manage their subscriptions
+ *
+ */
+export const deepLinkToSubscriptions = ({
+  sku,
+  isAmazonDevice = true,
+}: {
+  sku?: string;
+  isAmazonDevice?: boolean;
+}): Promise<void> => {
+  return (
+    Platform.select({
+      ios: async () => {
+        IapIos.deepLinkToSubscriptions();
+      },
+      android: async () => {
+        if (isAmazon) {
+          IapAmazon.deepLinkToSubscriptions({isAmazonDevice});
+        } else if (sku) {
+          IapAndroid.deepLinkToSubscriptions({sku});
+        } else {
+          Promise.reject(
+            new Error(
+              'Sku is required to locate subscription in Android Store',
+            ),
+          );
+        }
+      },
+    }) || (() => Promise.reject(new Error('Unsupported Platform')))
+  )();
+};
