@@ -909,13 +909,13 @@ export const deepLinkToSubscriptions = ({
   return (
     Platform.select({
       ios: async () => {
-        IapIos.deepLinkToSubscriptions();
+        IapIos.deepLinkToSubscriptionsIos();
       },
       android: async () => {
         if (isAmazon) {
-          IapAmazon.deepLinkToSubscriptions({isAmazonDevice});
+          IapAmazon.deepLinkToSubscriptionsAmazon({isAmazonDevice});
         } else if (sku) {
-          IapAndroid.deepLinkToSubscriptions({sku});
+          IapAndroid.deepLinkToSubscriptionsAndroid({sku});
         } else {
           Promise.reject(
             new Error(

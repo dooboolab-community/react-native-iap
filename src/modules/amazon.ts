@@ -83,7 +83,7 @@ export const verifyLicense = async (): Promise<AmazonLicensingStatus> =>
  * @param {string} sku The product's SKU (on Android)
  * @returns {Promise<void>}
  */
-export const deepLinkToSubscriptions = async ({
+export const deepLinkToSubscriptionsAmazon = async ({
   isAmazonDevice,
 }: {
   isAmazonDevice: boolean;

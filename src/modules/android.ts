@@ -80,7 +80,7 @@ export const getInstallSourceAndroid = (): InstallSourceAndroid => {
  * @param {string} sku The product's SKU (on Android)
  * @returns {Promise<void>}
  */
-export const deepLinkToSubscriptions = async ({
+export const deepLinkToSubscriptionsAndroid = async ({
   sku,
 }: {
   sku: Sku;

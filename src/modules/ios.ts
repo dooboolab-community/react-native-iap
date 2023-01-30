@@ -206,5 +206,5 @@ export const clearTransactionIOS = (): Promise<void> =>
 export const clearProductsIOS = (): Promise<void> =>
   getIosModule().clearProducts();
 
-export const deepLinkToSubscriptions = (): Promise<void> =>
+export const deepLinkToSubscriptionsIos = (): Promise<void> =>
   Linking.openURL('https://apps.apple.com/account/subscriptions');
