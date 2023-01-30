@@ -83,3 +83,6 @@ lib/
 
 # Docs
 docs/docs/api/*
+
+# Keep expo plugin build code
+!plugin/build

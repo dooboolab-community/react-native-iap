@@ -68,8 +68,44 @@
 
 ### How do I use `react-native-iap` in Expo?
 
-- You should detach from `expo` and get `expokit` out of it.
-- Releated issue in [#174](https://github.com/dooboolab/react-native-iap/issues/174).
+> This package cannot be used in the "Expo Go" app because [it requires custom native code](https://docs.expo.io/workflow/customizing/).
+
+After installing this npm package, add the [config plugin](https://docs.expo.io/guides/config-plugins/) to the [`plugins`](https://docs.expo.io/versions/latest/config/app/#plugins) array of your `app.json` or `app.config.js`:
+
+```json
+{
+  "expo": {
+    "plugins": ["react-native-iap"]
+  }
+}
+```
+
+Next, rebuild your app as described in the ["Adding custom native code"](https://docs.expo.io/workflow/customizing/) guide.
+
+## API
+
+The plugin provides props for extra customization. Every time you change the props or plugins, you'll need to rebuild (and `prebuild`) the native app. If no extra properties are added, **Play Store** configuration will be added.
+
+Optional prop:
+
+- `paymentProvider` (_string_): payment provider to configure: `Play Store`, `Amazon AppStore`, `both`
+
+#### Example
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "react-native-iap",
+        {
+          "paymentProvider": "both"
+        }
+      ]
+    ]
+  }
+}
+```
 
 ### How do I handle promoted products in iOS?
 

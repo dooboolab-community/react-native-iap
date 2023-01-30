@@ -55,7 +55,7 @@
     "!**/__mocks__"
   ],
   "scripts": {
-    "prepare": "bob build",
+    "prepare": "bob build && npm run clean:plugin && npm run build:plugin",
     "release": "release-it",
     "example": "yarn --cwd IapExample",
     "test": "jest",
@@ -67,7 +67,10 @@
     "lint:swift": "swiftlint lint --fix --format --path ios/*.swift --config .swiftlint.yml",
     "format": "git ls-files -m | xargs yarn prettier --write --ignore-unknown --no-error-on-unmatched-pattern",
     "bootstrap": "yarn example && yarn && yarn example pods",
-    "gen:doc": "typedoc"
+    "gen:doc": "typedoc",
+    "build:plugin": "tsc --build plugin",
+    "clean:plugin": "expo-module clean plugin",
+    "lint:plugin": "eslint plugin/src/*"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.18.9",
@@ -89,6 +92,7 @@
     "eslint-plugin-jest": "26.8.2",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-simple-import-sort": "7.0.0",
+    "expo-module-scripts": "^3.0.4",
     "jest": "28.1.3",
     "monolinter": "1.0.4",
     "pod-install": "0.1.38",
@@ -108,5 +112,8 @@
   "peerDependencies": {
     "react": ">=16.13.1",
     "react-native": ">=0.65.1"
+  },
+  "dependencies": {
+    "@expo/config-plugins": "^5.0.4"
   }
 }
