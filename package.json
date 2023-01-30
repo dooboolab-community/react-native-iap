@@ -45,6 +45,8 @@
     "android",
     "ios",
     "RNIap.podspec",
+    "plugin/build",
+    "app.plugin.js",
     "!android/.gradle",
     "!android/.idea",
     "!android/build",
