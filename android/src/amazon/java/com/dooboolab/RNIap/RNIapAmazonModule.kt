@@ -171,19 +171,19 @@ class RNIapAmazonModule(
      * From https://amazon.developer.forums.answerhub.com/questions/175720/how-to-open-store-subscription-screen-directly-use.html?childToView=179402#answer-179402
      */
     @ReactMethod
-    fun deepLinkToSubscriptions(isAmazonDevice:Boolean, promise: Promise) {
-        if(isAmazonDevice) {
+    fun deepLinkToSubscriptions(isAmazonDevice: Boolean, promise: Promise) {
+        if (isAmazonDevice) {
             val intent =
                 Intent("android.intent.action.VIEW", Uri.parse("amzn://apps/library/subscriptions"))
             startActivity(reactContext, intent, null)
         } else {
             val uri =
-                Uri.parse("https://www.amazon.com/gp/mas/your-account/myapps/yoursubscriptions/ref=mas_ya_subs");
-            val launchIntent = Intent(Intent.ACTION_VIEW, uri);
+                Uri.parse("https://www.amazon.com/gp/mas/your-account/myapps/yoursubscriptions/ref=mas_ya_subs")
+            val launchIntent = Intent(Intent.ACTION_VIEW, uri)
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(reactContext, launchIntent, null);
+            startActivity(reactContext, launchIntent, null)
         }
-        promise.resolve(true);
+        promise.resolve(true)
     }
 
     @ReactMethod
