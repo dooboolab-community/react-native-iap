@@ -16,6 +16,9 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.QueryPurchasesParams
+import com.dooboolab.RNIap.proxy.google.ClientBuilderFactoryGooglePlayImpl
+import com.dooboolab.RNIap.proxy.BillingClientProxy
+import com.dooboolab.RNIap.proxy.ClientBuilderFactory
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.Promise
@@ -38,13 +41,13 @@ import java.util.ArrayList
 @ReactModule(name = RNIapModule.TAG)
 class RNIapModule(
     private val reactContext: ReactApplicationContext,
-    private val builder: BillingClient.Builder = BillingClient.newBuilder(reactContext).enablePendingPurchases(),
+    private val builderFactory: ClientBuilderFactory = ClientBuilderFactoryGooglePlayImpl(BillingClient.newBuilder(reactContext).enablePendingPurchases()),
     private val googleApiAvailability: GoogleApiAvailability = GoogleApiAvailability.getInstance()
 ) :
     ReactContextBaseJavaModule(reactContext),
     PurchasesUpdatedListener {
 
-    private var billingClientCache: BillingClient? = null
+    private var billingClientCache: BillingClientProxy? = null
     private val skus: MutableMap<String, ProductDetails> = mutableMapOf()
     override fun getName(): String {
         return TAG
@@ -52,7 +55,7 @@ class RNIapModule(
 
     fun ensureConnection(
         promise: Promise,
-        callback: (billingClient: BillingClient) -> Unit
+        callback: (billingClient: BillingClientProxy) -> Unit
     ) {
         val billingClient = billingClientCache
         if (billingClient?.isReady == true) {
@@ -105,7 +108,7 @@ class RNIapModule(
             promise.safeResolve(true)
             return
         }
-        builder.setListener(this).build().also {
+        builderFactory.setListener(this).build().also {
             billingClientCache = it
             it.startConnection(
                 object : BillingClientStateListener {

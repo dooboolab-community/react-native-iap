@@ -8,6 +8,8 @@ import com.android.billingclient.api.ProductDetailsResponseListener
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesResponseListener
 import com.android.billingclient.api.QueryPurchasesParams
+import com.dooboolab.RNIap.proxy.BillingClientProxy
+import com.dooboolab.RNIap.proxy.ClientBuilderFactory
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -37,10 +39,10 @@ class RNIapModuleTest {
     lateinit var context: ReactApplicationContext
 
     @MockK
-    lateinit var builder: BillingClient.Builder
+    lateinit var builder: ClientBuilderFactory
 
     @MockK
-    lateinit var billingClient: BillingClient
+    lateinit var billingClient: BillingClientProxy
 
     @MockK
     lateinit var availability: GoogleApiAvailability
@@ -184,7 +186,7 @@ class RNIapModuleTest {
         every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
         val promise = mockk<Promise>(relaxed = true)
         var isCallbackCalled = false
-        val callback = { _: BillingClient ->
+        val callback = { _: BillingClientProxy ->
             isCallbackCalled = true
             promise.resolve(true)
         }
