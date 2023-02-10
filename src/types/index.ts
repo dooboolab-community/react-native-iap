@@ -147,6 +147,8 @@ export interface SubscriptionAndroid {
 }
 
 export interface SubscriptionOfferAndroid {
+  basePlanId: string;
+  offerId: string | null;
   offerToken: string;
   pricingPhases: {
     pricingPhaseList: PricingPhaseAndroid[];
