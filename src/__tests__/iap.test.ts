@@ -42,6 +42,8 @@ describe('Google Play IAP', () => {
           },
           offerTags: [],
           offerToken: 'dGVzdA==',
+          basePlanId: 'basePlanId',
+          offerId: 'offerId',
         },
       ],
       name: 'MyApp Pro: Annual Plan',
