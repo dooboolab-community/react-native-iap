@@ -229,6 +229,8 @@ class RNIapModuleTest {
                         every { subscriptionOfferDetails } returns listOf(
                             mockk {
                                 every { offerToken } returns "sToken"
+                                every { basePlanId } returns "basePlanId"
+                                every { offerId } returns "offerId"
                                 every { offerTags } returns listOf("offerTag1", "offerTag2")
                                 every { pricingPhases } returns mockk {
                                     every { pricingPhaseList } returns listOf(

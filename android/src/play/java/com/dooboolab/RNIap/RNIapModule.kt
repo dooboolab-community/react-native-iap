@@ -244,6 +244,14 @@ class RNIapModule(
                         it.forEach { subscriptionOfferDetailsItem ->
                             val offerDetails = Arguments.createMap()
                             offerDetails.putString(
+                                "basePlanId",
+                                subscriptionOfferDetailsItem.basePlanId
+                            )
+                            offerDetails.putString(
+                                "offerId",
+                                subscriptionOfferDetailsItem.offerId
+                            )
+                            offerDetails.putString(
                                 "offerToken",
                                 subscriptionOfferDetailsItem.offerToken
                             )
