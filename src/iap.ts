@@ -438,7 +438,7 @@ const App = () => {
             await finishTransaction({purchase});
             CoinStore.addCoins(100);
         }
-      })
+      }));
 
       Alert.alert(
         'Restore Successful',
