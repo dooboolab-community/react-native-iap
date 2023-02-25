@@ -695,9 +695,10 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                             resolve(serialize(transaction))
                         }
                         return
+
                     case .userCancelled:
                         debugMessage("User cancelled the purchase")
-                        
+
                         let err = [
                             "debugMessage": "User cancelled the purchase",
                             "code": IapErrors.E_USER_CANCELLED.rawValue,
@@ -706,13 +707,14 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                             "quantity": "\(quantity)"
                         ]
                         debugMessage(err)
-                        
+
                         reject(
                             IapErrors.E_USER_CANCELLED.rawValue,
                             "User cancelled the purchase",
                             nil)
 
                         return
+
                     case .pending:
                         debugMessage("Deferred (awaiting approval via parental controls, etc.)")
 
