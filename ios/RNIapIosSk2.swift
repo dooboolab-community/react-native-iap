@@ -433,7 +433,6 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         self.sendEvent = sendEvent
         products = [String: Product]()
         transactions = [String: Transaction]()
-        addTransactionObserver()
     }
 
     deinit {
