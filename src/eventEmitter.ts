@@ -58,10 +58,6 @@ export const purchaseUpdatedListener = (
     proxyListener,
   );
 
-  if (isAndroid) {
-    getAndroidModule().startListening();
-  }
-
   return emitterSubscription;
 };
 
