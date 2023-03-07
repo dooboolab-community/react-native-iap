@@ -63,6 +63,7 @@ export interface AndroidModuleProps extends NativeModuleProps {
   buyItemByType: BuyItemByType;
   acknowledgePurchase: AcknowledgePurchase;
   consumeProduct: ConsumeProduct;
+  /** @deprecated to be renamed to sendUnconsumedPurchases if not removed completely */
   startListening: StartListening;
   getPackageName: GetPackageName;
 }
