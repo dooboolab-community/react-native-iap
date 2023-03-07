@@ -138,11 +138,11 @@ func serialize(_ ot: Product.SubscriptionOffer.OfferType?) -> String? {
 }
 @available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ t: Transaction) -> [String: Any?] {
-    return ["appAccountToken": t.appAccountToken,
+    return ["appAccountToken": t.appAccountToken?.uuidString,
             "appBundleID": t.appBundleID,
             "debugDescription": serializeDebug(t.debugDescription),
             "deviceVerification": t.deviceVerification,
-            "deviceVerificationNonce": t.deviceVerificationNonce,
+            "deviceVerificationNonce": t.deviceVerificationNonce.uuidString,
             "expirationDate": t.expirationDate?.millisecondsSince1970,
             "id": t.id,
             "isUpgraded": t.isUpgraded,
