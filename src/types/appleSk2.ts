@@ -96,6 +96,7 @@ export type TransactionSk2 = {
   deviceVerification: string;
   deviceVerificationNonce: string;
   expirationDate: number;
+  environment: 'Production' | 'Sandbox' | 'Xcode' | null;
   id: number;
   isUpgraded: boolean;
   jsonRepresentation: string;
