@@ -96,7 +96,7 @@ export type TransactionSk2 = {
   deviceVerification: string;
   deviceVerificationNonce: string;
   expirationDate: number;
-  environment: 'Production' | 'Sandbox' | 'Xcode' | null;
+  environment?: 'Production' | 'Sandbox' | 'Xcode'; // Could be undefined in some cases on iOS 15, but it's stable since iOS 16
   id: number;
   isUpgraded: boolean;
   jsonRepresentation: string;
