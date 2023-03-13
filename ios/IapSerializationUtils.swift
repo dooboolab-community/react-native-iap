@@ -140,7 +140,7 @@ func serialize(_ ot: Product.SubscriptionOffer.OfferType?) -> String? {
 func serialize(_ t: Transaction) -> [String: Any?] {
     var environment: String?
 
-    if #available(iOS 16.0, *) {
+    if #available(iOS 16.0, tvOS 16.0, *) {
         environment = t.environment.rawValue
     } else {
         let env = t.environmentStringRepresentation
