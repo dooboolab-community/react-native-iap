@@ -138,12 +138,24 @@ func serialize(_ ot: Product.SubscriptionOffer.OfferType?) -> String? {
 }
 @available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ t: Transaction) -> [String: Any?] {
+    var environment: String?
+
+    if #available(iOS 16.0, tvOS 16.0, *) {
+        environment = t.environment.rawValue
+    } else {
+        let env = t.environmentStringRepresentation
+        if ["Production", "Sandbox", "Xcode"].contains(env) {
+            environment = env
+        }
+    }
+
     return ["appAccountToken": t.appAccountToken?.uuidString,
             "appBundleID": t.appBundleID,
             "debugDescription": serializeDebug(t.debugDescription),
             "deviceVerification": t.deviceVerification,
             "deviceVerificationNonce": t.deviceVerificationNonce.uuidString,
             "expirationDate": t.expirationDate?.millisecondsSince1970,
+            "environment": environment,
             "id": t.id,
             "isUpgraded": t.isUpgraded,
             "jsonRepresentation": serializeDebug(t.jsonRepresentation),
