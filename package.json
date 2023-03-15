@@ -80,7 +80,7 @@
     "@jeremybarbet/apple-api-types": "1.4.0",
     "@jeremybarbet/google-api-types": "1.4.0",
     "@react-native-community/eslint-config": "3.2.0",
-    "@release-it/conventional-changelog": "5.0.0",
+    "@release-it/conventional-changelog": "5.1.1",
     "@testing-library/jest-native": "4.0.13",
     "@testing-library/react-native": "11.0.0",
     "@types/jest": "28.1.8",

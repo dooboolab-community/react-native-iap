@@ -3421,16 +3421,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@release-it/conventional-changelog@npm:5.0.0":
-  version: 5.0.0
-  resolution: "@release-it/conventional-changelog@npm:5.0.0"
+"@release-it/conventional-changelog@npm:5.1.1":
+  version: 5.1.1
+  resolution: "@release-it/conventional-changelog@npm:5.1.1"
   dependencies:
     concat-stream: ^2.0.0
     conventional-changelog: ^3.1.25
     conventional-recommended-bump: ^6.1.0
+    semver: 7.3.8
   peerDependencies:
-    release-it: ^15.0.0-esm.4
-  checksum: 205a743018451c3c7fe4ab233bbc0142c54dae8dbf607d4629ed2e16e810791ce85db600b0c7dd8e7bab8ebc5ff890cc82bf5d7c053c7b7c7b10d34c4a9d6cea
+    release-it: ^15.4.1
+  checksum: 15ade4ab88dabea7664b28494db035707eb84acc897b51472142abcac6c6acae0e90f9db7d8c93bb1de697678e7321d31192362565c538d4f62a4e7600bc30b2
   languageName: node
   linkType: hard
 
@@ -13353,7 +13354,7 @@ __metadata:
     "@jeremybarbet/apple-api-types": 1.4.0
     "@jeremybarbet/google-api-types": 1.4.0
     "@react-native-community/eslint-config": 3.2.0
-    "@release-it/conventional-changelog": 5.0.0
+    "@release-it/conventional-changelog": 5.1.1
     "@testing-library/jest-native": 4.0.13
     "@testing-library/react-native": 11.0.0
     "@types/jest": 28.1.8
@@ -14214,6 +14215,17 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 2fa3e877568cd6ce769c75c211beaed1f9fce80b28338cadd9d0b6c40f2e2862bafd62c19a6cff42f3d54292b7c623277bcab8816a2b5521cf15210d43e75232
+  languageName: node
+  linkType: hard
+
+"semver@npm:7.3.8":
+  version: 7.3.8
+  resolution: "semver@npm:7.3.8"
+  dependencies:
+    lru-cache: ^6.0.0
+  bin:
+    semver: bin/semver.js
+  checksum: ba9c7cbbf2b7884696523450a61fee1a09930d888b7a8d7579025ad93d459b2d1949ee5bbfeb188b2be5f4ac163544c5e98491ad6152df34154feebc2cc337c1
   languageName: node
   linkType: hard
 
