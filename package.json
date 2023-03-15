@@ -83,7 +83,7 @@
     "@release-it/conventional-changelog": "5.0.0",
     "@testing-library/jest-native": "4.0.13",
     "@testing-library/react-native": "11.0.0",
-    "@types/jest": "28.1.6",
+    "@types/jest": "28.1.8",
     "@types/react": "~17.0.47",
     "@types/react-native": "0.68.2",
     "@typescript-eslint/eslint-plugin": "5.32.0",
