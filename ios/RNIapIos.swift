@@ -161,14 +161,12 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         let productIdentifiers = Set<AnyHashable>(skus)
-        if let productIdentifiers = productIdentifiers as? Set<String> {
-            productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
-            if let productsRequest = productsRequest {
-                productsRequest.delegate = self
-                let key: String = productsRequest.key
-                addPromise(forKey: key, resolve: resolve, reject: reject)
-                productsRequest.start()
-            }
+        productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
+        if let productsRequest = productsRequest {
+            productsRequest.delegate = self
+            let key: String = productsRequest.key
+            addPromise(forKey: key, resolve: resolve, reject: reject)
+            productsRequest.start()
         }
     }
     @objc public func getAvailableItems(
@@ -863,7 +861,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                     receiptBlock(nil, error)
                 }
                 receiptBlock = nil
-            }else {
+            } else {
                 debugMessage("Receipt refresh request with null receiptBlock ")
             }
         }
