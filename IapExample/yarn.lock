@@ -1653,13 +1653,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-masked-view/masked-view@npm:0.2.7":
-  version: 0.2.7
-  resolution: "@react-native-masked-view/masked-view@npm:0.2.7"
+"@react-native-masked-view/masked-view@npm:0.2.8":
+  version: 0.2.8
+  resolution: "@react-native-masked-view/masked-view@npm:0.2.8"
   peerDependencies:
     react: ">=16"
     react-native: ">=0.57"
-  checksum: 65fe8c86c5b0f7519fc1ce6748818ecddb56d9b6e0268a113b409b589cbb46fa632790231e3620f64061bc7ce63bb871c2803a6fa6261cfb3c8655348a595e9b
+  checksum: b8985511eabfb5d7c89cf3c6beaa45c0f02b1688cd0172787595f7c7374f3d6965d93847f830e7cdca94bd79167e4a5cf3e4914ba8a80d08c2730349cc2d58c2
   languageName: node
   linkType: hard
 
@@ -6910,7 +6910,7 @@ __metadata:
     "@babel/core": ^7.12.9
     "@babel/runtime": ^7.12.5
     "@react-native-community/cli-platform-android": ^9.1.0
-    "@react-native-masked-view/masked-view": 0.2.7
+    "@react-native-masked-view/masked-view": 0.2.8
     "@react-navigation/native": 6.0.11
     "@react-navigation/stack": 6.2.2
     "@types/lodash": 4.14.182
