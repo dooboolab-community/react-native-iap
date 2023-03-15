@@ -3339,9 +3339,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/eslint-config@npm:3.1.0":
-  version: 3.1.0
-  resolution: "@react-native-community/eslint-config@npm:3.1.0"
+"@react-native-community/eslint-config@npm:3.2.0":
+  version: 3.2.0
+  resolution: "@react-native-community/eslint-config@npm:3.2.0"
   dependencies:
     "@babel/core": ^7.14.0
     "@babel/eslint-parser": ^7.18.2
@@ -3359,7 +3359,7 @@ __metadata:
   peerDependencies:
     eslint: ">=8"
     prettier: ">=2"
-  checksum: 789b4f20091d114d5e24c337e9004381f2639eafc05171311b57d81301e4f01965d45d99d7549c7369967f5381bcbd162bfa50c05834a01e27fd5509532e35d4
+  checksum: 0a2dce65dbe43067571d7a382cfcfb1cae041b319aff216116797389ef0e431865caf6f48925e3532f1879363dc9f6b15cf81fdc967879d544d54605fd617119
   languageName: node
   linkType: hard
 
@@ -13329,7 +13329,7 @@ __metadata:
     "@firmnav/eslint-github-actions-formatter": 1.0.1
     "@jeremybarbet/apple-api-types": 1.3.5
     "@jeremybarbet/google-api-types": 1.4.0
-    "@react-native-community/eslint-config": 3.1.0
+    "@react-native-community/eslint-config": 3.2.0
     "@release-it/conventional-changelog": 5.0.0
     "@testing-library/jest-native": 4.0.13
     "@testing-library/react-native": 11.0.0
