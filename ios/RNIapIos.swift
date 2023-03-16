@@ -160,15 +160,13 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        let productIdentifiers = Set<AnyHashable>(skus)
-        if let productIdentifiers = productIdentifiers as? Set<String> {
-            productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
-            if let productsRequest = productsRequest {
-                productsRequest.delegate = self
-                let key: String = productsRequest.key
-                addPromise(forKey: key, resolve: resolve, reject: reject)
-                productsRequest.start()
-            }
+        let productIdentifiers = Set<String>(skus)
+        productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
+        if let productsRequest = productsRequest {
+            productsRequest.delegate = self
+            let key: String = productsRequest.key
+            addPromise(forKey: key, resolve: resolve, reject: reject)
+            productsRequest.start()
         }
     }
     @objc public func getAvailableItems(
@@ -191,12 +189,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
-        var product: SKProduct? = validProducts[sku]
+        if let product = validProducts[sku] {
+            addPromise(forKey: product.productIdentifier, resolve: resolve, reject: reject)
 
-        if let prod = product {
-            addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
-
-            let payment = SKMutablePayment(product: prod)
+            let payment = SKMutablePayment(product: product)
 
             if #available(iOS 12.2, tvOS 12.2, *) {
                 if let discountOffer = discountOffer, let identifier = discountOffer["identifier"], let keyIdentifier = discountOffer["keyIdentifier"], let nonce = discountOffer["nonce"], let signature = discountOffer["signature"], let timestamp = discountOffer["timestamp"] {
@@ -288,6 +284,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         }
     }
 
+    /** The sequence should be as follows. call this with forceRefresh: false. That will return the cached receipt that is available on TestFlight and Production. In the case of Sandbox the receipt might not be cached, this will return nil. In that case you might want to let the user that they will to be prompted for credentials. If they accept, launch this with forceRefresh:true. For reference: https://developer.apple.com/forums/thread/662350  */
     @objc public func  requestReceipt(
         _ refresh: Bool,
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
@@ -297,7 +294,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             if error == nil {
                 resolve(receiptData?.base64EncodedString(options: [.endLineWithCarriageReturn]))
             } else {
-                reject(standardErrorCode(9), "Invalid receipt", nil)
+                reject(standardErrorCode(9), "Invalid receipt", error)
             }
         }
     }
@@ -380,10 +377,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         let nsError = error as NSError
 
         if request is SKReceiptRefreshRequest {
-            if let unwrappedReceiptBlock = receiptBlock {
+            if let receiptBlock = self.receiptBlock {
                 let standardError = NSError(domain: nsError.domain, code: 9, userInfo: nsError.userInfo)
-                unwrappedReceiptBlock(nil, standardError)
-                receiptBlock = nil
+                receiptBlock(nil, standardError)
+                self.receiptBlock = nil
                 return
             } else {
                 if let key: String = productsRequest?.key {
@@ -808,10 +805,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         }
     }
 
+    /** forcheRefresh should only set to true when coming from a direct user action. i.e. requestReceipt react method. See doc on that method for details*/
     func requestReceiptData(withBlock forceRefresh: Bool, withBlock block: @escaping (_ data: Data?, _ error: Error?) -> Void) {
         debugMessage("requestReceiptDataWithBlock with force refresh: \(forceRefresh ? "YES" : "NO")")
 
-        if forceRefresh || isReceiptPresent() == false {
+        if forceRefresh {
             let refreshRequest = SKReceiptRefreshRequest()
             refreshRequest.delegate = self
             refreshRequest.start()
@@ -841,7 +839,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
         if let receiptURL = receiptURL {
             do {
-                try receiptData = Data(contentsOf: receiptURL)
+                try receiptData = Data(contentsOf: receiptURL, options: .alwaysMapped)
             } catch _ {
             }
         }
@@ -851,20 +849,19 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
     func requestDidFinish(_ request: SKRequest) {
         if request is SKReceiptRefreshRequest {
-            if isReceiptPresent() == true {
-                debugMessage("Receipt refreshed success")
-
-                if let receiptBlock = receiptBlock {
+            if let receiptBlock = self.receiptBlock {
+                if isReceiptPresent() {
+                    debugMessage("Receipt refreshed success")
                     receiptBlock(receiptData(), nil)
+                } else {
+                    debugMessage("Finished but receipt refreshed failed")
+                    let error = NSError(domain: "Receipt request finished but it failed!", code: 10, userInfo: nil)
+                    receiptBlock(nil, error)
                 }
-            } else if let receiptBlock = receiptBlock {
-                debugMessage("Finished but receipt refreshed failed")
-
-                let error = NSError(domain: "Receipt request finished but it failed!", code: 10, userInfo: nil)
-                receiptBlock(nil, error)
+                self.receiptBlock = nil
+            } else {
+                debugMessage("Receipt refresh request with null receiptBlock ")
             }
-
-            receiptBlock = nil
         }
     }
 
