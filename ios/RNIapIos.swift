@@ -189,7 +189,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
-        if let product: SKProduct? = validProducts[sku] {
+        if let product = validProducts[sku] {
             addPromise(forKey: product.productIdentifier, resolve: resolve, reject: reject)
 
             let payment = SKMutablePayment(product: product)
