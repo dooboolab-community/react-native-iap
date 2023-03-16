@@ -860,10 +860,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                     let error = NSError(domain: "Receipt request finished but it failed!", code: 10, userInfo: nil)
                     receiptBlock(nil, error)
                 }
-                receiptBlock = nil
             } else {
                 debugMessage("Receipt refresh request with null receiptBlock ")
             }
+            receiptBlock = nil
         }
     }
 
