@@ -69,16 +69,22 @@ class RNIapModule(
                             promise.safeReject(PromiseUtils.E_NOT_PREPARED, "Unable to auto-initialize connection")
                         }
                     } else {
+                        promise.safeReject(PromiseUtils.E_UNKNOWN, "ensureConnection - incorrect parameter in resolve")
                         Log.i(TAG, "Incorrect parameter in resolve")
                     }
                 },
                 {
-                    if (it.size > 1 && it[0] is String && it[1] is String) {
+                    if (it.isNotEmpty()) {
+                        val errorMap = it[0] as WritableNativeMap
+                        val errorCode = errorMap.getString("code")
+                        val errorMessage = errorMap.getString("message")
+
                         promise.safeReject(
-                            it[0] as String,
-                            it[1] as String
+                            errorCode,
+                            errorMessage
                         )
                     } else {
+                        promise.safeReject(PromiseUtils.E_UNKNOWN, "ensureConnection - incorrect parameter in reject")
                         Log.i(TAG, "Incorrect parameters in reject")
                     }
                 }
