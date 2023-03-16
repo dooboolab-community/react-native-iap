@@ -160,7 +160,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        let productIdentifiers = Set<AnyHashable>(skus)
+        let productIdentifiers = Set<String>(skus)
         productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
         if let productsRequest = productsRequest {
             productsRequest.delegate = self
@@ -189,12 +189,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
-        var product: SKProduct? = validProducts[sku]
+        if let product: SKProduct? = validProducts[sku] {
+            addPromise(forKey: product.productIdentifier, resolve: resolve, reject: reject)
 
-        if let prod = product {
-            addPromise(forKey: prod.productIdentifier, resolve: resolve, reject: reject)
-
-            let payment = SKMutablePayment(product: prod)
+            let payment = SKMutablePayment(product: product)
 
             if #available(iOS 12.2, tvOS 12.2, *) {
                 if let discountOffer = discountOffer, let identifier = discountOffer["identifier"], let keyIdentifier = discountOffer["keyIdentifier"], let nonce = discountOffer["nonce"], let signature = discountOffer["signature"], let timestamp = discountOffer["timestamp"] {
@@ -379,10 +377,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         let nsError = error as NSError
 
         if request is SKReceiptRefreshRequest {
-            if let receiptBlock = receiptBlock {
+            if let receiptBlock = self.receiptBlock {
                 let standardError = NSError(domain: nsError.domain, code: 9, userInfo: nsError.userInfo)
                 receiptBlock(nil, standardError)
-                receiptBlock = nil
+                self.receiptBlock = nil
                 return
             } else {
                 if let key: String = productsRequest?.key {
@@ -851,7 +849,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
     func requestDidFinish(_ request: SKRequest) {
         if request is SKReceiptRefreshRequest {
-            if let receiptBlock = receiptBlock {
+            if let receiptBlock = self.receiptBlock {
                 if isReceiptPresent() {
                     debugMessage("Receipt refreshed success")
                     receiptBlock(receiptData(), nil)
@@ -860,10 +858,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                     let error = NSError(domain: "Receipt request finished but it failed!", code: 10, userInfo: nil)
                     receiptBlock(nil, error)
                 }
+                self.receiptBlock = nil
             } else {
                 debugMessage("Receipt refresh request with null receiptBlock ")
             }
-            receiptBlock = nil
         }
     }
 
