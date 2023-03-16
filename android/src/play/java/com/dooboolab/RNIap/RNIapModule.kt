@@ -74,11 +74,15 @@ class RNIapModule(
                     }
                 },
                 {
-                    if (it.isNotEmpty()) {
+                    var errorCode: String? = null
+                    var errorMessage: String? = null
+                    if (it.isNotEmpty() && it[0] is WritableNativeMap) {
                         val errorMap = it[0] as WritableNativeMap
-                        val errorCode = errorMap.getString("code")
-                        val errorMessage = errorMap.getString("message")
+                        errorCode = errorMap.getString("code")
+                        errorMessage = errorMap.getString("message")
+                    }
 
+                    if (errorCode is String && errorMessage is String) {
                         promise.safeReject(
                             errorCode,
                             errorMessage
