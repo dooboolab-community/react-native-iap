@@ -3572,20 +3572,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-native@npm:4.0.13":
-  version: 4.0.13
-  resolution: "@testing-library/jest-native@npm:4.0.13"
+"@testing-library/jest-native@npm:5.4.2":
+  version: 5.4.2
+  resolution: "@testing-library/jest-native@npm:5.4.2"
   dependencies:
     chalk: ^4.1.2
     jest-diff: ^29.0.1
     jest-matcher-utils: ^29.0.1
-    pretty-format: ^29.0.1
+    pretty-format: ^29.0.3
     redent: ^3.0.0
   peerDependencies:
     react: ">=16.0.0"
     react-native: ">=0.59"
     react-test-renderer: ">=16.0.0"
-  checksum: 093b79c80ab671075725c97d0058e056f0e655c5928ca742aad2406cbdeb93275ca4f7270e54516be5501fcd4bd2ef4eb45e55603add8a77aae9b5b790d976a3
+  checksum: 0c9e868a07a2bb0f4bec21213153d61a7fc464e9f24c8d47fde5c7851ddaa25ed5ac76fb92ca81f88d6af005bb5d89518fcceb1d49ac702f40ccf4967bee082e
   languageName: node
   linkType: hard
 
@@ -13206,7 +13206,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^29.0.0, pretty-format@npm:^29.0.1, pretty-format@npm:^29.5.0":
+"pretty-format@npm:^29.0.0, pretty-format@npm:^29.0.3, pretty-format@npm:^29.5.0":
   version: 29.5.0
   resolution: "pretty-format@npm:29.5.0"
   dependencies:
@@ -13542,7 +13542,7 @@ __metadata:
     "@jeremybarbet/google-api-types": 1.4.0
     "@react-native-community/eslint-config": 3.2.0
     "@release-it/conventional-changelog": 5.1.1
-    "@testing-library/jest-native": 4.0.13
+    "@testing-library/jest-native": 5.4.2
     "@testing-library/react-native": 11.5.4
     "@types/jest": 28.1.8
     "@types/react": ~17.0.47
