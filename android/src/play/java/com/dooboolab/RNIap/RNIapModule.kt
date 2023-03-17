@@ -88,11 +88,11 @@ class RNIapModule(
     }
 
     @ReactMethod
-    fun isFeatureAvailable(feature: String, promise: Promise) {
+    fun isFeatureSupported(feature: String, promise: Promise) {
         ensureConnection(
                 promise
             ) { billingClient ->
-                let f = if(feature == "IN_APP_MESSAGING"){
+                val f = if(feature == "IN_APP_MESSAGING"){
                     BillingClient.FeatureType.IN_APP_MESSAGING
                 }else if(feature == "PRICE_CHANGE_CONFIRMATION"){
                     BillingClient.FeatureType.PRICE_CHANGE_CONFIRMATION
@@ -104,9 +104,9 @@ class RNIapModule(
                     BillingClient.FeatureType.SUBSCRIPTIONS_UPDATE
                 }else {
                     promise.safeReject("Invalid Feature name")
-                    return;
+                    return@ensureConnection;
                 }
-                promise.safeResolve(billingClient.isFeatureAvailable(f))
+                promise.safeResolve(billingClient.isFeatureSupported(f))
             }
     }
 
