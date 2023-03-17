@@ -1709,17 +1709,17 @@ __metadata:
   linkType: hard
 
 "@react-native-community/cli-platform-android@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@react-native-community/cli-platform-android@npm:9.1.0"
+  version: 9.3.1
+  resolution: "@react-native-community/cli-platform-android@npm:9.3.1"
   dependencies:
-    "@react-native-community/cli-tools": ^9.1.0
+    "@react-native-community/cli-tools": ^9.2.1
     chalk: ^4.1.2
     execa: ^1.0.0
     fs-extra: ^8.1.0
     glob: ^7.1.3
     logkitty: ^0.7.1
     slash: ^3.0.0
-  checksum: d98f0091b06dc5dbe3067109ed2928fe70bf416796f5dd400cf289b1034e70d1eb446580be887517df95657b3ef455972cf0e26a6f54ce1a17ff2d90c25cc54e
+  checksum: 147b581ce8e42aa3ef18484fd854a0c9931b799e78de11951bde46772520ca5d58da5bc00e86c5b23b0c1d56dc1251bd93dd7dd559aa974194f170fdc5cb578c
   languageName: node
   linkType: hard
 
@@ -1792,9 +1792,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/cli-tools@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@react-native-community/cli-tools@npm:9.1.0"
+"@react-native-community/cli-tools@npm:^9.2.1":
+  version: 9.2.1
+  resolution: "@react-native-community/cli-tools@npm:9.2.1"
   dependencies:
     appdirsjs: ^1.2.4
     chalk: ^4.1.2
@@ -1805,7 +1805,7 @@ __metadata:
     ora: ^5.4.1
     semver: ^6.3.0
     shell-quote: ^1.7.3
-  checksum: e3c190156770ca3a14fc128c6fb21e0307d56b6bf1d4139fee23d81f387d20e88d3e5c4d3a11082ac5fbbddc5295a62beca27b548e4f624f1bb8df9b53087211
+  checksum: 8f99ec43b5bc7b5f90e32cae5ba10f5d64e4f2ca2dfb0b51ac71aae5215747c0672ed05752def89eb47cbdc41231afc29f450ffdc6151bd06f4bf4584a3f4bea
   languageName: node
   linkType: hard
 
