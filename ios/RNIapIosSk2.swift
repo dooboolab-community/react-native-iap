@@ -502,17 +502,18 @@ class RNIapIosSk2iOS15: Sk2Delegate {
 
     func startObserving() {
         hasListeners = true
+        addTransactionObserver()
     }
 
     func stopObserving() {
         hasListeners = false
+        removeTransactionObserver()
     }
 
     public func initConnection(
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        addTransactionObserver()
         resolve(AppStore.canMakePayments)
     }
     public func endConnection(
@@ -521,8 +522,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
     ) {
         products.removeAll()
         transactions.removeAll()
-        updateListenerTask?.cancel()
-        updateListenerTask = nil
+        removeTransactionObserver()
         resolve(nil)
     }
 
