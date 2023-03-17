@@ -7195,19 +7195,19 @@ __metadata:
     react: 18.2.0
     react-native: 0.69.1
     react-native-gesture-handler: 2.9.0
-    react-native-safe-area-context: 4.3.1
+    react-native-safe-area-context: 4.5.0
     react-native-screens: 3.20.0
     react-test-renderer: 18.2.0
   languageName: unknown
   linkType: soft
 
-"react-native-safe-area-context@npm:4.3.1":
-  version: 4.3.1
-  resolution: "react-native-safe-area-context@npm:4.3.1"
+"react-native-safe-area-context@npm:4.5.0":
+  version: 4.5.0
+  resolution: "react-native-safe-area-context@npm:4.5.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 34a4bc60448b0bc6bfa3e952b00a12754cc30ce48c07540a6618179f2c170aa2db0919ac452376322778ed34c4c56fc5d40e17c2b74157c9a134d2b766143ca3
+  checksum: 958df1d20492aa89c23d746f88409a3a3bd1b0d397c80310a4b0bbec9888cbbeb7579c9c92dad46841e2e6536491806206228ba009b7c8af970670aef8273a30
   languageName: node
   linkType: hard
 
