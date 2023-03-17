@@ -88,6 +88,29 @@ class RNIapModule(
     }
 
     @ReactMethod
+    fun isFeatureAvailable(feature: String, promise: Promise) {
+        ensureConnection(
+                promise
+            ) { billingClient ->
+                let f = if(feature == "IN_APP_MESSAGING"){
+                    BillingClient.FeatureType.IN_APP_MESSAGING
+                }else if(feature == "PRICE_CHANGE_CONFIRMATION"){
+                    BillingClient.FeatureType.PRICE_CHANGE_CONFIRMATION
+                }else if(feature == "PRODUCT_DETAILS"){
+                    BillingClient.FeatureType.PRODUCT_DETAILS
+                }else if(feature == "SUBSCRIPTIONS"){
+                    BillingClient.FeatureType.SUBSCRIPTIONS
+                }else if(feature == "SUBSCRIPTIONS_UPDATE"){
+                    BillingClient.FeatureType.SUBSCRIPTIONS_UPDATE
+                }else {
+                    promise.safeReject("Invalid Feature name")
+                    return;
+                }
+                promise.safeResolve(billingClient.isFeatureAvailable(f))
+            }
+    }
+
+    @ReactMethod
     fun initConnection(promise: Promise) {
         if (googleApiAvailability.isGooglePlayServicesAvailable(reactContext)
             != ConnectionResult.SUCCESS
