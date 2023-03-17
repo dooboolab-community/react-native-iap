@@ -7529,12 +7529,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-simple-import-sort@npm:7.0.0":
-  version: 7.0.0
-  resolution: "eslint-plugin-simple-import-sort@npm:7.0.0"
+"eslint-plugin-simple-import-sort@npm:10.0.0":
+  version: 10.0.0
+  resolution: "eslint-plugin-simple-import-sort@npm:10.0.0"
   peerDependencies:
     eslint: ">=5.0.0"
-  checksum: 6aacb7179c213cd2081950630368d1f3b1dcb4f5674d8b989fe7839e7b317ee521d74761676e8b1a7cab49f20405dbcc9aac05358ae804e6bcba6cbf1daccb3d
+  checksum: 23221ff63f80f9c52da807d388ee8a51bc36a3b73345f60ec886e7973c28d75eb1d1e47f7f2916a7c1f94a1b5037b1450356a64a8fbd58096fd6bee57c6e3e48
   languageName: node
   linkType: hard
 
@@ -13554,7 +13554,7 @@ __metadata:
     eslint-config-prettier: 8.7.0
     eslint-plugin-jest: 26.9.0
     eslint-plugin-prettier: 4.2.1
-    eslint-plugin-simple-import-sort: 7.0.0
+    eslint-plugin-simple-import-sort: 10.0.0
     expo-module-scripts: ^3.0.4
     jest: 28.1.3
     monolinter: 1.0.4
