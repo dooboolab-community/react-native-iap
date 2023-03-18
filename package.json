@@ -84,7 +84,7 @@
     "@testing-library/jest-native": "5.4.2",
     "@testing-library/react-native": "12.0.0",
     "@types/jest": "29.5.0",
-    "@types/react": "~17.0.47",
+    "@types/react": "~18.0.0",
     "@types/react-native": "0.68.2",
     "@typescript-eslint/eslint-plugin": "5.55.0",
     "@typescript-eslint/parser": "5.55.0",
@@ -99,7 +99,7 @@
     "monolinter": "1.0.4",
     "pod-install": "0.1.38",
     "prettier": "2.8.4",
-    "react": "17.0.2",
+    "react": "18.2.0",
     "react-native": "0.68.2",
     "react-native-builder-bob": "0.20.4",
     "release-it": "15.9.0",
@@ -109,7 +109,7 @@
     "typescript": "4.7.4"
   },
   "resolutions": {
-    "@types/react": "17.0.53"
+    "@types/react": "~18.0.0"
   },
   "peerDependencies": {
     "react": ">=16.13.1",
