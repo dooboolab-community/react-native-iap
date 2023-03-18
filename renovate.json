@@ -2,5 +2,58 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base"
+  ],
+  "prHourlyLimit": 3,
+  "prConcurrentLimit": 5,
+  "ignorePaths": [
+    "**/node_modules/**",
+    "IapExample/**"
+  ],
+  "packageRules": [
+    {
+      "groupName": "docs",
+      "matchPaths": ["docs/"]
+    },
+    {
+      "groupName": "example",
+      "matchPaths": ["IapExample/"]
+    },
+    {
+      "excludeDepPatterns": [
+        "react",
+        "react-native",
+        "react-dom"
+      ]
+    },
+    {
+      "excludePackageNames": [
+        "babel-loader",
+        "react",
+        "react-native",
+        "react-native-reanimated",
+        "webpack-dev-server"
+      ]
+    },
+    {
+      "packagePatterns": [
+        "^@types/"
+      ],
+      "automerge": true,
+      "automergeType": "pr-comment",
+      "automergeComment": "types: auto merge",
+      "major": {
+        "automerge": false
+      }
+    },
+    {
+      "groupName": "lints",
+      "matchPackagePatterns": [
+        "^eslint",
+        "^prettier"
+      ],
+      "labels": [
+        "lint"
+      ]
+    }
   ]
 }

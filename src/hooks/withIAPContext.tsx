@@ -167,6 +167,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
 
     return (
       <IAPContext.Provider value={context}>
+        {/* @ts-ignore */}
         <Component {...props} />
       </IAPContext.Provider>
     );
