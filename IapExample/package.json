@@ -11,7 +11,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@react-native-community/cli-platform-android": "^9.1.0",
+    "@react-native-community/cli-platform-android": "^10.0.0",
     "@react-native-masked-view/masked-view": "0.2.8",
     "@react-navigation/native": "6.1.6",
     "@react-navigation/stack": "6.3.16",
