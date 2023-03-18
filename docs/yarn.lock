@@ -2842,7 +2842,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mdx-js/react@npm:1.6.22, @mdx-js/react@npm:^1.6.22":
+"@mdx-js/react@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@mdx-js/react@npm:2.3.0"
+  dependencies:
+    "@types/mdx": ^2.0.0
+    "@types/react": ">=16"
+  peerDependencies:
+    react: ">=16"
+  checksum: f45fe779556e6cd9a787f711274480e0638b63c460f192ebdcd77cc07ffa61e23c98cb46dd46e577093e1cb4997a232a848d1fb0ba850ae204422cf603add524
+  languageName: node
+  linkType: hard
+
+"@mdx-js/react@npm:^1.6.22":
   version: 1.6.22
   resolution: "@mdx-js/react@npm:1.6.22"
   peerDependencies:
@@ -3438,6 +3450,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/mdx@npm:^2.0.0":
+  version: 2.0.3
+  resolution: "@types/mdx@npm:2.0.3"
+  checksum: 41deb51c29535913af01d25f0e1414cfb5a6948d0e60e77e4aca895694de48bf0ac69c5a81fe2d9617d726cb253001ef82a65b683d5ef51987d15aa1931d086b
+  languageName: node
+  linkType: hard
+
 "@types/mime@npm:*":
   version: 3.0.0
   resolution: "@types/mime@npm:3.0.0"
@@ -3534,6 +3553,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: e22cc388d1c145aa184787e44dc28db4789976c704cd5db475c170bb76a560eb81def5f346cfe750949bb3d43ad88822b8cbb9f19b1286e3795892a8263e7715
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:>=16":
+  version: 18.0.28
+  resolution: "@types/react@npm:18.0.28"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: e752df961105e5127652460504785897ca6e77259e0da8f233f694f9e8f451cde7fa0709d4456ade0ff600c8ce909cfe29f9b08b9c247fa9b734e126ec53edd7
   languageName: node
   linkType: hard
 
@@ -5451,7 +5481,7 @@ __metadata:
     "@docusaurus/core": 2.3.1
     "@docusaurus/preset-classic": 2.3.1
     "@docusaurus/remark-plugin-npm2yarn": 2.3.1
-    "@mdx-js/react": 1.6.22
+    "@mdx-js/react": 2.3.0
     "@svgr/webpack": 6.5.1
     clsx: 1.2.1
     file-loader: 6.2.0
