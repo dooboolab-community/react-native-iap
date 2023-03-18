@@ -84,8 +84,8 @@
     "@testing-library/jest-native": "5.4.2",
     "@testing-library/react-native": "12.0.0",
     "@types/jest": "29.5.0",
-    "@types/react": "~18.0.28",
-    "@types/react-native": "0.68.2",
+    "@types/react": "*",
+    "@types/react-native": "*",
     "@typescript-eslint/eslint-plugin": "5.55.0",
     "@typescript-eslint/parser": "5.55.0",
     "babel-jest": "29.5.0",
@@ -111,6 +111,10 @@
   "peerDependencies": {
     "react": ">=16.13.1",
     "react-native": ">=0.65.1"
+  },
+  "resolutions": {
+    "@types/react": "17.0.53",
+    "@types/react-native": "0.68.2"
   },
   "dependencies": {
     "@expo/config-plugins": "^6.0.1"

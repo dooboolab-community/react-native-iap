@@ -3056,18 +3056,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:>=16.9.0, @types/react@npm:~18.0.28":
-  version: 18.0.28
-  resolution: "@types/react@npm:18.0.28"
-  dependencies:
-    "@types/prop-types": "*"
-    "@types/scheduler": "*"
-    csstype: ^3.0.2
-  checksum: e752df961105e5127652460504785897ca6e77259e0da8f233f694f9e8f451cde7fa0709d4456ade0ff600c8ce909cfe29f9b08b9c247fa9b734e126ec53edd7
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:^17":
+"@types/react@npm:17.0.53":
   version: 17.0.53
   resolution: "@types/react@npm:17.0.53"
   dependencies:
@@ -11855,8 +11844,8 @@ __metadata:
     "@testing-library/jest-native": 5.4.2
     "@testing-library/react-native": 12.0.0
     "@types/jest": 29.5.0
-    "@types/react": ~18.0.28
-    "@types/react-native": 0.68.2
+    "@types/react": "*"
+    "@types/react-native": "*"
     "@typescript-eslint/eslint-plugin": 5.55.0
     "@typescript-eslint/parser": 5.55.0
     babel-jest: 29.5.0
