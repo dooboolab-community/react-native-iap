@@ -116,6 +116,6 @@
     "react-native": ">=0.65.1"
   },
   "dependencies": {
-    "@expo/config-plugins": "^5.0.4"
+    "@expo/config-plugins": "^6.0.0"
   }
 }
