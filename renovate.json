@@ -12,11 +12,11 @@
   "packageRules": [
     {
       "groupName": "docs",
-      "matchPaths": ["docs/"]
-    },
-    {
-      "groupName": "example",
-      "matchPaths": ["IapExample/"]
+      "matchPaths": ["docs/"],
+      "excludePackageNames": [
+        "react",
+        "react-dom"
+      ]
     },
     {
       "excludeDepPatterns": [
@@ -29,6 +29,7 @@
       "excludePackageNames": [
         "babel-loader",
         "react",
+        "react-dom",
         "react-native",
         "react-native-reanimated",
         "webpack-dev-server"
