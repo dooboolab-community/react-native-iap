@@ -1,4 +1,4 @@
-package com.dooboolab.RNIap
+package com.dooboolab.rniap
 
 import android.content.Intent
 import android.net.Uri
@@ -21,7 +21,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule
 class RNIapAmazonModule(
     private val reactContext: ReactApplicationContext,
     private val purchasingService: PurchasingServiceProxy = PurchasingServiceProxyAmazonImpl(),
-    private var eventSender: EventSender? = null
+    private var eventSender: EventSender? = null,
 ) :
     ReactContextBaseJavaModule(reactContext) {
     override fun getName(): String {
@@ -133,7 +133,7 @@ class RNIapAmazonModule(
     @ReactMethod
     fun buyItemByType(
         sku: String?,
-        promise: Promise
+        promise: Promise,
     ) {
         PromiseUtils.addPromiseForKey(PROMISE_BUY_ITEM, promise)
         val requestId = purchasingService.purchase(sku)
@@ -143,7 +143,7 @@ class RNIapAmazonModule(
     fun acknowledgePurchase(
         token: String?,
         developerPayLoad: String?,
-        promise: Promise
+        promise: Promise,
     ) {
         purchasingService.notifyFulfillment(token, FulfillmentResult.FULFILLED)
         promise.resolve(true)
@@ -153,7 +153,7 @@ class RNIapAmazonModule(
     fun consumeProduct(
         token: String?,
         developerPayLoad: String?,
-        promise: Promise
+        promise: Promise,
     ) {
         purchasingService.notifyFulfillment(token, FulfillmentResult.FULFILLED)
         promise.resolve(true)

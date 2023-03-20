@@ -14,7 +14,7 @@ The guide assumes that `react-native-iap` is implemented in your app and works w
 
 ```java
 
-import com.dooboolab.RNIap.RNIapActivityListener;
+import com.dooboolab.rniap.RNIapActivityListener;
 ...
 public class MainActivity extends ReactActivity {
     ...

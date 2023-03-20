@@ -1,4 +1,4 @@
-package com.dooboolab.RNIap
+package com.dooboolab.rniap
 
 import com.facebook.react.bridge.Promise
 import java.lang.Exception
@@ -28,7 +28,7 @@ object PromiseUtils {
         key: String,
         code: String?,
         message: String?,
-        err: Exception?
+        err: Exception?,
     ) {
         promises[key]?.forEach { promise ->
             promise.safeReject(code, message, err)

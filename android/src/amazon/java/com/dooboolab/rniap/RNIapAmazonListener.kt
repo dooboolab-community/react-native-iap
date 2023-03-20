@@ -1,4 +1,4 @@
-package com.dooboolab.RNIap
+package com.dooboolab.rniap
 
 import android.util.Log
 import com.amazon.device.iap.PurchasingListener
@@ -20,7 +20,7 @@ val ProductType.typeString: String
 
 class RNIapAmazonListener(
     var eventSender: EventSender?,
-    var purchasingService: PurchasingServiceProxy?
+    var purchasingService: PurchasingServiceProxy?,
 ) : PurchasingListener {
 
     override fun onProductDataResponse(response: ProductDataResponse) {
@@ -38,7 +38,7 @@ class RNIapAmazonListener(
                     } catch (e: NumberFormatException) {
                         Log.w(
                             TAG,
-                            "onProductDataResponse: Failed to parse price for product: " + product.sku
+                            "onProductDataResponse: Failed to parse price for product: " + product.sku,
                         )
                     }
                     val item = Arguments.createMap()
@@ -61,7 +61,7 @@ class RNIapAmazonListener(
                 PromiseUtils
                     .resolvePromisesForKey(
                         RNIapAmazonModule.PROMISE_GET_PRODUCT_DATA,
-                        items
+                        items,
                     )
             }
             ProductDataResponse.RequestStatus.FAILED ->
@@ -70,7 +70,7 @@ class RNIapAmazonListener(
                         RNIapAmazonModule.PROMISE_GET_PRODUCT_DATA,
                         E_PRODUCT_DATA_RESPONSE_FAILED,
                         null,
-                        null
+                        null,
                     )
             ProductDataResponse.RequestStatus.NOT_SUPPORTED ->
                 PromiseUtils
@@ -78,7 +78,7 @@ class RNIapAmazonListener(
                         RNIapAmazonModule.PROMISE_GET_PRODUCT_DATA,
                         E_PRODUCT_DATA_RESPONSE_NOT_SUPPORTED,
                         null,
-                        null
+                        null,
                     )
         }
     }
@@ -104,18 +104,18 @@ class RNIapAmazonListener(
                         PromiseUtils
                             .resolvePromisesForKey(
                                 RNIapAmazonModule.PROMISE_BUY_ITEM,
-                                promiseItem
+                                promiseItem,
                             )
                     }
                     PromiseUtils
                         .resolvePromisesForKey(
                             RNIapAmazonModule.PROMISE_QUERY_PURCHASES,
-                            true
+                            true,
                         )
                     PromiseUtils
                         .resolvePromisesForKey(
                             RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS,
-                            availableItems
+                            availableItems,
                         )
                 }
             }
@@ -133,14 +133,14 @@ class RNIapAmazonListener(
                         RNIapAmazonModule.PROMISE_QUERY_PURCHASES,
                         errorCode,
                         debugMessage,
-                        null
+                        null,
                     )
                 PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS,
                         errorCode,
                         debugMessage,
-                        null
+                        null,
                     )
             }
             PurchaseUpdatesResponse.RequestStatus.NOT_SUPPORTED -> {
@@ -157,14 +157,14 @@ class RNIapAmazonListener(
                         RNIapAmazonModule.PROMISE_QUERY_PURCHASES,
                         errorCode,
                         debugMessage,
-                        null
+                        null,
                     )
                 PromiseUtils
                     .rejectPromisesForKey(
                         RNIapAmazonModule.PROMISE_QUERY_AVAILABLE_ITEMS,
                         errorCode,
                         debugMessage,
-                        null
+                        null,
                     )
             }
         }
@@ -200,7 +200,7 @@ class RNIapAmazonListener(
                 PromiseUtils
                     .resolvePromisesForKey(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
-                        promiseItem
+                        promiseItem,
                     )
             }
             PurchaseResponse.RequestStatus.ALREADY_PURCHASED -> {
@@ -217,7 +217,7 @@ class RNIapAmazonListener(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
                         errorCode,
                         debugMessage,
-                        null
+                        null,
                     )
             }
             PurchaseResponse.RequestStatus.FAILED -> {
@@ -235,7 +235,7 @@ class RNIapAmazonListener(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
                         errorCode,
                         debugMessage,
-                        null
+                        null,
                     )
             }
             PurchaseResponse.RequestStatus.INVALID_SKU -> {
@@ -252,7 +252,7 @@ class RNIapAmazonListener(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
                         errorCode,
                         debugMessage,
-                        null
+                        null,
                     )
             }
             PurchaseResponse.RequestStatus.NOT_SUPPORTED -> {
@@ -269,7 +269,7 @@ class RNIapAmazonListener(
                         RNIapAmazonModule.PROMISE_BUY_ITEM,
                         errorCode,
                         debugMessage,
-                        null
+                        null,
                     )
             }
         }
@@ -292,7 +292,7 @@ class RNIapAmazonListener(
                         RNIapAmazonModule.PROMISE_GET_USER_DATA,
                         E_USER_DATA_RESPONSE_NOT_SUPPORTED,
                         null,
-                        null
+                        null,
                     )
             UserDataResponse.RequestStatus.FAILED ->
                 PromiseUtils
@@ -300,7 +300,7 @@ class RNIapAmazonListener(
                         RNIapAmazonModule.PROMISE_GET_USER_DATA,
                         E_USER_DATA_RESPONSE_FAILED,
                         null,
-                        null
+                        null,
                     )
         }
     }
