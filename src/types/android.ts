@@ -52,6 +52,22 @@ export type ReceiptType = {
   kind: string;
 } & Record<string, unknown>;
 
+/** Based on
+ * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
+ */
+export enum FeatureType {
+  /** Show in-app messages. Included in documentation by the annotations: */
+  IN_APP_MESSAGING = 'IN_APP_MESSAGING',
+  /** Launch a price change confirmation flow. */
+  PRICE_CHANGE_CONFIRMATION = 'PRICE_CHANGE_CONFIRMATION',
+  /** Play billing library support for querying and purchasing with ProductDetails. */
+  PRODUCT_DETAILS = 'PRODUCT_DETAILS',
+  /** Purchase/query for subscriptions. */
+  SUBSCRIPTIONS = 'SUBSCRIPTIONS',
+  /** Subscriptions update/replace. */
+  SUBSCRIPTIONS_UPDATE = 'SUBSCRIPTIONS_UPDATE',
+}
+
 /** Added to maintain backwards compatibility */
 export const singleProductAndroidMap = (
   originalProd: ProductAndroid,
