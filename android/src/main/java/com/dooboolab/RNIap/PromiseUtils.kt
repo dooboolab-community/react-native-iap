@@ -28,7 +28,7 @@ object PromiseUtils {
         key: String,
         code: String?,
         message: String?,
-        err: Exception?
+        err: Exception?,
     ) {
         promises[key]?.forEach { promise ->
             promise.safeReject(code, message, err)
