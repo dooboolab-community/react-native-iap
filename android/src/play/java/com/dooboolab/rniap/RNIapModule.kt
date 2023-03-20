@@ -90,26 +90,26 @@ class RNIapModule(
     @ReactMethod
     fun isFeatureSupported(feature: String, promise: Promise) {
         ensureConnection(
-                promise
-            ) { billingClient ->
-                val f = when(feature) {
-                    "IN_APP_MESSAGING" ->
-                        BillingClient.FeatureType.IN_APP_MESSAGING
-                    "PRICE_CHANGE_CONFIRMATION" ->
-                        BillingClient.FeatureType.PRICE_CHANGE_CONFIRMATION
-                    "PRODUCT_DETAILS" ->
-                        BillingClient.FeatureType.PRODUCT_DETAILS
-                    "SUBSCRIPTIONS" ->
-                        BillingClient.FeatureType.SUBSCRIPTIONS
-                    "SUBSCRIPTIONS_UPDATE" ->
-                        BillingClient.FeatureType.SUBSCRIPTIONS_UPDATE
-                    else -> {
-                        promise.safeReject("Invalid Feature name")
-                        return@ensureConnection;
-                    }
+            promise,
+        ) { billingClient ->
+            val f = when (feature) {
+                "IN_APP_MESSAGING" ->
+                    BillingClient.FeatureType.IN_APP_MESSAGING
+                "PRICE_CHANGE_CONFIRMATION" ->
+                    BillingClient.FeatureType.PRICE_CHANGE_CONFIRMATION
+                "PRODUCT_DETAILS" ->
+                    BillingClient.FeatureType.PRODUCT_DETAILS
+                "SUBSCRIPTIONS" ->
+                    BillingClient.FeatureType.SUBSCRIPTIONS
+                "SUBSCRIPTIONS_UPDATE" ->
+                    BillingClient.FeatureType.SUBSCRIPTIONS_UPDATE
+                else -> {
+                    promise.safeReject("Invalid Feature name")
+                    return@ensureConnection
                 }
-                promise.safeResolve(billingClient.isFeatureSupported(f))
             }
+            promise.safeResolve(billingClient.isFeatureSupported(f))
+        }
     }
 
     @ReactMethod
