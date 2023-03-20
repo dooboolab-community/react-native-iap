@@ -97,7 +97,7 @@ class RNIapAmazonModuleTest {
 
         every { purchasingServiceProxy.purchase(any()) } answers {
             listener.onPurchaseResponse(
-                purchaseResponse
+                purchaseResponse,
             ); RequestId.fromString("0")
         }
 
