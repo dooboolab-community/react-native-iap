@@ -1,4 +1,4 @@
-package com.dooboolab.RNIap
+package com.dooboolab.rniap
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
@@ -14,7 +14,7 @@ class RNIapPackage : ReactPackage {
 
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
         val modules: MutableList<NativeModule> = ArrayList()
-        modules.add(RNIapModule(reactContext))
+        modules.add(RNIapAmazonModule(reactContext))
         return modules
     }
 }

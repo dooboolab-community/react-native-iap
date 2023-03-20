@@ -1,4 +1,4 @@
-package com.dooboolab.RNIap
+package com.dooboolab.rniap
 
 import com.facebook.react.bridge.WritableMap
 

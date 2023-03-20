@@ -1,4 +1,4 @@
-package com.dooboolab.RNIap
+package com.dooboolab.rniap
 
 import com.amazon.device.iap.model.PurchaseResponse
 import com.amazon.device.iap.model.Receipt

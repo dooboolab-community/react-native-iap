@@ -1,4 +1,4 @@
-package com.dooboolab.RNIap
+package com.dooboolab.rniap
 
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
