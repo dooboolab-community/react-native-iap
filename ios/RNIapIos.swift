@@ -254,13 +254,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         debugMessage("clear valid products")
-
-        let lockQueue = DispatchQueue(label: "validProducts")
-
-        lockQueue.sync {
-            validProducts.removeAll()
-        }
-
+        validProducts.removeAll()
         resolve(nil)
     }
 
