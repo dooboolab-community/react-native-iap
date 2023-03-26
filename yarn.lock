@@ -11259,9 +11259,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ora@npm:6.2.0":
-  version: 6.2.0
-  resolution: "ora@npm:6.2.0"
+"ora@npm:6.3.0":
+  version: 6.3.0
+  resolution: "ora@npm:6.3.0"
   dependencies:
     chalk: ^5.0.0
     cli-cursor: ^4.0.0
@@ -11272,7 +11272,7 @@ __metadata:
     stdin-discarder: ^0.1.0
     strip-ansi: ^7.0.1
     wcwidth: ^1.0.1
-  checksum: 9ce270c15b5ea5f6b40fee3c1eb9b96392e2312609d800fa311226d4b0682986269bf5887e2bbf9af5f73344dad7549fcd702a0567c6344565e01ddd0413da49
+  checksum: e19fb18acd66cfaefb71351f6d50242abdf549161a5e57bf389bd467a0bb0e26f282423faa3038c411b16b7f9fc316c2c4abe6ce7c041c3c2ac993a0f228fc5b
   languageName: node
   linkType: hard
 
@@ -12137,7 +12137,7 @@ __metadata:
     react: 17.0.2
     react-native: 0.68.2
     react-native-builder-bob: 0.20.4
-    release-it: 15.9.1
+    release-it: 15.9.3
     ts-jest: 29.0.5
     typedoc: ^0.23.14
     typedoc-plugin-markdown: ^3.14.0
@@ -12478,9 +12478,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"release-it@npm:15.9.1":
-  version: 15.9.1
-  resolution: "release-it@npm:15.9.1"
+"release-it@npm:15.9.3":
+  version: 15.9.3
+  resolution: "release-it@npm:15.9.3"
   dependencies:
     "@iarna/toml": 2.2.5
     "@octokit/rest": 19.0.7
@@ -12498,7 +12498,7 @@ __metadata:
     new-github-release-url: 2.0.0
     node-fetch: 3.3.1
     open: 9.0.0
-    ora: 6.2.0
+    ora: 6.3.0
     os-name: 5.1.0
     promise.allsettled: 1.0.6
     proxy-agent: 5.0.0
@@ -12510,7 +12510,7 @@ __metadata:
     yargs-parser: 21.1.1
   bin:
     release-it: bin/release-it.js
-  checksum: 6fc0a210ee9dc00e7f2ca4809127ae35b6ed90388dd47b2973cc16ad2d66feed4f92b4189c88ad5079761ceae3c62a5bb086525f5b21a95facbd95e99164dd3e
+  checksum: 9248fe1bcb930a29ad5cf374401653775f820af4d01b8f57a22e97c6e5cf56aca24aba76d2c3e3284cc375aaed6b88a6108de38006325a463ba0f83c3ce53fea
   languageName: node
   linkType: hard
 
