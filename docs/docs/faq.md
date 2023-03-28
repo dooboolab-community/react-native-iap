@@ -26,12 +26,12 @@ deepLinkToSubscriptions();
   list of items to “purchase” before requesting purchase.
 
   - Related [blog](https://medium.com/p/e4b55491479b).
-  - Related issue [#283](https://github.com/dooboolab/react-native-iap/issues/283).
+  - Related issue [#283](https://github.com/dooboolab-community/react-native-iap/issues/283).
 
 ### How do I validate receipt in iOS?
 
 - Official doc is [here](https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html).
-- Resolved issues in [#203](https://github.com/dooboolab/react-native-iap/issues/203), [#237](https://github.com/dooboolab/react-native-iap/issues/237).
+- Resolved issues in [#203](https://github.com/dooboolab-community/react-native-iap/issues/203), [#237](https://github.com/dooboolab-community/react-native-iap/issues/237).
 
 ### How do I validate receipt in Android?
 
@@ -52,7 +52,7 @@ deepLinkToSubscriptions();
 ### How to make consumable product in Android developer mode?
 
 - If you are facing `"You already own this item"` on developer(test) mode,
-  you might check related issue [#126](https://github.com/dooboolab/react-native-iap/issues/126)
+  you might check related issue [#126](https://github.com/dooboolab-community/react-native-iap/issues/126)
 
 ### How do I use `react-native-iap` in Expo?
 
@@ -141,10 +141,10 @@ Then call `initConnection` (see above)
 Here are some resources you might get help out of.
 
 - For `iOS`, check if you’ve agreed on taxes
-  https://github.com/dooboolab/react-native-iap/issues/1272#issuecomment-800131501. Also, you may try to add storekit.
+  https://github.com/dooboolab-community/react-native-iap/issues/1272#issuecomment-800131501. Also, you may try to add storekit.
 
 - For Android, hope you to check this one.
-  https://github.com/dooboolab/react-native-iap/issues/124#issuecomment-386593185
+  https://github.com/dooboolab-community/react-native-iap/issues/124#issuecomment-386593185
 
 ### Update listener called many times on iOS (Storekit 1)
 
