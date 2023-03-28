@@ -2,8 +2,8 @@
 
 Clear the remaining transactions.
 
-See https://github.com/dooboolab/react-native-iap/issues/257
-See https://github.com/dooboolab/react-native-iap/issues/801
+See https://github.com/dooboolab-community/react-native-iap/issues/257
+See https://github.com/dooboolab-community/react-native-iap/issues/801
 
 ## Signature
 

@@ -6,14 +6,14 @@ sidebar_position: 3
 
 > :warning: **Purchase Flow Redesign** :warning:
 >
-> The `purchase` flow has been updated as a result of the findings in issue [#307](https://github.com/dooboolab/react-native-iap/issues/307).
+> The `purchase` flow has been updated as a result of the findings in issue [#307](https://github.com/dooboolab-community/react-native-iap/issues/307).
 > The resulting flow has been redesign to not rely on `Promise` or `Callback`.
 >
 > Below are some of the specific reasons for the redesign:
 >
 > 1. There may be more than one response when requesting a payment.
 > 2. Purchases are inter-session `asynchronuous` meaning requests that are made may take several hours to complete and continue to exist even after the app has been closed or crashed.
-> 3. The purchase may be pending and hard to track what has been done ([example](https://github.com/dooboolab/react-native-iap/issues/307).
+> 3. The purchase may be pending and hard to track what has been done ([example](https://github.com/dooboolab-community/react-native-iap/issues/307).
 > 4. The Billing Flow is an `event` pattern rather than a `callback` pattern.
 
 Once you have called `getProducts()`, and have a valid response, you can call `requestPurchase()`. Subscribable products can be purchased just like consumable products and users can cancel subscriptions by using the iOS System Settings.

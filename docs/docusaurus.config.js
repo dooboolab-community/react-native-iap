@@ -20,7 +20,7 @@ const config = {
       },
       items: [
         {
-          href: 'https://github.com/dooboolab/react-native-iap',
+          href: 'https://github.com/dooboolab-community/react-native-iap',
           position: 'right',
           className: 'header-github-link',
           'aria-label': 'GitHub repository',
@@ -48,19 +48,19 @@ const config = {
           items: [
             {
               label: 'Issues',
-              to: 'https://github.com/dooboolab/react-native-iap/issues',
+              to: 'https://github.com/dooboolab-community/react-native-iap/issues',
             },
             {
               label: 'Discussions',
-              to: 'https://github.com/dooboolab/react-native-iap/discussions',
+              to: 'https://github.com/dooboolab-community/react-native-iap/discussions',
             },
             {
               label: 'Pull requests',
-              to: 'https://github.com/dooboolab/react-native-iap/pulls',
+              to: 'https://github.com/dooboolab-community/react-native-iap/pulls',
             },
             {
               label: 'Changelog',
-              to: 'https://github.com/dooboolab/react-native-iap/releases',
+              to: 'https://github.com/dooboolab-community/react-native-iap/releases',
             },
           ],
         },
@@ -89,7 +89,7 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
-            'https://github.com/dooboolab/react-native-iap/edit/main/docs/',
+            'https://github.com/dooboolab-community/react-native-iap/edit/main/docs/',
           remarkPlugins: [
             [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
           ],
