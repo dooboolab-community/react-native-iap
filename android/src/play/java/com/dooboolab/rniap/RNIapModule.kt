@@ -77,8 +77,8 @@ class RNIapModule(
                     var errorCode: String? = null
                     var errorMessage: String? = null
                     if (it.size > 1 && it[0] is String && it[1] is String) {
-                        errorCode = it[0]
-                        errorMessage = it[1]
+                        errorCode = it[0] as String
+                        errorMessage = it[1] as String
                     } else if (it.isNotEmpty() && it[0] is WritableNativeMap) {
                         val errorMap = it[0] as WritableNativeMap
                         errorCode = errorMap.getString("code")
