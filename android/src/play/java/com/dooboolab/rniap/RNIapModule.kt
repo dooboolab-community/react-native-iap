@@ -85,7 +85,7 @@ class RNIapModule(
                     if (errorCode is String && errorMessage is String) {
                         promise.safeReject(
                             errorCode,
-                            errorMessage
+                            errorMessage,
                         )
                     } else {
                         promise.safeReject(PromiseUtils.E_UNKNOWN, "ensureConnection - incorrect parameter in reject")
