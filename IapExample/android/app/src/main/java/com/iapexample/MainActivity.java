@@ -2,7 +2,7 @@ package com.iapexample;
 
 import android.os.Bundle;
 
-import com.dooboolab.RNIap.RNIapActivityListener;
+import com.dooboolab.rniap.RNIapActivityListener;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;

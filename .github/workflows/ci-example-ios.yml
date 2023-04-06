@@ -38,7 +38,7 @@ jobs:
         working-directory: IapExample
 
       - name: Restore buildcache
-        uses: mikehardy/buildcache-action@v1
+        uses: mikehardy/buildcache-action@v2
         continue-on-error: true
 
       - name: Setup Ruby (bundle)
@@ -54,7 +54,7 @@ jobs:
         run: git diff --exit-code HEAD '*.swift'
 
       - name: Restore Pods cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             IapExample/ios/Pods

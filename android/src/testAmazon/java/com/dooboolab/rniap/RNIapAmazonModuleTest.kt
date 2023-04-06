@@ -1,4 +1,4 @@
-package com.dooboolab.RNIap
+package com.dooboolab.rniap
 
 import com.amazon.device.iap.model.PurchaseResponse
 import com.amazon.device.iap.model.Receipt
@@ -97,7 +97,7 @@ class RNIapAmazonModuleTest {
 
         every { purchasingServiceProxy.purchase(any()) } answers {
             listener.onPurchaseResponse(
-                purchaseResponse
+                purchaseResponse,
             ); RequestId.fromString("0")
         }
 

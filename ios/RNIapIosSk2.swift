@@ -502,17 +502,18 @@ class RNIapIosSk2iOS15: Sk2Delegate {
 
     func startObserving() {
         hasListeners = true
+        addTransactionObserver()
     }
 
     func stopObserving() {
         hasListeners = false
+        removeTransactionObserver()
     }
 
     public func initConnection(
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        addTransactionObserver()
         resolve(AppStore.canMakePayments)
     }
     public func endConnection(
@@ -521,8 +522,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
     ) {
         products.removeAll()
         transactions.removeAll()
-        updateListenerTask?.cancel()
-        updateListenerTask = nil
+        removeTransactionObserver()
         resolve(nil)
     }
 
@@ -903,20 +903,22 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         #if !os(tvOS)
-        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              !ProcessInfo.processInfo.isiOSAppOnMac else {
-            return
-        }
-
-        Task {
-            do {
-                try await AppStore.showManageSubscriptions(in: scene)
-            } catch {
-                print("Error:(error)")
+        DispatchQueue.main.async {
+            guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  !ProcessInfo.processInfo.isiOSAppOnMac else {
+                return
             }
-        }
 
-        resolve(nil)
+            Task {
+                do {
+                    try await AppStore.showManageSubscriptions(in: scene)
+                } catch {
+                    print("Error:(error)")
+                }
+            }
+
+            resolve(nil)
+        }
         #else
         reject(IapErrors.E_USER_CANCELLED.rawValue, "This method is not available on tvOS", nil)
         #endif

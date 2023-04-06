@@ -114,7 +114,7 @@ And your are now good to go!
 ### `Android`
 
 1. Open up `android/app/src/main/java/[...]/MainApplication.java`
-2. Add `import com.dooboolab.RNIap.RNIapPackage;` at the top of the file.
+2. Add `import com.dooboolab.rniap.RNIapPackage;` at the top of the file.
 3. Add `new RNIapPackage()` to the list returned by the `getPackages()` method
 
 4. Append the following lines to `android/settings.gradle`:

@@ -32,7 +32,7 @@ type clearTransaction = () => Promise<void>;
 type clearProducts = () => Promise<void>;
 type promotedProduct = () => Promise<ProductIOS | null>;
 type buyPromotedProduct = () => Promise<void>;
-type requestReceipt = (refresh: boolean) => Promise<string>;
+type requestReceipt = (refresh: boolean) => Promise<string | undefined | null>;
 
 type finishTransaction = (transactionIdentifier: string) => Promise<boolean>;
 
@@ -56,7 +56,6 @@ export interface IosModuleProps extends NativeModuleProps {
 
 /**
  * Get the current receipt base64 encoded in IOS.
- * @param {forceRefresh?:boolean}
  * @returns {Promise<ProductPurchase[]>}
  */
 export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> =>
@@ -64,25 +63,45 @@ export const getPendingPurchasesIOS = async (): Promise<ProductPurchase[]> =>
 
 /**
  * Get the current receipt base64 encoded in IOS.
+ * 
+ * The sequence should be as follows: 
+ * Call getReceiptIOS({forceRefresh: false}). That will return the cached receipt that is available on TestFlight and Production. 
+ * In the case of Sandbox the receipt might not be cached, causing it to return nil. 
+ * In that case you might want to let the user that they will to be prompted for credentials. 
+ * If they accept, call it again with `getReceiptIOS({forceRefresh:true}) If it fails or the user declines, assume they haven't purchased any items. 
+ * Reference: https://developer.apple.com/forums/thread/662350 
+ * 
  * From: https://apphud.com/blog/app-store-receipt-validation#what-is-app-store-receipt
- > Does a receipt always exist in the app?
- > If a user downloaded the app from the App Store – yes. However, in sandbox if your app was installed via Xcode or Testflight, then there won't be a receipt until you make a purchase or restore.
+ > Q: Does a receipt always exist in the app?
+ > A: If a user downloaded the app from the App Store – yes. However, in sandbox if your app was installed via Xcode or Testflight, then there won't be a receipt until you make a purchase or restore.
  * 
  ## Usage 
  ```tsx
-import {useCallback} from 'react';
 import {getReceiptIOS} from 'react-native-iap';
-
-const receipt = useCallback(async () => await getReceiptIOS({forceRefresh: false}));
+try{
+  let receipt = await getReceiptIOS({forceRefresh: false});
+  if(!receipt){
+    // Let user know that they might get prompted for credentials
+    const shouldShowPrompt = // Display UI with details, Did user agree?. this only for Sandbox testing
+    if(shouldShowPrompt){
+      receipt = await getReceiptIOS({forceRefresh: true});
+    }
+  }
+}catch(error:Error){
+  // error while getting the receipt, it might indicate an invalid receipt of a connection error while trying to get it
+}
+// If !receipt assume user doesn't own the items
 ```
- * @param {forceRefresh?:boolean} Requests the receipt from Bundle.main.appStoreReceiptURL. Based on the note above, looks like forceRefresh only makes sense when testing an app not downloaded from the Appstore.
- * @returns {Promise<string>} The receipt data
+ * @param {forceRefresh?:boolean} Requests the receipt from Bundle.main.appStoreReceiptURL. 
+Based on the note above, looks like forceRefresh only makes sense when testing an app not downloaded from the Appstore.
+And only afer a direct user action.
+ * @returns {Promise<string | undefined | null>} The receipt data
  */
 export const getReceiptIOS = async ({
   forceRefresh,
 }: {
   forceRefresh?: boolean;
-}): Promise<string> => {
+}): Promise<string | undefined | null> => {
   if (!isIosStorekit2()) {
     return RNIapIos.requestReceipt(forceRefresh ?? false);
   } else {
@@ -191,8 +210,8 @@ export const validateReceiptIos = async ({
 /**
  * Clear Transaction (iOS only)
  *   Finish remaining transactions. Related to issue #257 and #801
- *     link : https://github.com/dooboolab/react-native-iap/issues/257
- *            https://github.com/dooboolab/react-native-iap/issues/801
+ *     link : https://github.com/dooboolab-community/react-native-iap/issues/257
+ *            https://github.com/dooboolab-community/react-native-iap/issues/801
  * @returns {Promise<void>}
  */
 export const clearTransactionIOS = (): Promise<void> =>

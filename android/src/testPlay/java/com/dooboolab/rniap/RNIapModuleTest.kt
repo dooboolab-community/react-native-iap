@@ -1,4 +1,4 @@
-package com.dooboolab.RNIap
+package com.dooboolab.rniap
 
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -87,7 +87,7 @@ class RNIapModuleTest {
         every { billingClient.startConnection(capture(listener)) } answers {
             listener.captured.onBillingSetupFinished(
                 BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.OK)
-                    .build()
+                    .build(),
             )
         }
         every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
@@ -105,7 +105,7 @@ class RNIapModuleTest {
         every { billingClient.startConnection(capture(listener)) } answers {
             listener.captured.onBillingSetupFinished(
                 BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.ERROR)
-                    .build()
+                    .build(),
             )
         }
         every { availability.isGooglePlayServicesAvailable(any()) } returns ConnectionResult.SUCCESS
@@ -160,8 +160,8 @@ class RNIapModuleTest {
                         every { purchaseState } returns 2
                         every { purchaseToken } returns "token"
                     },
-                    Purchase("", "1")
-                )
+                    Purchase("", "1"),
+                ),
             )
         }
         val consumeListener = slot<ConsumeResponseListener>()
@@ -169,7 +169,7 @@ class RNIapModuleTest {
             consumeListener.captured.onConsumeResponse(
                 BillingResult.newBuilder()
                     .setResponseCode(BillingClient.BillingResponseCode.ITEM_NOT_OWNED).build(),
-                ""
+                "",
             )
         }
         module.initConnection(mockk())
@@ -194,7 +194,7 @@ class RNIapModuleTest {
         every { billingClient.startConnection(capture(listener)) } answers {
             listener.captured.onBillingSetupFinished(
                 BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.OK)
-                    .build()
+                    .build(),
             )
         }
 
@@ -241,13 +241,13 @@ class RNIapModuleTest {
                                             every { billingCycleCount } returns 1
                                             every { priceAmountMicros } returns 13000
                                             every { recurrenceMode } returns 2
-                                        }
+                                        },
                                     )
                                 }
-                            }
+                            },
                         )
-                    }
-                )
+                    },
+                ),
             )
         }
         val skus = mockk<ReadableArray>() {

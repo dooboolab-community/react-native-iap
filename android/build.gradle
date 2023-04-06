@@ -8,7 +8,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:4.2.2"
+    classpath "com.android.tools.build:gradle:7.4.2"
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
   }
 }
@@ -161,7 +161,7 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
   testImplementation "junit:junit:4.13.2"
-  testImplementation "io.mockk:mockk:1.12.4"
+  testImplementation "io.mockk:mockk:1.13.4"
 
   playImplementation "com.android.billingclient:billing-ktx:$playBillingSdkVersion"
   playImplementation "com.google.android.gms:play-services-base:$playServicesVersion"

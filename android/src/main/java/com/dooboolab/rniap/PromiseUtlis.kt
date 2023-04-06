@@ -1,4 +1,4 @@
-package com.dooboolab.RNIap
+package com.dooboolab.rniap
 
 import android.util.Log
 import com.facebook.react.bridge.ObjectAlreadyConsumedException
