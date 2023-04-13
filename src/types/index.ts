@@ -68,6 +68,7 @@ export interface ProductPurchase {
   quantityIOS?: number;
   originalTransactionDateIOS?: number;
   originalTransactionIdentifierIOS?: string;
+  verificationResultIOS?: string;
   //Android
   productIds?: string[];
   dataAndroid?: string;
@@ -98,6 +99,7 @@ export interface SubscriptionPurchase extends ProductPurchase {
   autoRenewingAndroid?: boolean;
   originalTransactionDateIOS?: number;
   originalTransactionIdentifierIOS?: string;
+  verificationResultIOS?: string;
 }
 
 export type Purchase = ProductPurchase | SubscriptionPurchase;

@@ -176,6 +176,12 @@ func serialize(_ t: Transaction) -> [String: Any?] {
     ]
 }
 @available(iOS 15.0, tvOS 15.0, *)
+func serialize(_ t: Transaction, _ v: VerificationResult<Transaction>) -> [String: Any?] {
+    var transaction = serialize(t)
+    transaction.updateValue(v.jwsRepresentation, forKey: "verificationResult")
+    return transaction
+}
+@available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ ot: Transaction.OfferType?) -> String? {
     guard let ot = ot else {return nil}
     switch ot {

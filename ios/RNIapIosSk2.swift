@@ -474,8 +474,8 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                     // await self.updateCustomerProductStatus()
 
                     if self.hasListeners {
-                        self.sendEvent?("purchase-updated", serialize(transaction))
-                        self.sendEvent?("iap-transaction-updated", ["transaction": serialize(transaction)])
+                        self.sendEvent?("purchase-updated", serialize(transaction, result))
+                        self.sendEvent?("iap-transaction-updated", ["transaction": serialize(transaction, result)])
                     }
                     // Always finish a transaction.
                     // await transaction.finish()
@@ -690,8 +690,8 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                             resolve(nil)
                         } else {
                             self.addTransaction(transaction)
-                            self.sendEvent?("purchase-updated", serialize(transaction))
-                            resolve(serialize(transaction))
+                            self.sendEvent?("purchase-updated", serialize(transaction, verification))
+                            resolve(serialize(transaction, verification))
                         }
                         return
 
@@ -800,7 +800,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                     do {
                         // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
                         let transaction = try checkVerified(result)
-                        resolve(serialize(transaction))
+                        resolve(serialize(transaction, result))
                     } catch StoreError.failedVerification {
                         reject(IapErrors.E_UNKNOWN.rawValue, "Failed to verify transaction for sku \(sku)", StoreError.failedVerification)
                     } catch {
@@ -827,7 +827,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                     do {
                         // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
                         let transaction = try checkVerified(result)
-                        resolve(serialize(transaction))
+                        resolve(serialize(transaction, result))
                     } catch StoreError.failedVerification {
                         reject(IapErrors.E_UNKNOWN.rawValue, "Failed to verify transaction for sku \(sku)", StoreError.failedVerification)
                     } catch {
