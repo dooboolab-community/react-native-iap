@@ -60,7 +60,7 @@ export const productSk2Map = ({
     type: 'iap',
     price: String(price),
     localizedPrice: displayPrice,
-    currency: '', // Not avaiable on new API, use localizedPrice instead
+    currency: '', // Not available on new API, use localizedPrice instead
   };
   return prod;
 };
@@ -81,7 +81,7 @@ export const subscriptionSk2Map = ({
     type: 'subs',
     price: String(price),
     localizedPrice: displayPrice,
-    currency: '', // Not avaiable on new API, use localizedPrice instead
+    currency: '', // Not available on new API, use localizedPrice instead
     subscriptionPeriodNumberIOS: `${subscription?.subscriptionPeriod?.value}`,
     subscriptionPeriodUnitIOS:
       subscription?.subscriptionPeriod?.unit.toUpperCase() as SubscriptionIosPeriod,
@@ -114,6 +114,7 @@ export type TransactionSk2 = {
   signedDate: number;
   subscriptionGroupID: number;
   webOrderLineItemID: number;
+  verificationResult?: string;
 };
 
 export type TransactionError = PurchaseError;
@@ -144,16 +145,18 @@ export const transactionSk2ToPurchaseMap = ({
   purchaseDate,
   purchasedQuantity,
   originalID,
+  verificationResult,
 }: TransactionSk2): Purchase => {
   const purchase: Purchase = {
     productId: productID,
     transactionId: String(id),
     transactionDate: purchaseDate, //??
     transactionReceipt: '', // Not available
-    purchaseToken: '', //Not avaiable
+    purchaseToken: '', //Not available
     quantityIOS: purchasedQuantity,
     originalTransactionDateIOS: originalPurchaseDate,
     originalTransactionIdentifierIOS: originalID,
+    verificationResultIOS: verificationResult ?? '',
   };
   return purchase;
 };
