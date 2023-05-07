@@ -36,7 +36,7 @@ Please [fund the project](https://opencollective.com/react-native-iap) if you ar
   yarn add react-native-iap@next
   ```
 
-- Version `10.0.0` is a maitenance build. Many internal refactorings and clean up of the code. Special thanks to [jeremybarbet](https://github.com/jeremybarbet) for his contributions. Most notably all methods now take an object parameter instead of separate parameters. Please help us test
+- Version `10.0.0` is a maintenance build. Many internal refactorings and clean up of the code. Special thanks to [jeremybarbet](https://github.com/jeremybarbet) for his contributions. Most notably all methods now take an object parameter instead of separate parameters. Please help us test
 
 - Version `9.0.0` The module migrates android sdk to [play billing library v5](https://qonversion.io/blog/google-play-billing-library-5-0). Our core maintainers [andresesfm](https://github.com/andresesfm) and [jeremybarbet](https://github.com/jeremybarbet) worked hard on this.
 
