@@ -103,7 +103,7 @@
     "react-native": "0.68.2",
     "react-native-builder-bob": "0.20.4",
     "release-it": "15.10.3",
-    "ts-jest": "29.0.5",
+    "ts-jest": "29.1.0",
     "typedoc": "^0.23.14",
     "typedoc-plugin-markdown": "^3.14.0",
     "typescript": "5.0.3"
