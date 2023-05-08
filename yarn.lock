@@ -118,7 +118,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/eslint-parser@npm:7.21.3, @babel/eslint-parser@npm:^7.18.2":
+"@babel/eslint-parser@npm:7.21.8":
+  version: 7.21.8
+  resolution: "@babel/eslint-parser@npm:7.21.8"
+  dependencies:
+    "@nicolo-ribaudo/eslint-scope-5-internals": 5.1.1-v1
+    eslint-visitor-keys: ^2.1.0
+    semver: ^6.3.0
+  peerDependencies:
+    "@babel/core": ">=7.11.0"
+    eslint: ^7.5.0 || ^8.0.0
+  checksum: 6d870f53808682b9d7e3c2a69a832b2095963103bb2d686daee3fcf1df49a0b3dfe58e95c773cab8cf59f2657ec432dfd5e47b9f1835c264eb84d2ec5ab2ad35
+  languageName: node
+  linkType: hard
+
+"@babel/eslint-parser@npm:^7.18.2":
   version: 7.21.3
   resolution: "@babel/eslint-parser@npm:7.21.3"
   dependencies:
@@ -12116,7 +12130,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-iap@workspace:."
   dependencies:
-    "@babel/eslint-parser": 7.21.3
+    "@babel/eslint-parser": 7.21.8
     "@expo/config-plugins": ^6.0.1
     "@firmnav/eslint-github-actions-formatter": 1.0.1
     "@jeremybarbet/apple-api-types": 1.4.0
