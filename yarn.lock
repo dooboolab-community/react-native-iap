@@ -3080,14 +3080,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:17.0.56":
-  version: 17.0.56
-  resolution: "@types/react@npm:17.0.56"
+"@types/react@npm:17.0.59":
+  version: 17.0.59
+  resolution: "@types/react@npm:17.0.59"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: c9e156395c5b97407ae51886659c2ba16a8e62d4fad8ceb29293f76931b58de42a385a179b32da725e72cd04d74c2d60e54cd495c8815b4feee2e4da381b7e52
+  checksum: 09dd0052079ec0c06360790985dc23ce116ac861b77e98aa634cb53dcdac400d878a15c6649dfe5797ac60afc2ab65d40c72c21a302deefd22b2d7804f93c37c
   languageName: node
   linkType: hard
 
