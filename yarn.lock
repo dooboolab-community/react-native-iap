@@ -2959,7 +2959,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.5.0, @types/jest@npm:^29.2.1":
+"@types/jest@npm:29.5.1":
+  version: 29.5.1
+  resolution: "@types/jest@npm:29.5.1"
+  dependencies:
+    expect: ^29.0.0
+    pretty-format: ^29.0.0
+  checksum: 0a22491dec86333c0e92b897be2c809c922a7b2b0aa5604ac369810d6b2360908b4a3f2c6892e8a237a54fa1f10ecefe0e823ec5fcb7915195af4dfe88d2197e
+  languageName: node
+  linkType: hard
+
+"@types/jest@npm:^29.2.1":
   version: 29.5.0
   resolution: "@types/jest@npm:29.5.0"
   dependencies:
@@ -12131,7 +12141,7 @@ __metadata:
     "@release-it/conventional-changelog": 5.1.1
     "@testing-library/jest-native": 5.4.2
     "@testing-library/react-native": 12.0.1
-    "@types/jest": 29.5.0
+    "@types/jest": 29.5.1
     "@types/react": "*"
     "@types/react-native": "*"
     "@typescript-eslint/eslint-plugin": 5.57.1
