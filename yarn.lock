@@ -2829,9 +2829,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react-native@npm:12.0.1":
-  version: 12.0.1
-  resolution: "@testing-library/react-native@npm:12.0.1"
+"@testing-library/react-native@npm:12.1.2":
+  version: 12.1.2
+  resolution: "@testing-library/react-native@npm:12.1.2"
   dependencies:
     pretty-format: ^29.0.0
   peerDependencies:
@@ -2842,7 +2842,7 @@ __metadata:
   peerDependenciesMeta:
     jest:
       optional: true
-  checksum: 0a8ff194875fa921eab62eaad68b0eef31d3540543d60fb72d1d1ecf044769567fc3c809ad20f842c9305d6c32c05610e2b0d51483af034da734b26e646a5255
+  checksum: 912fc961f213a8fa171b9b980d6f4edd8f11a012498fcf1b8e0d3ac1d20e85b61469a80914fda893aa48cb0d4b3f6075ec2723c58dae96eeac0ee1cd6e6daa3e
   languageName: node
   linkType: hard
 
@@ -12140,7 +12140,7 @@ __metadata:
     "@react-native-community/eslint-config": 3.2.0
     "@release-it/conventional-changelog": 5.1.1
     "@testing-library/jest-native": 5.4.2
-    "@testing-library/react-native": 12.0.1
+    "@testing-library/react-native": 12.1.2
     "@types/jest": 29.5.1
     "@types/react": "*"
     "@types/react-native": "*"
