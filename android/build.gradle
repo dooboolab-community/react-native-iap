@@ -161,7 +161,7 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
   testImplementation "junit:junit:4.13.2"
-  testImplementation "io.mockk:mockk:1.13.4"
+  testImplementation "io.mockk:mockk:1.13.5"
 
   playImplementation "com.android.billingclient:billing-ktx:$playBillingSdkVersion"
   playImplementation "com.google.android.gms:play-services-base:$playServicesVersion"
