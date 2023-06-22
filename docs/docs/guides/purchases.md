@@ -116,10 +116,10 @@ class App extends Component {
 
   subscribe = async (sku: string, offerToken: string?) => {
     try {
-      await requestSubscription(
-        {sku},
+      await requestSubscription({
+        sku,
         ...(offerToken && {subscriptionOffers: [{sku, offerToken}]}),
-      );
+      });
     } catch (err) {
       console.warn(err.code, err.message);
     }
