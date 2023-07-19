@@ -19,7 +19,7 @@ export default withIAPContext(App);
 
 ## Usage
 
-The `useIAP()` hook is an easy way to access `react-native-iap` methods simplified for you. It already do some work through the context to help you get your products, purchases, subscriptions, callback and error handlers faster.
+The `useIAP()` hook is an easy way to access `react-native-iap` methods simplified for you. It already does some work through the context to help you get your products, purchases, subscriptions, callback and error handlers faster.
 
 Below are all the methods available through the hook. All the rest of the methods e.g. `requestPurchase` are available through the usual import `import {requestPurchase} from 'react-native-iap';`
 
