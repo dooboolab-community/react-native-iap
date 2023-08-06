@@ -576,7 +576,7 @@ const App = () => {
 
 export const requestPurchase = (
   request: RequestPurchase,
-): Promise<ProductPurchase | void> =>
+): Promise<ProductPurchase | ProductPurchase[] | void> =>
   (
     Platform.select({
       ios: async () => {
@@ -732,7 +732,7 @@ const App = () => {
  */
 export const requestSubscription = (
   request: RequestSubscription,
-): Promise<SubscriptionPurchase | null | void> =>
+): Promise<SubscriptionPurchase | SubscriptionPurchase[] | null | void> =>
   (
     Platform.select({
       ios: async () => {
