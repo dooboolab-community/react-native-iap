@@ -14,18 +14,6 @@
 
 Read the [documentation](https://react-native-iap.dooboolab.com). See the [troubleshooting](https://react-native-iap.dooboolab.com/docs/guides/troubleshooting#common-issues) for the common issues to avoid.
 
-## Our maintainers
-
-Please [fund the project](https://opencollective.com/react-native-iap) if you are willing the maintainers to make the repository sustainable.
-
-- [andresesfm](https://github.com/andresesfm)
-
-> The fund goes to maintainers.
-
-### Supporter
-
-- [hyochan](https://github.com/hyochan)
-
 ## Announcement
 
 - Version `12.0.0`: Implements Amazon 3.x SDK including the new DRM verification.
@@ -58,15 +46,6 @@ Please [fund the project](https://opencollective.com/react-native-iap) if you ar
 
 Follow [this guide](./IapExample/README.md) to get the example running.
 
-## Our maintainers
-
-Please [fund the project](https://opencollective.com/react-native-iap) if you are willing the maintainers to make the repository sustainable.
-
-- [andresesfm](https://github.com/andresesfm)
-- [jeremybarbet](https://github.com/jeremybarbet)
-
-> The fund goes to maintainers.
-
 ## Acknowledgements
 
 If you're looking for a module going further than `react-native-iap`, we recommend using [react-native-iaphub](https://github.com/iaphub/react-native-iaphub) which is taking care of everything from the client-side to the server-side.
@@ -76,10 +55,6 @@ If you're looking for a module going further than `react-native-iap`, we recomme
 Since `IAP` itself is not perfect on each platform, we desperately need
 this project to be maintained. If you'd like to help us, please consider being
 with us in [Open Collective](https://opencollective.com/react-native-iap).
-
-### Supporter
-
-- [hyochan](https://github.com/hyochan)
 
 ### Sponsors
 
