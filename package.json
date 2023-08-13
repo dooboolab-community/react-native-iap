@@ -1,6 +1,6 @@
 {
   "name": "react-native-iap",
-  "version": "12.10.5",
+  "version": "12.10.6",
   "description": "React Native In App Purchase Module.",
   "repository": "https://github.com/dooboolab-community/react-native-iap",
   "author": "dooboolab <support@dooboolab.com> (https://github.com/dooboolab-community)",
@@ -13,6 +13,10 @@
     "registry": "https://registry.npmjs.org/"
   },
   "contributors": [
+    {
+      "name": "hyochan",
+      "url": "https://github.com/hyochan"
+    },
     {
       "name": "Andres Aguilar",
       "url": "https://github.com/andresesfm"

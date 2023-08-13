@@ -14,13 +14,6 @@
 
 Read the [documentation](https://react-native-iap.dooboolab.com). See the [troubleshooting](https://react-native-iap.dooboolab.com/docs/guides/troubleshooting#common-issues) for the common issues to avoid.
 
-## Our maintainers
-
-Please [fund the project](https://opencollective.com/react-native-iap) if you are willing the maintainers to make the repository sustainable.
-
-- [andresesfm](https://github.com/andresesfm)
-
-> The fund goes to maintainers.
 
 ### Supporter
 
@@ -57,15 +50,6 @@ Please [fund the project](https://opencollective.com/react-native-iap) if you ar
 ## Example
 
 Follow [this guide](./IapExample/README.md) to get the example running.
-
-## Our maintainers
-
-Please [fund the project](https://opencollective.com/react-native-iap) if you are willing the maintainers to make the repository sustainable.
-
-- [andresesfm](https://github.com/andresesfm)
-- [jeremybarbet](https://github.com/jeremybarbet)
-
-> The fund goes to maintainers.
 
 ## Acknowledgements
 
