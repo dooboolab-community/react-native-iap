@@ -434,8 +434,8 @@ class RNIapIosSk2iOS15: Sk2Delegate {
             return _hasListenersQueue.sync { _hasListeners }
         }
         set {
-            _hasListenersQueue.async(flags: .barrier) { [weak self] in 
-                self?._hasListeners = newValue 
+            _hasListenersQueue.async(flags: .barrier) { [weak self] in
+                self?._hasListeners = newValue
             }
         }
     }
@@ -470,11 +470,9 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         func performOnActor(_ action: @escaping (isolated ProductStore) -> Void) async {
             action(self)
         }
-
     }
 
     private let productStore = ProductStore()
-
 
     @objc public func disable(
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
@@ -558,7 +556,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         Task {
-            await productStore.removeAll();
+            await productStore.removeAll()
         }
         transactions.removeAll()
         removeTransactionObserver()
