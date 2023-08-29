@@ -805,7 +805,7 @@ export const requestSubscription = (
             isOfferPersonalized,
           } = request;
 
-          const subscribtion = await  RNIapModule.buyItemByType(
+          const subscription = await  RNIapModule.buyItemByType(
             ANDROID_ITEM_TYPE_SUBSCRIPTION,
             subscriptionOffers?.map((so) => so.sku),
             purchaseTokenAndroid,
@@ -816,7 +816,7 @@ export const requestSubscription = (
             isOfferPersonalized ?? false,
           );
             
-            return Promise.resolve(Array.isArray(subscribtion) ? subscribtion[0] : subscribtion)
+          return Promise.resolve(Array.isArray(subscription) ? subscription[0] : subscription)
         }
       },
     }) || (() => Promise.resolve(null))
