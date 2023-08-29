@@ -512,6 +512,9 @@ export const getAvailablePurchases = ({
 
 The response will be received through the `PurchaseUpdatedListener`.
 
+return IOS : ProductPurchase[] 
+return AOS : ProductPurchase
+
 :::note
 `andDangerouslyFinishTransactionAutomatically` defaults to false. We recommend
 always keeping at false, and verifying the transaction receipts on the server-side.
@@ -574,9 +577,10 @@ const App = () => {
 
  */
 
+
 export const requestPurchase = (
   request: RequestPurchase,
-): Promise<ProductPurchase | void> =>
+): Promise<ProductPurchase | ProductPurchase[] | void> =>
   (
     Platform.select({
       ios: async () => {
