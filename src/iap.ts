@@ -576,7 +576,7 @@ const App = () => {
 
 export const requestPurchase = (
   request: RequestPurchase,
-): Promise<ProductPurchase | ProductPurchase[] | void> =>
+): Promise<ProductPurchase | void> =>
   (
     Platform.select({
       ios: async () => {
@@ -638,7 +638,7 @@ export const requestPurchase = (
             obfuscatedProfileIdAndroid,
             isOfferPersonalized,
           } = request;
-          return getAndroidModule().buyItemByType(
+          const purchase = await getAndroidModule().buyItemByType(
             ANDROID_ITEM_TYPE_IAP,
             skus,
             undefined,
@@ -648,6 +648,8 @@ export const requestPurchase = (
             [],
             isOfferPersonalized ?? false,
           );
+            
+          return Promise.resolve(Array.isArray(purchase) ? purchase[0] : purchase)
         }
       },
     }) || Promise.resolve
@@ -732,7 +734,7 @@ const App = () => {
  */
 export const requestSubscription = (
   request: RequestSubscription,
-): Promise<SubscriptionPurchase | SubscriptionPurchase[] | null | void> =>
+): Promise<SubscriptionPurchase |  null | void> =>
   (
     Platform.select({
       ios: async () => {
@@ -803,7 +805,7 @@ export const requestSubscription = (
             isOfferPersonalized,
           } = request;
 
-          return RNIapModule.buyItemByType(
+          const subscribtion = await  RNIapModule.buyItemByType(
             ANDROID_ITEM_TYPE_SUBSCRIPTION,
             subscriptionOffers?.map((so) => so.sku),
             purchaseTokenAndroid,
@@ -813,6 +815,8 @@ export const requestSubscription = (
             subscriptionOffers?.map((so) => so.offerToken),
             isOfferPersonalized ?? false,
           );
+            
+            return Promise.resolve(Array.isArray(subscribtion) ? subscribtion[0] : subscribtion)
         }
       },
     }) || (() => Promise.resolve(null))
