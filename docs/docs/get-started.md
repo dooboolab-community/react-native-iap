@@ -57,7 +57,7 @@ buildscript {
 +    androidXAnnotation = "1.1.0"
 +    androidXBrowser = "1.0.0"
 +    minSdkVersion = 24
-+    kotlinVersion = "1.6.0"
++    kotlinVersion = "1.8.0"
   }
 }
 
