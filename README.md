@@ -58,6 +58,10 @@ with us in [Open Collective](https://opencollective.com/react-native-iap).
 
 ### Sponsors
 
+| [NAMI](https://namiml.com) |
+|:--:|
+| <a href="https://namiml.com"><img src="https://github.com/dooboolab-community/react-native-iap/assets/27461460/89d71f61-bb73-400a-83bd-fe0f96eb726e" width="200"/></a> |
+
 Support this project by becoming a sponsor. Your logo will show up here with
 a link to your website. [Become a sponsor](https://opencollective.com/react-native-iap#sponsor).
 <a href="https://opencollective.com/react-native-iap#sponsors" target="_blank"><img src="https://opencollective.com/react-native-iap/sponsors.svg?width=890" /></a>
@@ -77,3 +81,4 @@ Thank you to all the people who helped to maintain and upgrade this project!
 ---
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap?ref=badge_large)
+
