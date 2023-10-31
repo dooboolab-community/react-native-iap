@@ -260,7 +260,7 @@ class RNIapAmazonListener(
                 val debugMessage = "Purchase is pending. Please wait for the transaction to complete."
                 val errorCode = PromiseUtils.E_PENDING
                 error.putInt("responseCode", 0)
-                error.putInt("code", errorCode)
+                error.putString("code", errorCode)
                 error.putString("debugMessage", debugMessage)
                 error.putString("message", debugMessage)
                 eventSender?.sendEvent("purchase-error", error)
