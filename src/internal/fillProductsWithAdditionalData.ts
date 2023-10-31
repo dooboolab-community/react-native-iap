@@ -35,7 +35,10 @@ export const fillProductsWithAdditionalData = async <T extends ProductCommon>(
     // Add currency to items
     items.forEach((item) => {
       if (currency) {
+        const {originalPrice} = item;
         item.currency = currency;
+        item.price = originalPrice ?? '0.0';
+        item.localizedPrice = originalPrice ?? '0.0';
       }
     });
   }
