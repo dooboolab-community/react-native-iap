@@ -424,20 +424,55 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
 
 @available(iOS 15.0, tvOS 15.0, *)
 class RNIapIosSk2iOS15: Sk2Delegate {
-    private var hasListeners = false
-    private var products: [String: Product]
+    private var _hasListeners = false
+    private let _hasListenersQueue = DispatchQueue(label: "com.dooboolab.rniap.hasListenersQueue", attributes: .concurrent)
     private var transactions: [String: Transaction]
     private var updateListenerTask: Task<Void, Error>?
     fileprivate var sendEvent: ((String?, Any?) -> Void)?
+    var hasListeners: Bool {
+        get {
+            return _hasListenersQueue.sync { _hasListeners }
+        }
+        set {
+            _hasListenersQueue.async(flags: .barrier) { [weak self] in
+                self?._hasListeners = newValue
+            }
+        }
+    }
     init(sendEvent: ((String?, Any?) -> Void)? ) {
         self.sendEvent = sendEvent
-        products = [String: Product]()
         transactions = [String: Transaction]()
     }
 
     deinit {
         removeTransactionObserver()
     }
+
+    actor ProductStore {
+        private(set) var products: [String: Product] = [:]
+
+        func addProduct(_ product: Product) {
+            self.products[product.id] = product
+        }
+
+        func getAllProducts() -> [Product] {
+            return Array(self.products.values)
+        }
+
+        func getProduct(productID: String) -> Product? {
+            return self.products[productID]
+        }
+
+        func removeAll() {
+            products.removeAll()
+        }
+
+        func performOnActor(_ action: @escaping (isolated ProductStore) -> Void) async {
+            action(self)
+        }
+    }
+
+    private let productStore = ProductStore()
 
     @objc public func disable(
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
@@ -520,7 +555,9 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         _ resolve: @escaping RCTPromiseResolveBlock = { _ in },
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
-        products.removeAll()
+        Task {
+            await productStore.removeAll()
+        }
         transactions.removeAll()
         removeTransactionObserver()
         resolve(nil)
@@ -533,10 +570,16 @@ class RNIapIosSk2iOS15: Sk2Delegate {
     ) {
         Task {
             do {
-                let products = try await Product.products(for: skus)
-                products.forEach({(prod) in
-                    self.products[prod.id] = prod
-                })
+                let fetchedProducts = try await Product.products(for: skus)
+
+                await productStore.performOnActor { isolatedStore in
+                    fetchedProducts.forEach({ product in
+                        isolatedStore.addProduct(product)
+                    })
+                }
+
+                let products = await productStore.getAllProducts()
+
                 resolve(products.map({ (prod: Product) -> [String: Any?]? in
                     return serialize(prod)
                 }).compactMap({$0}))
@@ -578,12 +621,12 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                     }
                     switch transaction.productType {
                     case .nonConsumable:
-                        if products[transaction.productID] != nil {
+                        if await productStore.getProduct(productID: transaction.productID) != nil {
                             addTransaction(transaction: transaction)
                         }
 
                     case .nonRenewable:
-                        if products[transaction.productID] != nil {
+                        if await productStore.getProduct(productID: transaction.productID) != nil {
                             // Non-renewing subscriptions have no inherent expiration date, so they're always
                             // contained in `Transaction.currentEntitlements` after the user purchases them.
                             // This app defines this non-renewing subscription's expiration date to be one year after purchase.
@@ -599,12 +642,12 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                         }
 
                     case .autoRenewable:
-                        if products[transaction.productID] != nil {
+                        if await productStore.getProduct(productID: transaction.productID) != nil {
                             addTransaction(transaction: transaction)
                         }
 
                     case .consumable:
-                        if products[transaction.productID] != nil {
+                        if await productStore.getProduct(productID: transaction.productID) != nil {
                             addTransaction(transaction: transaction)
                         }
 
@@ -649,7 +692,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         Task {
-            let product: Product? = products[sku]
+            let product: Product? = await productStore.getProduct(productID: sku)
 
             if let product = product {
                 do {
@@ -777,7 +820,8 @@ class RNIapIosSk2iOS15: Sk2Delegate {
     ) {
         Task {
             do {
-                let status: [Product.SubscriptionInfo.Status]? = try await products[sku]?.subscription?.status
+                let product = await productStore.getProduct(productID: sku)
+                let status: [Product.SubscriptionInfo.Status]? = try await product?.subscription?.status
                 guard let status = status else {
                     resolve(nil)
                     return
@@ -795,7 +839,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         Task {
-            if let product = products[sku] {
+            if let product = await productStore.getProduct(productID: sku) {
                 if let result = await product.currentEntitlement {
                     do {
                         // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
@@ -822,7 +866,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         Task {
-            if let product = products[sku] {
+            if let product = await productStore.getProduct(productID: sku) {
                 if let result = await product.latestTransaction {
                     do {
                         // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
@@ -956,7 +1000,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         }
         Task {
             if let windowScene = await  UIApplication.shared.keyWindow?.windowScene {
-                if let product = products[sku] {
+                if let product = await productStore.getProduct(productID: sku) {
                     if let result = await product.latestTransaction {
                         do {
                             // Check whether the transaction is verified. If it isn’t, catch `failedVerification` error.
