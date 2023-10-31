@@ -1,9 +1,9 @@
 {
   "name": "react-native-iap",
-  "version": "12.10.8",
+  "version": "12.11.0",
   "description": "React Native In App Purchase Module.",
   "repository": "https://github.com/dooboolab-community/react-native-iap",
-  "author": "dooboolab <support@dooboolab.com> (https://github.com/dooboolab-community)",
+  "author": "hyochan <dooboolab@gmail.com> (https://github.com/hyochan)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/dooboolab-community/react-native-iap/issues"
