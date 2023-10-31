@@ -40,6 +40,7 @@ object PromiseUtils {
     const val E_UNKNOWN = "E_UNKNOWN"
     const val E_NOT_PREPARED = "E_NOT_PREPARED"
     const val E_ALREADY_PREPARED = "E_ALREADY_PREPARED"
+    const val E_PENDING = "E_PENDING"
     const val E_NOT_ENDED = "E_NOT_ENDED"
     const val E_USER_CANCELLED = "E_USER_CANCELLED"
     const val E_ITEM_UNAVAILABLE = "E_ITEM_UNAVAILABLE"
