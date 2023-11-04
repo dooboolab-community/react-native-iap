@@ -255,6 +255,23 @@ class RNIapAmazonListener(
                         null,
                     )
             }
+            PurchaseResponse.RequestStatus.PENDING -> {
+                val error = Arguments.createMap()
+                val debugMessage = "Purchase is pending. Please wait for the transaction to complete."
+                val errorCode = PromiseUtils.E_PENDING
+                error.putInt("responseCode", 0)
+                error.putString("code", errorCode)
+                error.putString("debugMessage", debugMessage)
+                error.putString("message", debugMessage)
+                eventSender?.sendEvent("purchase-error", error)
+                PromiseUtils
+                    .rejectPromisesForKey(
+                        RNIapAmazonModule.PROMISE_BUY_ITEM,
+                        errorCode,
+                        debugMessage,
+                        null,
+                    )
+            }
             PurchaseResponse.RequestStatus.NOT_SUPPORTED -> {
                 val error = Arguments.createMap()
                 val debugMessage = "This feature is not available on your device."
