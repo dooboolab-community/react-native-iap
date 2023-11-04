@@ -50,20 +50,23 @@ Follow [this guide](./IapExample/README.md) to get the example running.
 
 If you're looking for a module going further than `react-native-iap`, we recommend using [react-native-iaphub](https://github.com/iaphub/react-native-iaphub) which is taking care of everything from the client-side to the server-side.
 
-## Sponsoring
+## Sponsors
 
-Since `IAP` itself is not perfect on each platform, we desperately need
-this project to be maintained. If you'd like to help us, please consider being
-with us in [Open Collective](https://opencollective.com/react-native-iap).
+### Silver Tier
 
-### Sponsors
+| [Revenuecat](https://www.revenuecat.com) |
+|:--:|
+| <a href="https://www.revenuecat.com"><img src="https://github.com/dooboolab-community/react-native-iap/assets/27461460/1e387a47-afe0-4b85-ad78-1064ca6623fa" width="300"/></a> |
+
+### Bronze Tier
 
 | [NAMI](https://namiml.com) |
 |:--:|
-| <a href="https://namiml.com"><img src="https://github.com/dooboolab-community/react-native-iap/assets/27461460/89d71f61-bb73-400a-83bd-fe0f96eb726e" width="200"/></a> |
+| <a href="https://namiml.com"><img src="https://github.com/dooboolab-community/react-native-iap/assets/27461460/89d71f61-bb73-400a-83bd-fe0f96eb726e" width="150"/></a> |
 
 Support this project by becoming a sponsor. Your logo will show up here with
-a link to your website. [Become a sponsor](https://opencollective.com/react-native-iap#sponsor).
+a link to your website. [Buy me a coffee](https://www.buymeacoffee.com/dooboolab) or
+[Become a sponsor](https://opencollective.com/react-native-iap#sponsor).
 <a href="https://opencollective.com/react-native-iap#sponsors" target="_blank"><img src="https://opencollective.com/react-native-iap/sponsors.svg?width=890" /></a>
 
 ### Backers
