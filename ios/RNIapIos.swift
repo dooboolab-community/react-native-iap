@@ -1,5 +1,6 @@
 import React
 import StoreKit
+import ThreadSafe
 
 @objc(RNIapIos)
 class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver, SKProductsRequestDelegate {
@@ -8,7 +9,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     private var hasListeners = false
     private var pendingTransactionWithAutoFinish = false
     private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
-    private var validProducts: [String: SKProduct]
+    private var validProducts: ThreadSafe<[String: SKProduct]> 
     private var promotedPayment: SKPayment?
     private var promotedProduct: SKProduct?
     private var productsRequest: SKProductsRequest?
@@ -19,7 +20,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         promisesByKey = [String: [RNIapIosPromise]]()
         pendingTransactionWithAutoFinish = false
         myQueue = DispatchQueue(label: "reject")
-        validProducts = [String: SKProduct]()
+        validProducts = ThreadSafe<[String: SKProduct]>()
         super.init()
         addTransactionObserver()
     }
@@ -148,7 +149,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         stopObserving()
         rejectAllPendingPromises()
         receiptBlock = nil
-        validProducts.removeAll()
+        validProducts.atomically { $0.removeAll() }
         promotedPayment = nil
         promotedProduct = nil
         productsRequest = nil
@@ -254,7 +255,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         debugMessage("clear valid products")
-        validProducts.removeAll()
+        validProducts.atomically { $0.removeAll() }
         resolve(nil)
     }
 
@@ -364,7 +365,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     // Doesn't allow duplication. Replace new product.
     func add(_ aProd: SKProduct) {
         debugMessage("Add new object: \(aProd.productIdentifier)")
-        validProducts[aProd.productIdentifier] = aProd
+        validProducts.atomically { $0[aProd.productIdentifier] = aProd }
     }
 
     func request(_ request: SKRequest, didFailWithError error: Error) {
