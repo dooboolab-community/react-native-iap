@@ -1,7 +1,5 @@
 import React
 import StoreKit
-import ThreadSafe
-import LatestPromiseKeeper
 
 @objc(RNIapIos)
 class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver, SKProductsRequestDelegate {
@@ -22,7 +20,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         promisesByKey = [String: [RNIapIosPromise]]()
         pendingTransactionWithAutoFinish = false
         myQueue = DispatchQueue(label: "reject")
-        validProducts = ThreadSafe<[String: SKProduct]>()
+        validProducts = ThreadSafe<[String: SKProduct]>([:])
         super.init()
         addTransactionObserver()
     }
@@ -195,7 +193,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
-        if let product = validProducts[sku] {
+        if let product = validProducts.value[sku] { 
             addPromise(forKey: product.productIdentifier, resolve: resolve, reject: reject)
 
             let payment = SKMutablePayment(product: product)
@@ -360,7 +358,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         }
 
         var items: [[String: Any?]] = [[:]]
-        for product in validProducts.values {
+        for product in validProducts.value.values {
             items.append(getProductObject(product))
         }
 
