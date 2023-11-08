@@ -1,4 +1,4 @@
-import ThreadSafe
+import StoreKit
 
 // Only keeps latest promise, assumes older promises are not needed
 // Avoids racing conditions by storing latestPromise in a thread safe var
