@@ -1,6 +1,7 @@
 import React
 import StoreKit
 import ThreadSafe
+import LatestPromiseKeeper
 
 @objc(RNIapIos)
 class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver, SKProductsRequestDelegate {
@@ -13,6 +14,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     private var promotedPayment: SKPayment?
     private var promotedProduct: SKProduct?
     private var productsRequest: SKProductsRequest?
+    private let latestPromiseKeeper = LatestPromiseKeeper()
     private var countPendingTransaction: Int = 0
     private var hasTransactionObserver = false
 
@@ -163,10 +165,13 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     ) {
         let productIdentifiers = Set<String>(skus)
         productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
+
         if let productsRequest = productsRequest {
             productsRequest.delegate = self
-            let key: String = productsRequest.key
-            addPromise(forKey: key, resolve: resolve, reject: reject)
+
+            // Update latestPromiseKeeper with the new request and promise
+            self.latestPromiseKeeper.setLatestPromise(request: productsRequest, resolve: resolve, reject: reject)
+
             productsRequest.start()
         }
     }
@@ -349,6 +354,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
     // StoreKitDelegate
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+        // Add received products 
         for prod in response.products {
             add(prod)
         }
@@ -358,7 +364,13 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             items.append(getProductObject(product))
         }
 
-        resolvePromises(forKey: request.key, value: items)
+        // Resolve latest promise with received items, if the finished request is the same as the latest one
+        self.latestPromiseKeeper.atomically { (latestPromiseResolvers, ongoingRequest) in
+            guard let (resolve, _) = latestPromiseResolvers, ongoingRequest == request else {
+                return
+            }
+            resolve(items)
+        }
     }
 
     // Add to valid products from Apple server response. Allowing getProducts, getSubscriptions call several times.
