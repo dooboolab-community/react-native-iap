@@ -364,11 +364,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             items.append(getProductObject(product))
         }
 
-        // Resolve latest promise with received items, if the finished request is the same as the latest one
-        self.latestPromiseKeeper.atomically { (latestPromiseResolvers, ongoingRequest) in
-            guard let (resolve, _) = latestPromiseResolvers, ongoingRequest == request else {
-                return
-            }
+        self.latestPromiseKeeper.resolveIfRequestMatches(matchingRequest: request, items: items) { (resolve, items) in
             resolve(items)
         }
     }

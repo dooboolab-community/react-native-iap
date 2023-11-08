@@ -23,4 +23,16 @@ class LatestPromiseKeeper {
 
         latestPromise.atomically { $0 = nil }
     }
+
+    func resolveIfRequestMatches(matchingRequest: SKProductsRequest, items: [[String: Any?]], operation: (RCTPromiseResolveBlock, [[String: Any?]]) -> Void) {
+        latestPromise.atomically { promiseResolvers in
+            guard let (resolve, _) = promiseResolvers else { return }
+
+            latestRequest.atomically { ongoingRequest in
+                guard ongoingRequest === matchingRequest else { return }
+
+                operation(resolve, items)
+            }
+        }
+    }
 }
