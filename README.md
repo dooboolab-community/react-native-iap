@@ -46,10 +46,6 @@ Read the [documentation](https://react-native-iap.dooboolab.com). See the [troub
 
 Follow [this guide](./IapExample/README.md) to get the example running.
 
-## Acknowledgements
-
-If you're looking for a module going further than `react-native-iap`, we recommend using [react-native-iaphub](https://github.com/iaphub/react-native-iaphub) which is taking care of everything from the client-side to the server-side.
-
 ## Sponsors
 
 ### Silver Tier
