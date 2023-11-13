@@ -79,7 +79,12 @@ export class ClassSetup extends Component<{}, State> {
       }
     } catch (error) {
       if (error instanceof PurchaseError) {
-        errorLog({message: `[${error.code}]: ${error.message}`, error});
+        errorLog({
+          message: `[${(error as PurchaseError).code}]: ${
+            (error as PurchaseError).message
+          }`,
+          error,
+        });
       } else {
         errorLog({message: 'finishTransaction', error});
       }
@@ -103,15 +108,15 @@ export class ClassSetup extends Component<{}, State> {
           this.setState({receipt}, () => this.goNext());
         }
       },
-    );
+    ) as unknown as EmitterSubscription;
 
     this.purchaseError = purchaseErrorListener((error: PurchaseError) => {
       Alert.alert('purchase error', JSON.stringify(error));
-    });
+    }) as unknown as EmitterSubscription;;
 
     this.promotedProduct = promotedProductListener((productId?: string) =>
       Alert.alert('Product promoted', productId),
-    );
+    )  as unknown as EmitterSubscription;;
   }
   componentWillUnmount() {
     this.purchaseUpdate?.remove();
@@ -167,7 +172,12 @@ export class ClassSetup extends Component<{}, State> {
       requestPurchase({sku});
     } catch (error) {
       if (error instanceof PurchaseError) {
-        errorLog({message: `[${error.code}]: ${error.message}`, error});
+        errorLog({
+          message: `[${(error as PurchaseError).code}]: ${
+            (error as PurchaseError).message
+          }`,
+          error,
+        });
       } else {
         errorLog({message: 'requestPurchase', error});
       }
@@ -179,7 +189,12 @@ export class ClassSetup extends Component<{}, State> {
       requestSubscription({sku});
     } catch (error) {
       if (error instanceof PurchaseError) {
-        errorLog({message: `[${error.code}]: ${error.message}`, error});
+        errorLog({
+          message: `[${(error as PurchaseError).code}]: ${
+            (error as PurchaseError).message
+          }`,
+          error,
+        });
       } else {
         errorLog({message: 'requestSubscription', error});
       }
