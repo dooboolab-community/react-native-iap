@@ -351,6 +351,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
     // StoreKitDelegate
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+        // Add received products
         for prod in response.products {
             add(prod)
         }
