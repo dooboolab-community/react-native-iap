@@ -8,7 +8,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     private var hasListeners = false
     private var pendingTransactionWithAutoFinish = false
     private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
-    private var validProducts: ThreadSafe<[String: SKProduct]> 
+    private var validProducts: ThreadSafe<[String: SKProduct]>
     private var promotedPayment: SKPayment?
     private var promotedProduct: SKProduct?
     private var productsRequest: SKProductsRequest?
@@ -193,7 +193,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
-        if let product = validProducts.value[sku] { 
+        if let product = validProducts.value[sku] {
             addPromise(forKey: product.productIdentifier, resolve: resolve, reject: reject)
 
             let payment = SKMutablePayment(product: product)
@@ -352,7 +352,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
 
     // StoreKitDelegate
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        // Add received products 
+        // Add received products
         for prod in response.products {
             add(prod)
         }
