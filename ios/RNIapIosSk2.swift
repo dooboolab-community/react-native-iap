@@ -280,7 +280,7 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
     override func addListener(_ eventName: String?) {
         super.addListener(eventName)
     }
-
+    
     /**
      "iap-transaction-updated" is unique to Sk2.
      "iap-promoted-product" is only avaiable on Sk1
