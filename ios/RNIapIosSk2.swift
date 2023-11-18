@@ -277,10 +277,6 @@ class RNIapIosSk2: RCTEventEmitter, Sk2Delegate {
         delegate.stopObserving()
     }
 
-    override func addListener(_ eventName: String?) {
-        super.addListener(eventName)
-    }
-
     /**
      "iap-transaction-updated" is unique to Sk2.
      "iap-promoted-product" is only avaiable on Sk1
@@ -922,6 +918,11 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                 resolve(nil)
             } catch {
                 reject(IapErrors.E_SYNC_ERROR.rawValue, "Error synchronizing with the AppStore", error)
+                if "\(error)" == "userCancelled" {
+                    reject( IapErrors.E_USER_CANCELLED.rawValue, "User cancelled synchronizing with the AppStore", error)
+                } else {
+                    reject( IapErrors.E_SYNC_ERROR.rawValue, "Error synchronizing with the AppStore", error)
+                }
             }
         }
     }
