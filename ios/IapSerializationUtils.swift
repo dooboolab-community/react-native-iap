@@ -19,7 +19,8 @@ func serialize(_ p: Product) -> [String: Any?] {
         "jsonRepresentation": serializeDebug(p.jsonRepresentation),
         "price": p.price,
         "subscription": serialize(p.subscription),
-        "type": serialize(p.type)
+        "type": serialize(p.type),
+        "currency": p.priceFormatStyle.currencyCode
     ]
 }
 
