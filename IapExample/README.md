@@ -1,5 +1,7 @@
 # Example app
 
+⚠️warn: iOS example currently not working, needs to be updated (ruby, pods, etc)
+
 ## Installation
 
 ```sh
@@ -9,9 +11,7 @@ yarn
 For iOS, do the following:
 
 ```sh
-cd ios
-pod install
-cd -
+yarn pods
 ```
 
 ## Running
@@ -59,9 +59,3 @@ To be able to get products/subscriptions from the App Store or Play Store you wi
    - Product ID: com.cooni.point1000 (can be the value defined in utils/constants.ts)
 9. Go back to the app, login with your account when the AppStore shows you the prompt
 10. Voilà!
-
-## Advanced usage
-
-If you want more advanced one please refer to [dooboolab.com/sponsor.tsx](https://github.com/hyochan/dooboolab.com/blob/main/src/components/pages/Sponsor.tsx)
-
-In order to get products and subscriptions.
