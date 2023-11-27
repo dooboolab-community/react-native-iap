@@ -52,7 +52,7 @@ export const productSk2Map = ({
   description,
   displayName,
   price,
-   currency,
+  currency,
   displayPrice,
 }: ProductSk2): ProductIOS => {
   const prod: ProductIOS = {
@@ -62,7 +62,7 @@ export const productSk2Map = ({
     type: 'iap',
     price: String(price),
     localizedPrice: displayPrice,
-    currency
+    currency,
   };
   return prod;
 };
@@ -88,6 +88,17 @@ export const subscriptionSk2Map = ({
     subscriptionPeriodNumberIOS: `${subscription?.subscriptionPeriod?.value}`,
     subscriptionPeriodUnitIOS:
       subscription?.subscriptionPeriod?.unit.toUpperCase() as SubscriptionIosPeriod,
+    introductoryPriceAsAmountIOS: subscription?.introductoryOffer?.displayPrice,
+    introductoryPricePaymentModeIOS:
+      subscription?.introductoryOffer?.paymentMode.toUpperCase() as
+        | ''
+        | 'FREETRIAL'
+        | 'PAYASYOUGO'
+        | 'PAYUPFRONT',
+    introductoryPriceNumberOfPeriodsIOS:
+      subscription?.introductoryOffer?.period?.value?.toString(),
+    introductoryPriceSubscriptionPeriodIOS: subscription?.introductoryOffer
+      ?.period?.unit as SubscriptionIosPeriod,
   };
   return prod;
 };
@@ -138,12 +149,12 @@ export type SubscriptionStatus =
   | 'subscribed';
 
 /**
-* Renewal info for whole subscription group.
-* see: https://developer.apple.com/documentation/storekit/product/subscriptioninfo/status/3822294-renewalinfo
-* WARN:
-* - autoRenewPreference is serialised as autoRenewProductId in jsonRepresentation
-* - renewalDate is available in jsonRepresentation (will change with Xcode 15 https://developer.apple.com/forums/thread/738833)
-*/
+ * Renewal info for whole subscription group.
+ * see: https://developer.apple.com/documentation/storekit/product/subscriptioninfo/status/3822294-renewalinfo
+ * WARN:
+ * - autoRenewPreference is serialised as autoRenewProductId in jsonRepresentation
+ * - renewalDate is available in jsonRepresentation (will change with Xcode 15 https://developer.apple.com/forums/thread/738833)
+ */
 export type RenewalInfo = {
   jsonRepresentation?: string;
   willAutoRenew: boolean;
