@@ -1,6 +1,6 @@
 import {Platform} from 'react-native';
 
-import {isAmazon} from '../../../src/internal';
+import {isAmazon} from 'react-native-iap/src/internal';
 
 const productSkus = Platform.select({
   ios: ['com.cooni.point1000', 'com.cooni.point5000'],
