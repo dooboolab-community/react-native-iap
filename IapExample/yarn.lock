@@ -2763,6 +2763,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4.14.202":
+  version: 4.14.202
+  resolution: "@types/lodash@npm:4.14.202"
+  checksum: a91acf3564a568c6f199912f3eb2c76c99c5a0d7e219394294213b3f2d54f672619f0fde4da22b29dc5d4c31457cd799acc2e5cb6bd90f9af04a1578483b6ff7
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*":
   version: 20.10.2
   resolution: "@types/node@npm:20.10.2"
@@ -5419,6 +5426,7 @@ __metadata:
     "@react-navigation/native": ^6.1.9
     "@react-navigation/stack": ^6.3.20
     "@tsconfig/react-native": ^3.0.0
+    "@types/lodash": ^4.14.202
     "@types/react": ^18.0.24
     "@types/react-test-renderer": ^18.0.0
     babel-jest: ^29.2.1
