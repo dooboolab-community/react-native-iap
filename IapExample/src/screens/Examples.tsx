@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React from 'react';
 import {
   Pressable,
   SectionList,
@@ -19,7 +19,7 @@ import {colors, theme} from '../utils';
 interface SectionData {
   name: keyof Screens;
   label?: string;
-  component: ReactNode;
+  component: JSX.Element;
   color: string;
   emoji: string;
 }
@@ -35,8 +35,10 @@ export const Examples = () => {
     const sectionFound = acc.find(({section}) => section === cur.section);
 
     if (sectionFound) {
+      // @ts-ignore
       sectionFound.data.push(cur);
     } else {
+      // @ts-ignore
       acc.push({section: cur.section, data: [cur]});
     }
 
