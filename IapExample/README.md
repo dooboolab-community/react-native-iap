@@ -1,61 +1,79 @@
-# Example app
+This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-⚠️warn: iOS example currently not working, needs to be updated (ruby, pods, etc)
+# Getting Started
 
-## Installation
+>**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
-```sh
-yarn
-```
+## Step 1: Start the Metro Server
 
-For iOS, do the following:
+First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
 
-```sh
-yarn pods
-```
+To start Metro, run the following command from the _root_ of your React Native project:
 
-## Running
+```bash
+# using npm
+npm start
 
-First start the metro server:
-
-```sh
+# OR using Yarn
 yarn start
 ```
 
-You can then either build for iOS:
+## Step 2: Start your Application
 
-```sh
+Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+
+### For Android
+
+```bash
+# using npm
+npm run android
+
+# OR using Yarn
+yarn android
+```
+
+### For iOS
+
+```bash
+# using npm
+npm run ios
+
+# OR using Yarn
 yarn ios
 ```
 
-or for Android with 2 variants: `play` or `amazon`.
+If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
 
-```sh
-yarn android:play
-yarn android:amazon
-```
+This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
 
-To be able to get products/subscriptions from the App Store or Play Store you will need to follow a few steps:
+## Step 3: Modifying your App
 
-### Go to [developer.apple.com](https://developer.apple.com)
+Now that you have successfully run the app, let's modify it.
 
-1. Open "Certificates, Identifiers & Profiles" > "Identifiers"
-2. Click the "Plus" button
-3. Select "App IDs", continue, select "App"
-4. Complete the form and submit:
-   - Description: React Native IAP Example
-   - Bundle ID (explicit): org.reactjs.native.example.IapExample
-5. Click "Register"
+1. Open `App.tsx` in your text editor of choice and edit some lines.
+2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
 
-### Go to [appstoreconnect.apple.com](https://appstoreconnect.apple.com/)
+   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
 
-6. Create a new app:
-   - Platforms: iOS
-   - Name: React Native IAP Example <SOME_STRING>
-   - Sku: reactnativeiapexample
-7. Go to "In-App Purchases", click "Create"
-8. Select "Consumable" and submit:
-   - Reference Name: com.cooni.point1000
-   - Product ID: com.cooni.point1000 (can be the value defined in utils/constants.ts)
-9. Go back to the app, login with your account when the AppStore shows you the prompt
-10. Voilà!
+## Congratulations! :tada:
+
+You've successfully run and modified your React Native App. :partying_face:
+
+### Now what?
+
+- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
+- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+
+# Troubleshooting
+
+If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+
+# Learn More
+
+To learn more about React Native, take a look at the following resources:
+
+- [React Native Website](https://reactnative.dev) - learn more about React Native.
+- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
+- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
+- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
+- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
