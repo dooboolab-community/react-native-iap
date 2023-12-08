@@ -31,6 +31,10 @@ func serializeDebug (_ d: Data) -> String? {
     #endif
 }
 
+func serialize (_ d: Data) -> String? {
+    return String( decoding: d, as: UTF8.self)
+}
+
 func serializeDebug (_ s: String) -> String? {
     #if DEBUG
     return s
@@ -75,10 +79,27 @@ func serialize(_ sp: Product.SubscriptionPeriod.Unit?) -> String? {
 @available(iOS 15.0, tvOS 15.0, *)
 func serialize(_ s: Product.SubscriptionInfo.Status?) -> [String: Any?]? {
     guard let s = s else {return nil}
-    return ["state": serialize( s.state)
-            // "renewalInfo": serialize(s.renewalInfo),
+    return ["state": serialize( s.state),
+            "renewalInfo": serialize(s.renewalInfo)
             // "transaction": serialize(s.transaction),
     ]
+}
+
+@available(iOS 15.0, tvOS 15.0, *)
+func serialize(_ vri: VerificationResult<Product.SubscriptionInfo.RenewalInfo>?) -> [String: Any?]? {
+    guard let vri = vri else {return nil}
+    do {
+        let ri = try vri.payloadValue
+        let jsonStringRepresentation = String(data: ri.jsonRepresentation, encoding: .utf8) ?? ""
+        return [
+            "jsonRepresentation": jsonStringRepresentation,
+            "willAutoRenew": ri.willAutoRenew,
+            "autoRenewPreference": ri.autoRenewPreference
+        ]
+    } catch {
+        print("Error in parsing VerificationResult<Product.SubscriptionInfo.RenewalInfo>")
+        return nil
+    }
 }
 
 @available(iOS 15.0, tvOS 15.0, *)
@@ -158,7 +179,7 @@ func serialize(_ t: Transaction) -> [String: Any?] {
             "environment": environment,
             "id": t.id,
             "isUpgraded": t.isUpgraded,
-            "jsonRepresentation": serializeDebug(t.jsonRepresentation),
+            "jsonRepresentation": serialize(t.jsonRepresentation),
             "offerID": t.offerID,
             "offerType": serialize(t.offerType),
             "originalID": t.originalID,
