@@ -206,8 +206,7 @@ export class ClassSetup extends Component<{}, State> {
                   },
                 ]}
                 flexDirection="column"
-                isLast={productList.length - 1 === index}
-              >
+                isLast={productList.length - 1 === index}>
                 <Button
                   title="Buy"
                   onPress={() => this.subscribe(product.productId)}

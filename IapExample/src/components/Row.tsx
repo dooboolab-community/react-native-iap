@@ -27,8 +27,7 @@ export const Row = ({
       {fields.map((field, index) => (
         <View
           style={[styles.row, fields.length - 1 === index && styles.rowLast]}
-          key={camelCase(field.label)}
-        >
+          key={camelCase(field.label)}>
           <Text style={theme.L1}>{field.label}</Text>
           <Text style={theme.P1}>{field.value}</Text>
         </View>

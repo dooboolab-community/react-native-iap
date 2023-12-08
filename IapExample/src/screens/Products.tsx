@@ -121,8 +121,7 @@ export const Products = () => {
                   value: product.type,
                 },
               ]}
-              isLast={products.length - 1 === index}
-            >
+              isLast={products.length - 1 === index}>
               <Button
                 title="Buy"
                 onPress={() => handleBuyProduct(product.productId)}

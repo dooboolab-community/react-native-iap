@@ -68,10 +68,7 @@ export const Subscriptions = () => {
             isConsumable: true,
           });
 
-          setOwnedSubscriptions((prev) => [
-            ...prev,
-            currentPurchase?.productId,
-          ]);
+          setOwnedSubscriptions(prev => [...prev, currentPurchase?.productId]);
         }
       } catch (error) {
         if (error instanceof PurchaseError) {
@@ -94,7 +91,7 @@ export const Subscriptions = () => {
           <Heading copy="Subscriptions" />
 
           {subscriptions.map((subscription, index) => {
-            const owned = ownedSubscriptions.find((pId) => {
+            const owned = ownedSubscriptions.find(pId => {
               return isAmazon
                 ? pId === constants.amazonBaseSku
                 : pId === subscription.productId;
@@ -115,17 +112,16 @@ export const Subscriptions = () => {
                         : subscription.productType,
                   },
                 ]}
-                isLast={subscriptions.length - 1 === index}
-              >
+                isLast={subscriptions.length - 1 === index}>
                 {owned && <Text>Subscribed</Text>}
                 {!owned &&
                   isPlay &&
                   // On Google Play Billing V5 you might have  multiple offers for a single sku
                   'subscriptionOfferDetails' in subscription &&
-                  subscription?.subscriptionOfferDetails?.map((offer) => (
+                  subscription?.subscriptionOfferDetails?.map(offer => (
                     <Button
                       title={`Subscribe ${offer.pricingPhases.pricingPhaseList
-                        .map((ppl) => ppl.billingPeriod)
+                        .map(ppl => ppl.billingPeriod)
                         .join(',')}`}
                       onPress={() => {
                         handleBuySubscription(
