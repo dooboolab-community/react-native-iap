@@ -46,6 +46,11 @@ export enum ProductType {
   iap = 'iap',
 }
 
+export enum TransactionReason {
+  PURCHASE = 'PURCHASE',
+  RENEWAL = 'RENEWAL',
+}
+
 export interface ProductCommon {
   type: 'subs' | 'sub' | 'inapp' | 'iap';
   productId: string; //iOS
@@ -102,6 +107,7 @@ export interface SubscriptionPurchase extends ProductPurchase {
   originalTransactionDateIOS?: number;
   originalTransactionIdentifierIOS?: string;
   verificationResultIOS?: string;
+  transactionReasonIOS?: TransactionReason | string;
 }
 
 export type Purchase = ProductPurchase | SubscriptionPurchase;

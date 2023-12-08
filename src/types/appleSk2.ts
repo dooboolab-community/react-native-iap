@@ -134,8 +134,22 @@ export type SubscriptionStatus =
   | 'revoked'
   | 'subscribed';
 
+/**
+* Renewal info for whole subscription group.
+* see: https://developer.apple.com/documentation/storekit/product/subscriptioninfo/status/3822294-renewalinfo
+* WARN:
+* - autoRenewPreference is serialised as autoRenewProductId in jsonRepresentation
+* - renewalDate is available in jsonRepresentation (will change with Xcode 15 https://developer.apple.com/forums/thread/738833)
+*/
+export type RenewalInfo = {
+  jsonRepresentation?: string;
+  willAutoRenew: boolean;
+  autoRenewPreference?: string;
+};
+
 export type ProductStatus = {
   state: SubscriptionStatus;
+  renewalInfo?: RenewalInfo;
 };
 
 export const transactionSk2ToPurchaseMap = ({
@@ -146,8 +160,19 @@ export const transactionSk2ToPurchaseMap = ({
   purchasedQuantity,
   originalID,
   verificationResult,
-  appAccountToken
+  appAccountToken,
+  jsonRepresentation,
 }: TransactionSk2): Purchase => {
+  let transactionReasonIOS;
+  try {
+    const transactionData = JSON.parse(jsonRepresentation);
+    transactionReasonIOS = transactionData.transactionReason;
+  } catch (e) {
+    console.log(
+      'AppleSK2.ts react-native-iap: Error parsing jsonRepresentation',
+      e,
+    );
+  }
   const purchase: Purchase = {
     productId: productID,
     transactionId: String(id),
@@ -159,6 +184,7 @@ export const transactionSk2ToPurchaseMap = ({
     originalTransactionIdentifierIOS: originalID,
     verificationResultIOS: verificationResult ?? '',
     appAccountToken: appAccountToken ?? '',
+    transactionReasonIOS: transactionReasonIOS ?? '',
   };
   return purchase;
 };
