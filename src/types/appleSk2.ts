@@ -36,6 +36,7 @@ export type SubscriptionInfo = {
 export type RefundRequestStatus = 'success' | 'userCancelled';
 
 export type ProductSk2 = {
+  currency: string;
   description: string;
   displayName: string;
   displayPrice: string;
@@ -51,6 +52,7 @@ export const productSk2Map = ({
   description,
   displayName,
   price,
+   currency,
   displayPrice,
 }: ProductSk2): ProductIOS => {
   const prod: ProductIOS = {
@@ -60,7 +62,7 @@ export const productSk2Map = ({
     type: 'iap',
     price: String(price),
     localizedPrice: displayPrice,
-    currency: '', // Not available on new API, use localizedPrice instead
+    currency
   };
   return prod;
 };
@@ -70,6 +72,7 @@ export const subscriptionSk2Map = ({
   description,
   displayName,
   price,
+  currency,
   displayPrice,
   subscription,
 }: ProductSk2): SubscriptionIOS => {
@@ -81,7 +84,7 @@ export const subscriptionSk2Map = ({
     type: 'subs',
     price: String(price),
     localizedPrice: displayPrice,
-    currency: '', // Not available on new API, use localizedPrice instead
+    currency,
     subscriptionPeriodNumberIOS: `${subscription?.subscriptionPeriod?.value}`,
     subscriptionPeriodUnitIOS:
       subscription?.subscriptionPeriod?.unit.toUpperCase() as SubscriptionIosPeriod,
