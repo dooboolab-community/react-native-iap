@@ -7,7 +7,7 @@ import type {
   SubscriptionIosPeriod,
 } from '.';
 import type * as Apple from './apple';
-import {SubscriptionPlatform} from '.';
+import {SubscriptionPlatform} from './';
 
 export type SubscriptionPeriod = {
   unit: 'day' | 'week' | 'month' | 'year';
