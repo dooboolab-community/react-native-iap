@@ -188,3 +188,4 @@ All purchases should be consumed by calling `finishTransaction()`.
 - For non-consumable purchases need to be acknowledged on Android, or they will be automatically refunded after a few days. This method acknowledges a purchase when you have delivered it to your user.
 - On iOS non-consumable purchases are finished automatically but this will change in the future so it is recommended that you prepare by simply calling this method on non-consumables as well.
 - It works for both platforms. Equal to finishTransaction for iOS + consumePurchase and acknowledgePurchase for Android.
+- On Android, although you can confirm transactions through the client, [Google encourages you to confirm receipts as quickly and securely as possible through the backend.](https://developer.android.com/google/play/billing/integrate?hl=zh-cn#subscriptions)
