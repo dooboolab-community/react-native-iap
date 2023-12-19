@@ -711,7 +711,20 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                     }
                     debugMessage("Purchase Started")
 
-                    let result = try await product.purchase(options: options)
+                    guard let windowScene = await currentWindow()?.windowScene else {
+                        reject(IapErrors.E_USER_CANCELLED.rawValue, "Could not find window scene", nil)
+                        return
+                    }
+
+                    var result: Product.PurchaseResult?
+
+                    if #available(iOS 17.0, tvOS 17.0, *) {
+                        result = try await product.purchase(confirmIn: windowScene, options: options)
+                    } else {
+                        #if !os(visionOS)
+                        result = try await product.purchase(options: options)
+                        #endif
+                    }
                     switch result {
                     case .success(let verification):
                         debugMessage("Purchase Successful")
@@ -949,7 +962,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
     ) {
         #if !os(tvOS)
         DispatchQueue.main.async {
-            guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+            guard let scene = currentWindow()?.windowScene as? UIWindowScene,
                   !ProcessInfo.processInfo.isiOSAppOnMac else {
                 return
             }
@@ -999,8 +1012,11 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                 return nil
             }
         }
+
+        let window = currentWindow()
+
         Task {
-            if let windowScene = await  UIApplication.shared.keyWindow?.windowScene {
+            if let windowScene = await window?.windowScene {
                 if let product = await productStore.getProduct(productID: sku) {
                     if let result = await product.latestTransaction {
                         do {
