@@ -89,7 +89,6 @@
     "@testing-library/react-native": "12.1.2",
     "@types/jest": "29.5.1",
     "@types/react": "*",
-    "@types/react-native": "*",
     "@typescript-eslint/eslint-plugin": "5.57.1",
     "@typescript-eslint/parser": "5.57.1",
     "babel-jest": "29.5.0",
@@ -104,7 +103,7 @@
     "pod-install": "0.1.38",
     "prettier": "2.8.8",
     "react": "17.0.2",
-    "react-native": "0.68.2",
+    "react-native": "*",
     "react-native-builder-bob": "0.20.4",
     "release-it": "15.10.3",
     "ts-jest": "29.1.0",
@@ -117,8 +116,7 @@
     "react-native": ">=0.65.1"
   },
   "resolutions": {
-    "@types/react": "17.0.59",
-    "@types/react-native": "0.68.2"
+    "@types/react": "17.0.59"
   },
   "dependencies": {
     "@expo/config-plugins": "^6.0.1"
