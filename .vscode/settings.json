@@ -6,7 +6,7 @@
     "typescriptreact"
   ],
   "editor.codeActionsOnSave": {
-    "source.fixAll": true
+    "source.fixAll": "explicit"
   },
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -22,5 +22,8 @@
   },
   "javascript.preferences.importModuleSpecifier": "relative",
   "typescript.preferences.importModuleSpecifier": "relative",
-  "prettier.configPath": ".prettierrc.js"
+  "prettier.configPath": ".prettierrc.js",
+  "cSpell.words": [
+    "hyochan"
+  ]
 }
