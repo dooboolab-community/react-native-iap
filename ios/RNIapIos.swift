@@ -8,10 +8,11 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     private var hasListeners = false
     private var pendingTransactionWithAutoFinish = false
     private var receiptBlock: ((Data?, Error?) -> Void)? // Block to handle request the receipt async from delegate
-    private var validProducts: [String: SKProduct]
+    private var validProducts: ThreadSafe<[String: SKProduct]>
     private var promotedPayment: SKPayment?
     private var promotedProduct: SKProduct?
     private var productsRequest: SKProductsRequest?
+    private let latestPromiseKeeper = LatestPromiseKeeper()
     private var countPendingTransaction: Int = 0
     private var hasTransactionObserver = false
 
@@ -19,7 +20,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         promisesByKey = [String: [RNIapIosPromise]]()
         pendingTransactionWithAutoFinish = false
         myQueue = DispatchQueue(label: "reject")
-        validProducts = [String: SKProduct]()
+        validProducts = ThreadSafe<[String: SKProduct]>([:])
         super.init()
         addTransactionObserver()
     }
@@ -148,7 +149,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         stopObserving()
         rejectAllPendingPromises()
         receiptBlock = nil
-        validProducts.removeAll()
+        validProducts.atomically { $0.removeAll() }
         promotedPayment = nil
         promotedProduct = nil
         productsRequest = nil
@@ -162,10 +163,12 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
     ) {
         let productIdentifiers = Set<String>(skus)
         productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
+
         if let productsRequest = productsRequest {
             productsRequest.delegate = self
-            let key: String = productsRequest.key
-            addPromise(forKey: key, resolve: resolve, reject: reject)
+
+            self.latestPromiseKeeper.setLatestPromise(request: productsRequest, resolve: resolve, reject: reject)
+
             productsRequest.start()
         }
     }
@@ -189,7 +192,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         pendingTransactionWithAutoFinish = andDangerouslyFinishTransactionAutomatically
-        if let product = validProducts[sku] {
+        if let product = validProducts.value[sku] {
             addPromise(forKey: product.productIdentifier, resolve: resolve, reject: reject)
 
             let payment = SKMutablePayment(product: product)
@@ -254,7 +257,7 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         debugMessage("clear valid products")
-        validProducts.removeAll()
+        validProducts.atomically { $0.removeAll() }
         resolve(nil)
     }
 
@@ -353,18 +356,20 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         }
 
         var items: [[String: Any?]] = [[:]]
-        for product in validProducts.values {
+        for product in validProducts.value.values {
             items.append(getProductObject(product))
         }
 
-        resolvePromises(forKey: request.key, value: items)
+        self.latestPromiseKeeper.resolveIfRequestMatches(matchingRequest: request, items: items) { (resolve, items) in
+            resolve(items)
+        }
     }
 
     // Add to valid products from Apple server response. Allowing getProducts, getSubscriptions call several times.
     // Doesn't allow duplication. Replace new product.
     func add(_ aProd: SKProduct) {
         debugMessage("Add new object: \(aProd.productIdentifier)")
-        validProducts[aProd.productIdentifier] = aProd
+        validProducts.atomically { $0[aProd.productIdentifier] = aProd }
     }
 
     func request(_ request: SKRequest, didFailWithError error: Error) {
