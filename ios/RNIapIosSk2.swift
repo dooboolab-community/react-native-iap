@@ -917,6 +917,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                 try await AppStore.sync()
                 resolve(nil)
             } catch {
+                reject(IapErrors.E_SYNC_ERROR.rawValue, "Error synchronizing with the AppStore", error)
                 if "\(error)" == "userCancelled" {
                     reject( IapErrors.E_USER_CANCELLED.rawValue, "User cancelled synchronizing with the AppStore", error)
                 } else {
