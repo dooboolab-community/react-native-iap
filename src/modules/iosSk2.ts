@@ -102,3 +102,9 @@ export const beginRefundRequest = (sku: string): Promise<RefundRequestStatus> =>
  */
 export const showManageSubscriptions = (): Promise<null> =>
   RNIapIosSk2.showManageSubscriptions();
+
+/**
+ *
+ */
+export const finishTransaction = (transactionIdentifier: string): Promise<Boolean> =>
+  RNIapIosSk2.finishTransaction(transactionIdentifier);
