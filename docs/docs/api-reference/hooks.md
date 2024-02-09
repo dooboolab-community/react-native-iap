@@ -34,7 +34,7 @@ const App = () => {
     products,
     promotedProductsIOS,
     subscriptions,
-    purchaseHistories,
+    purchaseHistory,
     availablePurchases,
     currentPurchase,
     currentPurchaseError,
@@ -43,7 +43,7 @@ const App = () => {
     getProducts,
     getSubscriptions,
     getAvailablePurchases,
-    getPurchaseHistories,
+    getPurchaseHistory,
   } = useIAP();
 
   const handlePurchase = async (sku: string) => {
