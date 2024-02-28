@@ -119,6 +119,6 @@
     "@types/react": "17.0.59"
   },
   "dependencies": {
-    "@expo/config-plugins": "^6.0.1"
+    "@expo/config-plugins": "^7.8.4"
   }
 }
