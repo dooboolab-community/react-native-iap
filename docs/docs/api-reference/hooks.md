@@ -62,7 +62,7 @@ const App = () => {
     <>
       <Button
         title="Get the products"
-        onPress={getProducts(['com.example.consumable'])}
+        onPress={getProducts({ skus: ['product.id'] })}
       />
 
       {products.map((product) => (
