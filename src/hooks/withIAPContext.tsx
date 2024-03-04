@@ -5,6 +5,7 @@ import {
   purchaseErrorListener,
   purchaseUpdatedListener,
   transactionListener,
+  userChoiceListener,
 } from '../eventEmitter';
 import {IapIos, initConnection} from '../iap';
 import type {PurchaseError} from '../purchaseError';
@@ -15,6 +16,7 @@ import type {
   Subscription,
   SubscriptionPurchase,
 } from '../types';
+import {UserChoiceDetails} from '../types/android';
 import type {TransactionEvent, TransactionSk2} from '../types/appleSk2';
 
 type IAPContextType = {
@@ -74,6 +76,8 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
 
     const [initConnectionError, setInitConnectionError] = useState<Error>();
 
+    const [userChoice, setUserChoice] = useState<UserChoiceDetails>();
+
     const context = useMemo(
       () => ({
         connected,
@@ -92,6 +96,8 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         setAvailablePurchases,
         setCurrentPurchase,
         setCurrentPurchaseError,
+        userChoice,
+        setUserChoice,
       }),
       [
         connected,
@@ -110,6 +116,8 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         setAvailablePurchases,
         setCurrentPurchase,
         setCurrentPurchaseError,
+        userChoice,
+        setUserChoice,
       ],
     );
 
@@ -157,11 +165,18 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         ]);
       });
 
+      const userChoiceSubscription = userChoiceListener(
+        async (userChoice: UserChoiceDetails) => {
+          setUserChoice(userChoice);
+        },
+      );
+
       return () => {
         purchaseUpdateSubscription.remove();
         purchaseErrorSubscription.remove();
         promotedProductSubscription?.remove();
         transactionUpdateSubscription?.remove();
+        userChoiceSubscription?.remove();
       };
     }, [connected]);
 
