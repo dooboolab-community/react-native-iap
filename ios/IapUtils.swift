@@ -7,6 +7,7 @@
 
 import Foundation
 import StoreKit
+import React
 
 public func debugMessage(_ object: Any...) {
     #if DEBUG
@@ -30,8 +31,10 @@ func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
 }
 
 @available(iOS 15.0, *)
-func currentWindow() -> UIWindow? {
-    return UIApplication.shared.connectedScenes
-        .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
-        .last { $0.isKeyWindow }
+func currentWindow() async -> UIWindow? {
+    await withCheckedContinuation { continuation in
+        DispatchQueue.main.async {
+            continuation.resume(returning: RCTKeyWindow())
+        }
+    }
 }

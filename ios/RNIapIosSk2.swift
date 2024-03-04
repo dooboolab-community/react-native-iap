@@ -712,7 +712,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                     debugMessage("Purchase Started")
 
                     guard let windowScene = await currentWindow()?.windowScene else {
-                        reject(IapErrors.E_USER_CANCELLED.rawValue, "Could not find window scene", nil)
+                        reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Could not find window scene", nil)
                         return
                     }
 
@@ -961,22 +961,20 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         #if !os(tvOS)
-        DispatchQueue.main.async {
-            guard let scene = currentWindow()?.windowScene as? UIWindowScene,
+        Task {
+            guard let scene = await currentWindow()?.windowScene as? UIWindowScene,
                   !ProcessInfo.processInfo.isiOSAppOnMac else {
                 return
             }
 
-            Task {
-                do {
-                    try await AppStore.showManageSubscriptions(in: scene)
-                } catch {
-                    print("Error:(error)")
-                }
+            do {
+                try await AppStore.showManageSubscriptions(in: scene)
+            } catch {
+                print("Error:(error)")
             }
-
-            resolve(nil)
         }
+
+        resolve(nil)
         #else
         reject(IapErrors.E_USER_CANCELLED.rawValue, "This method is not available on tvOS", nil)
         #endif
@@ -1013,9 +1011,8 @@ class RNIapIosSk2iOS15: Sk2Delegate {
             }
         }
 
-        let window = currentWindow()
-
         Task {
+            let window = await currentWindow()
             if let windowScene = await window?.windowScene {
                 if let product = await productStore.getProduct(productID: sku) {
                     if let result = await product.latestTransaction {
