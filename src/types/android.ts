@@ -87,3 +87,10 @@ export const singleProductAndroidMap = (
   };
   return prod;
 };
+
+export type UserChoiceDetails = {
+  externalTransactionToken?: string;
+  originalExternalTransactionId?: string;
+  productId: string;
+  productType: string;
+};

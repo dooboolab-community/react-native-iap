@@ -1,10 +1,17 @@
 import {EmitterSubscription, NativeEventEmitter} from 'react-native';
 
-import {TransactionEvent, transactionSk2ToPurchaseMap} from './types/appleSk2';
 import {isIosStorekit2} from './iap';
-import { getAndroidModule, getIosModule, getNativeModule, isAndroid, isIos } from './internal';
+import {
+  getAndroidModule,
+  getIosModule,
+  getNativeModule,
+  isAndroid,
+  isIos,
+} from './internal';
 import type {PurchaseError} from './purchaseError';
 import type {Purchase} from './types';
+import {UserChoiceDetails} from './types/android';
+import {TransactionEvent, transactionSk2ToPurchaseMap} from './types/appleSk2';
 
 /**
  * Add IAP purchase event
@@ -191,6 +198,17 @@ export const transactionListener = (
   if (isIos && isIosStorekit2()) {
     const eventEmitter = new NativeEventEmitter(getIosModule());
     return eventEmitter.addListener('iap-transaction-updated', listener);
+  }
+
+  return null;
+};
+
+export const userChoiceListener = (
+  listener: (userChoice: UserChoiceDetails) => void,
+) => {
+  if (isAndroid) {
+    const eventEmitter = new NativeEventEmitter(getNativeModule());
+    return eventEmitter.addListener('user-choice', listener);
   }
 
   return null;
