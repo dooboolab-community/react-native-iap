@@ -38,9 +38,9 @@
     "Amazon",
     "Play"
   ],
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
-  "types": "lib/typescript/src/index.d.ts",
+  "main": "src/index",
+  "module": "src/index",
+  "types": "src/index",
   "react-native": "src/index",
   "source": "src/index",
   "files": [
