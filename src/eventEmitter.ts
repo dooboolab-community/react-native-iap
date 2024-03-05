@@ -9,8 +9,7 @@ import {
   isIos,
 } from './internal';
 import type {PurchaseError} from './purchaseError';
-import type {Purchase} from './types';
-import {UserChoiceDetails} from './types/android';
+import type {Purchase, UserChoiceDetails} from './types';
 import {TransactionEvent, transactionSk2ToPurchaseMap} from './types/appleSk2';
 
 /**

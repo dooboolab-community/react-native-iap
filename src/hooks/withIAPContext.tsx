@@ -15,8 +15,8 @@ import type {
   Purchase,
   Subscription,
   SubscriptionPurchase,
+  UserChoiceDetails,
 } from '../types';
-import {UserChoiceDetails} from '../types/android';
 import type {TransactionEvent, TransactionSk2} from '../types/appleSk2';
 
 type IAPContextType = {

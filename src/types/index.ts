@@ -1,10 +1,5 @@
-import type {
-  AmazonModuleProps,
-  AndroidModuleProps,
-  IosModuleProps,
-} from '../modules';
-import type {IosModulePropsSk2} from '../modules/iosSk2';
-
+import {AmazonModuleProps, AndroidModuleProps, IosModuleProps} from '..';
+import {IosModulePropsSk2} from '../modules/iosSk2';
 import type * as Apple from './apple';
 
 export type Sku = string;
@@ -267,6 +262,13 @@ export type RequestSubscription =
   | RequestSubscriptionAndroid
   | RequestSubscriptionAmazon
   | RequestSubscriptionIOS;
+
+export type UserChoiceDetails = {
+  externalTransactionToken?: string;
+  originalExternalTransactionId?: string;
+  productId: string;
+  productType: string;
+};
 
 declare module 'react-native' {
   interface NativeModulesStatic {
