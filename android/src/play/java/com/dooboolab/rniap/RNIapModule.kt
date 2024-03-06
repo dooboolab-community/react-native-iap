@@ -16,6 +16,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.QueryPurchasesParams
+import com.android.billingclient.api.UserChoiceBillingListener
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.Promise
@@ -46,6 +47,17 @@ class RNIapModule(
 
     private var billingClientCache: BillingClient? = null
     private val skus: MutableMap<String, ProductDetails> = mutableMapOf()
+    private val userChoiceBillingListener =
+        UserChoiceBillingListener { userChoiceDetails ->
+            Log.i(TAG, "UserChoiceDetails: ")
+            val externalTransactionToken = userChoiceDetails.externalTransactionToken
+            val userChoice = Arguments.createMap()
+            userChoice.putString("externalTransactionToken", userChoiceDetails.externalTransactionToken)
+            userChoice.putString("originalExternalTransactionId", userChoiceDetails.originalExternalTransactionId)
+            userChoice.putString("productId", userChoiceDetails.products[0].id)
+            userChoice.putString("productType", userChoiceDetails.products[0].type)
+            sendEvent(reactContext, "user-choice", userChoice)
+        }
     override fun getName(): String {
         return TAG
     }
@@ -143,7 +155,7 @@ class RNIapModule(
             promise.safeResolve(true)
             return
         }
-        builder.setListener(this).build().also {
+        builder.setListener(this).enableUserChoiceBilling(userChoiceBillingListener).build().also {
             billingClientCache = it
             it.startConnection(
                 object : BillingClientStateListener {

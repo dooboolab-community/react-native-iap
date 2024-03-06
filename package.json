@@ -38,9 +38,9 @@
     "Amazon",
     "Play"
   ],
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
-  "types": "lib/typescript/src/index.d.ts",
+  "main": "src/index",
+  "module": "src/index",
+  "types": "src/index",
   "react-native": "src/index",
   "source": "src/index",
   "files": [
@@ -103,7 +103,6 @@
     "pod-install": "0.1.38",
     "prettier": "2.8.8",
     "react": "17.0.2",
-    "react-native": "*",
     "react-native-builder-bob": "0.20.4",
     "release-it": "15.10.3",
     "ts-jest": "29.1.0",
