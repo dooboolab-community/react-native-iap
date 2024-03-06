@@ -711,7 +711,20 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                     }
                     debugMessage("Purchase Started")
 
-                    let result = try await product.purchase(options: options)
+                    guard let windowScene = await currentWindow()?.windowScene else {
+                        reject(IapErrors.E_DEVELOPER_ERROR.rawValue, "Could not find window scene", nil)
+                        return
+                    }
+
+                    var result: Product.PurchaseResult?
+
+                    if #available(iOS 17.0, tvOS 17.0, *) {
+                        result = try await product.purchase(confirmIn: windowScene, options: options)
+                    } else {
+                        #if !os(visionOS)
+                        result = try await product.purchase(options: options)
+                        #endif
+                    }
                     switch result {
                     case .success(let verification):
                         debugMessage("Purchase Successful")
@@ -947,22 +960,20 @@ class RNIapIosSk2iOS15: Sk2Delegate {
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         #if !os(tvOS)
-        DispatchQueue.main.async {
-            guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+        Task {
+            guard let scene = await currentWindow()?.windowScene as? UIWindowScene,
                   !ProcessInfo.processInfo.isiOSAppOnMac else {
                 return
             }
 
-            Task {
-                do {
-                    try await AppStore.showManageSubscriptions(in: scene)
-                } catch {
-                    print("Error:(error)")
-                }
+            do {
+                try await AppStore.showManageSubscriptions(in: scene)
+            } catch {
+                print("Error:(error)")
             }
-
-            resolve(nil)
         }
+
+        resolve(nil)
         #else
         reject(IapErrors.E_USER_CANCELLED.rawValue, "This method is not available on tvOS", nil)
         #endif
@@ -998,8 +1009,10 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                 return nil
             }
         }
+
         Task {
-            if let windowScene = await  UIApplication.shared.keyWindow?.windowScene {
+            let window = await currentWindow()
+            if let windowScene = await window?.windowScene {
                 if let product = await productStore.getProduct(productID: sku) {
                     if let result = await product.latestTransaction {
                         do {

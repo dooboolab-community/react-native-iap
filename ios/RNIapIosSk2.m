@@ -3,14 +3,11 @@
 #import <React/RCTBridgeModule.h>
 #ifdef __IPHONE_15_0
 
-// From: https://stackoverflow.com/a/5337804/570612
-#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
-
 
 @interface RCT_EXTERN_MODULE (RNIapIosSk2, NSObject)
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(isAvailable){
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"15.0")) {
+    if (@available(iOS 15.0, *)) {
         return [NSNumber numberWithInt:1];
     }else{
         return [NSNumber numberWithInt:0];
