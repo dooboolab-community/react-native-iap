@@ -9,6 +9,7 @@ class LatestPromiseKeeper {
     private var latestRequest: ThreadSafe<SKProductsRequest?> = ThreadSafe(nil)
 
     func setLatestPromise(request: SKProductsRequest, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        // Cancel the ongoing request and reject the existing promise before setting a new one
         cancelOngoingRequest()
 
         latestRequest.atomically { $0 = request }
@@ -16,11 +17,19 @@ class LatestPromiseKeeper {
     }
 
     func cancelOngoingRequest() {
+        latestPromise.atomically { promiseResolvers in
+            if let (_, reject) = promiseResolvers {
+                // Reject the promise with an error indicating that it was cancelled due to a new request
+                reject("E_CANCELED", "Previous request was cancelled due to a new request", nil)
+            }
+        }
+
         latestRequest.atomically { ongoingRequest in
             ongoingRequest?.cancel()
             ongoingRequest = nil
         }
 
+        // Clear the latestPromise after rejecting it
         latestPromise.atomically { $0 = nil }
     }
 
