@@ -1,3 +1,5 @@
+require 'xcodeproj'
+
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
@@ -5,7 +7,22 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, min_ios_version_supported
+project_path = './IapExample.xcodeproj'
+project = Xcodeproj::Project.open(project_path)
+
+# Fetches minimum deployment target version from the project and sets it as the default
+config_list = project.root_object.build_configuration_list
+debug_config = config_list.build_configurations.find { |config| config.name == 'Debug' }
+min_ios_version = debug_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+default_min_ios_version = '12.4'
+if min_ios_version.nil? || min_ios_version.empty?
+  puts "IPHONEOS_DEPLOYMENT_TARGET not set at the project level for Debug configuration. Using default value of #{default_min_ios_version}"
+  min_ios_version = default_min_ios_version
+else
+  puts "Minimum iOS version set to: #{min_ios_version}"
+end
+platform :ios, min_ios_version || default_min_ios_version
+
 prepare_react_native_project!
 
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
