@@ -29,7 +29,7 @@
 		B3E7B5891CC2AC0600A0062D /* RNIapIos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNIapIos.m; sourceTree = "<group>"; };
 		CBA2290A2B027DA500C780F8 /* ThreadSafe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadSafe.swift; sourceTree = "<group>"; };
 		CBA2290B2B027DA500C780F8 /* LatestPromiseKeeper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatestPromiseKeeper.swift; sourceTree = "<group>"; };
-		F4FF95D5245B92E700C19C63 /* RNIapIosIap-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNIapIosIap-Bridging-Header.h"; sourceTree = "<group>"; };
+		F4FF95D5245B92E700C19C63 /* RNIapIos-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNIapIos-Bridging-Header.h"; sourceTree = "<group>"; };
 		F4FF95D6245B92E800C19C63 /* RNIapIos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNIapIos.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -59,7 +59,7 @@
 				CBA2290A2B027DA500C780F8 /* ThreadSafe.swift */,
 				F4FF95D6245B92E800C19C63 /* RNIapIos.swift */,
 				B3E7B5891CC2AC0600A0062D /* RNIapIos.m */,
-				F4FF95D5245B92E700C19C63 /* RNIapIosIap-Bridging-Header.h */,
+				F4FF95D5245B92E700C19C63 /* RNIapIos-Bridging-Header.h */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -238,7 +238,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNIapIos;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "RNIapIosIap-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RNIapIos-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -257,7 +257,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNIapIos;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "RNIapIosIap-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RNIapIos-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
