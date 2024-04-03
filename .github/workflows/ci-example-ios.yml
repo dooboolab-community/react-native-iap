@@ -23,10 +23,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           cache: 'yarn'
 
@@ -40,6 +40,8 @@ jobs:
       - name: Restore buildcache
         uses: mikehardy/buildcache-action@v2
         continue-on-error: true
+        with:
+          cache_key: ${{ runner.os }}-buildcache-${{ hashFiles('**/Podfile.lock') }}
 
       - name: Setup Ruby (bundle)
         uses: ruby/setup-ruby@v1
@@ -55,7 +57,7 @@ jobs:
         run: git diff --exit-code HEAD '*.swift'
 
       - name: Restore Pods cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             IapExample/ios/Pods
