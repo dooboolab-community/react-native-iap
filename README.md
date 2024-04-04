@@ -55,11 +55,9 @@ Follow [this guide](./IapExample/README.md) to get the example running.
 | <a href="https://namiml.com"><img src="https://github.com/dooboolab-community/react-native-iap/assets/27461460/89d71f61-bb73-400a-83bd-fe0f96eb726e" width="450"/></a> |
 
 
-### <p style="color: silver;">Silver Tier</p>
+## Past  Sponsors
 
-| [Revenuecat](https://www.revenuecat.com) |
-|:--:|
-| <a href="https://www.revenuecat.com"><img src="https://github.com/dooboolab-community/react-native-iap/assets/27461460/1e387a47-afe0-4b85-ad78-1064ca6623fa" width="300"/></a> |
+<a href="https://www.revenuecat.com"><img src="https://github.com/dooboolab-community/react-native-iap/assets/27461460/1e387a47-afe0-4b85-ad78-1064ca6623fa" width="200"/></a>
 
 
 Support this project by becoming a sponsor. Your logo will show up here with
