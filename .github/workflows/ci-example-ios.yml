@@ -19,7 +19,7 @@ on:
 
 jobs:
   build_ios_example:
-    runs-on: macos-latest
+    runs-on: macos-13
     env:
       NO_FLIPPER: 1
 
