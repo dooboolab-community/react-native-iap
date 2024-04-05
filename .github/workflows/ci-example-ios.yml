@@ -20,6 +20,8 @@ on:
 jobs:
   build_ios_example:
     runs-on: macos-latest
+    env:
+      NO_FLIPPER: 1
 
     steps:
       - name: Checkout repository
