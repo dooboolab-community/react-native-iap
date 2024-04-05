@@ -75,14 +75,10 @@ jobs:
         working-directory: IapExample/ios
 
       - name: Build App
-        run: "set -o pipefail && xcodebuild \
-          CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ \
-          -derivedDataPath build -UseModernBuildSystem=YES \
-          -workspace IapExample.xcworkspace \
-          -scheme IapExample \
-          -sdk iphonesimulator \
-          -configuration Debug \
-          -destination 'platform=iOS Simulator,name=iPhone 11 Pro' \
-          build \
-          CODE_SIGNING_ALLOWED=NO | xcpretty"
-        working-directory: IapExample/ios
+        uses: sersoft-gmbh/xcodebuild-action@v3
+        with:
+          workspace: IapExample/ios/IapExample.xcworkspace
+          scheme: IapExample
+          sdk: iphonesimulator
+          destination: 'platform=iOS Simulator,name=iPhone 15'
+          action: build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
