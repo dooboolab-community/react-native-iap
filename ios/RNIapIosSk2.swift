@@ -597,7 +597,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
             func addTransaction(transaction: Transaction) {
                 purchasedItems.append( transaction)
                 if alsoPublishToEventListener {
-                    self.sendEvent?("purchase-update", serialize(transaction))
+                    self.sendEvent?("purchase-updated", serialize(transaction))
                 }
             }
             func addError( error: Error, errorDict: [String: String]) {
