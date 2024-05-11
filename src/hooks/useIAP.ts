@@ -122,6 +122,7 @@ export const useIAP = (): IAP_STATUS => {
     return () => {
       setCurrentPurchaseError(undefined);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
