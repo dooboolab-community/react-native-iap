@@ -1,4 +1,4 @@
-import {useCallback} from 'react';
+import {useCallback, useEffect} from 'react';
 
 import {
   finishTransaction as iapFinishTransaction,
@@ -117,6 +117,12 @@ export const useIAP = (): IAP_STATUS => {
       setCurrentPurchaseError,
     ],
   );
+
+  useEffect(() => {
+    return () => {
+      setCurrentPurchaseError(undefined);
+    };
+  }, []);
 
   return {
     connected,
