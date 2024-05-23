@@ -48,6 +48,9 @@ jobs:
           bundler-cache: true
           ruby-version: '2.7'
 
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
       - name: SwiftLint
         run: swiftlint lint --fix --format --path ios/*.swift --config .swiftlint.yml
 
