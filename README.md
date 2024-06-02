@@ -10,11 +10,14 @@
 
 ---
 
+## Announcement
+Announcing the Migration of react-native-iap to an Expo Module for Improved Maintenance and Compatibility in [discussion #2754](https://github.com/dooboolab-community/react-native-iap/discussions/2754).
+
 ## Documentation
 
 Read the [documentation](https://react-native-iap.dooboolab.com). See the [troubleshooting](https://react-native-iap.dooboolab.com/docs/guides/troubleshooting#common-issues) for the common issues to avoid.
 
-## Announcement
+## Logs
 
 - Version `12.0.0`: Implements Amazon 3.x SDK including the new DRM verification.
 
