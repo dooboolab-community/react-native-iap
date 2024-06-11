@@ -401,17 +401,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
             switch transaction.transactionState {
             case .purchasing:
                 debugMessage("Purchase Started")
-                break
 
             case .purchased:
                 debugMessage("Purchase Successful")
                 purchaseProcess(transaction)
-                break
 
             case .restored:
                 debugMessage("Restored")
                 SKPaymentQueue.default().finishTransaction(transaction)
-                break
 
             case .deferred:
                 debugMessage("Deferred (awaiting approval via parental controls, etc.)")
@@ -470,8 +467,6 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                         message: nsError?.localizedDescription,
                         error: nsError)
                 })
-
-                break
             }
         }
     }
@@ -713,22 +708,18 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 case .freeTrial:
                     paymendMode = "FREETRIAL"
                     numberOfPeriods = String(discount.subscriptionPeriod.numberOfUnits)
-                    break
 
                 case .payAsYouGo:
                     paymendMode = "PAYASYOUGO"
                     numberOfPeriods = String(discount.numberOfPeriods)
-                    break
 
                 case .payUpFront:
                     paymendMode = "PAYUPFRONT"
                     numberOfPeriods = String(discount.subscriptionPeriod.numberOfUnits )
-                    break
 
                 default:
                     paymendMode = ""
                     numberOfPeriods = "0"
-                    break
                 }
 
                 switch discount.subscriptionPeriod.unit {
@@ -752,15 +743,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 switch discount.type {
                 case SKProductDiscount.Type.introductory:
                     discountType = "INTRODUCTORY"
-                    break
-
                 case SKProductDiscount.Type.subscription:
                     discountType = "SUBSCRIPTION"
-                    break
-
                 default:
                     discountType = ""
-                    break
                 }
 
                 let discountObj = [
