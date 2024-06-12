@@ -506,15 +506,15 @@ class RNIapModule(
             }
             if (prorationMode != -1) {
                 if (prorationMode
-                    == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE
+                    == BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_PRORATED_PRICE
                 ) {
-                    subscriptionUpdateParamsBuilder.setReplaceProrationMode(
-                        BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_PRORATED_PRICE,
+                    subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(
+                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_PRORATED_PRICE,
                     )
                     if (type != BillingClient.ProductType.SUBS) {
                         val debugMessage =
                             (
-                                "IMMEDIATE_AND_CHARGE_PRORATED_PRICE for proration mode only works in" +
+                                "CHARGE_PRORATED_PRICE for replacementMode mode only works in" +
                                     " subscription purchase."
                                 )
                         val error = Arguments.createMap()
@@ -527,30 +527,30 @@ class RNIapModule(
                         return@ensureConnection
                     }
                 } else if (prorationMode
-                    == BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION
+                    == BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.WITHOUT_PRORATION
                 ) {
-                    subscriptionUpdateParamsBuilder.setReplaceProrationMode(
-                        BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION,
+                    subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(
+                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.WITHOUT_PRORATION,
                     )
-                } else if (prorationMode == BillingFlowParams.ProrationMode.DEFERRED) {
-                    subscriptionUpdateParamsBuilder.setReplaceProrationMode(
-                        BillingFlowParams.ProrationMode.DEFERRED,
-                    )
-                } else if (prorationMode
-                    == BillingFlowParams.ProrationMode.IMMEDIATE_WITH_TIME_PRORATION
-                ) {
-                    subscriptionUpdateParamsBuilder.setReplaceProrationMode(
-                        BillingFlowParams.ProrationMode.IMMEDIATE_WITHOUT_PRORATION,
+                } else if (prorationMode == BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.DEFERRED) {
+                    subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(
+                        SubscriptionUpdateParams.ReplacementMode.DEFERRED,
                     )
                 } else if (prorationMode
-                    == BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE
+                    == BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.WITH_TIME_PRORATION
                 ) {
-                    subscriptionUpdateParamsBuilder.setReplaceProrationMode(
-                        BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE,
+                    subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(
+                        SubscriptionUpdateParams.ReplacementMode.WITH_TIME_PRORATION,
+                    )
+                } else if (prorationMode
+                    == BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_FULL_PRICE
+                ) {
+                    subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(
+                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_FULL_PRICE,
                     )
                 } else {
-                    subscriptionUpdateParamsBuilder.setReplaceProrationMode(
-                        BillingFlowParams.ProrationMode.UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY,
+                    subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(
+                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.UNKNOWN_REPLACEMENT_MODE,
                     )
                 }
             }
