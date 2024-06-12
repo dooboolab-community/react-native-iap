@@ -7,6 +7,7 @@
 
 import Foundation
 import StoreKit
+import React
 
 public func debugMessage(_ object: Any...) {
     #if DEBUG
@@ -26,5 +27,14 @@ func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
     case .verified(let safe):
         // The result is verified. Return the unwrapped value.
         return safe
+    }
+}
+
+@available(iOS 15.0, *)
+func currentWindow() async -> UIWindow? {
+    await withCheckedContinuation { continuation in
+        DispatchQueue.main.async {
+            continuation.resume(returning: RCTKeyWindow())
+        }
     }
 }

@@ -165,10 +165,12 @@ func serialize(_ t: Transaction) -> [String: Any?] {
     if #available(iOS 16.0, tvOS 16.0, *) {
         environment = t.environment.rawValue
     } else {
+        #if !os(visionOS)
         let env = t.environmentStringRepresentation
         if ["Production", "Sandbox", "Xcode"].contains(env) {
             environment = env
         }
+        #endif
     }
 
     return ["appAccountToken": t.appAccountToken?.uuidString,
