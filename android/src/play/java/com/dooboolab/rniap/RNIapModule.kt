@@ -438,7 +438,7 @@ class RNIapModule(
         type: String,
         skuArr: ReadableArray,
         purchaseToken: String?,
-        prorationMode: Int,
+        replacementMode: Int,
         obfuscatedAccountId: String?,
         obfuscatedProfileId: String?,
         offerTokenArr: ReadableArray, // New parameter in V5
@@ -504,55 +504,35 @@ class RNIapModule(
             if (obfuscatedProfileId != null) {
                 builder.setObfuscatedProfileId(obfuscatedProfileId)
             }
-            if (prorationMode != -1) {
-                if (prorationMode
-                    == BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_PRORATED_PRICE
-                ) {
-                    subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(
-                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_PRORATED_PRICE,
-                    )
-                    if (type != BillingClient.ProductType.SUBS) {
-                        val debugMessage =
-                            (
-                                "CHARGE_PRORATED_PRICE for replacementMode mode only works in" +
-                                    " subscription purchase."
-                                )
-                        val error = Arguments.createMap()
-                        error.putString("debugMessage", debugMessage)
-                        error.putString("code", PROMISE_BUY_ITEM)
-                        error.putString("message", debugMessage)
-                        error.putArray("productIds", skuArr)
-                        sendEvent(reactContext, "purchase-error", error)
-                        promise.safeReject(PROMISE_BUY_ITEM, debugMessage)
-                        return@ensureConnection
+            if (replacementMode != -1) {
+                val replacementMode = when (replacementMode) {
+                    BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_PRORATED_PRICE -> {
+                        if (type != BillingClient.ProductType.SUBS) {
+                            val debugMessage = "CHARGE_PRORATED_PRICE for replacementMode mode only works in subscription purchase."
+                            val error = Arguments.createMap().apply {
+                                putString("debugMessage", debugMessage)
+                                putString("code", PROMISE_BUY_ITEM)
+                                putString("message", debugMessage)
+                                putArray("productIds", skuArr)
+                            }
+                            sendEvent(reactContext, "purchase-error", error)
+                            promise.safeReject(PROMISE_BUY_ITEM, debugMessage)
+                            return@ensureConnection
+                        }
+                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_PRORATED_PRICE
                     }
-                } else if (prorationMode
-                    == BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.WITHOUT_PRORATION
-                ) {
-                    subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(
-                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.WITHOUT_PRORATION,
-                    )
-                } else if (prorationMode == BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.DEFERRED) {
-                    subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(
-                        SubscriptionUpdateParams.ReplacementMode.DEFERRED,
-                    )
-                } else if (prorationMode
-                    == BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.WITH_TIME_PRORATION
-                ) {
-                    subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(
-                        SubscriptionUpdateParams.ReplacementMode.WITH_TIME_PRORATION,
-                    )
-                } else if (prorationMode
-                    == BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_FULL_PRICE
-                ) {
-                    subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(
-                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_FULL_PRICE,
-                    )
-                } else {
-                    subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(
-                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.UNKNOWN_REPLACEMENT_MODE,
-                    )
+                    BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.WITHOUT_PRORATION ->
+                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.WITHOUT_PRORATION
+                    BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.DEFERRED ->
+                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.DEFERRED
+                    BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.WITH_TIME_PRORATION ->
+                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.WITH_TIME_PRORATION
+                    BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_FULL_PRICE ->
+                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_FULL_PRICE
+                    else ->
+                        BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.UNKNOWN_REPLACEMENT_MODE
                 }
+                subscriptionUpdateParamsBuilder.setSubscriptionReplacementMode(replacementMode)
             }
             if (purchaseToken != null) {
                 val subscriptionUpdateParams = subscriptionUpdateParamsBuilder.build()
