@@ -19,14 +19,16 @@ on:
 
 jobs:
   build_ios_example:
-    runs-on: macos-latest
+    runs-on: macos-13
+    env:
+      NO_FLIPPER: 1
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           cache: 'yarn'
 
@@ -40,6 +42,8 @@ jobs:
       - name: Restore buildcache
         uses: mikehardy/buildcache-action@v2
         continue-on-error: true
+        with:
+          cache_key: ${{ runner.os }}-buildcache-${{ hashFiles('**/Podfile.lock') }}-${{ hashFiles('**/Podfile')}}
 
       - name: Setup Ruby (bundle)
         uses: ruby/setup-ruby@v1
@@ -58,13 +62,13 @@ jobs:
         run: git diff --exit-code HEAD '*.swift'
 
       - name: Restore Pods cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             IapExample/ios/Pods
             ~/Library/Caches/CocoaPods
             ~/.cocoapods
-          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock')}}-${{ hashFiles('**/Podfile')}}
           restore-keys: ${{ runner.os }}-pods-
 
       - name: Install Pods
@@ -76,14 +80,10 @@ jobs:
         working-directory: IapExample/ios
 
       - name: Build App
-        run: "set -o pipefail && xcodebuild \
-          CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ \
-          -derivedDataPath build -UseModernBuildSystem=YES \
-          -workspace IapExample.xcworkspace \
-          -scheme IapExample \
-          -sdk iphonesimulator \
-          -configuration Debug \
-          -destination 'platform=iOS Simulator,name=iPhone 11 Pro' \
-          build \
-          CODE_SIGNING_ALLOWED=NO | xcpretty"
-        working-directory: IapExample/ios
+        uses: sersoft-gmbh/xcodebuild-action@v3
+        with:
+          workspace: IapExample/ios/IapExample.xcworkspace
+          scheme: IapExample
+          sdk: iphonesimulator
+          destination: 'platform=iOS Simulator,name=iPhone 14'
+          action: build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
