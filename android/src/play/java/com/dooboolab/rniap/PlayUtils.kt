@@ -26,6 +26,12 @@ object PlayUtils {
                     "The service is disconnected (check your internet connection.)",
                 )
             }
+            BillingClient.BillingResponseCode.NETWORK_ERROR -> {
+                BillingResponse(
+                    PromiseUtils.E_NETWORK_ERROR,
+                    "You have problem with network connection.",
+                )
+            }
             BillingClient.BillingResponseCode.OK -> {
                 BillingResponse(
                     "OK",
