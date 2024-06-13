@@ -106,5 +106,6 @@ export const showManageSubscriptions = (): Promise<null> =>
 /**
  *
  */
-export const finishTransaction = (transactionIdentifier: string): Promise<Boolean> =>
-  RNIapIosSk2.finishTransaction(transactionIdentifier);
+export const finishTransaction = (
+  transactionIdentifier: string,
+): Promise<Boolean> => RNIapIosSk2.finishTransaction(transactionIdentifier);

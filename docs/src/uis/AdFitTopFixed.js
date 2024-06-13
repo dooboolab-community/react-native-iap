@@ -1,5 +1,5 @@
 import React from 'react';
-import AdFit from "./AdFit";
+import AdFit from './AdFit';
 
 export default function AdFitTopFixed() {
   return (

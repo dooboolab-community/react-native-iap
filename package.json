@@ -80,7 +80,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.21.8",
-    "@firmnav/eslint-github-actions-formatter": "1.0.1",
+    "@firmnav/eslint-github-actions-formatter": "^1.0.1",
     "@jeremybarbet/apple-api-types": "1.4.0",
     "@jeremybarbet/google-api-types": "1.4.0",
     "@react-native-community/eslint-config": "3.2.0",
@@ -95,6 +95,7 @@
     "eslint-plugin-jest": "27.2.2",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-simple-import-sort": "10.0.0",
+    "expo": "^51.0.14",
     "expo-module-scripts": "^3.0.7",
     "jest": "29.5.0",
     "monolinter": "1.0.4",
@@ -110,13 +111,13 @@
     "typescript": "5.0.4"
   },
   "peerDependencies": {
+    "expo": ">=47.0.0",
     "react": ">=16.13.1",
     "react-native": ">=0.65.1"
   },
-  "resolutions": {
-    "@types/react": "17.0.59"
-  },
-  "dependencies": {
-    "@expo/config-plugins": "^7.8.4"
+  "peerDependenciesMeta": {
+    "expo": {
+      "optional": true
+    }
   }
 }
