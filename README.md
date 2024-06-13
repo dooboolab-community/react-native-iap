@@ -11,6 +11,7 @@
 ---
 
 ## Announcement
+
 Announcing the Migration of react-native-iap to an Expo Module for Improved Maintenance and Compatibility in [discussion #2754](https://github.com/dooboolab-community/react-native-iap/discussions/2754).
 
 ## Documentation
@@ -53,15 +54,13 @@ Follow [this guide](./IapExample/README.md) to get the example running.
 
 ### <p style="color: gold;">Gold Tier</p>
 
-| [NAMI](https://namiml.com) |
-|:--:|
+|                                                                       [NAMI](https://namiml.com)                                                                       |
+| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | <a href="https://namiml.com"><img src="https://github.com/dooboolab-community/react-native-iap/assets/27461460/89d71f61-bb73-400a-83bd-fe0f96eb726e" width="450"/></a> |
 
-
-## Past  Sponsors
+## Past Sponsors
 
 <a href="https://www.revenuecat.com"><img src="https://github.com/dooboolab-community/react-native-iap/assets/27461460/1e387a47-afe0-4b85-ad78-1064ca6623fa" width="200"/></a>
-
 
 Support this project by becoming a sponsor. Your logo will show up here with
 a link to your website. [Buy me a coffee](https://www.buymeacoffee.com/dooboolab) or
@@ -83,4 +82,3 @@ Thank you to all the people who helped to maintain and upgrade this project!
 ---
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap?ref=badge_large)
-

@@ -9,8 +9,8 @@ import {
   projectBuildGradleWithoutIAP,
 } from './fixtures/buildGradleFiles';
 
-jest.mock('@expo/config-plugins', () => {
-  const plugins = jest.requireActual('@expo/config-plugins');
+jest.mock('expo/config-plugins', () => {
+  const plugins = jest.requireActual('expo/config-plugins');
 
   return {
     ...plugins,

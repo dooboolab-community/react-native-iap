@@ -32,7 +32,9 @@ To run the example app on Android:
 ```bash
 yarn android:play
 ```
+
 or
+
 ```bash
 yarn android:amazon
 ```
@@ -83,6 +85,7 @@ yarn lint --fix
 ```
 
 To fix formatting errors in `swift` files:
+
 - prerequisity: on your Mac install [SwiftLint](https://github.com/realm/SwiftLint)
 
 ```bash
