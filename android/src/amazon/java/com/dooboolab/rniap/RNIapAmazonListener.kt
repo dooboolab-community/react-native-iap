@@ -22,7 +22,6 @@ class RNIapAmazonListener(
     var eventSender: EventSender?,
     var purchasingService: PurchasingServiceProxy?,
 ) : PurchasingListener {
-
     override fun onProductDataResponse(response: ProductDataResponse) {
         when (response.requestStatus) {
             ProductDataResponse.RequestStatus.SUCCESSFUL -> {
@@ -170,7 +169,10 @@ class RNIapAmazonListener(
         }
     }
 
-    private fun receiptToMap(userData: UserData, receipt: Receipt): WritableMap {
+    private fun receiptToMap(
+        userData: UserData,
+        receipt: Receipt,
+    ): WritableMap {
         val item = Arguments.createMap()
         item.putString("productId", receipt.sku)
         item.putDouble("transactionDate", receipt.purchaseDate.time.toDouble())

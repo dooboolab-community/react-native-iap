@@ -6,7 +6,10 @@ import com.amazon.device.iap.model.FulfillmentResult
 import com.amazon.device.iap.model.RequestId
 
 interface PurchasingServiceProxy {
-    fun registerListener(var0: Context?, var1: PurchasingListener?)
+    fun registerListener(
+        var0: Context?,
+        var1: PurchasingListener?,
+    )
 
     fun getUserData(): RequestId
 
@@ -16,5 +19,8 @@ interface PurchasingServiceProxy {
 
     fun getPurchaseUpdates(var0: Boolean): RequestId
 
-    fun notifyFulfillment(var0: String?, var1: FulfillmentResult?)
+    fun notifyFulfillment(
+        var0: String?,
+        var1: FulfillmentResult?,
+    )
 }

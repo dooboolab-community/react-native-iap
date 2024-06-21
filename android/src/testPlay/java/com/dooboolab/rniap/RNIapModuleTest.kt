@@ -32,7 +32,6 @@ import org.junit.Before
 import org.junit.Test
 
 class RNIapModuleTest {
-
     @MockK
     lateinit var context: ReactApplicationContext
 
@@ -86,7 +85,9 @@ class RNIapModuleTest {
         val listener = slot<BillingClientStateListener>()
         every { billingClient.startConnection(capture(listener)) } answers {
             listener.captured.onBillingSetupFinished(
-                BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.OK)
+                BillingResult
+                    .newBuilder()
+                    .setResponseCode(BillingClient.BillingResponseCode.OK)
                     .build(),
             )
         }
@@ -104,7 +105,9 @@ class RNIapModuleTest {
         val listener = slot<BillingClientStateListener>()
         every { billingClient.startConnection(capture(listener)) } answers {
             listener.captured.onBillingSetupFinished(
-                BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.ERROR)
+                BillingResult
+                    .newBuilder()
+                    .setResponseCode(BillingClient.BillingResponseCode.ERROR)
                     .build(),
             )
         }
@@ -167,8 +170,10 @@ class RNIapModuleTest {
         val consumeListener = slot<ConsumeResponseListener>()
         every { billingClient.consumeAsync(any(), capture(consumeListener)) } answers {
             consumeListener.captured.onConsumeResponse(
-                BillingResult.newBuilder()
-                    .setResponseCode(BillingClient.BillingResponseCode.ITEM_NOT_OWNED).build(),
+                BillingResult
+                    .newBuilder()
+                    .setResponseCode(BillingClient.BillingResponseCode.ITEM_NOT_OWNED)
+                    .build(),
                 "",
             )
         }
@@ -193,7 +198,9 @@ class RNIapModuleTest {
         val listener = slot<BillingClientStateListener>()
         every { billingClient.startConnection(capture(listener)) } answers {
             listener.captured.onBillingSetupFinished(
-                BillingResult.newBuilder().setResponseCode(BillingClient.BillingResponseCode.OK)
+                BillingResult
+                    .newBuilder()
+                    .setResponseCode(BillingClient.BillingResponseCode.OK)
                     .build(),
             )
         }
@@ -221,50 +228,56 @@ class RNIapModuleTest {
 
                         every { productType } returns "sub"
                         every { name } returns "name of product"
-                        every { oneTimePurchaseOfferDetails } returns mockk {
-                            every { priceCurrencyCode } returns "my code"
-                            every { formattedPrice } returns "$20.00"
-                            every { priceAmountMicros } returns 20000
-                        }
-                        every { subscriptionOfferDetails } returns listOf(
+                        every { oneTimePurchaseOfferDetails } returns
                             mockk {
-                                every { offerToken } returns "sToken"
-                                every { basePlanId } returns "basePlanId"
-                                every { offerId } returns "offerId"
-                                every { offerTags } returns listOf("offerTag1", "offerTag2")
-                                every { pricingPhases } returns mockk {
-                                    every { pricingPhaseList } returns listOf(
+                                every { priceCurrencyCode } returns "my code"
+                                every { formattedPrice } returns "$20.00"
+                                every { priceAmountMicros } returns 20000
+                            }
+                        every { subscriptionOfferDetails } returns
+                            listOf(
+                                mockk {
+                                    every { offerToken } returns "sToken"
+                                    every { basePlanId } returns "basePlanId"
+                                    every { offerId } returns "offerId"
+                                    every { offerTags } returns listOf("offerTag1", "offerTag2")
+                                    every { pricingPhases } returns
                                         mockk {
-                                            every { formattedPrice } returns "$13.0"
-                                            every { priceCurrencyCode } returns "USD"
-                                            every { billingPeriod } returns "1 week"
-                                            every { billingCycleCount } returns 1
-                                            every { priceAmountMicros } returns 13000
-                                            every { recurrenceMode } returns 2
-                                        },
-                                    )
-                                }
-                            },
-                        )
+                                            every { pricingPhaseList } returns
+                                                listOf(
+                                                    mockk {
+                                                        every { formattedPrice } returns "$13.0"
+                                                        every { priceCurrencyCode } returns "USD"
+                                                        every { billingPeriod } returns "1 week"
+                                                        every { billingCycleCount } returns 1
+                                                        every { priceAmountMicros } returns 13000
+                                                        every { recurrenceMode } returns 2
+                                                    },
+                                                )
+                                        }
+                                },
+                            )
                     },
                 ),
             )
         }
-        val skus = mockk<ReadableArray>() {
-            every { size() } returns 1
-            every { getString(0) } returns "sku0"
-            every { getType(0) } returns ReadableType.String
-        }
+        val skus =
+            mockk<ReadableArray> {
+                every { size() } returns 1
+                every { getString(0) } returns "sku0"
+                every { getType(0) } returns ReadableType.String
+            }
         mockkStatic(Arguments::class)
 
         val itemsMap = mockk<WritableMap>(relaxed = true)
         var itemsSize = 0
-        val itemsArr = mockk<WritableArray> {
-            every { pushString(any()) } just runs
-            every { pushMap(any()) } answers {
-                itemsSize++
+        val itemsArr =
+            mockk<WritableArray> {
+                every { pushString(any()) } just runs
+                every { pushMap(any()) } answers {
+                    itemsSize++
+                }
             }
-        }
         every { Arguments.createMap() } returns itemsMap
         every { Arguments.createArray() } returns itemsArr
 

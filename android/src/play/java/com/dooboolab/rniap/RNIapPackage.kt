@@ -7,10 +7,7 @@ import com.facebook.react.uimanager.ViewManager
 import java.util.ArrayList
 
 class RNIapPackage : ReactPackage {
-
-    override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
-        return emptyList()
-    }
+    override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> = emptyList()
 
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
         val modules: MutableList<NativeModule> = ArrayList()

@@ -22,28 +22,33 @@ class RNIapAmazonModule(
     private val reactContext: ReactApplicationContext,
     private val purchasingService: PurchasingServiceProxy = PurchasingServiceProxyAmazonImpl(),
     private var eventSender: EventSender? = null,
-) :
-    ReactContextBaseJavaModule(reactContext) {
-    override fun getName(): String {
-        return TAG
-    }
+) : ReactContextBaseJavaModule(reactContext) {
+    override fun getName(): String = TAG
 
     @ReactMethod
     fun initConnection(promise: Promise) {
         if (RNIapActivityListener.amazonListener == null) {
-            promise.safeReject(PromiseUtils.E_DEVELOPER_ERROR, Exception("RNIapActivityListener is not registered in your MainActivity.onCreate"))
+            promise.safeReject(
+                PromiseUtils.E_DEVELOPER_ERROR,
+                Exception("RNIapActivityListener is not registered in your MainActivity.onCreate"),
+            )
             return
         }
         if (eventSender == null) {
-            eventSender = object : EventSender {
-                private val rctDeviceEventEmitter = reactContext
-                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+            eventSender =
+                object : EventSender {
+                    private val rctDeviceEventEmitter =
+                        reactContext
+                            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
 
-                override fun sendEvent(eventName: String, params: WritableMap?) {
-                    rctDeviceEventEmitter
-                        .emit(eventName, params)
+                    override fun sendEvent(
+                        eventName: String,
+                        params: WritableMap?,
+                    ) {
+                        rctDeviceEventEmitter
+                            .emit(eventName, params)
+                    }
                 }
-            }
         }
         RNIapActivityListener.amazonListener?.eventSender = eventSender
         RNIapActivityListener.amazonListener?.purchasingService = purchasingService
@@ -109,7 +114,11 @@ class RNIapAmazonModule(
     }
 
     @ReactMethod
-    fun getItemsByType(type: String?, skuArr: ReadableArray, promise: Promise) {
+    fun getItemsByType(
+        type: String?,
+        skuArr: ReadableArray,
+        promise: Promise,
+    ) {
         val productSkus: MutableSet<String> = HashSet()
         var ii = 0
         val skuSize = skuArr.size()
@@ -171,7 +180,10 @@ class RNIapAmazonModule(
      * From https://amazon.developer.forums.answerhub.com/questions/175720/how-to-open-store-subscription-screen-directly-use.html?childToView=179402#answer-179402
      */
     @ReactMethod
-    fun deepLinkToSubscriptions(isAmazonDevice: Boolean, promise: Promise) {
+    fun deepLinkToSubscriptions(
+        isAmazonDevice: Boolean,
+        promise: Promise,
+    ) {
         if (isAmazonDevice) {
             val intent =
                 Intent("android.intent.action.VIEW", Uri.parse("amzn://apps/library/subscriptions"))
@@ -210,22 +222,26 @@ class RNIapAmazonModule(
 
         const val TAG = "RNIapAmazonModule"
     }
+
     init {
-        val lifecycleEventListener: LifecycleEventListener = object : LifecycleEventListener {
-            /**
-             * From https://developer.amazon.com/docs/in-app-purchasing/iap-implement-iap.html#getpurchaseupdates-responses
-             * We should fetch updates on resume
-             */
-            override fun onHostResume() {
-                if (RNIapActivityListener.hasListener) {
-                    purchasingService.getUserData()
-                    purchasingService.getPurchaseUpdates(false)
+        val lifecycleEventListener: LifecycleEventListener =
+            object : LifecycleEventListener {
+                /**
+                 * From https://developer.amazon.com/docs/in-app-purchasing/iap-implement-iap.html#getpurchaseupdates-responses
+                 * We should fetch updates on resume
+                 */
+                override fun onHostResume() {
+                    if (RNIapActivityListener.hasListener) {
+                        purchasingService.getUserData()
+                        purchasingService.getPurchaseUpdates(false)
+                    }
+                }
+
+                override fun onHostPause() {}
+
+                override fun onHostDestroy() {
                 }
             }
-            override fun onHostPause() {}
-            override fun onHostDestroy() {
-            }
-        }
         reactContext.addLifecycleEventListener(lifecycleEventListener)
     }
 }

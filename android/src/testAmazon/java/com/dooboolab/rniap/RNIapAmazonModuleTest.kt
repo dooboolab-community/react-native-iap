@@ -26,7 +26,6 @@ import org.junit.Test
 import java.util.*
 
 class RNIapAmazonModuleTest {
-
     @MockK
     lateinit var context: ReactApplicationContext
 
@@ -77,33 +76,38 @@ class RNIapAmazonModuleTest {
 
     @Test
     fun `Purchase Item`() {
-        val purchaseResponse = mockk<PurchaseResponse>() {
-            every { requestId } returns RequestId.fromString("0")
+        val purchaseResponse =
+            mockk<PurchaseResponse> {
+                every { requestId } returns RequestId.fromString("0")
 
-            every { requestStatus } returns PurchaseResponse.RequestStatus.SUCCESSFUL
-            val mReceipt = mockk<Receipt>(relaxed = true) {
-                every { sku } returns "mySku"
-                every { purchaseDate } returns Date()
-                every { receiptId } returns "rId"
+                every { requestStatus } returns PurchaseResponse.RequestStatus.SUCCESSFUL
+                val mReceipt =
+                    mockk<Receipt>(relaxed = true) {
+                        every { sku } returns "mySku"
+                        every { purchaseDate } returns Date()
+                        every { receiptId } returns "rId"
+                    }
+                every { receipt } returns mReceipt
+                val mUserData =
+                    mockk<UserData>(relaxed = true) {
+                        every { userId } returns "uid1"
+                    }
+                every { userData } returns mUserData
             }
-            every { receipt } returns mReceipt
-            val mUserData = mockk<UserData>(relaxed = true) {
-                every { userId } returns "uid1"
-            }
-            every { userData } returns mUserData
-        }
 
         every { eventSender.sendEvent(any(), any()) } just Runs
 
         every { purchasingServiceProxy.purchase(any()) } answers {
             listener.onPurchaseResponse(
                 purchaseResponse,
-            ); RequestId.fromString("0")
+            )
+            RequestId.fromString("0")
         }
 
-        val itemsMap = mockk<WritableMap>(relaxed = true) {
-            every { getString("productId") } returns "mySku"
-        }
+        val itemsMap =
+            mockk<WritableMap>(relaxed = true) {
+                every { getString("productId") } returns "mySku"
+            }
         mockkStatic(Arguments::class)
 
         every { Arguments.createMap() } returns itemsMap
