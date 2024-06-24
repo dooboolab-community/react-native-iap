@@ -30,7 +30,7 @@ class LatestPromiseKeeper {
         }
 
         // Clear the latestPromise after rejecting it
-        latestPromise.atomically { $0 = nil }
+        clearLatestPromiseAndRequest()
     }
 
     func resolveIfRequestMatches(matchingRequest: SKProductsRequest, items: [[String: Any?]], operation: (RCTPromiseResolveBlock, [[String: Any?]]) -> Void) {
@@ -43,5 +43,11 @@ class LatestPromiseKeeper {
                 operation(resolve, items)
             }
         }
+        clearLatestPromiseAndRequest()
+    }
+
+    private func clearLatestPromiseAndRequest() {
+        latestPromise.atomically { $0 = nil }
+        latestRequest.atomically { $0 = nil }
     }
 }
