@@ -29,7 +29,6 @@ class LatestPromiseKeeper {
             ongoingRequest = nil
         }
 
-        // Clear the latestPromise after rejecting it
         clearLatestPromiseAndRequest()
     }
 
