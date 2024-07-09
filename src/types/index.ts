@@ -92,6 +92,8 @@ export interface ProductPurchase {
   userMarketplaceAmazon?: string;
   userJsonAmazon?: string;
   isCanceledAmazon?: boolean;
+  //UserChoiceBilling
+  externalTransactionToken?: string;
 }
 
 export interface PurchaseResult {
@@ -254,6 +256,7 @@ export interface SubscriptionOffer {
 
 export interface RequestSubscriptionAndroid extends RequestPurchaseBaseAndroid {
   purchaseTokenAndroid?: string;
+  externalTransactionID?: string;
   prorationModeAndroid?: ProrationModesAndroid;
   subscriptionOffers: SubscriptionOffer[];
 }

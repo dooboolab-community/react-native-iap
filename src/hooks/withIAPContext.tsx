@@ -4,6 +4,7 @@ import {
   promotedProductListener,
   purchaseErrorListener,
   purchaseUpdatedListener,
+  userChoiceBillingUpdateListener,
   transactionListener,
 } from '../eventEmitter';
 import {IapIos, initConnection} from '../iap';
@@ -71,6 +72,9 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
 
     const [currentPurchaseError, setCurrentPurchaseError] =
       useState<PurchaseError>();
+      const [alternativePurchase, setAlternativePurchase] = useState<Purchase>();
+    const [alternativePurchaseError, setAlternativePurchaseError] =
+      useState<PurchaseError>();
 
     const [initConnectionError, setInitConnectionError] = useState<Error>();
 
@@ -85,6 +89,8 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         currentPurchase,
         currentTransaction,
         currentPurchaseError,
+        alternativePurchase,
+        alternativePurchaseError,
         initConnectionError,
         setProducts,
         setSubscriptions,
@@ -92,6 +98,8 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         setAvailablePurchases,
         setCurrentPurchase,
         setCurrentPurchaseError,
+        setAlternativePurchase,
+        setAlternativePurchaseError,
       }),
       [
         connected,
@@ -103,6 +111,8 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         currentPurchase,
         currentTransaction,
         currentPurchaseError,
+        alternativePurchase,
+        alternativePurchaseError,
         initConnectionError,
         setProducts,
         setSubscriptions,
@@ -110,6 +120,8 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         setAvailablePurchases,
         setCurrentPurchase,
         setCurrentPurchaseError,
+        setAlternativePurchase,
+        setAlternativePurchaseError,
       ],
     );
 
@@ -131,6 +143,13 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         async (purchase: ProductPurchase | SubscriptionPurchase) => {
           setCurrentPurchaseError(undefined);
           setCurrentPurchase(purchase);
+        },
+      );
+
+      const userChoiceBillingUpdateSubscription = userChoiceBillingUpdateListener(
+        async (purchase: ProductPurchase | SubscriptionPurchase) => {
+          setAlternativePurchaseError(undefined);
+          setAlternativePurchase(purchase);
         },
       );
 
@@ -162,6 +181,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         purchaseErrorSubscription.remove();
         promotedProductSubscription?.remove();
         transactionUpdateSubscription?.remove();
+        userChoiceBillingUpdateSubscription?.remove();
       };
     }, [connected]);
 
