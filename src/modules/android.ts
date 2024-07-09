@@ -9,9 +9,9 @@ import {
   InstallSourceAndroid,
   Product,
   ProductType,
-  ProrationModesAndroid,
   Purchase,
   PurchaseResult,
+  ReplacementModesAndroid,
   Sku,
 } from '../types';
 import type * as Android from '../types/android';
@@ -39,7 +39,7 @@ export type BuyItemByType = (
   type: string,
   skus: Sku[],
   purchaseToken: string | undefined,
-  prorationMode: ProrationModesAndroid | -1,
+  replacementModeAndroid: ReplacementModesAndroid | -1,
   obfuscatedAccountId: string | undefined,
   obfuscatedProfileId: string | undefined,
   subscriptionOffers: string[],
