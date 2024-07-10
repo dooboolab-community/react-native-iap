@@ -797,7 +797,7 @@ export const requestSubscription = (
           const {
             subscriptionOffers,
             purchaseTokenAndroid,
-            prorationModeAndroid = -1,
+            replacementModeAndroid = -1,
             obfuscatedAccountIdAndroid,
             obfuscatedProfileIdAndroid,
             isOfferPersonalized,
@@ -807,7 +807,7 @@ export const requestSubscription = (
             ANDROID_ITEM_TYPE_SUBSCRIPTION,
             subscriptionOffers?.map((so) => so.sku),
             purchaseTokenAndroid,
-            prorationModeAndroid,
+            replacementModeAndroid,
             obfuscatedAccountIdAndroid,
             obfuscatedProfileIdAndroid,
             subscriptionOffers?.map((so) => so.offerToken),
