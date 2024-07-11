@@ -798,7 +798,7 @@ export const requestSubscription = (
           const {
             subscriptionOffers,
             purchaseTokenAndroid,
-            externalTransactionID,
+            externalTransactionIdAndroid,
             replacementModeAndroid = -1,
             obfuscatedAccountIdAndroid,
             obfuscatedProfileIdAndroid,
@@ -809,7 +809,7 @@ export const requestSubscription = (
             ANDROID_ITEM_TYPE_SUBSCRIPTION,
             subscriptionOffers?.map((so) => so.sku),
             purchaseTokenAndroid,
-            externalTransactionID,
+            externalTransactionIdAndroid,
             replacementModeAndroid,
             obfuscatedAccountIdAndroid,
             obfuscatedProfileIdAndroid,

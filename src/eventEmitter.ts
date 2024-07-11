@@ -65,7 +65,7 @@ export const purchaseUpdatedListener = (
   return emitterSubscription;
 };
 
-export const userChoiceBillingUpdateListener = (
+export const userChoiceBillingUpdateListenerAndroid = (
   listener: (event: Purchase) => void,
 ) => {
   const eventEmitter = new NativeEventEmitter(getNativeModule());

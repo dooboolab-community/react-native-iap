@@ -4,7 +4,7 @@ import {
   promotedProductListener,
   purchaseErrorListener,
   purchaseUpdatedListener,
-  userChoiceBillingUpdateListener,
+  userChoiceBillingUpdateListenerAndroid,
   transactionListener,
 } from '../eventEmitter';
 import {IapIos, initConnection} from '../iap';
@@ -146,7 +146,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         },
       );
 
-      const userChoiceBillingUpdateSubscription = userChoiceBillingUpdateListener(
+      const userChoiceBillingUpdateSubscription = userChoiceBillingUpdateListenerAndroid(
         async (purchase: ProductPurchase | SubscriptionPurchase) => {
           setAlternativePurchaseError(undefined);
           setAlternativePurchase(purchase);

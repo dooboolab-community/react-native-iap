@@ -93,7 +93,7 @@ export interface ProductPurchase {
   userJsonAmazon?: string;
   isCanceledAmazon?: boolean;
   //UserChoiceBilling
-  externalTransactionToken?: string;
+  externalTransactionTokenAndroid?: string;
 }
 
 export interface PurchaseResult {
@@ -256,7 +256,7 @@ export interface SubscriptionOffer {
 
 export interface RequestSubscriptionAndroid extends RequestPurchaseBaseAndroid {
   purchaseTokenAndroid?: string;
-  externalTransactionID?: string;
+  externalTransactionIdAndroid?: string;
   replacementModeAndroid?: ReplacementModesAndroid;
   subscriptionOffers: SubscriptionOffer[];
 }
