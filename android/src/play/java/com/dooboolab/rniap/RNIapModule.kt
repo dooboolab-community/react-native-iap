@@ -43,7 +43,7 @@ class RNIapModule(
     private val builder: BillingClient.Builder = BillingClient.newBuilder(reactContext).enablePendingPurchases(),
     private val googleApiAvailability: GoogleApiAvailability = GoogleApiAvailability.getInstance(),
 ) : ReactContextBaseJavaModule(reactContext),
-    PurchasesUpdatedListener, 
+    PurchasesUpdatedListener,
     UserChoiceBillingListener {
     private var billingClientCache: BillingClient? = null
     private val skus: MutableMap<String, ProductDetails> = mutableMapOf()
