@@ -28,6 +28,7 @@ type IAPContextType = {
   currentTransaction?: TransactionSk2;
   currentPurchaseError?: PurchaseError;
   initConnectionError?: Error;
+  setConnected: (connected: boolean) => void;
   setProducts: (products: Product[]) => void;
   setSubscriptions: (subscriptions: Subscription[]) => void;
   setPurchaseHistory: (purchaseHistory: Purchase[]) => void;
@@ -86,6 +87,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         currentTransaction,
         currentPurchaseError,
         initConnectionError,
+        setConnected,
         setProducts,
         setSubscriptions,
         setPurchaseHistory,
@@ -104,6 +106,7 @@ export function withIAPContext<T>(Component: React.ComponentType<T>) {
         currentTransaction,
         currentPurchaseError,
         initConnectionError,
+        setConnected,
         setProducts,
         setSubscriptions,
         setPurchaseHistory,

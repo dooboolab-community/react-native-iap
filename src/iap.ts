@@ -41,6 +41,7 @@ import {
   SubscriptionPlatform,
   SubscriptionPurchase,
 } from './types';
+import { useIAPContext } from './hooks/withIAPContext';
 
 export {IapAndroid, IapAmazon, IapIos, IapIosSk2, isIosStorekit2};
 
@@ -123,8 +124,12 @@ const App = () => {
 ```
  * @returns {Promise<void>}
  */
-export const endConnection = (): Promise<boolean> =>
-  getNativeModule().endConnection();
+export const endConnection = (): Promise<boolean> => {
+  const { setConnected } = useIAPContext();
+  
+  setConnected(false);
+  return getNativeModule().endConnection();
+}
 
 /**
  * Consume all 'ghost' purchases (that is, pending payment that already failed but is still marked as pending in Play Store cache). Android only.
