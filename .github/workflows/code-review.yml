@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   run_code_review:
+    if: github.repository_owner == github.actor  # This ensures the job only runs for PRs from the same repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
