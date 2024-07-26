@@ -544,15 +544,21 @@ requestPurchase(
 ## Usage
 
 ```tsx
-import React, {useCallback} from 'react';
+import React, { useState, useEffect } from 'react';
 import {Button} from 'react-native';
 import {requestPurchase, Product, Sku, getProducts} from 'react-native-iap';
 
 const App = () => {
-  const products = useCallback(
-    async () => getProducts({skus:['com.example.product']}),
-    [],
-  );
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+        const productList = await getProducts({skus:['com.example.product']});
+        setProducts(productList);
+    }
+
+    fetchProducts();
+  }, []);
 
   const handlePurchase = async (sku: Sku) => {
     await requestPurchase({sku});
