@@ -146,14 +146,14 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
         reject: @escaping RCTPromiseRejectBlock = { _, _, _ in }
     ) {
         removeTransactionObserver()
-        stopObserving()
-        rejectAllPendingPromises()
-        receiptBlock = nil
-        validProducts.atomically { $0.removeAll() }
-        promotedPayment = nil
-        promotedProduct = nil
-        productsRequest = nil
-        countPendingTransaction = 0
+        // stopObserving()
+        // rejectAllPendingPromises()
+        // receiptBlock = nil
+        // validProducts.atomically { $0.removeAll() }
+        // promotedPayment = nil
+        // promotedProduct = nil
+        // productsRequest = nil
+        // countPendingTransaction = 0
         resolve(nil)
     }
     @objc public func getItems(
