@@ -52,6 +52,7 @@ export const useIAP = (): IAP_STATUS => {
     currentPurchase,
     currentPurchaseError,
     initConnectionError,
+    setConnected,
     setProducts,
     setSubscriptions,
     setAvailablePurchases,
@@ -119,7 +120,10 @@ export const useIAP = (): IAP_STATUS => {
   );
 
   useEffect(() => {
+    setConnected(true);
+
     return () => {
+      setConnected(false);
       setCurrentPurchaseError(undefined);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
