@@ -67,6 +67,12 @@ a link to your website. [Buy me a coffee](https://www.buymeacoffee.com/dooboolab
 [Become a sponsor](https://opencollective.com/react-native-iap#sponsor).
 <a href="https://opencollective.com/react-native-iap#sponsors" target="_blank"><img src="https://opencollective.com/react-native-iap/sponsors.svg?width=890" /></a>
 
+## Need Help Implementing/Debugging/Testing your IAP project?
+
+Please take a look at [iap.dev/consulting](https://iap.dev/consulting). At iap.dev, we offer IAP consulting services for all platforms. Please [Contact Us](https://console.iap.dev/contact-us).
+
+Note: This service is not affiliated with dooboolab. It was created by [andresesfm](https://github.com/andresesfm) who has contributed and provided support for this project
+
 ### Backers
 
 Please be our [Backers](https://opencollective.com/react-native-iap#backer).
