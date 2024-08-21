@@ -916,7 +916,7 @@ export const deepLinkToSubscriptions = ({
     Platform.select({
       ios: async () => {
         if(isIosStorekit2()) {
-          IapIosSk2.showManageSubscriptions()
+          IapIosSk2.showManageSubscriptions();
         } else{
           IapIos.deepLinkToSubscriptionsIos();
         }
