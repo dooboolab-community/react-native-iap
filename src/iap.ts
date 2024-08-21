@@ -915,7 +915,11 @@ export const deepLinkToSubscriptions = ({
   return (
     Platform.select({
       ios: async () => {
-        IapIos.deepLinkToSubscriptionsIos();
+        if(isIosStorekit2()) {
+          IapIosSk2.showManageSubscriptions()
+        } else{
+          IapIos.deepLinkToSubscriptionsIos();
+        }
       },
       android: async () => {
         if (isAmazon) {
