@@ -29,13 +29,54 @@ Start with installing the package:
 npm install react-native-iap
 ```
 
+### `Expo`
+
+> This package cannot be used in the "Expo Go" app because [it requires custom native code](https://docs.expo.io/workflow/customizing/).
+
+After installing this npm package, add the [config plugin](https://docs.expo.io/guides/config-plugins/) to the [`plugins`](https://docs.expo.io/versions/latest/config/app/#plugins) array of your `app.json` or `app.config.js`.
+
+```json
+{
+  "expo": {
+    "plugins": ["react-native-iap"]
+  }
+}
+```
+
+#### Config plugins options
+
+> Note: every time you change the plugins or options you'll need to rebuild (and `prebuild`) the native app as described in the ["Adding custom native code"](https://docs.expo.io/workflow/customizing/) guide.
+
+You can optionally provide the following [config plugin options](https://docs.expo.dev/config-plugins). If no config plugin options are included, the default values from the options will be added.
+
+##### Android payment provider
+
+You can support `Play Store`, `Amazon AppStore` or `both`:
+
+- `paymentProvider` (_string_): payment provider to configure: `Play Store` (default), `Amazon AppStore`, `both`
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "react-native-iap",
+        {
+          "paymentProvider": "both"
+        }
+      ]
+    ]
+  }
+}
+```
+
 ### `iOS`
 
 ```bash
 cd ios; pod install; cd -
 ```
 
-> Note: For iOS 12.x, set project in Xcode as below:   
+> Note: For iOS 12.x, set project in Xcode as below:
 > Build Phases -> Link Binary With Libraries -> +(Add) -> SwiftUI.framework, Optional
 
 You can now get started hacking!
@@ -109,7 +150,7 @@ android {
 }
 ```
 
-And your are now good to go!
+And you are now good to go!
 
 ## Manual installation
 
