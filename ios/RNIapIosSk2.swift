@@ -1005,6 +1005,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
             switch rs {
             case .success: return "success"
             case .userCancelled: return "userCancelled"
+
             default:
                 return nil
             }

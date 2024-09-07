@@ -743,8 +743,10 @@ class RNIapIos: RCTEventEmitter, SKRequestDelegate, SKPaymentTransactionObserver
                 switch discount.type {
                 case SKProductDiscount.Type.introductory:
                     discountType = "INTRODUCTORY"
+
                 case SKProductDiscount.Type.subscription:
                     discountType = "SUBSCRIPTION"
+
                 default:
                     discountType = ""
                 }

@@ -56,7 +56,7 @@ jobs:
         run: brew install swiftlint
 
       - name: SwiftLint
-        run: swiftlint lint --fix --format --path ios/*.swift --config .swiftlint.yml
+        run: yarn lint:swift
 
       - name: Verify no files have changed after auto-fix
         run: git diff --exit-code HEAD '*.swift'
