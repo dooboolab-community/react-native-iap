@@ -106,15 +106,20 @@ class App extends Component {
 Then define the method like below and call it when user press the button.
 
 ```tsx
-import { requestPurchase, requestSubscription } from 'react-native-iap';
+import { Platform } from 'react-native';
+import { requestPurchase, requestSubscription, RequestPurchase } from 'react-native-iap';
 ...
 class App extends Component {
   purchase = async (sku: string) => {
     try {
-      await requestPurchase({
+      let purchaseParams: RequestPurchase = {
         sku,
         andDangerouslyFinishTransactionAutomaticallyIOS: false,
-      });
+      };
+      if (Platform.OS === 'android') {
+        purchaseParams = { skus: [sku] };
+      }
+      await requestPurchase(purchaseParams);
     } catch (err) {
       console.warn(err.code, err.message);
     }
