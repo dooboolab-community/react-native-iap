@@ -19,7 +19,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 34
         versionName "1.16.2"
-        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()`;
+        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+        enableAmazonDrm "boolean", "ENABLE_AMAZON_DRM", getExtOrDefault("enableAmazonDrm")`;
 
 const appBuildGradleWithPlayStoreIAP = `
 apply plugin: "com.android.application"
