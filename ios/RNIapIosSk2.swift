@@ -718,6 +718,7 @@ class RNIapIosSk2iOS15: Sk2Delegate {
 
                     var result: Product.PurchaseResult?
 
+                    #if swift(>=5.9)
                     if #available(iOS 17.0, tvOS 17.0, *) {
                         result = try await product.purchase(confirmIn: windowScene, options: options)
                     } else {
@@ -725,6 +726,10 @@ class RNIapIosSk2iOS15: Sk2Delegate {
                         result = try await product.purchase(options: options)
                         #endif
                     }
+                    #elseif !os(visionOS)
+                    result = try await product.purchase(options: options)
+                    #endif
+
                     switch result {
                     case .success(let verification):
                         debugMessage("Purchase Successful")
