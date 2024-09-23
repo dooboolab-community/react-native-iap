@@ -20,7 +20,7 @@ android {
         versionCode 34
         versionName "1.16.2"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
-        buildConfigField "boolean", "ENABLE_AMAZON_DRM", getExtOrDefault("enableAmazonDrm")`;
+        buildConfigField "boolean", "IS_AMAZON_DRM_ENABLED", getExtOrDefault("isAmazonDrmEnabled")`;
 
 const appBuildGradleWithPlayStoreIAP = `
 apply plugin: "com.android.application"
@@ -45,7 +45,7 @@ missingDimensionStrategy "store", "play"
         versionCode 34
         versionName "1.16.2"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
-        buildConfigField "boolean", "ENABLE_AMAZON_DRM", getExtOrDefault("enableAmazonDrm")`;
+        buildConfigField "boolean", "IS_AMAZON_DRM_ENABLED", getExtOrDefault("isAmazonDrmEnabled")`;
 
 const appBuildGradleWithAmazonStoreIAP = `
 apply plugin: "com.android.application"

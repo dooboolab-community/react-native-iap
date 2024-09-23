@@ -57,7 +57,7 @@ class RNIapAmazonModule(
 
     @ReactMethod
     fun verifyLicense(promise: Promise) {
-        if (BuildConfig.ENABLE_AMAZON_DRM) {
+        if (BuildConfig.IS_AMAZON_DRM_ENABLED) {
             Log.d(TAG, "Amazon's DRM is enabled")
             try {
                 LicensingService.verifyLicense(reactApplicationContext) { licenseResponse ->
