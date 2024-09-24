@@ -134,6 +134,18 @@ export const flushFailedPurchasesCachedAsPendingAndroid =
   (): Promise<boolean> =>
     getAndroidModule().flushFailedPurchasesCachedAsPending();
 
+export const getStorefront = (): Promise<string> => {
+  return (
+    Platform.select({
+      android: async () => {
+        return await RNIapModule.getStorefront();
+      },
+      ios: async () => {
+        return await RNIapIosSk2.getStorefront();
+      },
+    }) || (() => Promise.reject(new Error('Unsupported Platform')))
+  )();
+};
 /**
  * Get a list of products (consumable and non-consumable items, but not subscriptions)
  ## Usage
@@ -331,7 +343,7 @@ Note that this is only for backaward compatiblity. It won't publish to transacti
 @param {automaticallyFinishRestoredTransactions}:boolean. (IOS Sk1 only) When `true`, all the transactions that are returned are automatically
 finished. This means that if you call this method again you won't get the same result on the same device. On the other hand, if `false` you'd
 have to manually finish the returned transaction once you have delivered the content to your user.
-@param {onlyIncludeActiveItems}:boolean. (IOS Sk2 only). Defaults to false, meaning that it will return one transaction per item purchased. 
+@param {onlyIncludeActiveItems}:boolean. (IOS Sk2 only). Defaults to false, meaning that it will return one transaction per item purchased.
 @See https://developer.apple.com/documentation/storekit/transaction/3851204-currententitlements for details
  */
 export const getPurchaseHistory = ({
@@ -457,7 +469,7 @@ const App = () => {
 ```
 @param {alsoPublishToEventListener}:boolean When `true`, every element will also be pushed to the purchaseUpdated listener.
 Note that this is only for backaward compatiblity. It won't publish to transactionUpdated (Storekit2) Defaults to `false`
-@param {onlyIncludeActiveItems}:boolean. (IOS Sk2 only). Defaults to true, meaning that it will return the transaction if suscription has not expired. 
+@param {onlyIncludeActiveItems}:boolean. (IOS Sk2 only). Defaults to true, meaning that it will return the transaction if suscription has not expired.
 @See https://developer.apple.com/documentation/storekit/transaction/3851204-currententitlements for details
  *
  */

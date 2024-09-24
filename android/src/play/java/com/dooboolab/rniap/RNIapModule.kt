@@ -7,6 +7,10 @@ import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.BillingConfigResponseListener
+import com.android.billingclient.api.GetBillingConfigParams
+import com.android.billingclient.api.GetBillingConfigParams.Builder
+import com.android.billingclient.api.BillingConfig
 import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.ConsumeResponseListener
 import com.android.billingclient.api.ProductDetails
@@ -706,6 +710,21 @@ class RNIapModule(
 
     @ReactMethod
     fun getPackageName(promise: Promise) = promise.resolve(reactApplicationContext.packageName)
+
+    @ReactMethod
+    fun getStorefront(promise: Promise) {
+        ensureConnection(
+            promise,
+        ) { billingClient ->
+            billingClient.getBillingConfigAsync(GetBillingConfigParams.newBuilder().build(), BillingConfigResponseListener() { result: BillingResult, config: BillingConfig? ->
+                if (result.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    promise.safeResolve(config?.getCountryCode())
+                } else {
+                    promise.safeReject(result.getResponseCode(), result.getDebugMessage())
+                }
+            })
+        }
+    }
 
     private fun sendEvent(
         reactContext: ReactContext,
