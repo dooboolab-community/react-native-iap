@@ -6,7 +6,7 @@
 [![Next Version](https://img.shields.io/npm/v/react-native-iap/next)](https://npmjs.org/package/react-native-iap)
 [![Download](http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
 [![Backers and Sponsors](https://img.shields.io/opencollective/all/react-native-iap.svg)](https://opencollective.com/react-native-iap)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%hyochan%2Freact-native-iap.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%hyochan%2Freact-native-iap?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhyochan%2Freact-native-iap.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhyochan%2Freact-native-iap?ref=badge_shield&issueType=license)
 
 ---
 
@@ -87,4 +87,4 @@ Thank you to all the people who helped to maintain and upgrade this project!
 
 ---
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%hyochan%2Freact-native-iap.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%hyochan%2Freact-native-iap?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhyochan%2Freact-native-iap.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhyochan%2Freact-native-iap?ref=badge_large&issueType=license)
