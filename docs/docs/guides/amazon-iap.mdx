@@ -46,6 +46,22 @@ Add the code below in `android/app/proguard-rules.pro`:
 + -keepattributes *Annotation*
 ```
 
+## Amazon's DRM protection
+
+This package includes Amazon's DRM (Digital Rights Management) protection enabled by default. Amazon's DRM allows license verification for your app, ensuring compliance and protection of your digital content. For more details, refer to the following resources:
+1. [DRM Overview](https://developer.amazon.com/docs/in-app-purchasing/drm-overview.html)
+2. [DRM for Android](https://developer.amazon.com/docs/in-app-purchasing/drm-android.html)
+
+### Disabling Amazon's DRM
+
+In certain cases, you may prefer not to use Amazon's DRM solution and instead implement your own custom DRM. To disable Amazon's DRM, simply add the following property to your project's `gradle.properties` file:
+
+```java
+isAmazonDrmEnabled=false
+```
+
+This setting overrides the default behavior, disabling Amazon's DRM for your app.
+
 ## Testing in development
 
 To run the example app, with the amazon provider, run:
