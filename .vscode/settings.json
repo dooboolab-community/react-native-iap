@@ -24,6 +24,7 @@
   "typescript.preferences.importModuleSpecifier": "relative",
   "prettier.configPath": ".prettierrc.js",
   "cSpell.words": [
+    "crossplatformkorea",
     "hyochan"
   ]
 }

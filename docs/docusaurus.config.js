@@ -2,10 +2,10 @@
 const config = {
   title: 'React Native IAP',
   tagline: 'React Native In App Purchase',
-  url: 'https://react-native-iap.dooboolab.com',
+  url: 'https://react-native-iap.hyo.dev',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
-  organizationName: 'dooboolab',
+  organizationName: 'hyochan',
   projectName: 'react-native-iap',
   /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
   themeConfig: {
@@ -20,7 +20,7 @@ const config = {
       },
       items: [
         {
-          href: 'https://github.com/dooboolab-community/react-native-iap',
+          href: 'https://github.com/hyochan/react-native-iap',
           position: 'right',
           className: 'header-github-link',
           'aria-label': 'GitHub repository',
@@ -35,11 +35,11 @@ const config = {
           items: [
             {
               label: 'Get started',
-              to: 'https://react-native-iap.dooboolab.com/docs/get-started',
+              to: 'https://react-native-iap.hyo.dev/docs/get-started',
             },
             {
               label: 'Installation',
-              to: 'https://react-native-iap.dooboolab.com/docs/installation',
+              to: 'https://react-native-iap.hyo.dev/docs/installation',
             },
           ],
         },
@@ -48,19 +48,19 @@ const config = {
           items: [
             {
               label: 'Issues',
-              to: 'https://github.com/dooboolab-community/react-native-iap/issues',
+              to: 'https://github.com/hyochan/react-native-iap/issues',
             },
             {
               label: 'Discussions',
-              to: 'https://github.com/dooboolab-community/react-native-iap/discussions',
+              to: 'https://github.com/hyochan/react-native-iap/discussions',
             },
             {
               label: 'Pull requests',
-              to: 'https://github.com/dooboolab-community/react-native-iap/pulls',
+              to: 'https://github.com/hyochan/react-native-iap/pulls',
             },
             {
               label: 'Changelog',
-              to: 'https://github.com/dooboolab-community/react-native-iap/releases',
+              to: 'https://github.com/hyochan/react-native-iap/releases',
             },
           ],
         },
@@ -70,10 +70,6 @@ const config = {
             {
               label: 'Open Collective',
               to: 'https://opencollective.com/react-native-iap',
-            },
-            {
-              label: 'Slack',
-              to: 'https://dooboolab.com/joinSlack',
             },
           ],
         },
@@ -89,7 +85,7 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
-            'https://github.com/dooboolab-community/react-native-iap/edit/main/docs/',
+            'https://github.com/hyochan/react-native-iap/edit/main/docs/',
           remarkPlugins: [
             [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
           ],

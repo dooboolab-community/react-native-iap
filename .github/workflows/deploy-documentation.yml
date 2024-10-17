@@ -43,4 +43,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/build
           publish_branch: gh-pages
-          cname: react-native-iap.dooboolab.com
+          cname: react-native-iap.hyo.dev

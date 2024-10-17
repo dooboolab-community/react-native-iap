@@ -210,8 +210,8 @@ export const validateReceiptIos = async ({
 /**
  * Clear Transaction (iOS only)
  *   Finish remaining transactions. Related to issue #257 and #801
- *     link : https://github.com/dooboolab-community/react-native-iap/issues/257
- *            https://github.com/dooboolab-community/react-native-iap/issues/801
+ *     link : https://github.com/hyochan/react-native-iap/issues/257
+ *            https://github.com/hyochan/react-native-iap/issues/801
  * @returns {Promise<void>}
  */
 export const clearTransactionIOS = (): Promise<void> =>

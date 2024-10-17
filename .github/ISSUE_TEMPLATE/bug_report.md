@@ -6,7 +6,7 @@ labels: 'bug'
 assignees: ''
 ---
 
-> Please use the [Discussion board](https://github.com/dooboolab-community/react-native-iap/discussions) if you want to get some help. Please use issues to report bugs.
+> Please use the [Discussion board](https://github.com/hyochan/react-native-iap/discussions) if you want to get some help. Please use issues to report bugs.
 
 **Description**
 

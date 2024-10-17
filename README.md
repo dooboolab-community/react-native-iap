@@ -6,17 +6,17 @@
 [![Next Version](https://img.shields.io/npm/v/react-native-iap/next)](https://npmjs.org/package/react-native-iap)
 [![Download](http://img.shields.io/npm/dm/react-native-iap.svg?style=flat-square)](https://npmjs.org/package/react-native-iap)
 [![Backers and Sponsors](https://img.shields.io/opencollective/all/react-native-iap.svg)](https://opencollective.com/react-native-iap)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%hyochan%2Freact-native-iap.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%hyochan%2Freact-native-iap?ref=badge_shield)
 
 ---
 
 ## Announcement
 
-Announcing the Migration of react-native-iap to an Expo Module for Improved Maintenance and Compatibility in [discussion #2754](https://github.com/dooboolab-community/react-native-iap/discussions/2754).
+Announcing the Migration of react-native-iap to an Expo Module for Improved Maintenance and Compatibility in [discussion #2754](https://github.com/hyochan/react-native-iap/discussions/2754).
 
 ## Documentation
 
-Read the [documentation](https://react-native-iap.dooboolab.com). See the [troubleshooting](https://react-native-iap.dooboolab.com/docs/guides/troubleshooting#common-issues) for the common issues to avoid.
+Read the [documentation](https://react-native-iap.hyochan.dev). See the [troubleshooting](https://react-native-iap.hyochan.dev/docs/guides/troubleshooting#common-issues) for the common issues to avoid.
 
 ## Logs
 
@@ -36,11 +36,11 @@ Read the [documentation](https://react-native-iap.dooboolab.com). See the [troub
 
 - Version `8.0.0` is currently in release candidate. The module is completely rewritten with `Kotlin` and `Swift` for maintenenance issue by [andresesfm](https://github.com/andresesfm) 🔆. You may install this for early preview.
 
-- React Native IAP hook is out. You can see [medium post](https://medium.com/dooboolab-community/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it.
+- React Native IAP hook is out. You can see [medium post](https://medium.com/hyochan/announcing-react-native-iap-hooks-96c7ffd3f19a) on how to use it.
 
-- The `react-native-iap` module hasn't been maintained well recently. We are thinking of participating again and make the module healthier. Please refer to [2021 Maintenance plan](https://github.com/dooboolab-community/react-native-iap/issues/1241) and share with us how you or your organization is using it. Happy new year 🎉
+- The `react-native-iap` module hasn't been maintained well recently. We are thinking of participating again and make the module healthier. Please refer to [2021 Maintenance plan](https://github.com/hyochan/react-native-iap/issues/1241) and share with us how you or your organization is using it. Happy new year 🎉
 
-  - The sample code is out in [Sponsor page](https://github.com/hyochan/dooboolab.com/blob/main/src/components/pages/Sponsor.tsx) in [dooboolab.com](https://github.com/hyochan/dooboolab.com) repository which sadly is rejected by Apple because of lacking product features. I will work on another example project to support this module. More information in [#1241 commment](https://github.com/dooboolab-community/react-native-iap/issues/1241#issuecomment-798540785).
+  - The sample code is out in [crossplatformkorea/CPK/pull/12](https://github.com/crossplatformkorea/CPK/pull/12). More information in [#1241 commment](https://github.com/hyochan/react-native-iap/issues/1241#issuecomment-798540785).
 
 ## Configuration of Play Store & App Store Connect
 
@@ -56,14 +56,14 @@ Follow [this guide](./IapExample/README.md) to get the example running.
 
 |                                                                       [NAMI](https://namiml.com)                                                                       |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| <a href="https://namiml.com"><img src="https://github.com/dooboolab-community/react-native-iap/assets/27461460/89d71f61-bb73-400a-83bd-fe0f96eb726e" width="450"/></a> |
+| <a href="https://namiml.com"><img src="https://github.com/hyochan/react-native-iap/assets/27461460/89d71f61-bb73-400a-83bd-fe0f96eb726e" width="450"/></a> |
 
 ## Past Sponsors
 
-<a href="https://www.revenuecat.com"><img src="https://github.com/dooboolab-community/react-native-iap/assets/27461460/1e387a47-afe0-4b85-ad78-1064ca6623fa" width="200"/></a>
+<a href="https://www.revenuecat.com"><img src="https://github.com/hyochan/react-native-iap/assets/27461460/1e387a47-afe0-4b85-ad78-1064ca6623fa" width="200"/></a>
 
 Support this project by becoming a sponsor. Your logo will show up here with
-a link to your website. [Buy me a coffee](https://www.buymeacoffee.com/dooboolab) or
+a link to your website. [Buy me a coffee](https://www.buymeacoffee.com/hyochan) or
 [Become a sponsor](https://opencollective.com/react-native-iap#sponsor).
 <a href="https://opencollective.com/react-native-iap#sponsors" target="_blank"><img src="https://opencollective.com/react-native-iap/sponsors.svg?width=890" /></a>
 
@@ -71,7 +71,7 @@ a link to your website. [Buy me a coffee](https://www.buymeacoffee.com/dooboolab
 
 Please take a look at [iap.dev/consulting](https://iap.dev/consulting). At iap.dev, we offer IAP consulting services for all platforms. Please [Contact Us](https://console.iap.dev/contact-us).
 
-Note: This service is not affiliated with dooboolab. It was created by [andresesfm](https://github.com/andresesfm) who has contributed and provided support for this project
+Note: This service is not affiliated with hyochan. It was created by [andresesfm](https://github.com/andresesfm) who has contributed and provided support for this project
 
 ### Backers
 
@@ -80,11 +80,11 @@ Please be our [Backers](https://opencollective.com/react-native-iap#backer).
 
 ### Contributing
 
-Please make sure to read the [Contributing Guide](https://github.com/dooboolab-community/react-native-iap/blob/main/CONTRIBUTING.md) before making a pull request.
+Please make sure to read the [Contributing Guide](https://github.com/hyochan/react-native-iap/blob/main/CONTRIBUTING.md) before making a pull request.
 Thank you to all the people who helped to maintain and upgrade this project!
 
 <a href="graphs/contributors"><img src="https://opencollective.com/react-native-iap/contributors.svg?width=890" /></a>
 
 ---
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdooboolab%2Freact-native-iap?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%hyochan%2Freact-native-iap.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%hyochan%2Freact-native-iap?ref=badge_large)

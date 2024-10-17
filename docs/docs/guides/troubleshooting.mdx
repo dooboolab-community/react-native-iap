@@ -19,14 +19,14 @@ import AdFitTopFixed from "@site/src/uis/AdFitTopFixed";
 Most of the issues encountered by users are caused by:
 
 - A device simulator. Use a real device for testing!
-- An incorrect usage of the library. Read the [documentation](https://react-native-iap.dooboolab.com).
+- An incorrect usage of the library. Read the [documentation](https://react-native-iap.hyo.dev).
 
 ## `getProducts` returns an empty array
 
 - Please double check if you've called `initConnection`.
-- Please wait for max. 24 hours to fetch your IAP products if you've just uploaded them. [Related to issue](https://github.com/dooboolab-community/react-native-iap/issues/1065).
+- Please wait for max. 24 hours to fetch your IAP products if you've just uploaded them. [Related to issue](https://github.com/hyochan/react-native-iap/issues/1065).
 - For `iOS`, from iOS version `>=13`, we seem to use `StoreKit` to fix this issue as [mentioned in stackoverflow](https://stackoverflow.com/questions/58020258/requesting-an-in-app-purchase-in-ios-13-fails/58065711#58065711).
-- For `android`, please double check [issue comment here](https://github.com/dooboolab-community/react-native-iap/issues/124#issuecomment-386593185) and see if you've missed something.
+- For `android`, please double check [issue comment here](https://github.com/hyochan/react-native-iap/issues/124#issuecomment-386593185) and see if you've missed something.
 
 ## `getAvailablePurchases()` returns an empty array
 
@@ -56,4 +56,4 @@ Please try below and make sure you've done all the steps:
    - Quit “store” related processes in Activity Monitor
    - Development Provisioning Profile -> Clean -> Build.
 
-- Related issues [#256](https://github.com/dooboolab-community/react-native-iap/issues/256), [#263](https://github.com/dooboolab-community/react-native-iap/issues/263).
+- Related issues [#256](https://github.com/hyochan/react-native-iap/issues/256), [#263](https://github.com/hyochan/react-native-iap/issues/263).
