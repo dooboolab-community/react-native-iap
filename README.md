@@ -16,7 +16,7 @@ Announcing the Migration of react-native-iap to an Expo Module for Improved Main
 
 ## Documentation
 
-Read the [documentation](https://react-native-iap.hyochan.dev). See the [troubleshooting](https://react-native-iap.hyochan.dev/docs/guides/troubleshooting#common-issues) for the common issues to avoid.
+Read the [documentation](https://react-native-iap.hyo.dev). See the [troubleshooting](https://react-native-iap.hyo.dev/docs/guides/troubleshooting#common-issues) for the common issues to avoid.
 
 ## Logs
 
